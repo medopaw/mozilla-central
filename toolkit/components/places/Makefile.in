@@ -37,6 +37,7 @@ XPIDLSRCS += \
   nsITaggingService.idl  \
   nsPIPlacesDatabase.idl \
   nsPIPlacesHistoryListenersNotifier.idl \
+  mozIInterestsWebAPI.idl \
   $(NULL)
 
 EXPORTS_NAMESPACES = mozilla/places
@@ -74,6 +75,7 @@ EXTRA_COMPONENTS = \
   nsPlacesExpiration.js \
   PlacesCategoriesStarter.js \
   ColorAnalyzer.js \
+  Interests.js \
   $(NULL)
 
 ifdef MOZ_XUL
@@ -85,6 +87,7 @@ EXTRA_JS_MODULES = \
   ColorAnalyzer_worker.js \
   ColorConversion.js \
   ClusterLib.js \
+  PlacesInterestsStorage.jsm \
   $(NULL)
 
 EXTRA_PP_JS_MODULES = \

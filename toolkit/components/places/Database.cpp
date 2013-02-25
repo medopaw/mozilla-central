@@ -721,6 +721,13 @@ Database::InitSchema(bool* aDatabaseMigrated)
 
       // Firefox 14 uses schema version 21.
 
+      if (currentSchemaVersion < 22) {
+        rv = MigrateV22Up();
+        NS_ENSURE_SUCCESS(rv, rv);
+      }
+
+      // Firefox 22 uses schema versione 22.
+
       // Schema Upgrades must add migration code here.
 
       rv = UpdateBookmarkRootTitles();
@@ -806,6 +813,18 @@ Database::InitSchema(bool* aDatabaseMigrated)
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_ITEMS_ANNOS);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_ITEMSANNOS_PLACEATTRIBUTE);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    // moz_up_interests.
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_HOSTINTEREST);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    // moz_up_buckets.
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_BUCKETS);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_BUCKETS_INTERESTENDTIME);
     NS_ENSURE_SUCCESS(rv, rv);
 
     // Initialize the bookmark roots in the new DB.
@@ -939,6 +958,8 @@ Database::InitTempTriggers()
   rv = mMainConn->ExecuteSimpleSQL(CREATE_PLACES_AFTERUPDATE_FRECENCY_TRIGGER);
   NS_ENSURE_SUCCESS(rv, rv);
   rv = mMainConn->ExecuteSimpleSQL(CREATE_PLACES_AFTERUPDATE_TYPED_TRIGGER);
+  NS_ENSURE_SUCCESS(rv, rv);
+  rv = mMainConn->ExecuteSimpleSQL(CREATE_UP_INTERESTS_AFTERINSERT_TRIGGER);
   NS_ENSURE_SUCCESS(rv, rv);
 
   return NS_OK;
@@ -1869,6 +1890,31 @@ Database::MigrateV21Up()
   nsCOMPtr<mozIStoragePendingStatement> ps;
   rv = updatePrefixesStmt->ExecuteAsync(nullptr, getter_AddRefs(ps));
   NS_ENSURE_SUCCESS(rv, rv);
+
+  return NS_OK;
+}
+
+nsresult
+Database::MigrateV22Up()
+{
+  MOZ_ASSERT(NS_IsMainThread());
+
+  // Add a moz_nterests table.
+  bool tableExists = false;
+  nsresult rv = mMainConn->TableExists(NS_LITERAL_CSTRING("moz_up_interests"),
+                              &tableExists);
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!tableExists) {
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_HOSTINTEREST);
+    NS_ENSURE_SUCCESS(rv, rv);
+    // Suppose if one table doesn't exist, the other one is missing as well.
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_BUCKETS);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_BUCKETS_INTERESTENDTIME);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
 
   return NS_OK;
 }

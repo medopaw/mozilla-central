@@ -121,4 +121,14 @@
     "guid_uniqueindex", "moz_favicons", "guid", "UNIQUE" \
   )
 
+#define CREATE_IDX_MOZ_UP_INTERESTS_HOSTINTEREST \
+  CREATE_PLACES_IDX( \
+    "hostintererest_uniqueindex", "moz_up_interests", "host, interest", "UNIQUE" \
+  )
+
+#define CREATE_IDX_MOZ_UP_BUCKETS_INTERESTENDTIME \
+  CREATE_PLACES_IDX( \
+    "interestendtimeindex", "moz_up_buckets", "interest, endTime", "" \
+  )
+
 #endif // nsPlacesIndexes_h__

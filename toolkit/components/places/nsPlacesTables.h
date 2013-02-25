@@ -147,4 +147,21 @@
   ")" \
 )
 
+#define CREATE_MOZ_UP_INTERESTS NS_LITERAL_CSTRING( \
+  "CREATE TABLE moz_up_interests (" \
+    "  id INTEGER PRIMARY KEY" \
+    ", host INTEGER NOT NULL" \
+    ", interest TEXT NOT NULL" \
+  ")" \
+)
+
+#define CREATE_MOZ_UP_BUCKETS NS_LITERAL_CSTRING( \
+  "CREATE TABLE moz_up_buckets (" \
+    "  id INTEGER PRIMARY KEY" \
+    ", interest TEXT NOT NULL" \
+    ", endTime INTEGER NOT NULL DEFAULT 0" \
+    ", visitCount INTEGER NOT NULL DEFAULT 0" \
+  ")" \
+)
+
 #endif // __nsPlacesTables_h__
