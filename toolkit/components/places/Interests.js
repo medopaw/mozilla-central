@@ -52,13 +52,17 @@ Interests.prototype = {
   },
 
   _handleNewDocument: function I__handleNewDocument(aDocument) {
+    let host = this._getPlacesHostForURI(aDocument.documentURIObject);
+    Cu.reportError("checking interests for host "+host);
+    Cu.reportError("JJJJJJ  "+ Services.eTLD.getBaseDomainFromHost(host));
+
     this._worker.postMessage({
       message: "getInterestsForDocument",
       url: aDocument.documentURI,
-      host: this._getPlacesHostForURI(aDocument.documentURIObject),
+      host: host,
       path: aDocument.documentURIObject.path,
       title: aDocument.title,
-      metaData: "",
+      metaData: {"tld" : Services.eTLD.getBaseDomainFromHost(host)} ,
       langauge: "en"
     });
   },
@@ -104,6 +108,7 @@ Interests.prototype = {
     if (eventType == "DOMContentLoaded") {
       let doc = aEvent.target;
       if (doc instanceof Ci.nsIDOMHTMLDocument && doc.defaultView == doc.defaultView.top)
+        Cu.reportError("hnalding the doc");
         this._handleNewDocument(doc);
     }
     else if (eventType == "message") {
@@ -114,6 +119,7 @@ Interests.prototype = {
   },
 
   onDeleteURI: function(aURI, aGUID, aReason) {
+    console.log(JSON.stringify(aURI));
     let host = this._getPlacesHostForURI(aURI);
     let hostInterests = this._getInterestsForHost(host);
     for (let interest of hostInterests) {

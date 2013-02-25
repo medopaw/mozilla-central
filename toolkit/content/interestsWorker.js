@@ -11,40 +11,54 @@ self.onmessage = function({data}) {
 
 // Figure out which interests are associated to the document
 function getInterestsForDocument({host, language, metaData, path, title, url}) {
-  // Use the simple interests if available
-  let interests = interestsData.simple[host];
-  if (interests == null) {
-    let interestMap = {};
 
-    // Try matching the path for each complex pattern
-    let patterns = interestsData.complex[host] || [];
-    patterns.forEach(function([pattern, cats]) {
-      let matched;
-      // Match as a regex pattern
-      if (pattern.indexOf("*") != -1) {
-        matched = path.match(pattern);
-      }
-      // Match as a path prefix
-      else if (pattern.slice(-1) == "/") {
-        matched = path.indexOf(pattern) == 0;
-      }
-      // Do an exact match
-      else {
-        matched = path == pattern;
-      }
+  dump(" ==================================\n");
 
-      // Remember the associated interest for the path
-      if (matched) {
-        cats.forEach(function(cat) {
-          interestMap[cat] = true;
+  let interests = [];
+  let hostKeys = (interestsData[host]) ? Object.keys(interestsData[host]).length : 0;
+  let tldKeys = (host != metaData.tld && interestsData[metaData.tld]) ? Object.keys(interestsData[metaData.tld]).length : 0;
+
+  dump( host + " " + hostKeys + " "  + metaData.tld + " " + tldKeys + "\n");
+
+  if( hostKeys || tldKeys ) {
+
+    // process __HOST first 
+    if(hostKeys && interestsData[host]["__HOST"]) {
+      interests = interests.concat(interestsData[host]["__HOST"]);
+      hostKeys--;
+    }
+    if(tldKeys && interestsData[metaData.tld]) {
+      interests = interests.concat(interestsData[metaData.tld]["__HOST"]);
+      tldKeys--;
+    }
+
+    // process keywords
+    if(hostKeys || tldKeys) {
+      // Split on non-dash, alphanumeric, latin-small, greek, cyrillic
+      const splitter = /[^-\w\xco-\u017f\u0380-\u03ff\u0400-\u04ff]+/;
+      let words = (url + " " + title).toLowerCase().split(splitter);
+
+      dump( "-----> " + Array.join(words, " ") + "\n");
+      function matchedAllTokens(tokens) {
+        return tokens.every(function(word) {
+          return words.indexOf(word) != -1;
+        });
+      } 
+
+      function processDFRKeys(hostObject) {
+        Object.keys(hostObject).forEach(function(key) {
+          dump( "testing " + key + "\n" );
+          if(key != "__HOST" && matchedAllTokens(key.split(splitter))) {
+            dump( "matched " + key + "\n" );
+            interests = interests.concat(hostObject[key]);
+          }
         });
       }
-    });
 
-    // Generate the array of interests
-    interests = Object.keys(interestMap);
+      if(hostKeys) processDFRKeys(interestsData[host]);
+      if(tldKeys) processDFRKeys(interestsData[metaData.tld]);
+    }
   }
-
   // Respond with the interests for the document
   self.postMessage({
     host: host,
