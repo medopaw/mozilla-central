@@ -1,4 +1,4 @@
-var interestsData = 
+var interestsData =
 {
    "coquette.blogs.com" : {
       "__HOST" : [
