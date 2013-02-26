@@ -53,8 +53,6 @@ Interests.prototype = {
 
   _handleNewDocument: function I__handleNewDocument(aDocument) {
     let host = this._getPlacesHostForURI(aDocument.documentURIObject);
-    Cu.reportError("checking interests for host "+host);
-    Cu.reportError("JJJJJJ  "+ Services.eTLD.getBaseDomainFromHost(host));
 
     this._worker.postMessage({
       message: "getInterestsForDocument",
@@ -62,7 +60,8 @@ Interests.prototype = {
       host: host,
       path: aDocument.documentURIObject.path,
       title: aDocument.title,
-      metaData: {"tld" : Services.eTLD.getBaseDomainFromHost(host)} ,
+      tld: Services.eTLD.getBaseDomainFromHost(host) ,
+      metaData: {} ,
       langauge: "en"
     });
   },
@@ -83,7 +82,7 @@ Interests.prototype = {
   },
 
   _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {
-    
+
   },
 
   _getBucketsForInterest: function I__getBucketsForInterest(aInterest) {
@@ -136,7 +135,7 @@ Interests.prototype = {
   },
 
   onClearHistory: function() {
-    
+
   },
 
   onVisit: function() {},
@@ -171,7 +170,7 @@ InterestsWebAPI.prototype = {
     for (let interest of aInterests)
       rv.__exposedProps__[interest] = "r";
     for (let interest of aInterests) {
-      
+
       rv[interest] = gInterestsService._getBucketsForInterest(interest);
       for (let bucket of rv[interest]) {
         bucket.__exposedProps__ = { "endTime": "r", "visitCount": "r" };
