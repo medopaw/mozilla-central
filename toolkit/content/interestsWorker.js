@@ -2,7 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+try{
 importScripts("interestsData.js");
+}catch(ex){dump("failed: " + ex);}
 
 // Dispatch the message to the appropriate function
 self.onmessage = function({data}) {
@@ -49,6 +51,17 @@ function getInterestsForDocument({host, language, tld, metaData, path, title, ur
       if (hostKeys) processDFRKeys(interestsData[host]);
       if (tldKeys) processDFRKeys(interestsData[tld]);
     }
+  }
+  // remove duplicate
+  if(interests.length > 1) {
+    // insert interests into hash and reget the keys
+    let theHash = {};
+    interests.forEach(function(aInterest) {
+      if(!theHash[aInterest]) {
+        theHash[aInterest]=1;
+      }
+    });
+    interests = Object.keys(theHash);
   }
   // Respond with the interests for the document
   self.postMessage({

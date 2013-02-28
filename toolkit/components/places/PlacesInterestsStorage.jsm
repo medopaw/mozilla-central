@@ -96,6 +96,7 @@ let PlacesInterestsStorage = {
         "AND endTime = (SELECT MAX(endTime) FROM moz_up_buckets WHERE interest = :interest)");
     stmt.params.interest = aInterest;
     stmt.execute();
+    stmt.finalize();
 
     if (shouldUpdateOnlyNewestBucket)
       return;
@@ -110,6 +111,7 @@ let PlacesInterestsStorage = {
         "AND endTime = (SELECT endTime FROM moz_up_buckets WHERE interest = :interest ORDER BY endTime DESC LIMIT 1 OFFSET 1)");
     stmt.params.interest = aInterest;
     stmt.execute();
+    stmt.finalize();
 
     stmt = this.db.createStatement(
       "UPDATE moz_up_buckets " +
@@ -120,6 +122,7 @@ let PlacesInterestsStorage = {
         "AND endTime = (SELECT MIN(endTime) FROM moz_up_buckets WHERE interest = :interest");
     stmt.params.interest = aInterest;
     stmt.execute();  
+    stmt.finalize();
   }
 }
 

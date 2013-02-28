@@ -17,6 +17,7 @@ let gInterestsService = null;
 
 function Interests() {
   gInterestsService = this;
+  this.wrappedJSObject = this;
 }
 
 Interests.prototype = {
@@ -27,6 +28,8 @@ Interests.prototype = {
   , Ci.nsIObserver
   , Ci.nsIDOMEventListener
   ]),
+
+//  get wrappedJSObject() this,
 
   observe: function I_observe(aSubject, aTopic, aData) {
     if (aTopic == "app-startup") {
@@ -54,7 +57,7 @@ Interests.prototype = {
   _handleNewDocument: function I__handleNewDocument(aDocument) {
     let host = this._getPlacesHostForURI(aDocument.documentURIObject);
 
-    this._worker.postMessage({
+    this._callMatchingWorker({
       message: "getInterestsForDocument",
       url: aDocument.documentURI,
       host: host,
@@ -66,6 +69,10 @@ Interests.prototype = {
     });
   },
 
+  _callMatchingWorker: function I__callMatchingWorker(callObject) {
+    this._worker.postMessage(callObject);
+  },
+
   _getPlacesHostForURI: function(aURI) aURI.host.replace(/^www\./, ""),
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests) {
@@ -74,6 +81,7 @@ Interests.prototype = {
     Cu.reportError(typeof(aInterests));
     Cu.reportError("interests: " + aInterests);
     for (let interest of aInterests) {
+      dump("adding interest " + aInterests + " " + "for host... " + aHost + "\n");
       Cu.reportError("interest: " + typeof(interest) + " " + interest);
       Cu.reportError("host: " + typeof(aHost) + "  " + aHost);
       PlacesInterestsStorage.addInterestForHost(interest, aHost);
