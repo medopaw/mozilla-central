@@ -103,4 +103,3 @@ add_task(function test_interests()
   let ints = PlacesInterestsStorage.getInterestsForHost("cars.com");
   do_check_eq(ints[0],"cars");
 });
-

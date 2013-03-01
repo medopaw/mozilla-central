@@ -49,7 +49,23 @@ Interests.prototype = {
     if (!("__worker " in this)) {
       // Use a ChromeWorker to workaround Bug 487070.
       this.__worker = new ChromeWorker("chrome://global/content/interestsWorker.js");
+
+
+      let scriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+      let data = scriptLoader.loadSubScript("chrome://global/content/interestsData.js");
+      let model = scriptLoader.loadSubScript("chrome://global/content/interestsClassifierModel.js");
+      let stopwords = scriptLoader.loadSubScript("chrome://global/content/interestsUrlStopwords.js");
+
+      this.__worker.postMessage({
+        message: "bootstrap",
+        interestsDataType: "dfr",
+        interestsData: interestsData,
+        interestsClassifierModel: interestsClassifierModel,
+        interestsUrlStopwords: interestsUrlStopwords
+      });
+
       this.__worker.addEventListener("message", this, false);
+      this.__worker.addEventListener("error", this, false);
     }
     return this.__worker;
   },
@@ -65,7 +81,7 @@ Interests.prototype = {
       title: aDocument.title,
       tld: Services.eTLD.getBaseDomainFromHost(host) ,
       metaData: {} ,
-      langauge: "en"
+      language: "en"
     });
   },
 
@@ -122,6 +138,9 @@ Interests.prototype = {
       let msgData = aEvent.data;
       if (msgData.message == "InterestsForDocument")
         this._handleInterestsResults(msgData);
+    }
+    else if (eventType == "error") {
+      //TODO:handle error
     }
   },
 
