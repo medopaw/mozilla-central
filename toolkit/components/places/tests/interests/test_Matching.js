@@ -92,4 +92,3 @@ add_task(function test_matcher() {
     yield deferEnsureResults.promise;
   }
 });
-

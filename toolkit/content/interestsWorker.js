@@ -3,28 +3,47 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 try{
-importScripts("interestsData.js");
+  importScripts("interestsTextClassifier.js");
 }catch(ex){dump("failed: " + ex);}
 
-// Dispatch the message to the appropriate function
-self.onmessage = function({data}) {
-  self[data.message](data);
-};
+function InterestsWorkerError(message) {
+    this.name = "InterestsWorkerError";
+    this.message = message || "InterestsWorker has errored";
+}
+InterestsWorkerError.prototype = new Error();
+InterestsWorkerError.prototype.constructor = InterestsWorkerError;
 
-// Figure out which interests are associated to the document
-function getInterestsForDocument({host, language, tld, metaData, path, title, url}) {
+let gTokenizer = null;
+let gClassifier = null;
+let gInterestsData = null;
+
+// bootstrap the worker with data and models
+function bootstrap({interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}) {
+  gTokenizer = new PlaceTokenizer(interestsUrlStopwords);
+  gClassifier = new NaiveBayesClassifier(interestsClassifierModel);
+
+  if (interestsDataType == "dfr") {
+    gInterestsData = interestsData;
+  }
+}
+
+// classify a page using rules
+function ruleClassify({host, language, tld, metaData, path, title, url}) {
+  if (gInterestsData == null) {
+    throw new InterestsWorkerError("interestData not loaded");
+  }
   let interests = [];
-  let hostKeys = (interestsData[host]) ? Object.keys(interestsData[host]).length : 0;
-  let tldKeys = (host != tld && interestsData[tld]) ? Object.keys(interestsData[tld]).length : 0;
+  let hostKeys = (gInterestsData[host]) ? Object.keys(gInterestsData[host]).length : 0;
+  let tldKeys = (host != tld && gInterestsData[tld]) ? Object.keys(gInterestsData[tld]).length : 0;
 
   if (hostKeys || tldKeys) {
     // process __HOST first
-    if (hostKeys && interestsData[host]["__HOST"]) {
-      interests = interests.concat(interestsData[host]["__HOST"]);
+    if (hostKeys && gInterestsData[host]["__HOST"]) {
+      interests = interests.concat(gInterestsData[host]["__HOST"]);
       hostKeys--;
     }
-    if (tldKeys && interestsData[tld]) {
-      interests = interests.concat(interestsData[tld]["__HOST"]);
+    if (tldKeys && gInterestsData[tld]) {
+      interests = interests.concat(gInterestsData[tld]["__HOST"]);
       tldKeys--;
     }
 
@@ -48,11 +67,37 @@ function getInterestsForDocument({host, language, tld, metaData, path, title, ur
         });
       }
 
-      if (hostKeys) processDFRKeys(interestsData[host]);
-      if (tldKeys) processDFRKeys(interestsData[tld]);
+      if (hostKeys) processDFRKeys(gInterestsData[host]);
+      if (tldKeys) processDFRKeys(gInterestsData[tld]);
     }
   }
-  // remove duplicate
+  return interests;
+}
+
+// classify a page using text
+function textClassify({url, title}) {
+  if (gTokenizer == null || gClassifier == null) {
+    throw new InterestsWorkerError("interest classifier not loaded");
+  }
+
+  let tokens = gTokenizer.tokenize(url, title);
+  let interest = gClassifier.classify(tokens);
+
+  if (interest != null) {
+    return [interest];
+  }
+  return [];
+}
+
+// Figure out which interests are associated to the document
+function getInterestsForDocument(aMessageData) {
+  let interests = ruleClassify(aMessageData);
+  if (interests.length == 0) {
+    // fallback to text classification
+    interests = textClassify(aMessageData);
+  }
+
+  // remove duplicates
   if(interests.length > 1) {
     // insert interests into hash and reget the keys
     let theHash = {};
@@ -63,11 +108,30 @@ function getInterestsForDocument({host, language, tld, metaData, path, title, ur
     });
     interests = Object.keys(theHash);
   }
+
   // Respond with the interests for the document
   self.postMessage({
-    host: host,
+    host: aMessageData.host,
     interests: interests,
     message: "InterestsForDocument",
-    url: url
+    url: aMessageData.url
   });
 }
+
+// Classify document via text only
+function getInterestsForDocumentText(aMessageData) {
+  let interests = textClassify(aMessageData);
+
+  // Respond with the interests for the document
+  self.postMessage({
+    host: aMessageData.host,
+    interests: interests,
+    message: "InterestsForDocumentText",
+    url: aMessageData.url
+  });
+}
+
+// Dispatch the message to the appropriate function
+self.onmessage = function({data}) {
+  self[data.message](data);
+};
