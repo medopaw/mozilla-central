@@ -97,7 +97,6 @@ Interests.prototype = {
     Cu.reportError(typeof(aInterests));
     Cu.reportError("interests: " + aInterests);
     for (let interest of aInterests) {
-      dump("adding interest " + aInterests + " " + "for host... " + aHost + "\n");
       Cu.reportError("interest: " + typeof(interest) + " " + interest);
       Cu.reportError("host: " + typeof(aHost) + "  " + aHost);
 

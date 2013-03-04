@@ -39,7 +39,7 @@ function NaiveBayesClassifier(aModel) {
 
 NaiveBayesClassifier.prototype = {
   classify: function(aTokens) {
-    if (!aTokens.isArray()) {
+    if (!(aTokens instanceof Array)) {
       throw new TypeError("invalid input data");
     }
 
