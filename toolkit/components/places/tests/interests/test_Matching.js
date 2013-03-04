@@ -93,14 +93,3 @@ add_task(function test_matcher() {
   }
 });
 
-add_task(function test_interests()
-{   
-  yield promiseAddVisits(NetUtil.newURI("http://www.mozilla.org/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
-
-  PlacesInterestsStorage.addInterestForHost("cars", "cars.com");
-  let ints = PlacesInterestsStorage.getInterestsForHost("cars.com");
-  do_check_eq(ints[0],"cars");
-});
-

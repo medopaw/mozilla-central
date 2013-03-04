@@ -14,16 +14,69 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils",
                                   "resource://gre/modules/PlacesUtils.jsm");
 
+const DataMiliSeconds = 86400000;
+
 let PlacesInterestsStorage = {
+
+  getTodayTimeStamp: function() {
+    // TODO: This function could be optimized by caching current day timestamp
+    // We can also use julianday('now') from sqllite directly
+    let time = Date.now();
+    // return start of today + 1 millisecond
+    return (time - time % DataMiliSeconds);
+  },
+
+  addInterest: function (aInterest) {
+    Cu.reportError(typeof(aInterest));
+    Cu.reportError("adding aInterest: " + aInterest);
+    let stmt = this.db.createStatement("INSERT OR IGNORE INTO moz_up_interests (interest) VALUES(:interest)");
+    stmt.params.interest = aInterest;
+    stmt.execute();
+    stmt.finalize();
+  },
+
+  addInterestVisit: function (aInterest) {
+    Cu.reportError(typeof(aInterest));
+    Cu.reportError("adding visit to aInterest: " + aInterest);
+
+    let currentTs = this.getTodayTimeStamp();
+    // TODO this code could be redone with replace or insert
+    // make sure that interest,dateAdded record exists in the table
+    let stmt = this.db.createStatement(
+      "INSERT OR IGNORE INTO moz_up_interests_visits (interest_id,date_added) " +
+      "VALUES((SELECT id FROM moz_up_interests WHERE interest = :interest), :dateAdded)");
+    stmt.params.interest = aInterest;
+    stmt.params.dateAdded = currentTs;
+    stmt.execute();
+    stmt.finalize();
+
+    // now add 1 to that record
+    // TODO we may avoid subselect by storing interest_id in local variable
+    // let interest_id = (SELECT id FROM moz_up_interests WHERE interest = :interest)
+
+    stmt = this.db.createStatement(
+      "UPDATE moz_up_interests_visits " +
+      "SET visit_count = visit_count + 1 " +
+      "WHERE interest_id = (SELECT id FROM moz_up_interests WHERE interest = :interest) AND date_added = :dateAdded");
+    stmt.params.interest = aInterest;
+    stmt.params.dateAdded = currentTs;
+    stmt.execute();
+    stmt.finalize();
+  },
+
   addInterestForHost: function (aInterest, aHost) {
     Cu.reportError(typeof(aInterest));
     Cu.reportError("aInterest: " + aInterest);
     Cu.reportError("aHost: " + aHost);
+    let currentTs = this.getTodayTimeStamp();
     let stmt = this.db.createStatement(
-      "INSERT OR IGNORE INTO moz_up_interests (host, interest) " +
-      "VALUES((SELECT id FROM moz_hosts WHERE host = :host), :interest)");
+      "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id,host_id,date_added) " +
+      "VALUES((SELECT id FROM moz_hosts WHERE host = :host) " +
+      ", (SELECT id FROM moz_up_interests WHERE interest =:interest) " +
+      ", :dateAdded)");
     stmt.params.host = aHost;
     stmt.params.interest = aInterest;
+    stmt.params.dateAdded = currentTs;
     stmt.execute();
     stmt.finalize();
   },
@@ -58,72 +111,30 @@ let PlacesInterestsStorage = {
 
   getBucketsForInterest: function (aInterest) {
   	let buckets = [];
+    let currentTs = this.getTodayTimeStamp();
+    let firstBucketEndTime = currentTs - 30*DataMiliSeconds;
+    let secondBucketEndTime = currentTs - 60*DataMiliSeconds;
+    let lastBucketEndTime = currentTs - 90*DataMiliSeconds;
+
   	let stmt = this.db.createStatement(
-      "SELECT interest, endTime, visitCount " +
-      "FROM moz_up_buckets " +
-      "WHERE interest = :interest " +
-      "ORDER by interest ASC, endTime DESC ");
+      "SELECT CASE WHEN date_added >= :firstBucketEndTime THEN :firstBucketEndTime " +
+      "            WHEN date_added >= :secondBucketEndTime THEN :secondBucketEndTime " +
+      "            ELSE :lastBucketEndTime END as endTime , SUM(visit_count) as visitCount " +
+      "FROM moz_up_interests_visits " +
+      "WHERE interest_id = (SELECT id FROM moz_up_interests WHERE interest =:interest) " +
+      "ORDER by endTime DESC ");
     stmt.params.interest = aInterest;
+    stmt.params.firstBucketEndTime = firstBucketEndTime;
+    stmt.params.secondBucketEndTime = secondBucketEndTime;
+    stmt.params.lastBucketEndTime = lastBucketEndTime;
     while (stmt.executeStep()) {
       buckets.push({ endTime: stmt.row.endTime,
       	             visitCount: stmt.row.visitCount });
     }
     stmt.finalize();
     return buckets;
-  },
-
-  updateBucketsForInterest: function (aInterest) {
-  	let stmt = this.db.createStatement(
-      "SELECT (endTime >= (strftime('%s','now','localtime','start of day','utc') * 1000000)) AS updateNewest " +
-      "FROM moz_up_buckets WHERE interest = :interest " +
-      "ORDER BY endTime DESC LIMIT 1");
-  	stmt.params.interest = aInterest;
-  	stmt.executeStep();
-  	let shouldUpdateOnlyNewestBucket = stmt.row.updateNewest;
-    stmt.finalize();
-
-    stmt = this.db.createStatement(
-      "UPDATE moz_up_buckets " +
-      "SET endTime = (strftime('%s','now','localtime','utc') * 1000000), " +
-      "visitCount = (SELECT count(*) FROM moz_historyvisits " +
-                        "WHERE visit_date BETWEEN (strftime('%s','now','localtime','start of day','-30 days','utc') * 1000000) " +
-                                             "AND (strftime('%s','now','localtime','utc') * 1000000)" +
-                    "AND place_id IN (SELECT id FROM moz_places " +
-                 "WHERE rev_host = get_unreversed_host((SELECT h.host FROM moz_hosts h JOIN moz_up_interests i ON i.host = h.id WHERE i.interest = :interest) || '.') || '.' " +
-                    "OR rev_host = get_unreversed_host((SELECT h.host FROM moz_hosts h JOIN moz_up_interests i ON i.host = h.id WHERE i.interest = :interest) || '.') || '.www.' ) " +
-                    ") " +
-      "WHERE interest = :interest " +
-        "AND endTime = (SELECT MAX(endTime) FROM moz_up_buckets WHERE interest = :interest)");
-    stmt.params.interest = aInterest;
-    stmt.execute();
-    stmt.finalize();
-
-    if (shouldUpdateOnlyNewestBucket)
-      return;
-
-    stmt = this.db.createStatement(
-      "UPDATE moz_up_buckets " +
-      "SET endTime = (strftime('%s','now','localtime','start of day','-30 days','utc') * 1000000), " +
-      "visitCount = (SELECT count(*) FROM moz_historyvisits " +
-                        "WHERE visit_date BETWEEN (strftime('%s','now','localtime','start of day','-60 days','utc') * 1000000) " +
-                                             "AND (strftime('%s','now','localtime','start of day','-30 days','utc') * 1000000) " +
-      "WHERE interest = :interest " +
-        "AND endTime = (SELECT endTime FROM moz_up_buckets WHERE interest = :interest ORDER BY endTime DESC LIMIT 1 OFFSET 1)");
-    stmt.params.interest = aInterest;
-    stmt.execute();
-    stmt.finalize();
-
-    stmt = this.db.createStatement(
-      "UPDATE moz_up_buckets " +
-      "SET endTime = (strftime('%s','now','localtime','start of day','-60 days','utc') * 1000000), " +
-      "visitCount = (SELECT count(*) FROM moz_historyvisits " +
-                        "WHERE visit_date < (strftime('%s','now','localtime','start of day','-60 days','utc') * 1000000) " +
-      "WHERE interest = :interest " +
-        "AND endTime = (SELECT MIN(endTime) FROM moz_up_buckets WHERE interest = :interest");
-    stmt.params.interest = aInterest;
-    stmt.execute();  
-    stmt.finalize();
   }
+
 }
 
 XPCOMUtils.defineLazyGetter(PlacesInterestsStorage, "db", function() {

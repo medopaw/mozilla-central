@@ -818,13 +818,14 @@ Database::InitSchema(bool* aDatabaseMigrated)
     // moz_up_interests.
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_HOSTINTEREST);
-    NS_ENSURE_SUCCESS(rv, rv);
+    //rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_HOSTINTEREST);
+    //NS_ENSURE_SUCCESS(rv, rv);
 
-    // moz_up_buckets.
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_BUCKETS);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_META);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_BUCKETS_INTERESTENDTIME);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_VISITS);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_HOSTS);
     NS_ENSURE_SUCCESS(rv, rv);
 
     // Initialize the bookmark roots in the new DB.
@@ -958,8 +959,6 @@ Database::InitTempTriggers()
   rv = mMainConn->ExecuteSimpleSQL(CREATE_PLACES_AFTERUPDATE_FRECENCY_TRIGGER);
   NS_ENSURE_SUCCESS(rv, rv);
   rv = mMainConn->ExecuteSimpleSQL(CREATE_PLACES_AFTERUPDATE_TYPED_TRIGGER);
-  NS_ENSURE_SUCCESS(rv, rv);
-  rv = mMainConn->ExecuteSimpleSQL(CREATE_UP_INTERESTS_AFTERINSERT_TRIGGER);
   NS_ENSURE_SUCCESS(rv, rv);
 
   return NS_OK;
@@ -1907,12 +1906,11 @@ Database::MigrateV22Up()
   if (!tableExists) {
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_HOSTINTEREST);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_META);
     NS_ENSURE_SUCCESS(rv, rv);
-    // Suppose if one table doesn't exist, the other one is missing as well.
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_BUCKETS);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_VISITS);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_BUCKETS_INTERESTENDTIME);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_HOSTS);
     NS_ENSURE_SUCCESS(rv, rv);
   }
 

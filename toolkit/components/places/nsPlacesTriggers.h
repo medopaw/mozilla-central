@@ -164,19 +164,4 @@
   "END" \
 )
 
-#define CREATE_UP_INTERESTS_AFTERINSERT_TRIGGER NS_LITERAL_CSTRING( \
-  "CREATE TEMPORARY TRIGGER moz_up_interests_afterinsert_trigger " \
-  "AFTER INSERT ON moz_up_interests FOR EACH ROW " \
-  "BEGIN " \
-    "INSERT OR IGNORE INTO moz_up_buckets (id, interest, endTime) " \
-    "VALUES " \
-      "((SELECT id FROM moz_up_buckets WHERE interest = NEW.interest LIMIT 1), " \
-       "NEW.interest, (strftime('%s','now','localtime','utc') * 1000000)), " \
-      "((SELECT id FROM moz_up_buckets WHERE interest = NEW.interest LIMIT 1), " \
-       "NEW.interest, (strftime('%s','now','localtime','start of day','-30 days','utc') * 1000000)), " \
-      "((SELECT id FROM moz_up_buckets WHERE interest = NEW.interest LIMIT 1), " \
-       "NEW.interest, (strftime('%s','now','localtime','start of day','-60 days','utc') * 1000000)); " \
-  "END" \
-)
-
 #endif // __nsPlacesTriggers_h__

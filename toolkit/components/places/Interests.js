@@ -84,6 +84,10 @@ Interests.prototype = {
       dump("adding interest " + aInterests + " " + "for host... " + aHost + "\n");
       Cu.reportError("interest: " + typeof(interest) + " " + interest);
       Cu.reportError("host: " + typeof(aHost) + "  " + aHost);
+
+      // TODO - this is a hack - we do not need to keep inserting into interests table
+      PlacesInterestsStorage.addInterest(interest);
+      PlacesInterestsStorage.addInterestVisit(interest);
       PlacesInterestsStorage.addInterestForHost(interest, aHost);
       Cu.reportError("added " + interest);
     }
@@ -97,17 +101,10 @@ Interests.prototype = {
     return PlacesInterestsStorage.getBucketsForInterest(aInterest);
   },
 
-  _invalidateBucketsForInterest: function I__invalidateBucketsForInterest(aInterest) {
-    Cu.reportError("calling _invalidateBucketsForInterest for " + aInterest);
-    PlacesInterestsStorage.updateBucketsForInterest(aInterest);
-  },
-
   _handleInterestsResults: function I__handleInterestsResults(aData) {
     let host = aData.host;
     let interests = aData.interests;
     this._addInterestsForHost(host, interests);
-    for (let interest of aData.interests)
-      this._invalidateBucketsForInterest(interest);
   },
 
   handleEvent: function I_handleEvent(aEvent) {

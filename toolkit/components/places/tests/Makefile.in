@@ -23,6 +23,7 @@ XPCSHELL_TESTS = \
   network \
   queries \
   unit \
+  interests \
   $(NULL)
 
 # Files in the main "tests" folder.

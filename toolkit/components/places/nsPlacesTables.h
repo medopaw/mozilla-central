@@ -149,18 +149,34 @@
 
 #define CREATE_MOZ_UP_INTERESTS NS_LITERAL_CSTRING( \
   "CREATE TABLE moz_up_interests (" \
-    "  id INTEGER PRIMARY KEY" \
-    ", host INTEGER NOT NULL" \
-    ", interest TEXT NOT NULL" \
+    "  id INTEGER PRIMARY KEY AUTOINCREMENT" \
+    ", interest TEXT NOT NULL UNIQUE" \
   ")" \
 )
 
-#define CREATE_MOZ_UP_BUCKETS NS_LITERAL_CSTRING( \
-  "CREATE TABLE moz_up_buckets (" \
-    "  id INTEGER PRIMARY KEY" \
-    ", interest TEXT NOT NULL" \
-    ", endTime INTEGER NOT NULL DEFAULT 0" \
-    ", visitCount INTEGER NOT NULL DEFAULT 0" \
+#define CREATE_MOZ_UP_INTERESTS_META NS_LITERAL_CSTRING( \
+  "CREATE TABLE moz_up_interests_meta (" \
+    "  interest_id INTEGER PRIMARY KEY" \
+    ", date_updated INTEGER NOT NULL DEFAULT 0" \
+    ", meta BLOB" \
+  ")" \
+)
+
+#define CREATE_MOZ_UP_INTERESTS_VISITS NS_LITERAL_CSTRING( \
+  "CREATE TABLE moz_up_interests_visits (" \
+    "  interest_id INTEGER NOT NULL DEFAULT 0" \
+    ", date_added INTEGER NOT NULL DEFAULT 0" \
+    ", visit_count INTEGER NOT NULL DEFAULT 0" \
+    ", PRIMARY KEY (interest_id, date_added)" \
+  ")" \
+)
+
+#define CREATE_MOZ_UP_INTERESTS_HOSTS NS_LITERAL_CSTRING( \
+  "CREATE TABLE moz_up_interests_hosts (" \
+    "  interest_id INTEGER NOT NULL DEFAULT 0" \
+    ", host_id INTEGER NOT NULL DEFAULT 0" \
+    ", date_added INTEGER NOT NULL DEFAULT 0" \
+    ",PRIMARY KEY (interest_id, host_id, date_added)" \
   ")" \
 )
 
