@@ -28,7 +28,7 @@ let matchTests = [
 }
 ];
 
-add_task(function test_default_model() {
+add_task(function test_default_model_match() {
   let worker = iServiceObject._worker;
   // there variables are need to set up array of tests
   let expectedInterests;
@@ -50,6 +50,10 @@ add_task(function test_default_model() {
         } 
         do_check_eq(interestCount, Object.keys(expectedInterests).length);
         deferEnsureResults.resolve();
+      }
+      else if (msgData.message == "InterestsForDocumentRules") {
+        // make sure rule-based classification did not happen
+        do_check_eq(0, msgData.interests.length());
       }
       else {
         do_check_true(false);  // unexpected message 
@@ -74,6 +78,14 @@ add_task(function test_default_model() {
     expectedInterests = test.expectedInterests;
     worker.postMessage({
       message: "getInterestsForDocumentText",
+      host: host,
+      path: path,
+      title: title,
+      url: test.url,
+      tld: tld
+    });
+    worker.postMessage({
+      message: "getInterestsForDocumentRules",
       host: host,
       path: path,
       title: title,

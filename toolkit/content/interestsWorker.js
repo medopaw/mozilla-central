@@ -131,6 +131,19 @@ function getInterestsForDocumentText(aMessageData) {
   });
 }
 
+// Classify document via rules only
+function getInterestsForDocumentRules(aMessageData) {
+  let interests = ruleClassify(aMessageData);
+
+  // Respond with the interests for the document
+  self.postMessage({
+    host: aMessageData.host,
+    interests: interests,
+    message: "InterestsForDocumentRules",
+    url: aMessageData.url
+  });
+}
+
 // Dispatch the message to the appropriate function
 self.onmessage = function({data}) {
   self[data.message](data);
