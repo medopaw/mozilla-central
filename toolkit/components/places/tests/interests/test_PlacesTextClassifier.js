@@ -1,4 +1,4 @@
-/* -*- Mode: javascript; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: Java; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* vim:set ts=2 sw=2 sts=2 et: */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -13,73 +13,75 @@ let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInt
 let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 let deferEnsureResults;
 
-[
 
-  /*
-  function test_no_model() {
-    do_check_true(true);
-    run_next_test();
-  },
-  */
+function run_test() {
+  run_next_test();
+}
 
-  function test_valid_model() {
-    let worker = iServiceObject._worker;
-    worker.removeEventListener("message", iServiceObject, false); 
+// the test array 
+let matchTests = [
+{
+  info: "TEST-INFO | Text Classifier Test 1: polygon",
+  url:  "http://www.polygon.com/2013/3/5/4066808/thief-screenshots-leak-next-gen",
+  title: "Rumored images for new Thief game leak, reportedly in the works on next-gen platforms",
+  expectedInterests:  {"video-games": 1}
+}
+];
 
-    let workerTester = {
-      handleEvent: function(aEvent) {
-        if (aEvent.type == "message") {
-          let msgData = aEvent.data;
-          if (msgData.message == "InterestsForDocumentText") {
-            // make sure that categorization is correct 
-            let host = msgData.host;
-            let interests = msgData.interests;
-            let interestCount = 0;
-            for (let interest of interests) {
-              do_check_true(expectedInterests[interest] == 1);
-              interestCount ++;
-            } 
-            do_check_eq(interestCount, Object.keys(expectedInterests).length);
-            deferEnsureResults.resolve();
-          }
-          else {
-            do_check_true(false);  // unexpected message 
-          }
-        }
-        else {
-          do_check_true(false);  // unexpected message type
-        }
-      } // end of handleEvent
-    };
-    worker.addEventListener("message", workerTester , false);
+add_task(function test_default_model() {
+  let worker = iServiceObject._worker;
+  // there variables are need to set up array of tests
+  let expectedInterests;
 
-    let uri = NetUtil.newURI("http://adventure.nationalgeographic.com/2009/12/best-of-adventure/geoff-tabin");
-    let title = "National Geographic Magazine - NGM.com";
+  worker.removeEventListener("message", iServiceObject, false); 
+
+  let workerTester = {
+    handleEvent: function(aEvent) {
+     if (aEvent.type == "message") {
+      let msgData = aEvent.data;
+      if (msgData.message == "InterestsForDocumentText") {
+        // make sure that categorization is correct 
+        let host = msgData.host;
+        let interests = msgData.interests;
+        let interestCount = 0;
+        for (let interest of interests) {
+         do_check_true(expectedInterests[interest] == 1);
+         interestCount ++;
+        } 
+        do_check_eq(interestCount, Object.keys(expectedInterests).length);
+        deferEnsureResults.resolve();
+      }
+      else {
+        do_check_true(false);  // unexpected message 
+      }
+     }
+     else {
+      do_check_true(false);  // unexpected message type
+     }
+    } // end of handleEvent
+  };
+
+  worker.addEventListener("message", workerTester , false);
+
+  for (let test of matchTests) {
+    dump(test.info + "\n");
+    let uri = NetUtil.newURI(test.url);
+    let title = test.title;
     let host = uri.host;
     let path = uri.path;
     let tld = Services.eTLD.getBaseDomainFromHost(host)
 
-    /*
-    let expectedInterests = {"travel": 1};
+    expectedInterests = test.expectedInterests;
     worker.postMessage({
       message: "getInterestsForDocumentText",
       host: host,
       path: path,
       title: title,
-      url: "http://adventure.nationalgeographic.com/2009/12/best-of-adventure/geoff-tabin",
+      url: test.url,
       tld: tld
     });
 
     deferEnsureResults = Promise.defer();
     yield deferEnsureResults.promise;
-    */
-    do_check_true(true);
-    run_next_test();
-  },
-
-].forEach(add_test);
-
-function run_test()
-{
-  run_next_test();
-}
+  }
+});
