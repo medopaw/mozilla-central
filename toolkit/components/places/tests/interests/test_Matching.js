@@ -21,16 +21,22 @@ function run_test() {
 // the test array 
 let matchTests = [
 {
-  info: "TEST-INFO | Match Test 1: mosizlle.org",
+  info: "TEST-INFO | Match Test 1 (Rules): mozilla.org",
   url:  "http://www.mozilla.org",
   title: "Hello World",
   expectedInterests:  {computers: 1}
 },
 {
-  info: "TEST-INFO | Match Test 2: weather gov",
+  info: "TEST-INFO | Match Test 2 (Rules): weather gov",
   url:  "http://nws.noaa.gov",
   title: "Hello World",
   expectedInterests:  {government: 1, weather: 1, science: 1}
+},
+{
+  info: "TEST-INFO | Match Test 3 (Text): polygon",
+  url:  "http://www.polygon.com/2013/3/5/4066808/thief-screenshots-leak-next-gen",
+  title: "Rumored images for new Thief game leak, reportedly in the works on next-gen platforms",
+  expectedInterests:  {"video-games": 1}
 }
 ];
  
