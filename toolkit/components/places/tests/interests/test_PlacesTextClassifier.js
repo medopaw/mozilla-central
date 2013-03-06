@@ -19,13 +19,13 @@ function run_test() {
 }
 
 // the test array 
-let matchTests = [
-{
-  info: "TextClassifier Test 1: polygon",
-  url:  "http://www.polygon.com/2013/3/5/4066808/thief-screenshots-leak-next-gen",
-  title: "Rumored images for new Thief game leak, reportedly in the works on next-gen platforms",
-  expectedInterests:  {"video-games": 1}
-}
+let defaultMatchTests = [
+  {
+    info: "DefaultTextClassifier Test 1: polygon",
+    url:  "http://www.polygon.com/2013/3/5/4066808/thief-screenshots-leak-next-gen",
+    title: "Rumored images for new Thief game leak, reportedly in the works on next-gen platforms",
+    expectedInterests:  {"video-games": 1}
+  }
 ];
 
 add_task(function test_default_model_match() {
@@ -54,7 +54,8 @@ add_task(function test_default_model_match() {
       }
       else if (msgData.message == "InterestsForDocumentRules") {
         // make sure rule-based classification did not happen
-        do_check_eq(0, msgData.interests.length());
+        do_print("interests are: " + msgData.interests);
+        do_check_eq(0, msgData.interests.length);
       }
       else if (!(msgData.message in kValidMessages)) {
           // unexpected message
@@ -69,7 +70,7 @@ add_task(function test_default_model_match() {
 
   worker.addEventListener("message", workerTester , false);
 
-  for (let test of matchTests) {
+  for (let test of defaultMatchTests) {
     do_print(test.info);
     let uri = NetUtil.newURI(test.url);
     let title = test.title;
@@ -100,44 +101,140 @@ add_task(function test_default_model_match() {
   }
 });
 
-add_task(function test_text_classification() {
-  delete iServiceObject._worker;
-  let worker = iServiceObject._worker;
-  let verifyBootstrap = {
-    handleEvent: function(aEvent) {
-      if (aEvent.type == "message") {
-        let msgData = aEvent.data;
-        if (msgData.message == "bootstrapComplete") {
-          do_check_true(true);
-          deferEnsureResults.resolve();
-        }
-      }
-      else if (!(msgData.message in kValidMessages)) {
-        do_throw("ERROR_UNEXPECTED_MSG_TYPE" + aEvent.type);
-      }
-    }
-  }
-  worker.addEventListener("message", verifyBootstrap, false); 
-
-  worker.postMessage({
-    message: "bootstrap",
-    interestsData: {},
-    interestsDataType: "",
+let riggedMatchTests = [
+  {
     interestsClassifierModel: {
       priors: [0.5, 0.5],
       likelihoods: {
+
+        foo: [0.8, 0.2],
         qux: [0.8, 0.2],
-        xyzzy: [0.2, 0.8]
+        quux: [0.8, 0.2],
+
+        bar: [0.2, 0.8],
+        baz: [0.2, 0.8],
+        xyzzy: [0.2, 0.8],
       },
       classes: {
         0: "foo",
         1: "bar",
       }
     },
-    interestsUrlStopwords: {}
-  });
-  deferEnsureResults = Promise.defer();
-  yield deferEnsureResults.promise;
+    tests: [
+      {
+        info: "RiggedTextClassifier Test 1: foo",
+        url:  "http://example.com/testing/foo/qux",
+        title: "biz baz quux",
+        expectedInterests:  {"foo": 1}
+      },
+      {
+        info: "RiggedTextClassifier Test 2: bar",
+        url:  "http://example.com/testing/bar/baz",
+        title: "qux biz xyzzy",
+        expectedInterests:  {"bar": 1}
+      },
+      {
+        info: "RiggedTextClassifier Test 3: no tokens",
+        url:  "http://example.com/testing/",
+        title: "no significant keyword",
+        expectedInterests:  {}
+      },
+      {
+        info: "RiggedTextClassifier Test 4: not enough tokens",
+        url:  "http://example.com/testing/foo/bar",
+        title: "not enough tokens",
+        expectedInterests:  {}
+      }
+    ]
+  }
+];
 
-  worker.removeEventListener("message", iServiceObject, false); 
+add_task(function test_text_classification() {
+  delete iServiceObject._worker;
+  let worker = iServiceObject._worker;
+
+  for (let modelTests of riggedMatchTests) {
+    // bootstrap with model
+    worker.removeEventListener("message", iServiceObject, false); 
+    let verifyBootstrap = {
+      handleEvent: function(aEvent) {
+        if (aEvent.type == "message") {
+          let msgData = aEvent.data;
+          if (msgData.message == "bootstrapComplete") {
+            do_check_true(true);
+            deferEnsureResults.resolve();
+          }
+        }
+        else if (!(msgData.message in kValidMessages)) {
+          do_throw("ERROR_UNEXPECTED_MSG_TYPE" + aEvent.type);
+        }
+      }
+    }
+    worker.addEventListener("message", verifyBootstrap, false); 
+    worker.postMessage({
+      message: "bootstrap",
+      interestsData: {},
+      interestsDataType: "",
+      interestsClassifierModel: modelTests.interestsClassifierModel,
+      interestsUrlStopwords: {}
+    });
+    deferEnsureResults = Promise.defer();
+    yield deferEnsureResults.promise;
+    worker.removeEventListener("message", verifyBootstrap, false); 
+
+    // test classification
+    let expectedInterests;
+
+    let workerTester = {
+      handleEvent: function(aEvent) {
+       if (aEvent.type == "message") {
+        let msgData = aEvent.data;
+        if (msgData.message == "InterestsForDocumentText") {
+          // make sure that categorization is correct 
+          let host = msgData.host;
+          let interests = msgData.interests;
+          let interestCount = 0;
+          for (let interest of interests) {
+              do_check_eq(1, expectedInterests[interest]);
+              interestCount ++;
+          } 
+          do_check_eq(interestCount, Object.keys(expectedInterests).length);
+
+          deferEnsureResults.resolve();
+        }
+        else if (!(msgData.message in kValidMessages)) {
+            // unexpected message
+            do_throw("ERROR_UNEXPECTED_MSG: " + msgData.message);
+        }
+       }
+       else {
+        do_throw("ERROR_UNEXPECTED_MSG_TYPE" + aEvent.type);
+       }
+      } // end of handleEvent
+    };
+    worker.addEventListener("message", workerTester , false);
+
+    for (let test of modelTests.tests) {
+      do_print(test.info);
+      let uri = NetUtil.newURI(test.url);
+      let title = test.title;
+      let host = uri.host;
+      let path = uri.path;
+      let tld = Services.eTLD.getBaseDomainFromHost(host)
+
+      expectedInterests = test.expectedInterests;
+
+      worker.postMessage({
+        message: "getInterestsForDocumentText",
+        host: host,
+        path: path,
+        title: title,
+        url: test.url,
+        tld: tld
+      });
+
+      deferEnsureResults = Promise.defer();
+      yield deferEnsureResults.promise;
+    }
+  }
 });
