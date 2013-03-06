@@ -21,19 +21,19 @@ function run_test() {
 // the test array 
 let matchTests = [
 {
-  info: "TEST-INFO | Match Test 1 (Rules): mozilla.org",
+  info: "Match Test 1 (Rules): mozilla.org",
   url:  "http://www.mozilla.org",
   title: "Hello World",
   expectedInterests:  {computers: 1}
 },
 {
-  info: "TEST-INFO | Match Test 2 (Rules): weather gov",
+  info: "Match Test 2 (Rules): weather gov",
   url:  "http://nws.noaa.gov",
   title: "Hello World",
   expectedInterests:  {government: 1, weather: 1, science: 1}
 },
 {
-  info: "TEST-INFO | Match Test 3 (Text): polygon",
+  info: "Match Test 3 (Text): polygon",
   url:  "http://www.polygon.com/2013/3/5/4066808/thief-screenshots-leak-next-gen",
   title: "Rumored images for new Thief game leak, reportedly in the works on next-gen platforms",
   expectedInterests:  {"video-games": 1}
@@ -41,7 +41,7 @@ let matchTests = [
 ];
  
 
-add_task(function test_matcher() {
+add_task(function test_default_matcher() {
   let worker = iServiceObject._worker;
   // there variables are need to set up array of tests
   let expectedInterests;
@@ -64,12 +64,13 @@ add_task(function test_matcher() {
         do_check_eq(interestCount, Object.keys(expectedInterests).length);
         deferEnsureResults.resolve();
       }
-      else {
-        do_check_true(false);  // unexpected message 
+      else if (!(msgData.message in kValidMessages)) {
+          // unexpected message
+          do_throw("ERROR_UNEXPECTED_MSG: " + msgData.message);
       }
      }
      else {
-      do_check_true(false);  // unexpected message type
+      do_throw("ERROR_UNEXPECTED_MSG_TYPE" + aEvent.type);
      }
     } // end of handleEvent
   };
@@ -77,7 +78,7 @@ add_task(function test_matcher() {
   worker.addEventListener("message", workerTester , false);
 
   for (let test of matchTests) {
-    dump(test.info + "\n");
+    do_print(test.info);
     let uri = NetUtil.newURI(test.url);
     let title = test.title;
     let host = uri.host;

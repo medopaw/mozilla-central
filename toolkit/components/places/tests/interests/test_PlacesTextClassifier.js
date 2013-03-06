@@ -11,8 +11,8 @@ Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
 let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-let deferEnsureResults;
 
+let deferEnsureResults;
 
 function run_test() {
   run_next_test();
@@ -21,7 +21,7 @@ function run_test() {
 // the test array 
 let matchTests = [
 {
-  info: "TEST-INFO | Text Classifier Test 1: polygon",
+  info: "TextClassifier Test 1: polygon",
   url:  "http://www.polygon.com/2013/3/5/4066808/thief-screenshots-leak-next-gen",
   title: "Rumored images for new Thief game leak, reportedly in the works on next-gen platforms",
   expectedInterests:  {"video-games": 1}
@@ -29,6 +29,7 @@ let matchTests = [
 ];
 
 add_task(function test_default_model_match() {
+  //delete iServiceObject._worker;
   let worker = iServiceObject._worker;
   // there variables are need to set up array of tests
   let expectedInterests;
@@ -55,12 +56,13 @@ add_task(function test_default_model_match() {
         // make sure rule-based classification did not happen
         do_check_eq(0, msgData.interests.length());
       }
-      else {
-        do_check_true(false);  // unexpected message 
+      else if (!(msgData.message in kValidMessages)) {
+          // unexpected message
+          do_throw("ERROR_UNEXPECTED_MSG: " + msgData.message);
       }
      }
      else {
-      do_check_true(false);  // unexpected message type
+      do_throw("ERROR_UNEXPECTED_MSG_TYPE" + aEvent.type);
      }
     } // end of handleEvent
   };
@@ -68,7 +70,7 @@ add_task(function test_default_model_match() {
   worker.addEventListener("message", workerTester , false);
 
   for (let test of matchTests) {
-    dump(test.info + "\n");
+    do_print(test.info);
     let uri = NetUtil.newURI(test.url);
     let title = test.title;
     let host = uri.host;
@@ -96,4 +98,46 @@ add_task(function test_default_model_match() {
     deferEnsureResults = Promise.defer();
     yield deferEnsureResults.promise;
   }
+});
+
+add_task(function test_text_classification() {
+  delete iServiceObject._worker;
+  let worker = iServiceObject._worker;
+  let verifyBootstrap = {
+    handleEvent: function(aEvent) {
+      if (aEvent.type == "message") {
+        let msgData = aEvent.data;
+        if (msgData.message == "bootstrapComplete") {
+          do_check_true(true);
+          deferEnsureResults.resolve();
+        }
+      }
+      else if (!(msgData.message in kValidMessages)) {
+        do_throw("ERROR_UNEXPECTED_MSG_TYPE" + aEvent.type);
+      }
+    }
+  }
+  worker.addEventListener("message", verifyBootstrap, false); 
+
+  worker.postMessage({
+    message: "bootstrap",
+    interestsData: {},
+    interestsDataType: "",
+    interestsClassifierModel: {
+      priors: [0.5, 0.5],
+      likelihoods: {
+        qux: [0.8, 0.2],
+        xyzzy: [0.2, 0.8]
+      },
+      classes: {
+        0: "foo",
+        1: "bar",
+      }
+    },
+    interestsUrlStopwords: {}
+  });
+  deferEnsureResults = Promise.defer();
+  yield deferEnsureResults.promise;
+
+  worker.removeEventListener("message", iServiceObject, false); 
 });
