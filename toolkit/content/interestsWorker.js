@@ -18,12 +18,28 @@ let gClassifier = null;
 let gInterestsData = null;
 
 // bootstrap the worker with data and models
-function bootstrap({interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}) {
-  gTokenizer = new PlaceTokenizer(interestsUrlStopwords);
-  gClassifier = new NaiveBayesClassifier(interestsClassifierModel);
+function bootstrap(aMessageData) {
+  //expects : {interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}
+  gTokenizer = new PlaceTokenizer(aMessageData.interestsUrlStopwords);
+  gClassifier = new NaiveBayesClassifier(aMessageData.interestsClassifierModel);
 
+  swapRules(aMessageData, true);
+
+  self.postMessage({
+    message: "bootstrapComplete"
+  });
+}
+
+// swap out rules
+function swapRules({interestsData, interestsDataType}, noPostMessage) {
   if (interestsDataType == "dfr") {
     gInterestsData = interestsData;
+  }
+
+  if(!noPostMessage) {
+    self.postMessage({
+      message: "swapRulesComplete"
+    });
   }
 }
 
