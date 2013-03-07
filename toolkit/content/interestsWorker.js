@@ -18,12 +18,28 @@ let gClassifier = null;
 let gInterestsData = null;
 
 // bootstrap the worker with data and models
-function bootstrap({interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}) {
-  gTokenizer = new PlaceTokenizer(interestsUrlStopwords);
-  gClassifier = new NaiveBayesClassifier(interestsClassifierModel);
+function bootstrap(aMessageData) {
+  //expects : {interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}
+  gTokenizer = new PlaceTokenizer(aMessageData.interestsUrlStopwords);
+  gClassifier = new NaiveBayesClassifier(aMessageData.interestsClassifierModel);
 
+  swapRules(aMessageData, true);
+
+  self.postMessage({
+    message: "bootstrapComplete"
+  });
+}
+
+// swap out rules
+function swapRules({interestsData, interestsDataType}, noPostMessage) {
   if (interestsDataType == "dfr") {
     gInterestsData = interestsData;
+  }
+
+  if(!noPostMessage) {
+    self.postMessage({
+      message: "swapRulesComplete"
+    });
   }
 }
 
@@ -127,6 +143,19 @@ function getInterestsForDocumentText(aMessageData) {
     host: aMessageData.host,
     interests: interests,
     message: "InterestsForDocumentText",
+    url: aMessageData.url
+  });
+}
+
+// Classify document via rules only
+function getInterestsForDocumentRules(aMessageData) {
+  let interests = ruleClassify(aMessageData);
+
+  // Respond with the interests for the document
+  self.postMessage({
+    host: aMessageData.host,
+    interests: interests,
+    message: "InterestsForDocumentRules",
     url: aMessageData.url
   });
 }

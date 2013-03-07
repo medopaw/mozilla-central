@@ -13,6 +13,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesUtils.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+let consoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 
 let gInterestsService = null;
 
@@ -50,7 +51,8 @@ Interests.prototype = {
     if (!("__worker " in this)) {
       // Use a ChromeWorker to workaround Bug 487070.
       this.__worker = new ChromeWorker("chrome://global/content/interestsWorker.js");
-
+      this.__worker.addEventListener("message", this, false);
+      this.__worker.addEventListener("error", this, false);
 
       let scriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
       let data = scriptLoader.loadSubScript("chrome://global/content/interestsData.js");
@@ -65,8 +67,6 @@ Interests.prototype = {
         interestsUrlStopwords: interestsUrlStopwords
       });
 
-      this.__worker.addEventListener("message", this, false);
-      this.__worker.addEventListener("error", this, false);
     }
     return this.__worker;
   },
@@ -94,19 +94,19 @@ Interests.prototype = {
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests) {
     let allPromises = [];
-    Cu.reportError("adding interests for host");
-    Cu.reportError("host: " + aHost);
-    Cu.reportError(typeof(aInterests));
-    Cu.reportError("interests: " + aInterests);
+    consoleService.logStringMessage("adding interests for host");
+    consoleService.logStringMessage("host: " + aHost);
+    consoleService.logStringMessage(typeof(aInterests));
+    consoleService.logStringMessage("interests: " + aInterests);
     for (let interest of aInterests) {
-      Cu.reportError("interest: " + typeof(interest) + " " + interest);
-      Cu.reportError("host: " + typeof(aHost) + "  " + aHost);
+      consoleService.logStringMessage("interest: " + typeof(interest) + " " + interest);
+      consoleService.logStringMessage("host: " + typeof(aHost) + "  " + aHost);
 
       // TODO - this is a hack - we do not need to keep inserting into interests table
       allPromises.push(PlacesInterestsStorage.addInterest(interest));
       allPromises.push(PlacesInterestsStorage.addInterestVisit(interest));
       allPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
-      Cu.reportError("added " + interest);
+      consoleService.logStringMessage("added " + interest);
     }
     return Promise.promised(Array)(allPromises);
   },
@@ -146,7 +146,7 @@ Interests.prototype = {
     if (eventType == "DOMContentLoaded") {
       let doc = aEvent.target;
       if (doc instanceof Ci.nsIDOMHTMLDocument && doc.defaultView == doc.defaultView.top)
-        Cu.reportError("hnalding the doc");
+        consoleService.logStringMessage("handling the doc");
         this._handleNewDocument(doc);
     }
     else if (eventType == "message") {
@@ -156,6 +156,8 @@ Interests.prototype = {
     }
     else if (eventType == "error") {
       //TODO:handle error
+      let msgData = aEvent.data;
+      Cu.reportError(msgData.message);
     }
   },
 

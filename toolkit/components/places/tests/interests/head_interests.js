@@ -17,3 +17,11 @@ let (commonFile = do_get_file("../head_common.js", false)) {
 }
 
 // Put any other stuff relative to this test folder below.
+
+const kValidMessages = {
+  "bootstrapComplete": true,
+  "swapRulesComplete": true,
+  "InterestsForDocumentRules": true,
+  "InterestsForDocumentText": true,
+  "InterestsForDocument": true
+}
