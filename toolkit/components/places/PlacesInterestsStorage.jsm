@@ -14,11 +14,11 @@ Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils","resource://gre/modules/PlacesUtils.jsm");
 
-const DataMiliSeconds = 86400000;
+const MS_PER_DAY = 86400000;
 
 
-function AsyncPromiseHandler(deffered,rowCallback) {
-  this.deffered = deffered;
+function AsyncPromiseHandler(deferred,rowCallback) {
+  this.deferred = deferred;
   this.rowCallback = rowCallback;
   this.resultSet = undefined;
 };
@@ -29,7 +29,7 @@ AsyncPromiseHandler.prototype = {
     this.resultSet.push(value);
   },
   handleError: function (error) {
-    this.deffered.reject(error);
+    this.deferred.reject(error);
   },
   handleResult: function (result) {
     if (this.rowCallback) {
@@ -42,16 +42,16 @@ AsyncPromiseHandler.prototype = {
   handleCompletion: function (reason) {
     switch (reason) {
       case Ci.mozIStorageStatementCallback.REASON_FINISHED:
-        this.deffered.resolve(this.resultSet);
+        this.deferred.resolve(this.resultSet);
         break;
       case Ci.mozIStorageStatementCallback.REASON_CANCELLED:
-        this.deffered.reject(new Error("statement cancelled"));
+        this.deferred.reject(new Error("statement cancelled"));
         break;
       case Ci.mozIStorageStatementCallback.REASON_ERROR:
-        this.deffered.reject(new Error("execution errors"));
+        this.deferred.reject(new Error("execution errors"));
         break;
       default:
-        this.deffered.reject(new Error("unknown completion reason"));
+        this.deferred.reject(new Error("unknown completion reason"));
     }
   }
 };
@@ -63,21 +63,21 @@ let PlacesInterestsStorage = {
     // We can also use julianday('now') from sqllite directly
     let time = Date.now();
     // return start of today + 1 millisecond
-    return (time - time % DataMiliSeconds);
+    return (time - time % MS_PER_DAY);
   },
 
   addInterest: function (aInterest) {
-    let returnDeffered = Promise.defer();
+    let returnDeferred = Promise.defer();
     let stmt = this.db.createAsyncStatement("INSERT OR IGNORE INTO moz_up_interests (interest) VALUES(:interest)");
     stmt.params.interest = aInterest;
-    stmt.executeAsync(new AsyncPromiseHandler(returnDeffered));
+    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
-    return returnDeffered.promise;
+    return returnDeferred.promise;
   },
 
   addInterestVisit: function (aInterest) {
-    let returnDeffered = Promise.defer();
-    let insertDeffered = Promise.defer();
+    let returnDeferred = Promise.defer();
+    let insertDeferred = Promise.defer();
     let currentTs = this.getTodayTimeStamp();
     // TODO this code could be redone with replace or insert
     // make sure that interest,dateAdded record exists in the table
@@ -88,7 +88,7 @@ let PlacesInterestsStorage = {
     stmt.params.dateAdded = currentTs;
     stmt.executeAsync({
       handleResult: function (result) {},
-      handleCompletion: function (reason) {insertDeffered.resolve();},
+      handleCompletion: function (reason) {insertDeferred.resolve();},
       handleError: function (error) {}
     });
     stmt.finalize();
@@ -96,22 +96,22 @@ let PlacesInterestsStorage = {
     // now add 1 to that record
     // TODO we may avoid subselect by storing interest_id in local variable
     // let interest_id = (SELECT id FROM moz_up_interests WHERE interest = :interest)
-    insertDeffered.promise.then(function () {
+    insertDeferred.promise.then(function () {
       stmt = this.db.createAsyncStatement(
         "UPDATE moz_up_interests_visits " +
         "SET visit_count = visit_count + 1 " +
         "WHERE interest_id = (SELECT id FROM moz_up_interests WHERE interest = :interest) AND date_added = :dateAdded");
       stmt.params.interest = aInterest;
       stmt.params.dateAdded = currentTs;
-      stmt.executeAsync(new AsyncPromiseHandler(returnDeffered));
+      stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
       stmt.finalize();
     }.bind(this));
 
-    return returnDeffered.promise;
+    return returnDeferred.promise;
   },
 
   addInterestForHost: function (aInterest, aHost) {
-    let returnDeffered = Promise.defer();
+    let returnDeferred = Promise.defer();
     Cu.reportError(typeof(aInterest));
     Cu.reportError("aInterest: " + aInterest);
     Cu.reportError("aHost: " + aHost);
@@ -124,14 +124,14 @@ let PlacesInterestsStorage = {
     stmt.params.host = aHost;
     stmt.params.interest = aInterest;
     stmt.params.dateAdded = currentTs;
-    stmt.executeAsync(new AsyncPromiseHandler(returnDeffered));
+    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
-    return returnDeffered.promise;
+    return returnDeferred.promise;
   },
 
   getInterestsForHost: function(aHost,handleDataCallBack) {
-    let returnDeffered = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeffered,function(row) {
+    let returnDeferred = Promise.defer();
+    let promiseHandler = new AsyncPromiseHandler(returnDeferred,function(row) {
       let interest = row.getResultByName("interest");
       if (handleDataCallBack) handleDataCallBack(interest);
       else                    promiseHandler.addToResultSet(interest);
@@ -143,12 +143,12 @@ let PlacesInterestsStorage = {
     stmt.params.host = aHost;
     stmt.executeAsync(promiseHandler);
     stmt.finalize();
-    return returnDeffered.promise;
+    return returnDeferred.promise;
   },
 
   getHostsForInterest: function (aInterest,handleDataCallBack) {
-    let returnDeffered = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeffered,function(row) {
+    let returnDeferred = Promise.defer();
+    let promiseHandler = new AsyncPromiseHandler(returnDeferred,function(row) {
       let host = row.getResultByName("host");
       if (handleDataCallBack) handleDataCallBack(host);
       else                    promiseHandler.addToResultSet(host);
@@ -159,17 +159,17 @@ let PlacesInterestsStorage = {
     stmt.params.interest = aInterest;
     stmt.executeAsync(promiseHandler);
     stmt.finalize();
-    return returnDeffered.promise;
+    return returnDeferred.promise;
   },
 
   getBucketsForInterest: function (aInterest,handleDataCallBack) {
     let currentTs = this.getTodayTimeStamp();
-    let firstBucketEndTime = currentTs - 30*DataMiliSeconds;
-    let secondBucketEndTime = currentTs - 60*DataMiliSeconds;
-    let lastBucketEndTime = currentTs - 90*DataMiliSeconds;
+    let firstBucketEndTime = currentTs - 30*MS_PER_DAY;
+    let secondBucketEndTime = currentTs - 60*MS_PER_DAY;
+    let lastBucketEndTime = currentTs - 90*MS_PER_DAY;
 
-    let returnDeffered = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeffered,function(row) {
+    let returnDeferred = Promise.defer();
+    let promiseHandler = new AsyncPromiseHandler(returnDeferred,function(row) {
       let value = {
         interest: aInterest,
         endTime: row.getResultByName("endTime"),
@@ -192,7 +192,7 @@ let PlacesInterestsStorage = {
     stmt.params.lastBucketEndTime = lastBucketEndTime;
     stmt.executeAsync(promiseHandler);
     stmt.finalize();
-    return returnDeffered.promise;
+    return returnDeferred.promise;
   }
 
 }
