@@ -1,5 +1,7 @@
-// Sucky hacked-up synchronous storage for Places interests.
-// THIS SHOULD BE ASYNCHRONOUS!
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 this.EXPORTED_SYMBOLS = [
   "PlacesInterestsStorage"
@@ -12,12 +14,12 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils","resource://gre/modules/PlacesUtils.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
 
 const MS_PER_DAY = 86400000;
 
 
-function AsyncPromiseHandler(deferred,rowCallback) {
+function AsyncPromiseHandler(deferred, rowCallback) {
   this.deferred = deferred;
   this.rowCallback = rowCallback;
   this.resultSet = undefined;
@@ -25,7 +27,9 @@ function AsyncPromiseHandler(deferred,rowCallback) {
 
 AsyncPromiseHandler.prototype = {
   addToResultSet: function(value) {
-    if (!this.resultSet) this.resultSet = [];
+    if (!this.resultSet) {
+      this.resultSet = [];
+    }
     this.resultSet.push(value);
   },
   handleError: function (error) {
@@ -44,31 +48,35 @@ AsyncPromiseHandler.prototype = {
       case Ci.mozIStorageStatementCallback.REASON_FINISHED:
         this.deferred.resolve(this.resultSet);
         break;
+
       case Ci.mozIStorageStatementCallback.REASON_CANCELLED:
         this.deferred.reject(new Error("statement cancelled"));
         break;
+
       case Ci.mozIStorageStatementCallback.REASON_ERROR:
         this.deferred.reject(new Error("execution errors"));
         break;
+
       default:
         this.deferred.reject(new Error("unknown completion reason"));
+        break;
     }
   }
 };
 
 let PlacesInterestsStorage = {
-
   getTodayTimeStamp: function() {
     // TODO: This function could be optimized by caching current day timestamp
     // We can also use julianday('now') from sqllite directly
     let time = Date.now();
     // return start of today + 1 millisecond
-    return (time - time % MS_PER_DAY);
+    return time - time % MS_PER_DAY;
   },
 
   addInterest: function (aInterest) {
     let returnDeferred = Promise.defer();
-    let stmt = this.db.createAsyncStatement("INSERT OR IGNORE INTO moz_up_interests (interest) VALUES(:interest)");
+    let stmt = this.db.createAsyncStatement(
+      "INSERT OR IGNORE INTO moz_up_interests (interest) VALUES(:interest)");
     stmt.params.interest = aInterest;
     stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
@@ -79,16 +87,18 @@ let PlacesInterestsStorage = {
     let returnDeferred = Promise.defer();
     let insertDeferred = Promise.defer();
     let currentTs = this.getTodayTimeStamp();
-    // TODO this code could be redone with replace or insert
-    // make sure that interest,dateAdded record exists in the table
+    // TODO this code could be redone with replace or insert make sure that
+    // interest, dateAdded record exists in the table
     let stmt = this.db.createAsyncStatement(
-      "INSERT OR IGNORE INTO moz_up_interests_visits (interest_id,date_added) " +
+      "INSERT OR IGNORE INTO moz_up_interests_visits (interest_id, date_added) " +
       "VALUES((SELECT id FROM moz_up_interests WHERE interest = :interest), :dateAdded)");
     stmt.params.interest = aInterest;
     stmt.params.dateAdded = currentTs;
     stmt.executeAsync({
       handleResult: function (result) {},
-      handleCompletion: function (reason) {insertDeferred.resolve();},
+      handleCompletion: function (reason) {
+        insertDeferred.resolve();
+      },
       handleError: function (error) {}
     });
     stmt.finalize();
@@ -117,7 +127,7 @@ let PlacesInterestsStorage = {
     Cu.reportError("aHost: " + aHost);
     let currentTs = this.getTodayTimeStamp();
     let stmt = this.db.createAsyncStatement(
-      "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id,host_id,date_added) " +
+      "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id, date_added) " +
       "VALUES((SELECT id FROM moz_up_interests WHERE interest =:interest) " +
       ", (SELECT id FROM moz_hosts WHERE host = :host) " +
       ", :dateAdded)");
@@ -129,15 +139,19 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  getInterestsForHost: function(aHost,handleDataCallBack) {
+  getInterestsForHost: function(aHost, handleDataCallBack) {
     let returnDeferred = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeferred,function(row) {
+    let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
       let interest = row.getResultByName("interest");
-      if (handleDataCallBack) handleDataCallBack(interest);
-      else                    promiseHandler.addToResultSet(interest);
+      if (handleDataCallBack) {
+        handleDataCallBack(interest);
+      }
+      else {
+        promiseHandler.addToResultSet(interest);
+      }
     });
 
-  	let stmt = this.db.createAsyncStatement(
+    let stmt = this.db.createAsyncStatement(
       "SELECT interest FROM moz_up_interests i, moz_up_interests_hosts ih, moz_hosts h " +
       "WHERE h.host = :host AND h.id = ih.host_id AND i.id = ih.interest_id");
     stmt.params.host = aHost;
@@ -146,14 +160,19 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  getHostsForInterest: function (aInterest,handleDataCallBack) {
+  getHostsForInterest: function (aInterest, handleDataCallBack) {
     let returnDeferred = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeferred,function(row) {
+    let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
       let host = row.getResultByName("host");
-      if (handleDataCallBack) handleDataCallBack(host);
-      else                    promiseHandler.addToResultSet(host);
+      if (handleDataCallBack) {
+        handleDataCallBack(host);
+      }
+      else {
+        promiseHandler.addToResultSet(host);
+      }
     });
-  	let stmt = this.db.createStatement(
+
+    let stmt = this.db.createStatement(
       "SELECT h.host AS host FROM moz_hosts h , moz_up_interests i, moz_up_interests_hosts ih " +
       "WHERE i.interest = :interest AND h.id = ih.host_id AND i.id = ih.interest_id");
     stmt.params.interest = aInterest;
@@ -162,24 +181,28 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  getBucketsForInterest: function (aInterest,handleDataCallBack) {
+  getBucketsForInterest: function (aInterest, handleDataCallBack) {
     let currentTs = this.getTodayTimeStamp();
     let firstBucketEndTime = currentTs - 30*MS_PER_DAY;
     let secondBucketEndTime = currentTs - 60*MS_PER_DAY;
     let lastBucketEndTime = currentTs - 90*MS_PER_DAY;
 
     let returnDeferred = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeferred,function(row) {
+    let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
       let value = {
         interest: aInterest,
         endTime: row.getResultByName("endTime"),
         visitCount: row.getResultByName("visitCount")
       };
-      if (handleDataCallBack) handleDataCallBack(value);
-      else                    promiseHandler.addToResultSet(value);
+      if (handleDataCallBack) {
+        handleDataCallBack(value);
+      }
+      else {
+        promiseHandler.addToResultSet(value);
+      }
     });
 
-  	let stmt = this.db.createAsyncStatement(
+    let stmt = this.db.createAsyncStatement(
       "SELECT CASE WHEN date_added >= :firstBucketEndTime THEN :firstBucketEndTime " +
       "            WHEN date_added >= :secondBucketEndTime THEN :secondBucketEndTime " +
       "            ELSE :lastBucketEndTime END as endTime , SUM(visit_count) as visitCount " +
@@ -194,7 +217,6 @@ let PlacesInterestsStorage = {
     stmt.finalize();
     return returnDeferred.promise;
   }
-
 }
 
 XPCOMUtils.defineLazyGetter(PlacesInterestsStorage, "db", function() {

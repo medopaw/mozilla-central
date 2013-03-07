@@ -27,7 +27,8 @@ function prefObserver(subject, topic, data) {
   if (enable && !gServiceEnabled) {
     this._worker;
     gServiceEnabled = true;
-  } else if (!enable && gServiceEnabled) {
+  }
+  else if (!enable && gServiceEnabled) {
     delete this.__worker;
     gServiceEnabled = false;
   }
@@ -41,7 +42,6 @@ Services.obs.addObserver(function xpcomShutdown() {
 
 function Interests() {
   gInterestsService = this;
-  this.wrappedJSObject = this;
 }
 
 Interests.prototype = {
@@ -53,7 +53,7 @@ Interests.prototype = {
   , Ci.nsIDOMEventListener
   ]),
 
-//  get wrappedJSObject() this,
+  get wrappedJSObject() this,
 
   observe: function I_observe(aSubject, aTopic, aData) {
     if (aTopic == "app-startup") {
@@ -76,7 +76,8 @@ Interests.prototype = {
       this.__worker.addEventListener("message", this, false);
       this.__worker.addEventListener("error", this, false);
 
-      let scriptLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader);
+      let scriptLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"].
+        getService(Ci.mozIJSSubScriptLoader);
       let data = scriptLoader.loadSubScript("chrome://global/content/interestsData.js");
       let model = scriptLoader.loadSubScript("chrome://global/content/interestsClassifierModel.js");
       let stopwords = scriptLoader.loadSubScript("chrome://global/content/interestsUrlStopwords.js");
@@ -88,7 +89,6 @@ Interests.prototype = {
         interestsClassifierModel: interestsClassifierModel,
         interestsUrlStopwords: interestsUrlStopwords
       });
-
     }
     return this.__worker;
   },
@@ -112,7 +112,9 @@ Interests.prototype = {
     this._worker.postMessage(callObject);
   },
 
-  _getPlacesHostForURI: function(aURI) aURI.host.replace(/^www\./, ""),
+  _getPlacesHostForURI: function(aURI) {
+    return aURI.host.replace(/^www\./, "");
+  },
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests) {
     let allPromises = [];
@@ -144,14 +146,14 @@ Interests.prototype = {
     for (let interest of aInterests) {
       promiseArray.push(PlacesInterestsStorage.getBucketsForInterest(interest))
     }
+
     let group = Promise.promised(Array);
     let groupPromise = group(promiseArray).then(function(allInterestsBuckets) {
       allInterestsBuckets.forEach(function(interestBuckets) {
         rv[interestBuckets[0]["interest"]] = interestBuckets;
       });
       deferred.resolve(rv);
-    },
-    function(error) {
+    }, function(error) {
       deferred.reject(error);
     });
     return deferred.promise;
@@ -166,7 +168,7 @@ Interests.prototype = {
   handleEvent: function I_handleEvent(aEvent) {
     let eventType = aEvent.type;
     if (eventType == "DOMContentLoaded") {
-      if(gServiceEnabled) {
+      if (gServiceEnabled) {
         let doc = aEvent.target;
         if (doc instanceof Ci.nsIDOMHTMLDocument && doc.defaultView == doc.defaultView.top) {
           consoleService.logStringMessage("handling the doc");
@@ -176,8 +178,9 @@ Interests.prototype = {
     }
     else if (eventType == "message") {
       let msgData = aEvent.data;
-      if (msgData.message == "InterestsForDocument")
+      if (msgData.message == "InterestsForDocument") {
         this._handleInterestsResults(msgData);
+      }
     }
     else if (eventType == "error") {
       //TODO:handle error
@@ -186,10 +189,9 @@ Interests.prototype = {
   },
 
   onDeleteURI: function(aURI, aGUID, aReason) {
-    // TODO - we need to implement URI deletion
-    // probably, by classifiing that URI again 
-    // and removing it from the tables - 
-    // potentially a call tp PlacesInterestsStorage
+    // TODO - we need to implement URI deletion probably, by classifiing that
+    // URI again and removing it from the tables - potentially a call tp
+    // PlacesInterestsStorage
     /*
     console.log(JSON.stringify(aURI));
     let host = this._getPlacesHostForURI(aURI);
@@ -201,8 +203,7 @@ Interests.prototype = {
   },
 
   onDeleteVisits: function(aURI) {
-    // TODO - same thing as abive
-    // figure what to do if a visit is deleted
+    // TODO - same thing as above figure what to do if a visit is deleted
     /*
     let host = this._getPlacesHostForURI(aURI);
     let hostInterests = this._getInterestsForHost(host);
@@ -222,7 +223,7 @@ Interests.prototype = {
   onPageChanged: function() {}
 };
 
-function InterestsWebAPI() { }
+function InterestsWebAPI() {}
 
 InterestsWebAPI.prototype = {
   classID: Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
@@ -248,13 +249,17 @@ InterestsWebAPI.prototype = {
       results["__exposedProps__"] = {};
       // decorate results before sending it back to the caller
       Object.keys(results).forEach(function(interest) {
-        if (interest == "__exposedProps__") return;
+        if (interest == "__exposedProps__") {
+          return;
+        }
+
         results["__exposedProps__"][interest] = "r";
         results[interest].forEach(function(bucket) {
           bucket["__exposedProps__"] = { "endTime": "r", "visitCount": "r" };
           bucket["endTime"] = new Date(results[interest]["endTime"] / 1000);
         });
       });
+
       aCallback(results);
     });
   }
