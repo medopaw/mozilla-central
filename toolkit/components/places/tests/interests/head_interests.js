@@ -25,3 +25,4 @@ const kValidMessages = {
   "InterestsForDocumentText": true,
   "InterestsForDocument": true
 }
+Services.prefs.setBoolPref("interests.enabled", true);

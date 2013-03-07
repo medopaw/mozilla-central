@@ -4,6 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+"use strict";
+
 const kNotWordPattern = /[^a-z0-9 ]+/g;
 const kMinimumMatchTokens = 3;
 
@@ -13,13 +15,13 @@ function PlaceTokenizer(aUrlStopwordSet) {
 
 PlaceTokenizer.prototype = {
   tokenize: function(aUrl, aTitle) {
-    aUrl = aUrl.toLowerCase().replace(kNotWordPattern, " ");
-    aTitle = aTitle.toLowerCase().replace(kNotWordPattern, " ");
+    let aUrl = aUrl.toLowerCase().replace(kNotWordPattern, " ");
+    let aTitle = aTitle.toLowerCase().replace(kNotWordPattern, " ");
 
-    tokens = [];
+    let tokens = [];
 
-    urlTokens = aUrl.split(/\s+/);
-    urlTokens.forEach(function(token){
+    let urlTokens = aUrl.split(/\s+/);
+    urlTokens.forEach(function(token) {
       if (!(this._urlStopwordSet.hasOwnProperty(token))) {
         tokens.push(token);
       }
@@ -39,7 +41,7 @@ function NaiveBayesClassifier(aModel) {
 
 NaiveBayesClassifier.prototype = {
   classify: function(aTokens) {
-    if (!(aTokens instanceof Array)) {
+    if (!Array.isArray(aTokens)) {
       throw new TypeError("invalid input data");
     }
 
@@ -62,7 +64,7 @@ NaiveBayesClassifier.prototype = {
     }, this); 
 
     if (tokenMatchCount > kMinimumMatchTokens) {
-      max_index = posteriors.indexOf(Math.max.apply(Math, posteriors));
+      let max_index = posteriors.indexOf(Math.max.apply(Math, posteriors));
       return this._classes[max_index];
     }
     return null;

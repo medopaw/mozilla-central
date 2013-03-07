@@ -3,6 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+"use strict";
+
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cr = Components.results;
@@ -12,9 +14,29 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesUtils.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
-let consoleService = Components.classes["@mozilla.org/consoleservice;1"].getService(Components.interfaces.nsIConsoleService);
 
+let consoleService = Services.console;
+
+let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
+
+// Add a pref observer for the enabled state
+function prefObserver(subject, topic, data) {
+  let enable = Services.prefs.getBoolPref("interests.enabled");
+  if (enable && !gServiceEnabled) {
+    this._worker;
+    gServiceEnabled = true;
+  } else if (!enable && gServiceEnabled) {
+    delete this.__worker;
+    gServiceEnabled = false;
+  }
+}
+
+Services.prefs.addObserver("interests.enabled", prefObserver, false);
+Services.obs.addObserver(function xpcomShutdown() {
+  Services.obs.removeObserver(xpcomShutdown, "xpcom-shutdown");
+  Services.prefs.removeObserver("interests.enabled", prefObserver);
+}, "xpcom-shutdown", false);
 
 function Interests() {
   gInterestsService = this;
@@ -47,7 +69,7 @@ Interests.prototype = {
   },
 
   get _worker() {
-    if (!("__worker " in this)) {
+    if (gServiceEnabled && !("__worker " in this)) {
       // Use a ChromeWorker to workaround Bug 487070.
       this.__worker = new ChromeWorker("chrome://global/content/interestsWorker.js");
       this.__worker.addEventListener("message", this, false);
@@ -125,10 +147,13 @@ Interests.prototype = {
   handleEvent: function I_handleEvent(aEvent) {
     let eventType = aEvent.type;
     if (eventType == "DOMContentLoaded") {
-      let doc = aEvent.target;
-      if (doc instanceof Ci.nsIDOMHTMLDocument && doc.defaultView == doc.defaultView.top)
-        consoleService.logStringMessage("handling the doc");
-        this._handleNewDocument(doc);
+      if(gServiceEnabled) {
+        let doc = aEvent.target;
+        if (doc instanceof Ci.nsIDOMHTMLDocument && doc.defaultView == doc.defaultView.top) {
+          consoleService.logStringMessage("handling the doc");
+          this._handleNewDocument(doc);
+        }
+      }
     }
     else if (eventType == "message") {
       let msgData = aEvent.data;
@@ -137,8 +162,7 @@ Interests.prototype = {
     }
     else if (eventType == "error") {
       //TODO:handle error
-      let msgData = aEvent.data;
-      Cu.reportError(msgData.message);
+      Cu.reportError(aEvent.message);
     }
   },
 

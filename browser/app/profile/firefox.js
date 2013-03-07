@@ -1207,3 +1207,5 @@ pref("social.sidebar.unload_timeout_ms", 10000);
 pref("social.toast-notifications.enabled", true);
 
 pref("dom.identity.enabled", false);
+
+pref("interests.enabled", false);

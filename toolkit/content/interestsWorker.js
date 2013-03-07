@@ -2,9 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+"use strict";
+
 try{
   importScripts("interestsTextClassifier.js");
-}catch(ex){dump("failed: " + ex);}
+}catch(ex){dump("ERROR file:" + ex.fileName + " line:" + ex.lineNumber + " message:" + ex.message);}
 
 function InterestsWorkerError(message) {
     this.name = "InterestsWorkerError";
@@ -16,6 +18,7 @@ InterestsWorkerError.prototype.constructor = InterestsWorkerError;
 let gTokenizer = null;
 let gClassifier = null;
 let gInterestsData = null;
+const kSplitter = /[^-\w\xco-\u017f\u0380-\u03ff\u0400-\u04ff]+/;
 
 // bootstrap the worker with data and models
 function bootstrap(aMessageData) {
@@ -37,6 +40,7 @@ function swapRules({interestsData, interestsDataType}, noPostMessage) {
   }
 
   if(!noPostMessage) {
+    // only post message if value is true, i.e. it was intentionally passed
     self.postMessage({
       message: "swapRulesComplete"
     });
@@ -66,18 +70,17 @@ function ruleClassify({host, language, tld, metaData, path, title, url}) {
     // process keywords
     if (hostKeys || tldKeys) {
       // Split on non-dash, alphanumeric, latin-small, greek, cyrillic
-      const splitter = /[^-\w\xco-\u017f\u0380-\u03ff\u0400-\u04ff]+/;
-      let words = (url + " " + title).toLowerCase().split(splitter);
+      let words = (url + " " + title).toLowerCase().split(kSplitter);
 
-      function matchedAllTokens(tokens) {
+      let matchedAllTokens = function(tokens) {
         return tokens.every(function(word) {
           return words.indexOf(word) != -1;
         });
       }
 
-      function processDFRKeys(hostObject) {
+      let processDFRKeys = function(hostObject) {
         Object.keys(hostObject).forEach(function(key) {
-          if (key != "__HOST" && matchedAllTokens(key.split(splitter))) {
+          if (key != "__HOST" && matchedAllTokens(key.split(kSplitter))) {
             interests = interests.concat(hostObject[key]);
           }
         });

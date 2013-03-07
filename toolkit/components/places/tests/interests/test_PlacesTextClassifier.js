@@ -4,6 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+"use strict";
+
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
@@ -29,7 +31,7 @@ let defaultMatchTests = [
 ];
 
 add_task(function test_default_model_match() {
-  //delete iServiceObject._worker;
+  delete iServiceObject.__worker;
   let worker = iServiceObject._worker;
   // there variables are need to set up array of tests
   let expectedInterests;
@@ -134,13 +136,20 @@ let riggedMatchTests = [
         expectedInterests:  {"bar": 1}
       },
       {
-        info: "RiggedTextClassifier Test 3: no tokens",
+        info: "RiggedTextClassifier Test 3: both equally likely",
+        url:  "http://example.com/testing/foo/qux",
+        title: "bar baz",
+        // will pick foo because foo is first in index
+        expectedInterests:  {"foo": 1}
+      },
+      {
+        info: "RiggedTextClassifier Test 4: no tokens",
         url:  "http://example.com/testing/",
         title: "no significant keyword",
         expectedInterests:  {}
       },
       {
-        info: "RiggedTextClassifier Test 4: not enough tokens",
+        info: "RiggedTextClassifier Test 5: not enough tokens",
         url:  "http://example.com/testing/foo/bar",
         title: "not enough tokens",
         expectedInterests:  {}
@@ -150,7 +159,7 @@ let riggedMatchTests = [
 ];
 
 add_task(function test_text_classification() {
-  delete iServiceObject._worker;
+  delete iServiceObject.__worker;
   let worker = iServiceObject._worker;
 
   for (let modelTests of riggedMatchTests) {
