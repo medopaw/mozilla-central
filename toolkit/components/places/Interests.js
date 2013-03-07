@@ -13,6 +13,7 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesUtils.jsm");
+Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
 let consoleService = Services.console;
@@ -114,6 +115,7 @@ Interests.prototype = {
   _getPlacesHostForURI: function(aURI) aURI.host.replace(/^www\./, ""),
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests) {
+    let allPromises = [];
     consoleService.logStringMessage("adding interests for host");
     consoleService.logStringMessage("host: " + aHost);
     consoleService.logStringMessage(typeof(aInterests));
@@ -123,19 +125,36 @@ Interests.prototype = {
       consoleService.logStringMessage("host: " + typeof(aHost) + "  " + aHost);
 
       // TODO - this is a hack - we do not need to keep inserting into interests table
-      PlacesInterestsStorage.addInterest(interest);
-      PlacesInterestsStorage.addInterestVisit(interest);
-      PlacesInterestsStorage.addInterestForHost(interest, aHost);
+      allPromises.push(PlacesInterestsStorage.addInterest(interest));
+      allPromises.push(PlacesInterestsStorage.addInterestVisit(interest));
+      allPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
       consoleService.logStringMessage("added " + interest);
     }
+    return Promise.promised(Array)(allPromises);
   },
 
   _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {
 
   },
 
-  _getBucketsForInterest: function I__getBucketsForInterest(aInterest) {
-    return PlacesInterestsStorage.getBucketsForInterest(aInterest);
+  _getBucketsForInterests: function I__getBucketsForInterests(aInterests) {
+    let rv = {};
+    let promiseArray = [];
+    let deferred = Promise.defer();
+    for (let interest of aInterests) {
+      promiseArray.push(PlacesInterestsStorage.getBucketsForInterest(interest))
+    }
+    let group = Promise.promised(Array);
+    let groupPromise = group(promiseArray).then(function(allInterestsBuckets) {
+      allInterestsBuckets.forEach(function(interestBuckets) {
+        rv[interestBuckets[0]["interest"]] = interestBuckets;
+      });
+      deferred.resolve(rv);
+    },
+    function(error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
   },
 
   _handleInterestsResults: function I__handleInterestsResults(aData) {
@@ -167,20 +186,30 @@ Interests.prototype = {
   },
 
   onDeleteURI: function(aURI, aGUID, aReason) {
+    // TODO - we need to implement URI deletion
+    // probably, by classifiing that URI again 
+    // and removing it from the tables - 
+    // potentially a call tp PlacesInterestsStorage
+    /*
     console.log(JSON.stringify(aURI));
     let host = this._getPlacesHostForURI(aURI);
     let hostInterests = this._getInterestsForHost(host);
     for (let interest of hostInterests) {
       this._invalidateBucketsForInterest(interest);
     }
+    */
   },
 
-  onDeleteVisits: function() {
+  onDeleteVisits: function(aURI) {
+    // TODO - same thing as abive
+    // figure what to do if a visit is deleted
+    /*
     let host = this._getPlacesHostForURI(aURI);
     let hostInterests = this._getInterestsForHost(host);
     for (let interest of hostInterests) {
       this._invalidateBucketsForInterest(interest);
     }
+    */
   },
 
   onClearHistory: function() {
@@ -214,19 +243,20 @@ InterestsWebAPI.prototype = {
   init: function(aWindow) {},
 
   checkInterests: function(aInterests, aCallback) {
-    let rv = {};
-    rv.__exposedProps__ = {};
-    for (let interest of aInterests)
-      rv.__exposedProps__[interest] = "r";
-    for (let interest of aInterests) {
-
-      rv[interest] = gInterestsService._getBucketsForInterest(interest);
-      for (let bucket of rv[interest]) {
-        bucket.__exposedProps__ = { "endTime": "r", "visitCount": "r" };
-        bucket.endTime = new Date(bucket.endTime / 1000);
-      }
-    }
-    aCallback(rv);
+    let promise = gInterestsService._getBucketsForInterests(aInterests);
+    promise.then(function(results) {
+      results["__exposedProps__"] = {};
+      // decorate results before sending it back to the caller
+      Object.keys(results).forEach(function(interest) {
+        if (interest == "__exposedProps__") return;
+        results["__exposedProps__"][interest] = "r";
+        results[interest].forEach(function(bucket) {
+          bucket["__exposedProps__"] = { "endTime": "r", "visitCount": "r" };
+          bucket["endTime"] = new Date(results[interest]["endTime"] / 1000);
+        });
+      });
+      aCallback(results);
+    });
   }
 };
 
