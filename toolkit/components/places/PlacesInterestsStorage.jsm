@@ -89,7 +89,15 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  addInterestVisit: function (interest) {
+  /**
+   * Increments the number of visits for an interest for a day
+   * @param   interest
+   *          The interest string
+   * @param   [optional] visitTime
+   *          Date/time to associate with the visit defaulting to today
+   * @returns Promise for when the interest's visit is added
+   */
+  addInterestVisit: function(interest, visitTime) {
     let deferred = Promise.defer();
 
     // Increment or initialize the visit count for the interest for the date
@@ -101,7 +109,7 @@ let PlacesInterestsStorage = {
         "ON v.interest_id = i.id AND v.date_added = :dateAdded " +
       "WHERE i.interest = :interest");
     stmt.params.interest = interest;
-    stmt.params.dateAdded = this._getRoundedTime();
+    stmt.params.dateAdded = this._getRoundedTime(visitTime);
     stmt.executeAsync({
       handleResult: function (result) {},
       handleCompletion: function (reason) {
@@ -177,41 +185,63 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  getBucketsForInterest: function (aInterest, handleDataCallBack) {
-    let currentTs = this._getRoundedTime();
-    let firstBucketEndTime = currentTs - 30*MS_PER_DAY;
-    let secondBucketEndTime = currentTs - 60*MS_PER_DAY;
-    let lastBucketEndTime = currentTs - 90*MS_PER_DAY;
+  /**
+   * Increments the number of visits for an interest for a day
+   * @param   interest
+   *          The interest string
+   * @returns Promise with the interest and counts for each bucket
+   */
+  getBucketsForInterest: function(interest) {
+    let deferred = Promise.defer();
 
-    let returnDeferred = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
-      let value = {
-        interest: aInterest,
-        endTime: row.getResultByName("endTime"),
-        visitCount: row.getResultByName("visitCount")
-      };
-      if (handleDataCallBack) {
-        handleDataCallBack(value);
-      }
-      else {
-        promiseHandler.addToResultSet(value);
+    // Figure out the cutoff times for each bucket
+    let currentTs = this._getRoundedTime();
+    let immediateBucket = currentTs - 14 * MS_PER_DAY;
+    let recentBucket = currentTs - 28 * MS_PER_DAY;
+
+    // Aggregate the visits into each bucket for the interest
+    let stmt = this.db.createAsyncStatement(
+      "SELECT CASE WHEN v.date_added >= :immediateBucket THEN 'immediate' " +
+                  "WHEN v.date_added >= :recentBucket THEN 'recent' " +
+                  "ELSE 'past' END AS bucket, " +
+             "v.visit_count " +
+      "FROM moz_up_interests i " +
+      "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
+      "WHERE i.interest = :interest");
+    stmt.params.interest = interest;
+    stmt.params.immediateBucket = immediateBucket;
+    stmt.params.recentBucket = recentBucket;
+
+    // Initialize the result to have something for each bucket
+    let result = {
+      immediate: 0,
+      interest: interest,
+      past: 0,
+      recent: 0
+    };
+
+    stmt.executeAsync({
+      handleCompletion: function(reason) {
+        deferred.resolve(result);
+      },
+
+      handleError: function(error) {
+        deferred.reject(error);
+      },
+
+      handleResult: function(resultSet) {
+        let row;
+        while (row = resultSet.getNextRow()) {
+          // Add up the total number of visits for this bucket
+          let bucket = row.getResultByName("bucket");
+          let visitCount = row.getResultByName("visit_count");
+          result[bucket] += visitCount;
+        }
       }
     });
-
-    let stmt = this.db.createAsyncStatement(
-      "SELECT CASE WHEN date_added >= :firstBucketEndTime THEN :firstBucketEndTime " +
-      "            WHEN date_added >= :secondBucketEndTime THEN :secondBucketEndTime " +
-      "            ELSE :lastBucketEndTime END as endTime , SUM(visit_count) as visitCount " +
-      "FROM moz_up_interests_visits " +
-      "WHERE interest_id in (SELECT id FROM moz_up_interests WHERE interest = :interest) " +
-      "ORDER by endTime DESC ");
-    stmt.params.interest = aInterest;
-    stmt.params.firstBucketEndTime = firstBucketEndTime;
-    stmt.params.secondBucketEndTime = secondBucketEndTime;
-    stmt.params.lastBucketEndTime = lastBucketEndTime;
-    stmt.executeAsync(promiseHandler);
     stmt.finalize();
-    return returnDeferred.promise;
+
+    return deferred.promise;
   }
 }
 

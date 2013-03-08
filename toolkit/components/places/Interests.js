@@ -150,7 +150,7 @@ Interests.prototype = {
     let group = Promise.promised(Array);
     let groupPromise = group(promiseArray).then(function(allInterestsBuckets) {
       allInterestsBuckets.forEach(function(interestBuckets) {
-        rv[interestBuckets[0]["interest"]] = interestBuckets;
+        rv[interestBuckets.interest] = interestBuckets;
       });
       deferred.resolve(rv);
     }, function(error) {

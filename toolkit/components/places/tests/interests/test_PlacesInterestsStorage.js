@@ -75,25 +75,23 @@ add_task(function test_PlacesInterestsStorage()
   do_check_true(itemsHave("mozilla.org"));
   do_check_true(itemsHave("samsung.com"));
 
-  // make sure we arew getting correcrt counts in the bauskets
-  let buskets = [];
+  // make sure we are getting correct counts in the buckets
+  let buckets = [];
   thePromise = PlacesInterestsStorage.getBucketsForInterest("computers");
   thePromise.then(function(results) {
-    buskets = results;
+    buckets = results;
   });
 
   yield thePromise;
-  dump( JSON.stringify(buskets) + " <<<<==== \n");
-  do_check_true(buskets[0]["endTime"] != 0);
-  do_check_eq(buskets[0]["visitCount"] , 1);
+  dump( JSON.stringify(buckets) + " <<<<==== \n");
+  do_check_eq(buckets.immediate , 1);
 
   thePromise = PlacesInterestsStorage.getBucketsForInterest("cars");
   thePromise.then(function(results) {
-    buskets = results;
+    buckets = results;
   });
 
   yield thePromise;
-  do_check_true(buskets[0]["endTime"] != 0);
-  do_check_eq(buskets[0]["visitCount"] , 2);
+  do_check_eq(buckets.immediate, 2);
 });
 
