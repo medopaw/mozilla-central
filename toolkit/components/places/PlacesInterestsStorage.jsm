@@ -89,41 +89,31 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  addInterestVisit: function (aInterest) {
-    let returnDeferred = Promise.defer();
-    let insertDeferred = Promise.defer();
-    let currentTs = this._getRoundedTime();
-    // TODO this code could be redone with replace or insert make sure that
-    // interest, dateAdded record exists in the table
+  addInterestVisit: function (interest) {
+    let deferred = Promise.defer();
+
+    // Increment or initialize the visit count for the interest for the date
     let stmt = this.db.createAsyncStatement(
-      "INSERT OR IGNORE INTO moz_up_interests_visits (interest_id, date_added) " +
-      "VALUES((SELECT id FROM moz_up_interests WHERE interest = :interest), :dateAdded)");
-    stmt.params.interest = aInterest;
-    stmt.params.dateAdded = currentTs;
+      "INSERT OR REPLACE INTO moz_up_interests_visits " +
+      "SELECT i.id, IFNULL(v.date_added, :dateAdded), IFNULL(v.visit_count, 0) + 1 " +
+      "FROM moz_up_interests i " +
+      "LEFT JOIN moz_up_interests_visits v " +
+        "ON v.interest_id = i.id AND v.date_added = :dateAdded " +
+      "WHERE i.interest = :interest");
+    stmt.params.interest = interest;
+    stmt.params.dateAdded = this._getRoundedTime();
     stmt.executeAsync({
       handleResult: function (result) {},
       handleCompletion: function (reason) {
-        insertDeferred.resolve();
+        deferred.resolve();
       },
-      handleError: function (error) {}
+      handleError: function (error) {
+        deferred.reject(error);
+      }
     });
     stmt.finalize();
 
-    // now add 1 to that record
-    // TODO we may avoid subselect by storing interest_id in local variable
-    // let interest_id = (SELECT id FROM moz_up_interests WHERE interest = :interest)
-    insertDeferred.promise.then(function () {
-      stmt = this.db.createAsyncStatement(
-        "UPDATE moz_up_interests_visits " +
-        "SET visit_count = visit_count + 1 " +
-        "WHERE interest_id = (SELECT id FROM moz_up_interests WHERE interest = :interest) AND date_added = :dateAdded");
-      stmt.params.interest = aInterest;
-      stmt.params.dateAdded = currentTs;
-      stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
-      stmt.finalize();
-    }.bind(this));
-
-    return returnDeferred.promise;
+    return deferred.promise;
   },
 
   addInterestForHost: function (aInterest, aHost) {
