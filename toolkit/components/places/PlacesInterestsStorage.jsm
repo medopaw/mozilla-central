@@ -65,11 +65,17 @@ AsyncPromiseHandler.prototype = {
 };
 
 let PlacesInterestsStorage = {
-  getTodayTimeStamp: function() {
-    // TODO: This function could be optimized by caching current day timestamp
-    // We can also use julianday('now') from sqllite directly
-    let time = Date.now();
-    // return start of today + 1 millisecond
+  /**
+   * Convert a date to the UTC midnight for the date
+   *
+   * @param   [optional] time
+   *          Reference date/time to round defaulting to today
+   * @returns Numeric value corresponding to the date's UTC 00:00:00.000
+   */
+  _getRoundedTime: function(time) {
+    // Default to now if no time is provided
+    time = time || Date.now();
+    // Round to the closest day
     return time - time % MS_PER_DAY;
   },
 
@@ -86,7 +92,7 @@ let PlacesInterestsStorage = {
   addInterestVisit: function (aInterest) {
     let returnDeferred = Promise.defer();
     let insertDeferred = Promise.defer();
-    let currentTs = this.getTodayTimeStamp();
+    let currentTs = this._getRoundedTime();
     // TODO this code could be redone with replace or insert make sure that
     // interest, dateAdded record exists in the table
     let stmt = this.db.createAsyncStatement(
@@ -125,7 +131,7 @@ let PlacesInterestsStorage = {
     Cu.reportError(typeof(aInterest));
     Cu.reportError("aInterest: " + aInterest);
     Cu.reportError("aHost: " + aHost);
-    let currentTs = this.getTodayTimeStamp();
+    let currentTs = this._getRoundedTime();
     let stmt = this.db.createAsyncStatement(
       "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id, date_added) " +
       "VALUES((SELECT id FROM moz_up_interests WHERE interest =:interest) " +
@@ -182,7 +188,7 @@ let PlacesInterestsStorage = {
   },
 
   getBucketsForInterest: function (aInterest, handleDataCallBack) {
-    let currentTs = this.getTodayTimeStamp();
+    let currentTs = this._getRoundedTime();
     let firstBucketEndTime = currentTs - 30*MS_PER_DAY;
     let secondBucketEndTime = currentTs - 60*MS_PER_DAY;
     let lastBucketEndTime = currentTs - 90*MS_PER_DAY;
