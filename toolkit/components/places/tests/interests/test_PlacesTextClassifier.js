@@ -40,33 +40,33 @@ add_task(function test_default_model_match() {
 
   let workerTester = {
     handleEvent: function(aEvent) {
-     if (aEvent.type == "message") {
-      let msgData = aEvent.data;
-      if (msgData.message == "InterestsForDocumentText") {
-        // make sure that categorization is correct 
-        let host = msgData.host;
-        let interests = msgData.interests;
-        let interestCount = 0;
-        for (let interest of interests) {
-         do_check_true(expectedInterests[interest] == 1);
-         interestCount ++;
-        } 
-        do_check_eq(interestCount, Object.keys(expectedInterests).length);
-        deferEnsureResults.resolve();
-      }
-      else if (msgData.message == "InterestsForDocumentRules") {
-        // make sure rule-based classification did not happen
-        do_print("interests are: " + msgData.interests);
-        do_check_eq(0, msgData.interests.length);
-      }
-      else if (!(msgData.message in kValidMessages)) {
+      if (aEvent.type == "message") {
+        let msgData = aEvent.data;
+        if (msgData.message == "InterestsForDocumentText") {
+          // make sure that categorization is correct
+          let host = msgData.host;
+          let interests = msgData.interests;
+          let interestCount = 0;
+          for (let interest of interests) {
+            do_check_true(expectedInterests[interest] == 1);
+            interestCount ++;
+          }
+          do_check_eq(interestCount, Object.keys(expectedInterests).length);
+          deferEnsureResults.resolve();
+        }
+        else if (msgData.message == "InterestsForDocumentRules") {
+          // make sure rule-based classification did not happen
+          do_print("interests are: " + msgData.interests);
+          do_check_eq(0, msgData.interests.length);
+        }
+        else if (!(msgData.message in kValidMessages)) {
           // unexpected message
           do_throw("ERROR_UNEXPECTED_MSG: " + msgData.message);
+        }
       }
-     }
-     else {
-      do_throw("ERROR_UNEXPECTED_MSG_TYPE" + aEvent.type);
-     }
+      else {
+        do_throw("ERROR_UNEXPECTED_MSG_TYPE" + aEvent.type);
+      }
     } // end of handleEvent
   };
 
@@ -140,7 +140,7 @@ let riggedMatchTests = [
         url:  "http://example.com/testing/foo/qux",
         title: "bar baz",
         // will pick foo because foo is first in index
-        expectedInterests:  {"foo": 1}
+        expectedInterests:  {"foo": 1, "bar": 1}
       },
       {
         info: "RiggedTextClassifier Test 4: no tokens",

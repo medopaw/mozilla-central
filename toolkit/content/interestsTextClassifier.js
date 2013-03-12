@@ -8,6 +8,7 @@
 
 const kNotWordPattern = /[^a-z0-9 ]+/g;
 const kMinimumMatchTokens = 3;
+const kSimilarityCutOff = 0.95;
 
 function PlaceTokenizer(aUrlStopwordSet) {
   this._urlStopwordSet = aUrlStopwordSet;
@@ -63,9 +64,30 @@ NaiveBayesClassifier.prototype = {
       }
     }, this); 
 
+    let classMatches = [];
     if (tokenMatchCount > kMinimumMatchTokens) {
-      let max_index = posteriors.indexOf(Math.max.apply(Math, posteriors));
-      return this._classes[max_index];
+      let maxValue = -Infinity;
+
+      while(true) {
+        let currentMax = Math.max.apply(Math, posteriors);
+        let max_index;
+
+        if (currentMax > maxValue) {
+          // set max value, setup to get next biggest probability
+          max_index = posteriors.indexOf(currentMax);
+          maxValue = currentMax;
+          classMatches.push(this._classes[max_index]);
+          posteriors[max_index] = -Infinity;
+        } else if (currentMax/maxValue >= kSimilarityCutOff) {
+          max_index = posteriors.indexOf(currentMax);
+          classMatches.push(this._classes[max_index]);
+          posteriors[max_index] = -Infinity;
+        } else {
+          // selection is done, the next nearest item is less similar than the threshold
+          break;
+        }
+      }
+      return classMatches;
     }
     return null;
   }

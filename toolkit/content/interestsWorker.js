@@ -103,7 +103,7 @@ function textClassify({url, title}) {
   let interest = gClassifier.classify(tokens);
 
   if (interest != null) {
-    return [interest];
+    return interest;
   }
   return [];
 }
