@@ -18,6 +18,13 @@ function run_test() {
   run_next_test();
 }
 
+function itemsHave(items,data) {
+  for (let i in items) {
+    if(items[i] == data) return true;
+  }
+  return false;
+};
+
 add_task(function test_Interests() {
 
   yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
@@ -30,32 +37,26 @@ add_task(function test_Interests() {
 
   // check insertions
   let thePromise = PlacesInterestsStorage.getInterestsForHost("cars.com");
-  yield thePromise;
-
-  thePromise.then(function(items) {
+  yield thePromise.then(function(data) {
     // recheck the items
-    // dump( items.join(" ") + " <<<<<<<<<<<\n");
-    do_check_eq(items.length , 3);
-    do_check_true(itemsHave("cars"));
-    do_check_true(itemsHave("movies"));
-    do_check_true(itemsHave("computers"));
+    do_check_eq(data.length , 3);
+    do_check_true(itemsHave(data,"cars"));
+    do_check_true(itemsHave(data,"movies"));
+    do_check_true(itemsHave(data,"computers"));
   });
 
   thePromise = iServiceObject._getBucketsForInterests(["cars" , "computers"]);
-
-  yield thePromise;
-
-  thePromise.then(function(data) {
-    //dump(JSON.stringify(data) + " ------------------\n");
-    do_check_eq(data["cars"][0]["visitCount"], 2);
-    do_check_eq(data["computers"][0]["visitCount"], 1);
+  yield thePromise.then(function(data) {
+    dump( JSON.stringify(data) + " <--\n");
+    do_check_eq(data["cars"]["immediate"], 2);
+    do_check_eq(data["computers"]["immediate"], 1);
   });
 
   // try the API
-  iServiceApi.checkInterests(["cars" , "computers"],function(rv) {
-     //dump(JSON.stringify(rv) + " xxxxxxxxxxxxx\n");
+  thePromise = iServiceApi.checkInterests(["cars" , "computers"]);
+  yield thePromise.then(function(data) {
+    do_check_eq(data["cars"]["immediate"], 2);
+    do_check_eq(data["computers"]["immediate"], 1);
   });
 
-  thePromise = PlacesInterestsStorage.getInterestsForHost("cars.com");
-  yield thePromise;
 });

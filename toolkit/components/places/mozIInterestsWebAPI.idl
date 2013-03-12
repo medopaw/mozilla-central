@@ -9,5 +9,5 @@
 [scriptable, uuid(492D781D-7040-491F-B23B-F9C7F690602B)]
 interface mozIInterestsWebAPI : nsISupports
 {
-  void checkInterests(in jsval interests, in jsval callback);
+  jsval checkInterests(in jsval interests);
 };

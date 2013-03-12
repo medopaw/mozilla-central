@@ -240,7 +240,6 @@ let PlacesInterestsStorage = {
       }
     });
     stmt.finalize();
-
     return deferred.promise;
   }
 }

@@ -117,22 +117,40 @@ Interests.prototype = {
   },
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests) {
-    let allPromises = [];
+    let deferred = Promise.defer();
+    let addInterestPromises = [];
     consoleService.logStringMessage("adding interests for host");
     consoleService.logStringMessage("host: " + aHost);
     consoleService.logStringMessage(typeof(aInterests));
     consoleService.logStringMessage("interests: " + aInterests);
+    // TODO - this is a hack - we do not need to keep inserting into interests table
+    // we should do it ones on startup or update
     for (let interest of aInterests) {
-      consoleService.logStringMessage("interest: " + typeof(interest) + " " + interest);
-      consoleService.logStringMessage("host: " + typeof(aHost) + "  " + aHost);
-
-      // TODO - this is a hack - we do not need to keep inserting into interests table
-      allPromises.push(PlacesInterestsStorage.addInterest(interest));
-      allPromises.push(PlacesInterestsStorage.addInterestVisit(interest));
-      allPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
-      consoleService.logStringMessage("added " + interest);
+      // add all addInterest promisses to the array 
+      addInterestPromises.push(PlacesInterestsStorage.addInterest(interest));
     }
-    return Promise.promised(Array)(allPromises);
+    // now wait for all the promisses to resolve and execute host and visit additions
+    Promise.promised(Array)(addInterestPromises).then(function(results) {
+      let addVisitPromises = [];
+      for (let interest of aInterests) {
+        consoleService.logStringMessage("interest: " + typeof(interest) + " " + interest);
+        consoleService.logStringMessage("host: " + typeof(aHost) + "  " + aHost);
+
+        // we need to wait until interest is added to the inerestes table
+        addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest));
+        addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
+      }
+      Promise.promised(Array)(addVisitPromises).then(function(results) {
+        deferred.resolve(results);
+      },
+      function(error) {
+        deferred.reject(error);
+      });
+    },
+    function(error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
   },
 
   _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {
@@ -243,25 +261,27 @@ InterestsWebAPI.prototype = {
 
   init: function(aWindow) {},
 
-  checkInterests: function(aInterests, aCallback) {
-    let promise = gInterestsService._getBucketsForInterests(aInterests);
-    promise.then(function(results) {
+  checkInterests: function(aInterests) {
+    let deferred = Promise.defer();
+    gInterestsService._getBucketsForInterests(aInterests).then(function(results) {
       results["__exposedProps__"] = {};
       // decorate results before sending it back to the caller
       Object.keys(results).forEach(function(interest) {
         if (interest == "__exposedProps__") {
           return;
         }
-
         results["__exposedProps__"][interest] = "r";
-        results[interest].forEach(function(bucket) {
-          bucket["__exposedProps__"] = { "endTime": "r", "visitCount": "r" };
-          bucket["endTime"] = new Date(results[interest]["endTime"] / 1000);
-        });
+        results[interest]["__exposedProps__"] = {};
+        results[interest]["__exposedProps__"]["immediate"] = "r";
+        results[interest]["__exposedProps__"]["recent"] = "r";
+        results[interest]["__exposedProps__"]["past"] = "r";
       });
-
-      aCallback(results);
+      deferred.resolve(results);
+    },
+    function(error) {
+      deferred.reject(error);
     });
+    return deferred.promise;
   }
 };
 

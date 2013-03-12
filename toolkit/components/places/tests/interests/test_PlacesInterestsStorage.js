@@ -54,14 +54,14 @@ add_task(function test_PlacesInterestsStorage()
   do_check_true(itemsHave("movies"));
   do_check_true(itemsHave("shopping"));
 
+  items = [];
+
   // test promise returning results functionality
   let thePromise = PlacesInterestsStorage.getInterestsForHost("cars.com");
-  thePromise.then(function(results) {
+  yield thePromise.then(function(results) {
     items = results;
     dump( items.join(" ") + " <<<<<<<<<<<\n");
   });
-
-  yield thePromise;
 
   // recheck the items
   do_check_eq(items.length , 3);
@@ -78,20 +78,18 @@ add_task(function test_PlacesInterestsStorage()
   // make sure we are getting correct counts in the buckets
   let buckets = [];
   thePromise = PlacesInterestsStorage.getBucketsForInterest("computers");
-  thePromise.then(function(results) {
+  yield thePromise.then(function(results) {
     buckets = results;
   });
 
-  yield thePromise;
   dump( JSON.stringify(buckets) + " <<<<==== \n");
   do_check_eq(buckets.immediate , 1);
 
   thePromise = PlacesInterestsStorage.getBucketsForInterest("cars");
-  thePromise.then(function(results) {
+  yield thePromise.then(function(results) {
     buckets = results;
   });
 
-  yield thePromise;
   do_check_eq(buckets.immediate, 2);
 });
 
