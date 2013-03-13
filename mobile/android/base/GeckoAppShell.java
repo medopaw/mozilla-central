@@ -80,10 +80,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -110,9 +108,6 @@ public class GeckoAppShell
     static private boolean gRestartScheduled = false;
 
     static private GeckoEditableListener mEditableListener = null;
-
-    static private final HashMap<Integer, AlertNotification>
-        mAlertNotifications = new HashMap<Integer, AlertNotification>();
 
     /* Keep in sync with constants found here:
       http://mxr.mozilla.org/mozilla-central/source/uriloader/base/nsIWebProgressListener.idl
@@ -156,9 +151,8 @@ public class GeckoAppShell
 
     private static Handler sGeckoHandler;
 
-    public static GfxInfoThread sGfxInfoThread = null;
-
     static ActivityHandlerHelper sActivityHelper = new ActivityHandlerHelper();
+    static NotificationServiceClient sNotificationClient;
 
     /* The Android-side API: API methods that Android calls */
 
@@ -178,6 +172,7 @@ public class GeckoAppShell
 
     public static void registerGlobalExceptionHandler() {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
             public void uncaughtException(Thread thread, Throwable e) {
                 Log.e(LOGTAG, ">>> REPORTING UNCAUGHT EXCEPTION FROM THREAD "
                               + thread.getId() + " (\"" + thread.getName() + "\")", e);
@@ -250,10 +245,12 @@ public class GeckoAppShell
             mScanner.connect();
         }
 
+        @Override
         public void onMediaScannerConnected() {
             mScanner.scanFile(mFile, mMimeType);
         }
 
+        @Override
         public void onScanCompleted(String path, Uri uri) {
             if(path.equals(mFile)) {
                 mScanner.disconnect();
@@ -298,6 +295,7 @@ public class GeckoAppShell
         combinedArgs += " -width " + metrics.widthPixels + " -height " + metrics.heightPixels;
 
         GeckoApp.mAppContext.runOnUiThread(new Runnable() {
+                @Override
                 public void run() {
                     geckoLoaded();
                 }
@@ -330,11 +328,6 @@ public class GeckoAppShell
         } else {
             gPendingEvents.addLast(e);
         }
-    }
-
-    public static void sendEventToGeckoSync(GeckoEvent e) {
-        sendEventToGecko(e);
-        geckoEventSync();
     }
 
     // Tell the Gecko event loop that an event is available.
@@ -370,29 +363,31 @@ public class GeckoAppShell
         }
     }
 
-    private static final GeckoEvent sSyncEvent = GeckoEvent.createSyncEvent();
-    private static boolean sWaitingForSyncAck;
+    private static final Object sEventAckLock = new Object();
+    private static boolean sWaitingForEventAck;
 
     // Block the current thread until the Gecko event loop is caught up
-    public static void geckoEventSync() {
+    public static void sendEventToGeckoSync(GeckoEvent e) {
+        e.setAckNeeded(true);
+
         long time = SystemClock.uptimeMillis();
         boolean isMainThread = (GeckoApp.mAppContext.getMainLooper().getThread() == Thread.currentThread());
 
-        synchronized (sSyncEvent) {
-            if (sWaitingForSyncAck) {
+        synchronized (sEventAckLock) {
+            if (sWaitingForEventAck) {
                 // should never happen since we always leave it as false when we exit this function.
                 Log.e(LOGTAG, "geckoEventSync() may have been called twice concurrently!", new Exception());
                 // fall through for graceful handling
             }
 
-            GeckoAppShell.sendEventToGecko(sSyncEvent);
-            sWaitingForSyncAck = true;
+            sendEventToGecko(e);
+            sWaitingForEventAck = true;
             while (true) {
                 try {
-                    sSyncEvent.wait(100);
+                    sEventAckLock.wait(100);
                 } catch (InterruptedException ie) {
                 }
-                if (!sWaitingForSyncAck) {
+                if (!sWaitingForEventAck) {
                     // response received
                     break;
                 }
@@ -400,7 +395,7 @@ public class GeckoAppShell
                 Log.d(LOGTAG, "Gecko event sync taking too long: " + waited + "ms");
                 if (isMainThread && waited >= 4000) {
                     Log.w(LOGTAG, "Gecko event sync took too long, aborting!", new Exception());
-                    sWaitingForSyncAck = false;
+                    sWaitingForEventAck = false;
                     break;
                 }
             }
@@ -408,15 +403,16 @@ public class GeckoAppShell
     }
 
     // Signal the Java thread that it's time to wake up
-    public static void acknowledgeEventSync() {
-        synchronized (sSyncEvent) {
-            sWaitingForSyncAck = false;
-            sSyncEvent.notifyAll();
+    public static void acknowledgeEvent() {
+        synchronized (sEventAckLock) {
+            sWaitingForEventAck = false;
+            sEventAckLock.notifyAll();
         }
     }
 
     public static void enableLocation(final boolean enable) {
         getMainHandler().post(new Runnable() { 
+                @Override
                 public void run() {
                     LocationManager lm = (LocationManager)
                         GeckoApp.mAppContext.getSystemService(Context.LOCATION_SERVICE);
@@ -626,6 +622,7 @@ public class GeckoAppShell
                                       final Bitmap aIcon, final String aType)
     {
         getHandler().post(new Runnable() {
+            @Override
             public void run() {
                 // the intent to be launched by the shortcut
                 Intent shortcutIntent;
@@ -662,6 +659,7 @@ public class GeckoAppShell
 
     public static void removeShortcut(final String aTitle, final String aURI, final String aUniqueURI, final String aType) {
         getHandler().post(new Runnable() {
+            @Override
             public void run() {
                 // the intent to be launched by the shortcut
                 Intent shortcutIntent;
@@ -696,6 +694,7 @@ public class GeckoAppShell
         //   1. nuke the running app process.
         //   2. nuke the profile that was assigned to that webapp
         getHandler().post(new Runnable() {
+            @Override
             public void run() {
                 int index = WebAppAllocator.getInstance(GeckoApp.mAppContext).releaseIndexForApp(uniqueURI);
 
@@ -1132,6 +1131,7 @@ public class GeckoAppShell
     // gecko thread, which is most likely this thread
     static String getClipboardText() {
         getHandler().post(new Runnable() { 
+            @Override
             @SuppressWarnings("deprecation")
             public void run() {
                 Context context = GeckoApp.mAppContext;
@@ -1165,6 +1165,7 @@ public class GeckoAppShell
 
     static void setClipboardText(final String text) {
         getHandler().post(new Runnable() { 
+            @Override
             @SuppressWarnings("deprecation")
             public void run() {
                 Context context = GeckoApp.mAppContext;
@@ -1180,6 +1181,14 @@ public class GeckoAppShell
             }});
     }
 
+    public static void setNotificationClient(NotificationServiceClient client) {
+        if (sNotificationClient == null) {
+            sNotificationClient = client;
+        } else {
+            Log.w(LOGTAG, "Notification client already set");
+        }
+    }
+
     public static void showAlertNotification(String aImageUrl, String aAlertTitle, String aAlertText,
                                              String aAlertCookie, String aAlertName) {
         Log.d(LOGTAG, "GeckoAppShell.showAlertNotification\n" +
@@ -1189,72 +1198,41 @@ public class GeckoAppShell
             "- cookie = '" + aAlertCookie +"'\n" +
             "- name = '" + aAlertName + "'");
 
-        int icon = R.drawable.ic_status_logo;
-
-        Uri imageUri = Uri.parse(aImageUrl);
-        String scheme = imageUri.getScheme();
-        if ("drawable".equals(scheme)) {
-            String resource = imageUri.getSchemeSpecificPart();
-            resource = resource.substring(resource.lastIndexOf('/') + 1);
-            try {
-                Class<R.drawable> drawableClass = R.drawable.class;
-                Field f = drawableClass.getField(resource);
-                icon = f.getInt(null);
-            } catch (Exception e) {} // just means the resource doesn't exist
-            imageUri = null;
-        }
-
-        int notificationID = aAlertName.hashCode();
-
-        // Remove the old notification with the same ID, if any
-        removeNotification(notificationID);
-
-        AlertNotification notification = 
-            new AlertNotification(GeckoApp.mAppContext,notificationID, icon, 
-                                  aAlertTitle, aAlertText, 
-                                  System.currentTimeMillis());
-
         // The intent to launch when the user clicks the expanded notification
         Intent notificationIntent = new Intent(GeckoApp.ACTION_ALERT_CLICK);
         notificationIntent.setClassName(GeckoApp.mAppContext,
             GeckoApp.mAppContext.getPackageName() + ".NotificationHandler");
 
+        int notificationID = aAlertName.hashCode();
+
         // Put the strings into the intent as an URI "alert:?name=<alertName>&app=<appName>&cookie=<cookie>"
         Uri.Builder b = new Uri.Builder();
         String app = GeckoApp.mAppContext.getClass().getName();
-        Uri dataUri = b.scheme("alert")
-                                 .path(Integer.toString(notificationID))
-                                 .appendQueryParameter("name", aAlertName)
-                                 .appendQueryParameter("app", app)
-                                 .appendQueryParameter("cookie", aAlertCookie)
-                                 .build();
+        Uri dataUri = b.scheme("alert").path(Integer.toString(notificationID))
+                                       .appendQueryParameter("name", aAlertName)
+                                       .appendQueryParameter("app", app)
+                                       .appendQueryParameter("cookie", aAlertCookie)
+                                       .build();
         notificationIntent.setData(dataUri);
-
         PendingIntent contentIntent = PendingIntent.getBroadcast(GeckoApp.mAppContext, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(GeckoApp.mAppContext, aAlertTitle, aAlertText, contentIntent);
-        notification.setCustomIcon(imageUri);
+
         // The intent to execute when the status entry is deleted by the user with the "Clear All Notifications" button
         Intent clearNotificationIntent = new Intent(GeckoApp.ACTION_ALERT_CLEAR);
         clearNotificationIntent.setClassName(GeckoApp.mAppContext,
             GeckoApp.mAppContext.getPackageName() + ".NotificationHandler");
         clearNotificationIntent.setData(dataUri);
-        notification.deleteIntent = PendingIntent.getBroadcast(GeckoApp.mAppContext, 0, clearNotificationIntent, 0);
+        PendingIntent clearIntent = PendingIntent.getBroadcast(GeckoApp.mAppContext, 0, clearNotificationIntent, 0);
 
-        mAlertNotifications.put(notificationID, notification);
-
-        notification.show();
+        sNotificationClient.add(notificationID, aImageUrl, aAlertTitle, aAlertText, contentIntent, clearIntent);
     }
 
     public static void alertsProgressListener_OnProgress(String aAlertName, long aProgress, long aProgressMax, String aAlertText) {
-        final int notificationID = aAlertName.hashCode();
-        AlertNotification notification = mAlertNotifications.get(notificationID);
-        if (notification != null)
-            notification.updateProgress(aAlertText, aProgress, aProgressMax);
+        int notificationID = aAlertName.hashCode();
+        sNotificationClient.update(notificationID, aProgress, aProgressMax, aAlertText);
 
         if (aProgress == aProgressMax) {
             // Hide the notification at 100%
             removeObserver(aAlertName);
-            removeNotification(notificationID);
         }
     }
 
@@ -1271,9 +1249,8 @@ public class GeckoAppShell
         if (GeckoApp.ACTION_ALERT_CALLBACK.equals(aAction)) {
             callObserver(aAlertName, "alertclickcallback", aAlertCookie);
 
-            AlertNotification notification = mAlertNotifications.get(notificationID);
-            if (notification != null && notification.isProgressStyle()) {
-                // When clicked, keep the notification, if it displays a progress
+            if (sNotificationClient.isProgressStyle(notificationID)) {
+                // When clicked, keep the notification if it displays progress
                 return;
             }
         }
@@ -1290,11 +1267,7 @@ public class GeckoAppShell
     }
 
     private static void removeNotification(int notificationID) {
-        mAlertNotifications.remove(notificationID);
-
-        NotificationManager notificationManager = (NotificationManager)
-            GeckoApp.mAppContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(notificationID);
+        sNotificationClient.remove(notificationID);
     }
 
     public static int getDpi() {
@@ -1367,6 +1340,7 @@ public class GeckoAppShell
 
     public static void setKeepScreenOn(final boolean on) {
         GeckoApp.mAppContext.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 // TODO
             }
@@ -1375,6 +1349,7 @@ public class GeckoAppShell
 
     public static void notifyDefaultPrevented(final boolean defaultPrevented) {
         getMainHandler().post(new Runnable() {
+            @Override
             public void run() {
                 LayerView view = GeckoApp.mAppContext.getLayerView();
                 PanZoomController controller = (view == null ? null : view.getPanZoomController());
@@ -1471,6 +1446,7 @@ public class GeckoAppShell
 
     public static void killAnyZombies() {
         GeckoProcessesVisitor visitor = new GeckoProcessesVisitor() {
+            @Override
             public boolean callback(int pid) {
                 if (pid != android.os.Process.myPid())
                     android.os.Process.killProcess(pid);
@@ -1485,6 +1461,7 @@ public class GeckoAppShell
 
         class GeckoPidCallback implements GeckoProcessesVisitor {
             public boolean otherPidExist = false;
+            @Override
             public boolean callback(int pid) {
                 if (pid != android.os.Process.myPid()) {
                     otherPidExist = true;
@@ -1797,6 +1774,7 @@ public class GeckoAppShell
             sCameraBuffer = new byte[(bufferSize * 12) / 8];
             sCamera.addCallbackBuffer(sCameraBuffer);
             sCamera.setPreviewCallbackWithBuffer(new android.hardware.Camera.PreviewCallback() {
+                @Override
                 public void onPreviewFrame(byte[] data, android.hardware.Camera camera) {
                     cameraCallbackBridge(data);
                     if (sCamera != null)
@@ -1888,6 +1866,7 @@ public class GeckoAppShell
 
     static void markUriVisited(final String uri) {    // invoked from native JNI code
         getHandler().post(new Runnable() { 
+            @Override
             public void run() {
                 GlobalHistory.getInstance().add(uri);
             }
@@ -1896,6 +1875,7 @@ public class GeckoAppShell
 
     static void setUriTitle(final String uri, final String title) {    // invoked from native JNI code
         getHandler().post(new Runnable() {
+            @Override
             public void run() {
                 GlobalHistory.getInstance().update(uri, title);
             }
@@ -2138,6 +2118,7 @@ public class GeckoAppShell
             mId = id;
         }
 
+        @Override
         public void onActivityResult(int resultCode, Intent data) {
             GeckoAppShell.notifyFilePickerResult(handleActivityResult(resultCode, data), mId);
         }
@@ -2158,13 +2139,12 @@ public class GeckoAppShell
     }
 
     public static String getGfxInfoData() {
-        String data = sGfxInfoThread.getData();
-        sGfxInfoThread = null;
-        return data;
+        return GfxInfoThread.getData();
     }
 
     public static void registerSurfaceTextureFrameListener(Object surfaceTexture, final int id) {
         ((SurfaceTexture)surfaceTexture).setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+            @Override
             public void onFrameAvailable(SurfaceTexture surfaceTexture) {
                 GeckoAppShell.onSurfaceTextureFrameAvailable(surfaceTexture, id);
             }

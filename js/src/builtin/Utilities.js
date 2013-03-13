@@ -9,9 +9,14 @@
          unused: false, strict: false, trailing: true,
 */
 
-/*global ToObject: false, ToInteger: false, IsCallable: false, ThrowError: false,
-         AssertionFailed: false, MakeConstructible: false, DecompileArg: false,
+/*global ToObject: false, ToInteger: false, IsCallable: false,
+         ThrowError: false, AssertionFailed: false, SetScriptHints: false,
+         MakeConstructible: false, DecompileArg: false,
          RuntimeDefaultLocale: false,
+         ParallelDo: false, ParallelSlices: false, NewDenseArray: false,
+         UnsafeSetElement: false, ShouldForceSequential: false,
+         ParallelTestsShouldPass: false,
+         Dump: false,
          callFunction: false,
          IS_UNDEFINED: false, TO_UINT32: false,
          JSMSG_NOT_FUNCTION: false, JSMSG_MISSING_FUN_ARG: false,
@@ -50,6 +55,9 @@ var std_String_startsWith = String.prototype.startsWith;
 var std_String_substring = String.prototype.substring;
 var std_String_toLowerCase = String.prototype.toLowerCase;
 var std_String_toUpperCase = String.prototype.toUpperCase;
+var std_WeakMap_get = WeakMap.prototype.get;
+var std_WeakMap_has = WeakMap.prototype.has;
+var std_WeakMap_set = WeakMap.prototype.set;
 
 
 /********** List specification type **********/

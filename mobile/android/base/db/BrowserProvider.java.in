@@ -328,6 +328,7 @@ public class BrowserProvider extends ContentProvider {
     }
 
     private class BookmarkMigrator3to4 implements BookmarkMigrator {
+        @Override
         public void updateForNewTable(ContentValues bookmark) {
             Integer isFolder = bookmark.getAsInteger("folder");
             if (isFolder == null || isFolder != 1) {
@@ -1029,6 +1030,7 @@ public class BrowserProvider extends ContentProvider {
 
                     // create icons in a separate thread to avoid blocking about:home on startup
                     GeckoBackgroundThread.getHandler().post(new Runnable() {
+                        @Override
                         public void run() {
                             try {
                                 String iconData = bookmark.getString("icon");
@@ -1071,6 +1073,7 @@ public class BrowserProvider extends ContentProvider {
 
                     // create icons in a separate thread to avoid blocking about:home on startup
                     GeckoBackgroundThread.getHandler().post(new Runnable() {
+                        @Override
                         public void run() {
                             Bitmap icon = getDefaultFaviconFromPath(name);
                             if (icon == null) {
@@ -1128,12 +1131,8 @@ public class BrowserProvider extends ContentProvider {
 
                 String apkPath = mContext.getPackageResourcePath();
                 File apkFile = new File(apkPath);
-                BitmapDrawable bitmapDrawable = GeckoJarReader.getBitmapDrawable(mContext.getResources(),
-                                                                                 "jar:jar:" + apkFile.toURI() + "!/omni.ja!/" + path);
-                if (bitmapDrawable == null) {
-                    return null;
-                }
-                return bitmapDrawable.getBitmap();
+                String bitmapPath = "jar:jar:" + apkFile.toURI() + "!/omni.ja!/" + path;
+                return GeckoJarReader.getBitmap(mContext.getResources(), bitmapPath);
             } catch (java.lang.IllegalAccessException ex) {
                 Log.e(LOGTAG, "[Path] Can't create favicon " + name, ex);
             } catch (java.lang.NoSuchFieldException ex) {
@@ -1728,13 +1727,18 @@ public class BrowserProvider extends ContentProvider {
             debug("Opening browser.db: " + db.getPath());
 
             Cursor cursor = null;
-            if (Build.VERSION.SDK_INT >= 8) {
-                try {
-                    cursor = db.rawQuery("PRAGMA foreign_keys=ON", null);
-                } finally {
-                    if (cursor != null)
-                        cursor.close();
-                }
+            try {
+                cursor = db.rawQuery("PRAGMA foreign_keys=ON", null);
+            } finally {
+                if (cursor != null)
+                    cursor.close();
+            }
+            cursor = null;
+            try {
+                cursor = db.rawQuery("PRAGMA synchronous=NORMAL", null);
+            } finally {
+                if (cursor != null)
+                    cursor.close();
             }
 
             // From Honeycomb on, it's possible to run several db
@@ -1743,13 +1747,6 @@ public class BrowserProvider extends ContentProvider {
                 db.enableWriteAheadLogging();
             } else {
                 // Pre-Honeycomb, we can do some lesser optimizations.
-                cursor = null;
-                try {
-                    cursor = db.rawQuery("PRAGMA synchronous=NORMAL", null);
-                } finally {
-                    if (cursor != null)
-                        cursor.close();
-                }
                 cursor = null;
                 try {
                     cursor = db.rawQuery("PRAGMA journal_mode=PERSIST", null);

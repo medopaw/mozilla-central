@@ -22,12 +22,12 @@
 #endif
 #include "assembler/wtf/Platform.h"
 #include "gc/Marking.h"
-#include "gc/Root.h"
 #ifdef JS_ION
 #include "ion/IonCompartment.h"
 #include "ion/Ion.h"
 #endif
 #include "js/MemoryMetrics.h"
+#include "js/RootingAPI.h"
 #include "methodjit/MethodJIT.h"
 #include "methodjit/PolyIC.h"
 #include "methodjit/MonoIC.h"
@@ -341,7 +341,7 @@ JSCompartment::wrap(JSContext *cx, MutableHandleValue vp, HandleObject existingA
         if (!str)
             return false;
 
-        UnrootedString wrapped = js_NewStringCopyN<CanGC>(cx, str->chars(), str->length());
+        RawString wrapped = js_NewStringCopyN<CanGC>(cx, str->chars(), str->length());
         if (!wrapped)
             return false;
 
@@ -432,6 +432,7 @@ JSCompartment::wrap(JSContext *cx, JSObject **objp, JSObject *existingArg)
 bool
 JSCompartment::wrapId(JSContext *cx, jsid *idp)
 {
+    MOZ_ASSERT(*idp != JSID_VOID, "JSID_VOID is an out-of-band sentinel value");
     if (JSID_IS_INT(*idp))
         return true;
     RootedValue value(cx, IdToValue(*idp));

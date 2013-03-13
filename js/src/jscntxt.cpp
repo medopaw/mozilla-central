@@ -142,10 +142,6 @@ JSRuntime::sizeOfIncludingThis(JSMallocSizeOfFun mallocSizeOf, RuntimeSizes *rtS
 
     rtSizes->mathCache = mathCache_ ? mathCache_->sizeOfIncludingThis(mallocSizeOf) : 0;
 
-    rtSizes->scriptFilenames = scriptFilenameTable.sizeOfExcludingThis(mallocSizeOf);
-    for (ScriptFilenameTable::Range r = scriptFilenameTable.all(); !r.empty(); r.popFront())
-        rtSizes->scriptFilenames += mallocSizeOf(r.front());
-
     rtSizes->scriptData = scriptDataTable.sizeOfExcludingThis(mallocSizeOf);
     for (ScriptDataTable::Range r = scriptDataTable.all(); !r.empty(); r.popFront())
         rtSizes->scriptData += mallocSizeOf(r.front());
@@ -451,8 +447,6 @@ static void
 ReportError(JSContext *cx, const char *message, JSErrorReport *reportp,
             JSErrorCallback callback, void *userRef)
 {
-    AssertCanGC();
-
     /*
      * Check the error report, and set a JavaScript-catchable exception
      * if the error is defined to have an associated exception.  If an
@@ -497,8 +491,6 @@ ReportError(JSContext *cx, const char *message, JSErrorReport *reportp,
 static void
 PopulateReportBlame(JSContext *cx, JSErrorReport *report)
 {
-    AutoAssertNoGC nogc;
-
     /*
      * Walk stack until we find a frame that is associated with a non-builtin
      * rather than a builtin frame.
@@ -507,7 +499,7 @@ PopulateReportBlame(JSContext *cx, JSErrorReport *report)
     if (iter.done())
         return;
 
-    report->filename = iter.script()->filename;
+    report->filename = iter.script()->filename();
     report->lineno = PCToLineNumber(iter.script(), iter.pc(), &report->column);
     report->originPrincipals = iter.script()->originPrincipals;
 }
@@ -522,8 +514,6 @@ PopulateReportBlame(JSContext *cx, JSErrorReport *report)
 void
 js_ReportOutOfMemory(JSContext *cx)
 {
-    AutoAssertNoGC nogc;
-
     cx->runtime->hadOutOfMemory = true;
 
     JSErrorReport report;
@@ -593,7 +583,7 @@ checkReportFlags(JSContext *cx, unsigned *flags)
          * We assume that if the top frame is a native, then it is strict if
          * the nearest scripted frame is strict, see bug 536306.
          */
-        UnrootedScript script = cx->stack.currentScript();
+        RawScript script = cx->stack.currentScript();
         if (script && script->strict)
             *flags &= ~JSREPORT_WARNING;
         else if (cx->hasStrictOption())
@@ -1208,11 +1198,11 @@ JSContext::JSContext(JSRuntime *rt)
     JS_ASSERT(static_cast<ContextFriendFields*>(this) ==
               ContextFriendFields::get(this));
 
-#ifdef JSGC_ROOT_ANALYSIS
+#if defined(JSGC_ROOT_ANALYSIS) || defined(JSGC_USE_EXACT_ROOTING)
     PodArrayZero(thingGCRooters);
-#if defined(JS_GC_ZEAL) && defined(DEBUG) && !defined(JS_THREADSAFE)
-    skipGCRooters = NULL;
 #endif
+#if defined(DEBUG) && defined(JS_GC_ZEAL) && defined(JSGC_ROOT_ANALYSIS) && !defined(JS_THREADSAFE)
+    skipGCRooters = NULL;
 #endif
 }
 

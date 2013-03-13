@@ -15,12 +15,10 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.ContentObserver;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,8 +72,10 @@ public class Tabs implements GeckoEventListener {
         registerEventListener("Content:StateChange");
         registerEventListener("Content:LoadError");
         registerEventListener("Content:PageShow");
+        registerEventListener("DOMContentLoaded");
         registerEventListener("DOMTitleChanged");
         registerEventListener("DOMLinkAdded");
+        registerEventListener("DesktopMode:Changed");
     }
 
     public void attachToActivity(GeckoApp activity) {
@@ -84,6 +84,7 @@ public class Tabs implements GeckoEventListener {
 
         // The listener will run on the background thread (see 2nd argument)
         mAccountManager.addOnAccountsUpdatedListener(mAccountListener = new OnAccountsUpdateListener() {
+            @Override
             public void onAccountsUpdated(Account[] accounts) {
                 persistAllTabs();
             }
@@ -103,13 +104,21 @@ public class Tabs implements GeckoEventListener {
         }
     }
 
-    public int getCount() {
-        return mTabs.size();
+    public int getDisplayCount() {
+        boolean getPrivate = mSelectedTab != null && mSelectedTab.isPrivate();
+        int count = 0;
+        for (Tab tab : mTabs.values()) {
+            if (tab.isPrivate() == getPrivate) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void lazyRegisterBookmarkObserver() {
         if (mContentObserver == null) {
             mContentObserver = new ContentObserver(null) {
+                @Override
                 public void onChange(boolean selfChange) {
                     for (Tab tab : mTabs.values()) {
                         tab.updateBookmark();
@@ -157,6 +166,7 @@ public class Tabs implements GeckoEventListener {
 
         mSelectedTab = tab;
         mActivity.runOnUiThread(new Runnable() { 
+            @Override
             public void run() {
                 if (isSelectedTab(tab)) {
                     notifyListeners(tab, TabEvents.SELECTED);
@@ -203,7 +213,7 @@ public class Tabs implements GeckoEventListener {
     }
 
     public Tab getTab(int id) {
-        if (getCount() == 0)
+        if (mTabs.size() == 0)
             return null;
 
         if (!mTabs.containsKey(id))
@@ -277,6 +287,7 @@ public class Tabs implements GeckoEventListener {
 
     // GeckoEventListener implementation
 
+    @Override
     public void handleMessage(String event, JSONObject message) {
         try {
             if (event.equals("Session:RestoreEnd")) {
@@ -349,11 +360,23 @@ public class Tabs implements GeckoEventListener {
                 notifyListeners(tab, Tabs.TabEvents.LOAD_ERROR);
             } else if (event.equals("Content:PageShow")) {
                 notifyListeners(tab, TabEvents.PAGE_SHOW);
+            } else if (event.equals("DOMContentLoaded")) {
+                String backgroundColor = message.getString("bgColor");
+                if (backgroundColor != null) {
+                    tab.setBackgroundColor(backgroundColor);
+                } else {
+                    // Default to white if no color is given
+                    tab.setBackgroundColor(Color.WHITE);
+                }
+                notifyListeners(tab, Tabs.TabEvents.LOADED);
             } else if (event.equals("DOMTitleChanged")) {
                 tab.updateTitle(message.getString("title"));
             } else if (event.equals("DOMLinkAdded")) {
                 tab.updateFaviconURL(message.getString("href"), message.getInt("size"));
                 notifyListeners(tab, TabEvents.LINK_ADDED);
+            } else if (event.equals("DesktopMode:Changed")) {
+                tab.setDesktopMode(message.getBoolean("desktopMode"));
+                notifyListeners(tab, TabEvents.DESKTOP_MODE_CHANGE);
             }
         } catch (Exception e) { 
             Log.w(LOGTAG, "handleMessage threw for " + event, e);
@@ -366,6 +389,7 @@ public class Tabs implements GeckoEventListener {
         while (iterator.hasNext()) {
             final Tab tab = iterator.next();
             GeckoAppShell.getHandler().post(new Runnable() {
+                @Override
                 public void run() {
                     helper.getAndProcessThumbnailFor(tab);
                 }
@@ -411,7 +435,8 @@ public class Tabs implements GeckoEventListener {
         PAGE_SHOW,
         LINK_ADDED,
         SECURITY_CHANGE,
-        READER_ENABLED
+        READER_ENABLED,
+        DESKTOP_MODE_CHANGE
     }
 
     public void notifyListeners(Tab tab, TabEvents msg) {
@@ -420,6 +445,7 @@ public class Tabs implements GeckoEventListener {
 
     public void notifyListeners(final Tab tab, final TabEvents msg, final Object data) {
         mActivity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
                 onTabChanged(tab, msg, data);
 
@@ -464,6 +490,7 @@ public class Tabs implements GeckoEventListener {
     public void persistAllTabs() {
         final Iterable<Tab> tabs = getTabsInOrder();
         GeckoAppShell.getHandler().post(new Runnable() {
+            @Override
             public void run() {
                 boolean syncIsSetup = SyncAccounts.syncAccountsExist(mActivity);
                 if (syncIsSetup)

@@ -5,9 +5,9 @@
 const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 const BRAND_SHORT_NAME = Cc["@mozilla.org/intl/stringbundle;1"]
-                         .getService(Ci.nsIStringBundleService)
-                         .createBundle("chrome://branding/locale/brand.properties")
-                         .GetStringFromName("brandShortName");
+                           .getService(Ci.nsIStringBundleService)
+                           .createBundle("chrome://branding/locale/brand.properties")
+                           .GetStringFromName("brandShortName");
 
 this.EXPORTED_SYMBOLS = [ "CmdAddonFlags", "CmdCommands" ];
 
@@ -1458,8 +1458,8 @@ XPCOMUtils.defineLazyModuleGetter(this, "TargetFactory",
               name: 'selection',
               data: ['collapse', 'expand', 'end-expand', 'expand-strict']
             },
-            description: gcli.lookup('jsbBraceStyleDesc'),
-            manual: gcli.lookup('jsbBraceStyleManual'),
+            description: gcli.lookup('jsbBraceStyleDesc2'),
+            manual: gcli.lookup('jsbBraceStyleManual2'),
             defaultValue: "collapse"
           },
           {
@@ -1868,8 +1868,8 @@ XPCOMUtils.defineLazyModuleGetter(this, "TargetFactory",
           {
             name: "chrome",
             type: "boolean",
-            description: gcli.lookupFormat("screenshotChromeDesc", [BRAND_SHORT_NAME]),
-            manual: gcli.lookupFormat("screenshotChromeManual", [BRAND_SHORT_NAME])
+            description: gcli.lookupFormat("screenshotChromeDesc2", [BRAND_SHORT_NAME]),
+            manual: gcli.lookupFormat("screenshotChromeManual2", [BRAND_SHORT_NAME])
           },
           {
             name: "delay",

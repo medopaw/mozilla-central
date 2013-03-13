@@ -20,15 +20,17 @@ SDK_XPIDLSRCS =                                 \
 	nsIDOMCharacterData.idl			\
 	nsIDOMComment.idl			\
 	nsIDOMDOMException.idl			\
+	nsIDOMDOMImplementation.idl		\
 	nsIDOMDocument.idl			\
 	nsIDOMDocumentFragment.idl		\
 	nsIDOMDocumentType.idl			\
 	nsIDOMElement.idl			\
-	nsIDOMNamedNodeMap.idl			\
+	nsIDOMMozNamedAttrMap.idl		\
 	nsIDOMNode.idl				\
 	nsIDOMNodeList.idl			\
 	nsIDOMProcessingInstruction.idl		\
 	nsIDOMText.idl				\
+	nsIDocumentRegister.idl		\
 	$(NULL)
 XPIDLSRCS =                                     \
 	nsIDOMDOMStringList.idl			\

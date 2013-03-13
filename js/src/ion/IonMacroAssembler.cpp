@@ -6,11 +6,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "jsinfer.h"
-#include "jsinferinlines.h"
-#include "IonMacroAssembler.h"
-#include "gc/Root.h"
-#include "Bailouts.h"
+
+#include "ion/Bailouts.h"
+#include "ion/IonMacroAssembler.h"
+#include "js/RootingAPI.h"
 #include "vm/ForkJoin.h"
+
+#include "jsinferinlines.h"
 
 using namespace js;
 using namespace js::ion;
@@ -507,8 +509,10 @@ MacroAssembler::initGCThing(const Register &obj, JSObject *templateObject)
                 Address(obj, elementsOffset + ObjectElements::offsetOfInitializedLength()));
         store32(Imm32(templateObject->getArrayLength()),
                 Address(obj, elementsOffset + ObjectElements::offsetOfLength()));
-        store32(Imm32(templateObject->shouldConvertDoubleElements() ? 1 : 0),
-                Address(obj, elementsOffset + ObjectElements::offsetOfConvertDoubleElements()));
+        store32(Imm32(templateObject->shouldConvertDoubleElements()
+                      ? ObjectElements::CONVERT_DOUBLE_ELEMENTS
+                      : 0),
+                Address(obj, elementsOffset + ObjectElements::offsetOfFlags()));
     } else {
         storePtr(ImmWord(emptyObjectElements), Address(obj, JSObject::offsetOfElements()));
 

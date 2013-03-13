@@ -21,10 +21,8 @@ endif # !_MSC_VER
 EXPORTS		= \
 		HTMLPropertiesCollection.h \
 		nsGenericHTMLElement.h \
-		nsHTMLIFrameElement.h \
 		nsClientRect.h \
 		nsHTMLDNSPrefetch.h \
-		nsTimeRanges.h \
 		$(NULL)
 
 EXPORTS_NAMESPACES = mozilla/dom
@@ -35,6 +33,7 @@ EXPORTS_mozilla/dom = \
 		HTMLBodyElement.h \
 		HTMLBRElement.h \
 		HTMLButtonElement.h \
+		HTMLDataElement.h \
 		HTMLDataListElement.h \
 		HTMLDivElement.h \
 		HTMLFieldSetElement.h \
@@ -43,6 +42,7 @@ EXPORTS_mozilla/dom = \
 		HTMLFrameSetElement.h \
 		HTMLHeadingElement.h \
 		HTMLHRElement.h \
+		HTMLIFrameElement.h \
 		HTMLImageElement.h \
 		HTMLLabelElement.h \
 		HTMLLegendElement.h \
@@ -54,6 +54,7 @@ EXPORTS_mozilla/dom = \
 		HTMLMetaElement.h \
 		HTMLMeterElement.h \
 		HTMLModElement.h \
+		HTMLObjectElement.h \
 		HTMLOptionElement.h \
 		HTMLOptGroupElement.h \
 		HTMLOutputElement.h \
@@ -75,6 +76,7 @@ EXPORTS_mozilla/dom = \
 		HTMLTimeElement.h \
 		HTMLTitleElement.h \
 		HTMLUnknownElement.h \
+		TimeRanges.h \
 		UndoManager.h \
 		ValidityState.h \
 		$(NULL)
@@ -94,6 +96,7 @@ CPPSRCS		= \
 		HTMLBodyElement.cpp \
 		HTMLButtonElement.cpp \
 		HTMLCanvasElement.cpp \
+		HTMLDataElement.cpp \
 		HTMLDataListElement.cpp \
 		HTMLDivElement.cpp \
 		HTMLFieldSetElement.cpp \
@@ -103,7 +106,7 @@ CPPSRCS		= \
 		HTMLFrameSetElement.cpp \
 		HTMLHRElement.cpp \
 		HTMLHeadingElement.cpp \
-		nsHTMLIFrameElement.cpp \
+		HTMLIFrameElement.cpp \
 		HTMLImageElement.cpp \
 		nsHTMLInputElement.cpp \
 		HTMLLIElement.cpp \
@@ -157,9 +160,8 @@ CPPSRCS		+= \
 		nsHTMLAudioElement.cpp \
 		nsHTMLMediaElement.cpp \
 		MediaError.cpp \
-		nsMediaFragmentURIParser.cpp \
 		HTMLSourceElement.cpp \
-		nsTimeRanges.cpp \
+		TimeRanges.cpp \
 		nsHTMLVideoElement.cpp \
 		$(NULL)
 endif
@@ -185,6 +187,7 @@ INCLUDES	+= \
 		-I$(srcdir)/../../../../editor/libeditor/base \
 		-I$(srcdir)/../../../../editor/libeditor/text \
 		-I$(srcdir)/../../../../editor/txmgr/src \
+		-I$(srcdir)/../../../../netwerk/base/src \
 		-I$(srcdir) \
 		-I$(topsrcdir)/xpcom/ds \
 		$(NULL)

@@ -801,7 +801,7 @@ jsval InterfaceToJsval(nsPIDOMWindow* aWindow, nsISupports* aObject, const nsIID
     return JSVAL_NULL;
   }
 
-  JSContext *cx = scriptContext->GetNativeContext();
+  AutoPushJSContext cx(scriptContext->GetNativeContext());
   if (!cx) {
     return JSVAL_NULL;
   }
@@ -853,7 +853,7 @@ jsval StringToJsval(nsPIDOMWindow* aWindow, nsAString& aString)
     return JSVAL_NULL;
   }
 
-  JSContext *cx = scriptContext->GetNativeContext();
+  AutoPushJSContext cx(scriptContext->GetNativeContext());
   if (!cx) {
     return JSVAL_NULL;
   }
@@ -2263,7 +2263,7 @@ void
 nsDOMDeviceStorage::DispatchMountChangeEvent(nsAString& aType)
 {
   nsCOMPtr<nsIDOMEvent> event;
-  NS_NewDOMDeviceStorageChangeEvent(getter_AddRefs(event), nullptr, nullptr);
+  NS_NewDOMDeviceStorageChangeEvent(getter_AddRefs(event), this, nullptr, nullptr);
 
   nsCOMPtr<nsIDOMDeviceStorageChangeEvent> ce = do_QueryInterface(event);
   nsresult rv = ce->InitDeviceStorageChangeEvent(NS_LITERAL_STRING("change"),
@@ -2359,7 +2359,8 @@ nsDOMDeviceStorage::Notify(const char* aReason, DeviceStorageFile* aFile)
   nsDependentSubstring newPath (fullpath, len, fullpath.Length() - len);
 
   nsCOMPtr<nsIDOMEvent> event;
-  NS_NewDOMDeviceStorageChangeEvent(getter_AddRefs(event), nullptr, nullptr);
+  NS_NewDOMDeviceStorageChangeEvent(getter_AddRefs(event), this,
+                                    nullptr, nullptr);
 
   nsCOMPtr<nsIDOMDeviceStorageChangeEvent> ce = do_QueryInterface(event);
 

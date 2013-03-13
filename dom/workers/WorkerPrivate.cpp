@@ -39,6 +39,7 @@
 #include "nsJSEnvironment.h"
 #include "nsJSUtils.h"
 #include "nsNetUtil.h"
+#include "nsProxyRelease.h"
 #include "nsSandboxFlags.h"
 #include "nsThreadUtils.h"
 #include "xpcpublic.h"
@@ -1813,6 +1814,7 @@ WorkerPrivateParent<Derived>::WorkerPrivateParent(
                                      nsCOMPtr<nsIScriptContext>& aScriptContext,
                                      nsCOMPtr<nsIURI>& aBaseURI,
                                      nsCOMPtr<nsIPrincipal>& aPrincipal,
+                                     nsCOMPtr<nsIChannel>& aChannel,
                                      nsCOMPtr<nsIContentSecurityPolicy>& aCSP,
                                      bool aEvalAllowed)
 : EventTarget(aParent ? aCx : NULL), mMutex("WorkerPrivateParent Mutex"),
@@ -1837,6 +1839,7 @@ WorkerPrivateParent<Derived>::WorkerPrivateParent(
   mScriptNotify = do_QueryInterface(mScriptContext);
   mBaseURI.swap(aBaseURI);
   mPrincipal.swap(aPrincipal);
+  mChannel.swap(aChannel);
   mCSP.swap(aCSP);
 
   if (aParent) {
@@ -2149,6 +2152,7 @@ WorkerPrivateParent<Derived>::ForgetMainThreadObjects(
   SwapToISupportsArray(mBaseURI, aDoomed);
   SwapToISupportsArray(mScriptURI, aDoomed);
   SwapToISupportsArray(mPrincipal, aDoomed);
+  SwapToISupportsArray(mChannel, aDoomed);
   SwapToISupportsArray(mCSP, aDoomed);
 
   mMainThreadObjectsForgotten = true;
@@ -2397,13 +2401,14 @@ WorkerPrivate::WorkerPrivate(JSContext* aCx, JSObject* aObject,
                              nsCOMPtr<nsIScriptContext>& aParentScriptContext,
                              nsCOMPtr<nsIURI>& aBaseURI,
                              nsCOMPtr<nsIPrincipal>& aPrincipal,
+                             nsCOMPtr<nsIChannel>& aChannel,
                              nsCOMPtr<nsIContentSecurityPolicy>& aCSP,
                              bool aEvalAllowed,
                              bool aXHRParamsAllowed)
 : WorkerPrivateParent<WorkerPrivate>(aCx, aObject, aParent, aParentJSContext,
                                      aScriptURL, aIsChromeWorker, aDomain,
                                      aWindow, aParentScriptContext, aBaseURI,
-                                     aPrincipal, aCSP, aEvalAllowed),
+                                     aPrincipal, aChannel, aCSP, aEvalAllowed),
   mJSContext(nullptr), mErrorHandlerRecursionCount(0), mNextTimeoutId(1),
   mStatus(Pending), mSuspended(false), mTimerRunning(false),
   mRunningExpiredTimeouts(false), mCloseHandlerStarted(false),
@@ -2439,6 +2444,18 @@ WorkerPrivate::Create(JSContext* aCx, JSObject* aObj, WorkerPrivate* aParent,
 
   if (aParent) {
     aParent->AssertIsOnWorkerThread();
+
+    // If the parent is going away give up now.
+    Status currentStatus;
+    {
+      MutexAutoLock lock(aParent->mMutex);
+      currentStatus = aParent->mStatus;
+    }
+
+    if (currentStatus > Running) {
+      JS_ReportError(aCx, "Cannot create child workers from the close handler!");
+      return nullptr;
+    }
 
     parentContext = aCx;
 
@@ -2598,11 +2615,52 @@ WorkerPrivate::Create(JSContext* aCx, JSObject* aObj, WorkerPrivate* aParent,
   }
 
   nsDependentString scriptURL(urlChars, urlLength);
+  nsCOMPtr<nsIChannel> channel;
+  nsresult rv;
+  if (aParent) {
+    rv =
+      scriptloader::ChannelFromScriptURLWorkerThread(aCx, aParent, scriptURL,
+                                                     getter_AddRefs(channel));
+
+    // Now that we've spun the loop there's no guarantee that our parent is
+    // still alive.  We may have received control messages initiating shutdown.
+
+    Status currentStatus;
+    {
+      MutexAutoLock lock(aParent->mMutex);
+      currentStatus = aParent->mStatus;
+    }
+
+    if (currentStatus > Running) {
+      nsCOMPtr<nsIThread> mainThread;
+      NS_GetMainThread(getter_AddRefs(mainThread));
+      if (!mainThread) {
+        MOZ_CRASH();
+      }
+
+      nsIChannel* rawChannel;
+      channel.forget(&rawChannel);
+      // If this fails we accept the leak.
+      NS_ProxyRelease(mainThread, rawChannel);
+
+      return nullptr;
+    }
+  }
+  else {
+    rv =
+      scriptloader::ChannelFromScriptURLMainThread(principal, baseURI,
+                                                   document, scriptURL,
+                                                   getter_AddRefs(channel));
+  }
+  if (NS_FAILED(rv)) {
+    scriptloader::ReportLoadError(aCx, scriptURL, rv, !aParent);
+    return nullptr;
+  }
 
   nsRefPtr<WorkerPrivate> worker =
     new WorkerPrivate(aCx, aObj, aParent, parentContext, scriptURL,
                       aIsChromeWorker, domain, window, scriptContext, baseURI,
-                      principal, csp, evalAllowed, xhrParamsAllowed);
+                      principal, channel, csp, evalAllowed, xhrParamsAllowed);
 
   worker->SetIsDOMBinding();
   worker->SetWrapper(aObj);
@@ -3251,16 +3309,17 @@ WorkerPrivate::AddChildWorker(JSContext* aCx, ParentType* aChildWorker)
 {
   AssertIsOnWorkerThread();
 
-  Status currentStatus;
+#ifdef DEBUG
   {
+    Status currentStatus;
+    {
     MutexAutoLock lock(mMutex);
     currentStatus = mStatus;
-  }
+    }
 
-  if (currentStatus > Running) {
-    JS_ReportError(aCx, "Cannot create child workers from the close handler!");
-    return false;
+    MOZ_ASSERT(currentStatus == Running);
   }
+#endif
 
   NS_ASSERTION(!mChildWorkers.Contains(aChildWorker),
                "Already know about this one!");
@@ -3879,7 +3938,7 @@ WorkerPrivate::RunExpiredTimeouts(JSContext* aCx)
   bool retval = true;
 
   AutoPtrComparator<TimeoutInfo> comparator = GetAutoPtrComparator(mTimeouts);
-  js::RootedObject global(aCx, JS_GetGlobalObject(aCx));
+  JS::RootedObject global(aCx, JS_GetGlobalObject(aCx));
   JSPrincipals* principal = GetWorkerPrincipal();
 
   // We want to make sure to run *something*, even if the timer fired a little

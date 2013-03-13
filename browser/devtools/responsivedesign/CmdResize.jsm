@@ -22,14 +22,14 @@ gcli.addCommand({
 gcli.addCommand({
   name: 'resize on',
   description: gcli.lookup('resizeModeOnDesc'),
-  manual: gcli.lookupFormat('resizeModeManual', [BRAND_SHORT_NAME]),
+  manual: gcli.lookupFormat('resizeModeManual2', [BRAND_SHORT_NAME]),
   exec: gcli_cmd_resize
 });
 
 gcli.addCommand({
   name: 'resize off',
   description: gcli.lookup('resizeModeOffDesc'),
-  manual: gcli.lookupFormat('resizeModeManual', [BRAND_SHORT_NAME]),
+  manual: gcli.lookupFormat('resizeModeManual2', [BRAND_SHORT_NAME]),
   exec: gcli_cmd_resize
 });
 
@@ -39,7 +39,7 @@ gcli.addCommand({
   buttonClass: "command-button",
   tooltipText: gcli.lookup("resizeModeToggleTooltip"),
   description: gcli.lookup('resizeModeToggleDesc'),
-  manual: gcli.lookupFormat('resizeModeManual', [BRAND_SHORT_NAME]),
+  manual: gcli.lookupFormat('resizeModeManual2', [BRAND_SHORT_NAME]),
   state: {
     isChecked: function(aTarget) {
       let browserWindow = aTarget.tab.ownerDocument.defaultView;
@@ -53,10 +53,12 @@ gcli.addCommand({
       mgr.on("off", aChangeHandler);
     },
     offChange: function(aTarget, aChangeHandler) {
-      let browserWindow = aTarget.tab.ownerDocument.defaultView;
-      let mgr = browserWindow.ResponsiveUI.ResponsiveUIManager;
-      mgr.off("on", aChangeHandler);
-      mgr.off("off", aChangeHandler);
+      if (aTarget.tab) {
+        let browserWindow = aTarget.tab.ownerDocument.defaultView;
+        let mgr = browserWindow.ResponsiveUI.ResponsiveUIManager;
+        mgr.off("on", aChangeHandler);
+        mgr.off("off", aChangeHandler);
+      }
     },
   },
   exec: gcli_cmd_resize

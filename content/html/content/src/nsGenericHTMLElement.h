@@ -517,14 +517,6 @@ public:
   static void MapCommonAttributesInto(const nsMappedAttributes* aAttributes, 
                                       nsRuleData* aRuleData);
 
-  /**
-   * This method is used by embed elements because they should ignore the hidden
-   * attribute for the moment.
-   * TODO: This should be removed when bug 614825 will be fixed.
-   */
-  static void MapCommonAttributesExceptHiddenInto(const nsMappedAttributes* aAttributes,
-                                                  nsRuleData* aRuleData);
-
   static const MappedAttributeEntry sCommonAttributeMap[];
   static const MappedAttributeEntry sImageMarginSizeAttributeMap[];
   static const MappedAttributeEntry sImageBorderAttributeMap[];
@@ -768,10 +760,6 @@ private:
   void RegUnRegAccessKey(bool aDoReg);
 
 protected:
-  virtual nsresult BeforeSetAttr(int32_t aNamespaceID, nsIAtom* aName,
-                                 const nsAttrValueOrString* aValue,
-                                 bool aNotify);
-
   virtual nsresult AfterSetAttr(int32_t aNamespaceID, nsIAtom* aName,
                                 const nsAttrValue* aValue, bool aNotify);
 
@@ -795,6 +783,12 @@ protected:
   void GetHTMLURIAttr(nsIAtom* aName, nsAString& aResult) const
   {
     GetURIAttr(aName, nullptr, aResult);
+  }
+  uint32_t GetHTMLUnsignedIntAttr(nsIAtom* aName, uint32_t aDefault)
+  {
+    uint32_t result;
+    GetUnsignedIntAttr(aName, aDefault, &result);
+    return result;
   }
 
   void SetHTMLAttr(nsIAtom* aName, const nsAString& aValue)
@@ -1915,6 +1909,7 @@ NS_DECLARE_NS_NEW_HTML_ELEMENT(Body)
 NS_DECLARE_NS_NEW_HTML_ELEMENT(Button)
 NS_DECLARE_NS_NEW_HTML_ELEMENT(Canvas)
 NS_DECLARE_NS_NEW_HTML_ELEMENT(Mod)
+NS_DECLARE_NS_NEW_HTML_ELEMENT(Data)
 NS_DECLARE_NS_NEW_HTML_ELEMENT(DataList)
 NS_DECLARE_NS_NEW_HTML_ELEMENT(Div)
 NS_DECLARE_NS_NEW_HTML_ELEMENT(FieldSet)

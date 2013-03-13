@@ -45,6 +45,8 @@ extern PRLogModuleInfo* GetDataChannelLog();
 #undef GetBinaryType
 #endif
 
+using namespace mozilla;
+
 class nsDOMDataChannel : public nsDOMEventTargetHelper,
                          public nsIDOMDataChannel,
                          public mozilla::DataChannelListener
@@ -393,7 +395,7 @@ nsDOMDataChannel::DoOnMessageAvailable(const nsACString& aData,
   nsIScriptContext* sc = sgo->GetContext();
   NS_ENSURE_TRUE(sc, NS_ERROR_FAILURE);
 
-  JSContext* cx = sc->GetNativeContext();
+  AutoPushJSContext cx(sc->GetNativeContext());
   NS_ENSURE_TRUE(cx, NS_ERROR_FAILURE);
 
   JSAutoRequest ar(cx);
@@ -421,7 +423,7 @@ nsDOMDataChannel::DoOnMessageAvailable(const nsACString& aData,
   }
 
   nsCOMPtr<nsIDOMEvent> event;
-  rv = NS_NewDOMMessageEvent(getter_AddRefs(event), nullptr, nullptr);
+  rv = NS_NewDOMMessageEvent(getter_AddRefs(event), this, nullptr, nullptr);
   NS_ENSURE_SUCCESS(rv,rv);
 
   nsCOMPtr<nsIDOMMessageEvent> messageEvent = do_QueryInterface(event);
@@ -467,7 +469,7 @@ nsDOMDataChannel::OnSimpleEvent(nsISupports* aContext, const nsAString& aName)
   }
 
   nsCOMPtr<nsIDOMEvent> event;
-  rv = NS_NewDOMEvent(getter_AddRefs(event), nullptr, nullptr);
+  rv = NS_NewDOMEvent(getter_AddRefs(event), this, nullptr, nullptr);
   NS_ENSURE_SUCCESS(rv,rv);
 
   rv = event->InitEvent(aName, false, false);

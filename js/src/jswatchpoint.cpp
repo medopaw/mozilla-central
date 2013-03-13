@@ -54,10 +54,10 @@ WatchpointWriteBarrierPost(JSRuntime *rt, WatchpointMap::Map *map, const WatchKe
                            const Watchpoint &val)
 {
 #ifdef JSGC_GENERATIONAL
-    if ((JSID_IS_OBJECT(key.id) && rt->gcNursery.isInside(JSID_TO_OBJECT(key.id))) ||
-        (JSID_IS_STRING(key.id) && rt->gcNursery.isInside(JSID_TO_STRING(key.id))) ||
-        rt->gcNursery.isInside(key.object) ||
-        rt->gcNursery.isInside(val.closure))
+    if ((JSID_IS_OBJECT(key.id) && IsInsideNursery(rt, JSID_TO_OBJECT(key.id))) ||
+        (JSID_IS_STRING(key.id) && IsInsideNursery(rt, JSID_TO_STRING(key.id))) ||
+        IsInsideNursery(rt, key.object) ||
+        IsInsideNursery(rt, val.closure))
     {
         typedef HashKeyRef<WatchpointMap::Map, WatchKey> WatchKeyRef;
         rt->gcStoreBuffer.putGeneric(WatchKeyRef(map, key));
@@ -136,7 +136,7 @@ WatchpointMap::triggerWatchpoint(JSContext *cx, HandleObject obj, HandleId id, M
     Value old;
     old.setUndefined();
     if (obj->isNative()) {
-        if (UnrootedShape shape = obj->nativeLookup(cx, id)) {
+        if (RawShape shape = obj->nativeLookup(cx, id)) {
             if (shape->hasSlot())
                 old = obj->nativeGetSlot(shape->slot());
         }

@@ -651,7 +651,7 @@ nsFrameMessageManager::ReceiveMessage(nsISupports* aTarget,
           continue;
         }
         nsCxPusher pusher;
-        NS_ENSURE_STATE(pusher.Push(ctx, false));
+        pusher.Push(ctx);
 
         JSAutoRequest ar(ctx);
         JSAutoCompartment ac(ctx, object);
@@ -1084,7 +1084,7 @@ nsFrameScriptExecutor::TryCacheLoadAndCompileScript(const nsAString& aURL,
         options.setNoScriptRval(true)
                .setFileAndLine(url.get(), 1)
                .setPrincipals(nsJSPrincipals::get(mPrincipal));
-        js::RootedObject empty(mCx, NULL);
+        JS::RootedObject empty(mCx, NULL);
         JSScript* script = JS::Compile(mCx, empty, options,
                                        dataString.get(), dataString.Length());
 

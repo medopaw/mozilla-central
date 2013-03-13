@@ -10,6 +10,15 @@
 var ContextCommands = {
   _picker: null,
 
+  get _ellipsis() {
+    delete this._ellipsis;
+    this._ellipsis = "\u2026";
+    try {
+      this._ellipsis = Services.prefs.getComplexValue("intl.ellipsis", Ci.nsIPrefLocalizedString).data;
+    } catch (ex) { }
+    return this._ellipsis;
+  },
+
   get clipboard() {
     return Cc["@mozilla.org/widget/clipboardhelper;1"]
              .getService(Ci.nsIClipboardHelper);
@@ -25,28 +34,46 @@ var ContextCommands = {
 
   // Text specific
 
+  cut: function cc_cut() {
+    let target = ContextMenuUI.popupState.target;
+
+    if (!target)
+      return;
+
+    if (target.localName === "browser") {
+      // content
+      if (ContextMenuUI.popupState.string) {
+        this.sendCommand("cut");
+
+        SelectionHelperUI.closeEditSessionAndClear();
+      }
+    } else {
+      // chrome
+      target.editor.cut();
+    }
+
+    target.focus();
+  },
+
   copy: function cc_copy() {
     let target = ContextMenuUI.popupState.target;
+
+    if (!target)
+      return;
+
     if (target.localName == "browser") {
       // content
-      if (ContextMenuUI.popupState.string != "undefined") {
-        this.clipboard.copyString(ContextMenuUI.popupState.string,
-                                  this.docRef);
-        this.showToast(Strings.browser.GetStringFromName("selectionHelper.textCopied"));
-      } else {
-        let x = ContextMenuUI.popupState.x;
-        let y = ContextMenuUI.popupState.y;
-        let json = {x: x, y: y, command: "copy" };
-        target.messageManager.sendAsyncMessage("Browser:ContextCommand", json);
+      if (ContextMenuUI.popupState.string) {
+        this.sendCommand("copy");
+
+        SelectionHelperUI.closeEditSessionAndClear();
       }
     } else {
       // chrome
       target.editor.copy();
-      this.showToast(Strings.browser.GetStringFromName("selectionHelper.textCopied"));
     }
 
-    if (target)
-      target.focus();
+    target.focus();
   },
 
   paste: function cc_paste() {
@@ -57,6 +84,7 @@ var ContextCommands = {
       let y = ContextMenuUI.popupState.y;
       let json = {x: x, y: y, command: "paste" };
       target.messageManager.sendAsyncMessage("Browser:ContextCommand", json);
+      SelectionHelperUI.closeEditSessionAndClear();
     } else {
       // chrome
       target.editor.paste(Ci.nsIClipboard.kGlobalClipboard);
@@ -101,6 +129,7 @@ var ContextCommands = {
   searchTextSetup: function cc_searchTextSetup(aRichListItem, aSearchString) {
     let defaultURI;
     let defaultName;
+    aSearchString = aSearchString.trim();
     try {
       let defaultPB = Services.prefs.getDefaultBranch(null);
       const nsIPLS = Ci.nsIPrefLocalizedString;
@@ -111,11 +140,15 @@ var ContextCommands = {
       Cu.reportError(ex);
       return false;
     }
+    let displayString = aSearchString;
+    if (displayString.length > 15) {
+      displayString = displayString.substring(0, 15) + this._ellipsis;
+    }
     // label child node
     let label = Services.strings
                         .createBundle("chrome://browser/locale/browser.properties")
-                        .formatStringFromName("browser.search.contextTextSearchLabel",
-                                              [defaultName], 1);
+                        .formatStringFromName("browser.search.contextTextSearchLabel2",
+                                              [defaultName, displayString], 2);
     aRichListItem.childNodes[0].setAttribute("value", label);
     aRichListItem.setAttribute("searchString", defaultURI);
     return true;
@@ -131,13 +164,13 @@ var ContextCommands = {
   // Link specific
 
   openLinkInNewTab: function cc_openLinkInNewTab() {
-    BrowserUI.newTab(ContextMenuUI.popupState.linkURL, Browser.selectedTab);
+    Browser.addTab(ContextMenuUI.popupState.linkURL, false, Browser.selectedTab);
+    ContextUI.peekTabs();
   },
 
   copyLink: function cc_copyLink() {
     this.clipboard.copyString(ContextMenuUI.popupState.linkURL,
                               this.docRef);
-    this.showToast(Strings.browser.GetStringFromName("selectionHelper.linkCopied"));
   },
 
   bookmarkLink: function cc_bookmarkLink() {
@@ -150,8 +183,6 @@ var ContextCommands = {
     } catch (e) {
       return;
     }
-
-    this.showToast(Strings.browser.GetStringFromName("alertLinkBookmarked"));
   },
 
   // Image specific
@@ -168,7 +199,6 @@ var ContextCommands = {
   copyImageSrc: function cc_copyImageSrc() {
     this.clipboard.copyString(ContextMenuUI.popupState.mediaURL,
                               this.docRef);
-    this.showToast(Strings.browser.GetStringFromName("selectionHelper.linkCopied"));
   },
 
   openImageInNewTab: function cc_openImageInNewTab() {
@@ -184,7 +214,6 @@ var ContextCommands = {
   copyVideoSrc: function cc_copyVideoSrc() {
     this.clipboard.copyString(ContextMenuUI.popupState.mediaURL,
                               this.docRef);
-    this.showToast(Strings.browser.GetStringFromName("selectionHelper.linkCopied"));
   },
 
   openVideoInNewTab: function cc_openVideoInNewTab() {
@@ -257,12 +286,7 @@ var ContextCommands = {
     });
   },
 
-  showToast: function showToast(aString) {
-    let toaster = Cc["@mozilla.org/toaster-alerts-service;1"].getService(Ci.nsIAlertsService);
-    toaster.showAlertNotification(null, aString, "", false, "", null);
-  },
-
-  sendCommand: function cc_playVideo(aCommand) {
+  sendCommand: function sendCommand(aCommand) {
     // Send via message manager over to ContextMenuHandler
     let browser = ContextMenuUI.popupState.target;
     browser.messageManager.sendAsyncMessage("Browser:ContextCommand", { command: aCommand });
@@ -357,7 +381,6 @@ var ContextCommands = {
     var newDir = file.parent.QueryInterface(Ci.nsILocalFile);
     Services.prefs.setComplexValue("browser.download.lastDir", Ci.nsILocalFile, newDir);
   },
-
 };
 
 function AutoChosen(aFileAutoChosen, aUriAutoChosen) {

@@ -10,8 +10,6 @@
 #include "SVGAnimatedPreserveAspectRatio.h"
 #include "nsError.h"
 #include "mozilla/dom/SVGAngle.h"
-#include "mozilla/dom/SVGAnimatedAngle.h"
-#include "mozilla/dom/SVGAnimatedLength.h"
 #include "mozilla/dom/SVGMarkerElement.h"
 #include "mozilla/dom/SVGMarkerElementBinding.h"
 #include "gfxMatrix.h"
@@ -23,9 +21,9 @@ namespace mozilla {
 namespace dom {
 
 JSObject*
-SVGMarkerElement::WrapNode(JSContext *aCx, JSObject *aScope, bool *aTriedToWrap)
+SVGMarkerElement::WrapNode(JSContext *aCx, JSObject *aScope)
 {
-  return SVGMarkerElementBinding::Wrap(aCx, aScope, this, aTriedToWrap);
+  return SVGMarkerElementBinding::Wrap(aCx, aScope, this);
 }
 
 nsSVGElement::LengthInfo SVGMarkerElement::sLengthInfo[4] =
@@ -321,7 +319,7 @@ SVGMarkerElement::GetMarkerTransform(float aStrokeWidth,
 nsSVGViewBoxRect
 SVGMarkerElement::GetViewBoxRect()
 {
-  if (mViewBox.IsExplicitlySet()) {
+  if (mViewBox.HasRect()) {
     return mViewBox.GetAnimValue();
   }
   return nsSVGViewBoxRect(
@@ -345,8 +343,7 @@ SVGMarkerElement::GetViewBoxTransform()
                       "Rendering should be disabled");
 
     gfxMatrix viewBoxTM =
-      SVGContentUtils::GetViewBoxTransform(this,
-                                           viewportWidth, viewportHeight,
+      SVGContentUtils::GetViewBoxTransform(viewportWidth, viewportHeight,
                                            viewbox.x, viewbox.y,
                                            viewbox.width, viewbox.height,
                                            mPreserveAspectRatio);

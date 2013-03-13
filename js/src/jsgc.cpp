@@ -266,7 +266,7 @@ ArenaHeader::checkSynchronizedWithFreeList() const
      * list in the zone can mutate at any moment. We cannot do any
      * checks in this case.
      */
-    if (IsBackgroundFinalized(getAllocKind()) && !zone->rt->isHeapBusy())
+    if (IsBackgroundFinalized(getAllocKind()) && zone->rt->gcHelperThread.onBackgroundThread())
         return;
 
     FreeSpan firstSpan = FreeSpan::decodeOffsets(arenaAddress(), firstFreeSpanOffsets);
@@ -281,6 +281,12 @@ ArenaHeader::checkSynchronizedWithFreeList() const
      * empty and also points to this arena. Thus they must the same.
      */
     JS_ASSERT(firstSpan.isSameNonEmptySpan(list));
+}
+
+bool
+js::gc::Cell::isTenured() const
+{
+    return true;
 }
 #endif
 
@@ -973,9 +979,6 @@ js_InitGC(JSRuntime *rt, uint32_t maxbytes)
 #endif
 
 #ifdef JSGC_GENERATIONAL
-    if (!rt->gcNursery.enable())
-        return false;
-
     if (!rt->gcStoreBuffer.enable())
         return false;
 #endif
@@ -1618,7 +1621,7 @@ js::InitTracer(JSTracer *trc, JSRuntime *rt, JSTraceCallback callback)
     trc->debugPrinter = NULL;
     trc->debugPrintArg = NULL;
     trc->debugPrintIndex = size_t(-1);
-    trc->eagerlyTraceWeakMaps = true;
+    trc->eagerlyTraceWeakMaps = TraceWeakMapValues;
 #ifdef JS_GC_ZEAL
     trc->realLocation = NULL;
 #endif
@@ -1697,7 +1700,7 @@ GCMarker::start()
      * The GC is recomputing the liveness of WeakMap entries, so we delay
      * visting entries.
      */
-    eagerlyTraceWeakMaps = JS_FALSE;
+    eagerlyTraceWeakMaps = DoNotTraceWeakMaps;
 }
 
 void
@@ -2023,7 +2026,7 @@ js::MaybeGC(JSContext *cx)
         return;
     }
 
-    double factor = rt->gcHighFrequencyGC ? 0.75 : 0.9;
+    double factor = rt->gcHighFrequencyGC ? 0.85 : 0.9;
     Zone *zone = cx->zone();
     if (zone->gcBytes > 1024 * 1024 &&
         zone->gcBytes >= factor * zone->gcTriggerBytes &&
@@ -2513,6 +2516,16 @@ GCHelperThread::doSweep()
 }
 #endif /* JS_THREADSAFE */
 
+bool
+GCHelperThread::onBackgroundThread()
+{
+#ifdef JS_THREADSAFE
+    return PR_GetCurrentThread() == getThread();
+#else
+    return false;
+#endif
+}
+
 static bool
 ReleaseObservedTypes(JSRuntime *rt)
 {
@@ -2672,7 +2685,8 @@ BeginMarkPhase(JSRuntime *rt)
     int64_t currentTime = PRMJ_Now();
 
 #ifdef DEBUG
-    CheckForCompartmentMismatches(rt);
+    if (rt->gcFullCompartmentChecks)
+        CheckForCompartmentMismatches(rt);
 #endif
 
     rt->gcIsFull = true;
@@ -2971,7 +2985,7 @@ js::gc::MarkingValidator::nonIncrementalMark()
         if (!entry)
             return;
 
-        memcpy(entry->bitmap, bitmap->bitmap, sizeof(bitmap->bitmap));
+        memcpy((void *)entry->bitmap, (void *)bitmap->bitmap, sizeof(bitmap->bitmap));
         if (!map.putNew(r.front(), entry))
             return;
     }
@@ -3837,10 +3851,8 @@ EndSweepPhase(JSRuntime *rt, JSGCInvocationKind gckind, bool lastGC)
          * script and calls rt->destroyScriptHook, the hook can still access the
          * script's filename. See bug 323267.
          */
-        if (rt->gcIsFull) {
-            SweepScriptFilenames(rt);
+        if (rt->gcIsFull)
             SweepScriptData(rt);
-        }
 
         /* Clear out any small pools that we're hanging on to. */
         if (JSC::ExecutableAllocator *execAlloc = rt->maybeExecAlloc())
@@ -4329,7 +4341,7 @@ static JS_NEVER_INLINE void
 GCCycle(JSRuntime *rt, bool incremental, int64_t budget, JSGCInvocationKind gckind, gcreason::Reason reason)
 {
     /* If we attempt to invoke the GC while we are running in the GC, assert. */
-    AutoAssertNoGC nogc;
+    JS_ASSERT(!rt->isHeapBusy());
 
 #ifdef DEBUG
     for (ZonesIter zone(rt); !zone.done(); zone.next())
@@ -4509,14 +4521,12 @@ Collect(JSRuntime *rt, bool incremental, int64_t budget,
 void
 js::GC(JSRuntime *rt, JSGCInvocationKind gckind, gcreason::Reason reason)
 {
-    AssertCanGC();
     Collect(rt, false, SliceBudget::Unlimited, gckind, reason);
 }
 
 void
 js::GCSlice(JSRuntime *rt, JSGCInvocationKind gckind, gcreason::Reason reason, int64_t millis)
 {
-    AssertCanGC();
     int64_t sliceBudget;
     if (millis)
         sliceBudget = SliceBudget::TimeBudget(millis);
@@ -4531,7 +4541,6 @@ js::GCSlice(JSRuntime *rt, JSGCInvocationKind gckind, gcreason::Reason reason, i
 void
 js::GCFinalSlice(JSRuntime *rt, JSGCInvocationKind gckind, gcreason::Reason reason)
 {
-    AssertCanGC();
     Collect(rt, true, SliceBudget::Unlimited, gckind, reason);
 }
 
@@ -4548,7 +4557,6 @@ ZonesSelected(JSRuntime *rt)
 void
 js::GCDebugSlice(JSRuntime *rt, bool limit, int64_t objCount)
 {
-    AssertCanGC();
     int64_t budget = limit ? SliceBudget::WorkBudget(objCount) : SliceBudget::Unlimited;
     if (!ZonesSelected(rt)) {
         if (IsIncrementalGCInProgress(rt))
@@ -4701,6 +4709,13 @@ gc::SetValidateGC(JSContext *cx, bool enabled)
 {
     JSRuntime *rt = cx->runtime;
     rt->gcValidate = enabled;
+}
+
+void
+gc::SetFullCompartmentChecks(JSContext *cx, bool enabled)
+{
+    JSRuntime *rt = cx->runtime;
+    rt->gcFullCompartmentChecks = enabled;
 }
 
 #ifdef DEBUG

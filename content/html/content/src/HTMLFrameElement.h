@@ -19,6 +19,8 @@ class HTMLFrameElement : public nsGenericHTMLFrameElement,
                          public nsIDOMHTMLFrameElement
 {
 public:
+  using nsGenericHTMLFrameElement::SwapFrameLoaders;
+
   HTMLFrameElement(already_AddRefed<nsINodeInfo> aNodeInfo,
                    FromParser aFromParser = NOT_FROM_PARSER);
   virtual ~HTMLFrameElement();
@@ -100,13 +102,11 @@ public:
     SetAttrHelper(nsGkAtoms::src, aSrc);
   }
 
-  already_AddRefed<nsIDocument> GetContentDocument(ErrorResult& aRv);
-
-  already_AddRefed<nsIDOMWindow> GetContentWindow(ErrorResult& aRv);
+  using nsGenericHTMLFrameElement::GetContentDocument;
+  using nsGenericHTMLFrameElement::GetContentWindow;
 
 protected:
-  virtual JSObject* WrapNode(JSContext* aCx, JSObject* aScope,
-                             bool* aTriedToWrap) MOZ_OVERRIDE;
+  virtual JSObject* WrapNode(JSContext* aCx, JSObject* aScope) MOZ_OVERRIDE;
 };
 
 } // namespace dom

@@ -783,7 +783,10 @@
             var docElement = this.ownerDocument.documentElement;
             var sep = docElement.getAttribute("titlemenuseparator");
 
-            var docTitle = aBrowser.contentTitle;
+            // Strip out any null bytes in the content title, since the
+            // underlying widget implementations of nsWindow::SetTitle pass
+            // null-terminated strings to system APIs.
+            var docTitle = aBrowser.contentTitle.replace("\0", "", "g");
 
             if (!docTitle)
               docTitle = docElement.getAttribute("titledefault");
@@ -1258,28 +1261,13 @@
             // When overflowing, new tabs are scrolled into view smoothly, which
             // doesn't go well together with the width transition. So we skip the
             // transition in that case.
-            if (aSkipAnimation ||
-                this.tabContainer.getAttribute("overflow") == "true" ||
-                !Services.prefs.getBoolPref("browser.tabs.animate")) {
+            let animate = !aSkipAnimation &&
+                          this.tabContainer.getAttribute("overflow") != "true" &&
+                          Services.prefs.getBoolPref("browser.tabs.animate");
+            if (!animate) {
               t.setAttribute("fadein", "true");
               setTimeout(function (tabContainer) {
                 tabContainer._handleNewTab(t);
-              }, 0, this.tabContainer);
-            } else {
-              setTimeout(function (tabContainer) {
-                if (t.pinned)
-                  tabContainer._handleNewTab(t);
-                else {
-                  tabContainer._handleTabTelemetryStart(tabContainer, t, aURI);
-
-                  t.setAttribute("fadein", "true");
-
-                  // This call to adjustTabstrip is redundant but needed so that
-                  // when opening a second tab, the first tab's close buttons
-                  // appears immediately rather than when the transition ends.
-                  if (tabContainer.childNodes.length == 2)
-                    tabContainer.adjustTabstrip();
-                }
               }, 0, this.tabContainer);
             }
 
@@ -1443,6 +1431,20 @@
               this._lastRelatedTab = t;
             }
 
+            if (animate) {
+              this.tabContainer._handleTabTelemetryStart(t, aURI);
+
+              // kick the animation off
+              t.clientTop;
+              t.setAttribute("fadein", "true");
+
+              // This call to adjustTabstrip is redundant but needed so that
+              // when opening a second tab, the first tab's close buttons
+              // appears immediately rather than when the transition ends.
+              if (this.tabContainer.childNodes.length == 2)
+                this.tabContainer.adjustTabstrip();
+            }
+
             return t;
           ]]>
         </body>
@@ -1573,7 +1575,7 @@
               return;
             }
 
-            this.tabContainer._handleTabTelemetryStart(this.tabContainer, aTab);
+            this.tabContainer._handleTabTelemetryStart(aTab);
 
             this._blurTab(aTab);
             aTab.removeAttribute("fadein");
@@ -2844,17 +2846,13 @@
 
         var tabs = document.getBindingParent(this);
 
-        if (tabs.hasAttribute("dontresize") || tabs.hasAttribute("using-closing-tabs-spacer")) {
-          tabs.mTabstrip._scrollButtonUp.style.visibility = "hidden";
-          tabs.mTabstrip._scrollButtonDown.style.visibility = "hidden";
-        } else {
-          tabs.removeAttribute("overflow");
-        }
-
         tabs.tabbrowser._removingTabs.forEach(tabs.tabbrowser.removeTab,
                                               tabs.tabbrowser);
 
-        tabs._positionPinnedTabs();
+        if (!tabs.hasAttribute("dontresize") && !tabs._closingTabsSpacer.style.minWidth) {
+          tabs.removeAttribute("overflow");
+          tabs._positionPinnedTabs();
+        }
       ]]></handler>
       <handler event="overflow"><![CDATA[
         if (event.detail == 0)
@@ -3110,16 +3108,19 @@
           if (!tabs.length)
             return;
 
-          var isEndTab = (aTab._tPos > tabs[tabs.length-1]._tPos);
-          var tabWidth = aTab.getBoundingClientRect().width;
+          this.tabbrowser.addEventListener("mousemove", this, false);
+          window.addEventListener("mouseout", this, false);
 
-          // Locking is neither in effect nor needed, so let tabs expand normally.
-          if (isEndTab && !this.hasAttribute("dontresize"))
-            return;
-
-          // Let spacer grow to the maximum and lock it, then let tabs expand normally
+          let isEndTab = (aTab._tPos > tabs[tabs.length-1]._tPos);
           if (isEndTab) {
             let spacer = this._closingTabsSpacer;
+            if (!spacer.style.minWidth)
+              spacer.style.minWidth = 0;
+
+            // Locking is neither in effect nor needed, so let tabs expand normally
+            if (!this.hasAttribute("dontresize"))
+              return;
+
             spacer.style.MozBoxFlex = 1;
             spacer.style.minWidth = getComputedStyle(spacer).width;
             spacer.style.MozBoxFlex = "";
@@ -3132,6 +3133,7 @@
           }
 
           if (!this.hasAttribute("dontresize")) {
+            let tabWidth = aTab.getBoundingClientRect().width;
             this._delayResizingRule.style.setProperty("max-width", tabWidth + "px", "important");
             this.setAttribute("dontanimate", "true");
             this.setAttribute("dontresize", "true");
@@ -3142,21 +3144,16 @@
           if (!this.mTabstrip._scrollButtonUp.disabled) {
             let spacer = this._closingTabsSpacer;
             let width = parseFloat(spacer.style.minWidth) || 0;
-            width += tabWidth;
+            width += aTab.getBoundingClientRect().width;
 
             if (!this.mTabstrip._scrollButtonDown.disabled) {
               let scrollbox = this.mTabstrip._scrollbox;
               width -= scrollbox.scrollLeftMax - scrollbox.scrollLeft;
             }
 
-            if (width >= 0) {
+            if (width >= 0)
               spacer.style.minWidth = width + "px";
-              this.setAttribute("using-closing-tabs-spacer", "true");
-            }
           }
-
-          this.tabbrowser.addEventListener("mousemove", this, false);
-          window.addEventListener("mouseout", this, false);
         ]]></body>
       </method>
 
@@ -3166,13 +3163,12 @@
           window.removeEventListener("mouseout", this, false);
 
           this._closingTabsSpacer.style.minWidth = "";
-          this.removeAttribute("using-closing-tabs-spacer");
           this.removeAttribute("dontresize");
 
-          if (this.hasAttribute("overflow") && this.mTabstrip._scrollbox.scrollWidth <= this.mTabstrip._scrollbox.clientWidth) {
-            this.mTabstrip._scrollButtonUp.style.visibility = "";
-            this.mTabstrip._scrollButtonDown.style.visibility = "";
+          if (this.hasAttribute("overflow") &&
+              this.mTabstrip._scrollbox.scrollWidth <= this.mTabstrip._scrollbox.clientWidth) {
             this.removeAttribute("overflow");
+            this._positionPinnedTabs();
           }
         ]]></body>
       </method>
@@ -3522,13 +3518,12 @@
       </method>
 
       <method name="_handleTabTelemetryStart">
-        <parameter name="aTabContainer"/>
         <parameter name="aTab"/>
         <parameter name="aURI"/>
         <body>
         <![CDATA[
           // Animation-smoothness telemetry/logging
-          if (Services.telemetry.canRecord || aTabContainer._tabAnimationLoggingEnabled) {
+          if (Services.telemetry.canRecord || this._tabAnimationLoggingEnabled) {
             if (aURI == "about:newtab" && (aTab._tPos == 1 || aTab._tPos == 2)) {
               // Indicate newtab page animation where other tabs are unaffected
               // (for which case, the 2nd or 3rd tabs are good representatives, even if not absolute)

@@ -524,6 +524,11 @@ public:
   virtual bool isOuterWindow() {
     return true;
   }
+
+  virtual bool finalizeInBackground(JS::HandleValue priv) {
+    return false;
+  }
+
   virtual JSString *obj_toString(JSContext *cx, JSObject *wrapper) MOZ_OVERRIDE;
   virtual void finalize(JSFreeOp *fop, JSObject *proxy) MOZ_OVERRIDE;
 
@@ -1339,7 +1344,7 @@ nsGlobalWindow::FreeInnerObjects()
 
   // Kill all of the workers for this window.
   nsIScriptContext *scx = GetContextInternal();
-  JSContext *cx = scx ? scx->GetNativeContext() : nullptr;
+  AutoPushJSContext cx(scx ? scx->GetNativeContext() : nullptr);
   mozilla::dom::workers::CancelWorkersForWindow(cx, this);
 
   // Close all IndexedDB databases for this window.
@@ -1893,7 +1898,7 @@ NS_IMPL_ISUPPORTS1(WindowStateHolder, WindowStateHolder)
 nsresult
 nsGlobalWindow::CreateOuterObject(nsGlobalWindow* aNewInner)
 {
-  JSContext* cx = mContext->GetNativeContext();
+  AutoPushJSContext cx(mContext->GetNativeContext());
 
   JSObject* outer = NewOuterWindowProxy(cx, aNewInner->FastGetGlobalJSObject(),
                                         IsChromeWindow());
@@ -2077,9 +2082,7 @@ nsGlobalWindow::SetNewDocument(nsIDocument* aDocument,
   bool thisChrome = IsChromeWindow();
 
   nsCxPusher cxPusher;
-  if (!cxPusher.Push(cx)) {
-    return NS_ERROR_FAILURE;
-  }
+  cxPusher.Push(cx);
 
   XPCAutoRequest ar(cx);
 
@@ -2997,11 +3000,10 @@ nsGlobalWindow::SetArguments(nsIArray *aArguments, nsIPrincipal *aOrigin)
 nsresult
 nsGlobalWindow::DefineArgumentsProperty(nsIArray *aArguments)
 {
-  JSContext *cx;
   nsIScriptContext *ctx = GetOuterWindowInternal()->mContext;
-  NS_ENSURE_TRUE(aArguments && ctx &&
-                 (cx = ctx->GetNativeContext()),
-                 NS_ERROR_NOT_INITIALIZED);
+  NS_ENSURE_TRUE(aArguments && ctx, NS_ERROR_NOT_INITIALIZED);
+  AutoPushJSContext cx(ctx->GetNativeContext());
+  NS_ENSURE_TRUE(cx, NS_ERROR_NOT_INITIALIZED);
 
   if (mIsModalContentWindow) {
     // Modal content windows don't have an "arguments" property, they
@@ -4731,7 +4733,7 @@ nsGlobalWindow::SetFullScreenInternal(bool aFullScreen, bool aRequireTrust)
   GetFullScreen(&rootWinFullScreen);
   // Only chrome can change our fullScreen mode, unless we're running in
   // untrusted mode.
-  if (aFullScreen == rootWinFullScreen || 
+  if (aFullScreen == rootWinFullScreen ||
       (aRequireTrust && !nsContentUtils::IsCallerChrome())) {
     return NS_OK;
   }
@@ -4792,7 +4794,8 @@ nsGlobalWindow::SetFullScreenInternal(bool aFullScreen, bool aRequireTrust)
     // DOM full-screen mode and the user exits full-screen mode with
     // the browser full-screen mode toggle keyboard-shortcut, we'll detect
     // that and leave DOM API full-screen mode too.
-    nsIDocument::ExitFullScreen(false);
+    nsCOMPtr<nsIDocument> doc(do_QueryInterface(mDocument));
+    nsIDocument::ExitFullscreen(doc, /* async */ false);
   }
 
   if (!mWakeLock && mFullScreen) {
@@ -6487,25 +6490,10 @@ PostMessageEvent::Run()
                     "should have been passed an outer window!");
 
   // Get the JSContext for the target window
-  JSContext* cx = nullptr;
   nsIScriptContext* scriptContext = mTargetWindow->GetContext();
-  if (scriptContext) {
-    cx = scriptContext->GetNativeContext();
-  }
-
-  if (!cx) {
-    // This can happen if mTargetWindow has been closed.  To avoid leaking,
-    // we need to find a JSContext.
-    nsIThreadJSContextStack* cxStack = nsContentUtils::ThreadJSContextStack();
-    if (cxStack) {
-      cx = cxStack->GetSafeJSContext();
-    }
-
-    if (!cx) {
-      NS_WARNING("Cannot find a JSContext!  Leaking PostMessage buffer.");
-      return NS_ERROR_FAILURE;
-    }
-  }
+  AutoPushJSContext cx(scriptContext ? scriptContext->GetNativeContext()
+                                     : nsContentUtils::GetSafeJSContext());
+  MOZ_ASSERT(cx);
 
   // If we bailed before this point we're going to leak mMessage, but
   // that's probably better than crashing.
@@ -8338,7 +8326,7 @@ nsGlobalWindow::FireHashchange(const nsAString &aOldURL,
   // Create a new hashchange event.
   nsCOMPtr<nsIDOMEvent> domEvent;
   nsresult rv =
-    nsEventDispatcher::CreateEvent(presContext, nullptr,
+    nsEventDispatcher::CreateEvent(this, presContext, nullptr,
                                    NS_LITERAL_STRING("hashchangeevent"),
                                    getter_AddRefs(domEvent));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -8394,7 +8382,7 @@ nsGlobalWindow::DispatchSyncPopState()
 
   // Create a new popstate event
   nsCOMPtr<nsIDOMEvent> domEvent;
-  rv = nsEventDispatcher::CreateEvent(presContext, nullptr,
+  rv = nsEventDispatcher::CreateEvent(this, presContext, nullptr,
                                       NS_LITERAL_STRING("popstateevent"),
                                       getter_AddRefs(domEvent));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -9381,7 +9369,8 @@ nsGlobalWindow::Observe(nsISupports* aSubject, const char* aTopic,
 #ifdef MOZ_B2G
   if (!nsCRT::strcmp(aTopic, NS_NETWORK_ACTIVITY_BLIP_UPLOAD_TOPIC) ||
       !nsCRT::strcmp(aTopic, NS_NETWORK_ACTIVITY_BLIP_DOWNLOAD_TOPIC)) {
-    nsRefPtr<nsDOMEvent> event = new nsDOMEvent(nullptr, nullptr);
+    nsCOMPtr<nsIDOMEvent> event;
+    NS_NewDOMEvent(getter_AddRefs(event), this, nullptr, nullptr);
     nsresult rv = event->InitEvent(
       !nsCRT::strcmp(aTopic, NS_NETWORK_ACTIVITY_BLIP_UPLOAD_TOPIC)
         ? NETWORK_UPLOAD_EVENT_NAME
@@ -9426,7 +9415,7 @@ nsGlobalWindow::CloneStorageEvent(const nsAString& aType,
   aEvent->GetUrl(url);
   aEvent->GetStorageArea(getter_AddRefs(storageArea));
 
-  NS_NewDOMStorageEvent(getter_AddRefs(domEvent), nullptr, nullptr);
+  NS_NewDOMStorageEvent(getter_AddRefs(domEvent), this, nullptr, nullptr);
   aEvent = do_QueryInterface(domEvent);
   return aEvent->InitStorageEvent(aType, canBubble, cancelable,
                                   key, oldValue, newValue,
@@ -9961,7 +9950,8 @@ nsGlobalWindow::RunTimeoutHandler(nsTimeout* aTimeout,
     uint32_t lineNo = 0;
     handler->GetLocation(&filename, &lineNo);
 
-    JS::CompileOptions options(aScx->GetNativeContext());
+    AutoPushJSContext cx(aScx->GetNativeContext());
+    JS::CompileOptions options(cx);
     options.setFileAndLine(filename, lineNo)
            .setVersion(JSVERSION_DEFAULT);
     aScx->EvaluateString(nsDependentString(script), *FastGetGlobalJSObject(),
@@ -10754,7 +10744,7 @@ nsGlobalWindow::SuspendTimeouts(uint32_t aIncrease,
 
     // Suspend all of the workers for this window.
     nsIScriptContext *scx = GetContextInternal();
-    JSContext *cx = scx ? scx->GetNativeContext() : nullptr;
+    AutoPushJSContext cx(scx ? scx->GetNativeContext() : nullptr);
     mozilla::dom::workers::SuspendWorkersForWindow(cx, this);
 
     TimeStamp now = TimeStamp::Now();
@@ -10834,7 +10824,7 @@ nsGlobalWindow::ResumeTimeouts(bool aThawChildren)
 
     // Resume all of the workers for this window.
     nsIScriptContext *scx = GetContextInternal();
-    JSContext *cx = scx ? scx->GetNativeContext() : nullptr;
+    AutoPushJSContext cx(scx ? scx->GetNativeContext() : nullptr);
     mozilla::dom::workers::ResumeWorkersForWindow(cx, this);
 
     // Restore all of the timeouts, using the stored time remaining
@@ -11336,7 +11326,7 @@ nsGlobalChromeWindow::GetMessageManager(nsIMessageBroadcaster** aManager)
   if (!mMessageManager) {
     nsIScriptContext* scx = GetContextInternal();
     NS_ENSURE_STATE(scx);
-    JSContext* cx = scx->GetNativeContext();
+    AutoPushJSContext cx(scx->GetNativeContext());
     NS_ENSURE_STATE(cx);
     nsCOMPtr<nsIMessageBroadcaster> globalMM =
       do_GetService("@mozilla.org/globalmessagemanager;1");

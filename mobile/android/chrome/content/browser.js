@@ -30,6 +30,9 @@ XPCOMUtils.defineLazyGetter(this, "DebuggerServer", function() {
   return DebuggerServer;
 });
 
+XPCOMUtils.defineLazyModuleGetter(this, "UserAgentOverrides",
+                                  "resource://gre/modules/UserAgentOverrides.jsm");
+
 XPCOMUtils.defineLazyGetter(this, "NetUtil", function() {
   Cu.import("resource://gre/modules/NetUtil.jsm");
   return NetUtil;
@@ -166,6 +169,7 @@ var Strings = {};
 var BrowserApp = {
   _tabs: [],
   _selectedTab: null,
+  _prefObservers: [],
 
   get isTablet() {
     let sysInfo = Cc["@mozilla.org/system-info;1"].getService(Ci.nsIPropertyBag2);
@@ -197,11 +201,14 @@ var BrowserApp = {
     Services.obs.addObserver(this, "Browser:Quit", false);
     Services.obs.addObserver(this, "Preferences:Get", false);
     Services.obs.addObserver(this, "Preferences:Set", false);
+    Services.obs.addObserver(this, "Preferences:Observe", false);
+    Services.obs.addObserver(this, "Preferences:RemoveObservers", false);
     Services.obs.addObserver(this, "ScrollTo:FocusedInput", false);
     Services.obs.addObserver(this, "Sanitize:ClearData", false);
     Services.obs.addObserver(this, "FullScreen:Exit", false);
     Services.obs.addObserver(this, "Viewport:Change", false);
     Services.obs.addObserver(this, "Viewport:Flush", false);
+    Services.obs.addObserver(this, "Viewport:FixedMarginsChanged", false);
     Services.obs.addObserver(this, "Passwords:Init", false);
     Services.obs.addObserver(this, "FormHistory:Init", false);
     Services.obs.addObserver(this, "ToggleProfiling", false);
@@ -567,7 +574,7 @@ var BrowserApp = {
 
     let tab = this.selectedTab;
     if (!tab)
-      return true;
+      return false;
     return tab.contentDocumentIsDisplayed;
   },
 
@@ -879,15 +886,22 @@ var BrowserApp = {
     webBrowserPrint.print(printSettings, download);
   },
 
-  getPreferences: function getPreferences(aPrefNames) {
+  getPreferences: function getPreferences(aPrefsRequest, aListen) {
     try {
-      let json = JSON.parse(aPrefNames);
       let prefs = [];
 
-      for each (let prefName in json.preferences) {
+      for each (let prefName in aPrefsRequest.preferences) {
         let pref = {
           name: prefName
         };
+
+        if (aListen) {
+          if (this._prefObservers[prefName])
+            this._prefObservers[prefName].push(aPrefsRequest.requestId);
+          else
+            this._prefObservers[prefName] = [ aPrefsRequest.requestId ];
+          Services.prefs.addObserver(prefName, this, false);
+        }
 
         // The plugin pref is actually two separate prefs, so
         // we need to handle it differently
@@ -952,10 +966,33 @@ var BrowserApp = {
 
       sendMessageToJava({
         type: "Preferences:Data",
-        requestId: json.requestId,    // opaque request identifier, can be any string/int/whatever
+        requestId: aPrefsRequest.requestId,    // opaque request identifier, can be any string/int/whatever
         preferences: prefs
       });
-    } catch (e) {}
+
+    } catch (e) {
+      dump("Unhandled exception getting prefs: " + e);
+    }
+  },
+
+  removePreferenceObservers: function removePreferenceObservers(aRequestId) {
+    let newPrefObservers = [];
+    for (let prefName in this._prefObservers) {
+      let requestIds = this._prefObservers[prefName];
+      // Remove the requestID from the preference handlers
+      let i = requestIds.indexOf(aRequestId);
+      if (i >= 0) {
+        requestIds.splice(i, 1);
+      }
+
+      // If there are no more request IDs, remove the observer
+      if (requestIds.length == 0) {
+        Services.prefs.removeObserver(prefName, this);
+      } else {
+        newPrefObservers[prefName] = requestIds;
+      }
+    }
+    this._prefObservers = newPrefObservers;
   },
 
   setPreferences: function setPreferences(aPref) {
@@ -1181,11 +1218,19 @@ var BrowserApp = {
         break;
 
       case "Preferences:Get":
-        this.getPreferences(aData);
+        this.getPreferences(JSON.parse(aData));
         break;
 
       case "Preferences:Set":
         this.setPreferences(aData);
+        break;
+
+      case "Preferences:Observe":
+        this.getPreferences(JSON.parse(aData), true);
+        break;
+
+      case "Preferences:RemoveObservers":
+        this.removePreferenceObservers(aData);
         break;
 
       case "ScrollTo:FocusedInput":
@@ -1247,6 +1292,18 @@ var BrowserApp = {
 
       case "gather-telemetry":
         sendMessageToJava({ type: "Telemetry:Gather" });
+        break;
+
+      case "Viewport:FixedMarginsChanged":
+        gViewportMargins = JSON.parse(aData);
+        break;
+
+      case "nsPref:changed":
+        for each (let requestId in this._prefObservers[aData]) {
+          let request = { requestId : requestId,
+                          preferences : [ aData ] };
+          this.getPreferences(request, false);
+        }
         break;
 
       default:
@@ -2393,9 +2450,6 @@ var SelectionHandler = {
   },
 
   positionHandles: function sh_positionHandles() {
-    // Translate coordinates to account for selections in sub-frames. We can't cache
-    // this because the top-level page may have scrolled since selection started.
-    let offset = this._getViewOffset();
     let scrollX = {}, scrollY = {};
     this._view.top.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils).getScrollXY(false, scrollX, scrollY);
 
@@ -2415,26 +2469,33 @@ var SelectionHandler = {
 
     let positions = null;
     if (this._activeType == this.TYPE_CURSOR) {
+      // The left and top properties returned are relative to the client area
+      // of the window, so we don't need to account for a sub-frame offset.
       let cursor = this._cwu.sendQueryContentEvent(this._cwu.QUERY_CARET_RECT, this._target.selectionEnd, 0, 0, 0);
       let x = cursor.left;
       let y = cursor.top + cursor.height;
-      positions = [ { handle: this.HANDLE_TYPE_MIDDLE,
-                     left: x + offset.x + scrollX.value,
-                     top: y + offset.y + scrollY.value,
-                     hidden: checkHidden(x, y) } ];
+      positions = [{ handle: this.HANDLE_TYPE_MIDDLE,
+                     left: x + scrollX.value,
+                     top: y + scrollY.value,
+                     hidden: checkHidden(x, y) }];
     } else {
       let sx = this.cache.start.x;
       let sy = this.cache.start.y;
       let ex = this.cache.end.x;
       let ey = this.cache.end.y;
-      positions = [ { handle: this.HANDLE_TYPE_START,
+
+      // Translate coordinates to account for selections in sub-frames. We can't cache
+      // this because the top-level page may have scrolled since selection started.
+      let offset = this._getViewOffset();
+
+      positions = [{ handle: this.HANDLE_TYPE_START,
                      left: sx + offset.x + scrollX.value,
                      top: sy + offset.y + scrollY.value,
                      hidden: checkHidden(sx, sy) },
                    { handle: this.HANDLE_TYPE_END,
                      left: ex + offset.x + scrollX.value,
                      top: ey + offset.y + scrollY.value,
-                     hidden: checkHidden(ex, ey) } ];
+                     hidden: checkHidden(ex, ey) }];
     }
 
     sendMessageToJava({
@@ -2590,7 +2651,8 @@ var UserAgent = {
 
   init: function ua_init() {
     Services.obs.addObserver(this, "DesktopMode:Change", false);
-    Services.obs.addObserver(this, "http-on-modify-request", false);
+    UserAgentOverrides.init();
+    UserAgentOverrides.addComplexOverride(this.onRequest.bind(this));
 
     // See https://developer.mozilla.org/en/Gecko_user_agent_string_reference
     this.DESKTOP_UA = Cc["@mozilla.org/network/protocol;1?name=http"]
@@ -2601,7 +2663,39 @@ var UserAgent = {
 
   uninit: function ua_uninit() {
     Services.obs.removeObserver(this, "DesktopMode:Change");
-    Services.obs.removeObserver(this, "http-on-modify-request");
+    UserAgentOverrides.uninit();
+  },
+
+  onRequest: function(channel, defaultUA) {
+    let channelWindow = this._getWindowForRequest(channel);
+    let tab = BrowserApp.getTabForWindow(channelWindow);
+    if (tab == null)
+      return;
+
+    let ua = this.getUserAgentForUriAndTab(channel.URI, tab, defaultUA);
+    if (ua)
+      channel.setRequestHeader("User-Agent", ua, false);
+  },
+
+  getUserAgentForWindow: function ua_getUserAgentForWindow(aWindow, defaultUA) {
+    let tab = BrowserApp.getTabForWindow(aWindow.top);
+    if (tab)
+      return this.getUserAgentForUriAndTab(tab.browser.currentURI, tab, defaultUA);
+    return defaultUA;
+  },
+
+  getUserAgentForUriAndTab: function ua_getUserAgentForUriAndTab(aUri, aTab, defaultUA) {
+    if (this.YOUTUBE_DOMAIN.test(aUri.host)) {
+      // Send the phone UA to youtube if this is a tablet
+      if (defaultUA.indexOf("Android; Mobile;") === -1)
+        return defaultUA.replace("Android;", "Android; Mobile;");
+    }
+
+    // Send desktop UA if "Request Desktop Site" is enabled
+    if (aTab.desktopMode)
+      return this.DESKTOP_UA;
+
+    return defaultUA;
   },
 
   _getRequestLoadContext: function ua_getRequestLoadContext(aRequest) {
@@ -2628,36 +2722,11 @@ var UserAgent = {
   },
 
   observe: function ua_observe(aSubject, aTopic, aData) {
-    switch (aTopic) {
-      case "DesktopMode:Change": {
-        let args = JSON.parse(aData);
-        let tab = BrowserApp.getTabForId(args.tabId);
-        if (tab != null)
-          tab.reloadWithMode(args.desktopMode);
-        break;
-      }
-      case "http-on-modify-request": {
-        let channel = aSubject.QueryInterface(Ci.nsIHttpChannel);
-        let channelWindow = this._getWindowForRequest(channel);
-        let tab = BrowserApp.getTabForWindow(channelWindow);
-        if (tab == null)
-          break;
-
-        if (this.YOUTUBE_DOMAIN.test(channel.URI.host)) {
-          let ua = Cc["@mozilla.org/network/protocol;1?name=http"].getService(Ci.nsIHttpProtocolHandler).userAgent;
-          // Send the phone UA to youtube if this is a tablet
-          if (ua.indexOf("Android; Mobile;") === -1) {
-            ua = ua.replace("Android;", "Android; Mobile;");
-            channel.setRequestHeader("User-Agent", ua, false);
-          }
-        }
-
-        // Send desktop UA if "Request Desktop Site" is enabled
-        if (tab.desktopMode)
-          channel.setRequestHeader("User-Agent", this.DESKTOP_UA, false);
-
-        break;
-      }
+    if (aTopic === "DesktopMode:Change") {
+      let args = JSON.parse(aData);
+      let tab = BrowserApp.getTabForId(args.tabId);
+      if (tab != null)
+        tab.reloadWithMode(args.desktopMode);
     }
   }
 };
@@ -2770,6 +2839,12 @@ nsBrowserAccess.prototype = {
 let gScreenWidth = 1;
 let gScreenHeight = 1;
 
+// The margins that should be applied to the viewport for fixed position
+// children. This is used to avoid browser chrome permanently obscuring
+// fixed position content, and also to make sure window-sized pages take
+// into account said browser chrome.
+let gViewportMargins = { top: 0, right: 0, bottom: 0, left: 0};
+
 function Tab(aURL, aParams) {
   this.browser = null;
   this.id = 0;
@@ -2777,7 +2852,14 @@ function Tab(aURL, aParams) {
   this.showProgress = true;
   this._zoom = 1.0;
   this._drawZoom = 1.0;
+  this._fixedMarginLeft = 0;
+  this._fixedMarginTop = 0;
+  this._fixedMarginRight = 0;
+  this._fixedMarginBottom = 0;
   this.userScrollPos = { x: 0, y: 0 };
+  this.viewportExcludesHorizontalMargins = true;
+  this.viewportExcludesVerticalMargins = true;
+  this.updatingViewportForPageSizeChange = false;
   this.contentDocumentIsDisplayed = true;
   this.pluginDoorhangerTimeout = null;
   this.shouldShowPluginDoorhanger = true;
@@ -2950,7 +3032,7 @@ Tab.prototype = {
       sendMessageToJava({
         type: "DesktopMode:Changed",
         desktopMode: aDesktopMode,
-        tabId: this.id
+        tabID: this.id
       });
     }
 
@@ -3066,8 +3148,8 @@ Tab.prototype = {
         this._drawZoom = resolution;
         cwu.setResolution(resolution, resolution);
       }
-    } else if (resolution != zoom) {
-      dump("Warning: setDisplayPort resolution did not match zoom for background tab!");
+    } else if (Math.abs(resolution - zoom) >= 1e-6) {
+      dump("Warning: setDisplayPort resolution did not match zoom for background tab! (" + resolution + " != " + zoom + ")");
     }
 
     // Finally, we set the display port, taking care to convert everything into the CSS-pixel
@@ -3246,15 +3328,34 @@ Tab.prototype = {
   setScrollClampingSize: function(zoom) {
     let viewportWidth = gScreenWidth / zoom;
     let viewportHeight = gScreenHeight / zoom;
+    let screenWidth = gScreenWidth;
+    let screenHeight = gScreenHeight;
+
     let [pageWidth, pageHeight] = this.getPageSize(this.browser.contentDocument,
                                                    viewportWidth, viewportHeight);
 
+    // Check if the page would fit into either of the viewport dimensions minus
+    // the margins and shrink the screen size accordingly so that the aspect
+    // ratio calculation below works correctly in these situations.
+    // We take away the margin size over two to account for rounding errors,
+    // as the browser size set in updateViewportSize doesn't allow for any
+    // size between these two values (and thus anything between them is
+    // attributable to rounding error).
+    if ((pageHeight * zoom) < gScreenHeight - (gViewportMargins.top + gViewportMargins.bottom) / 2) {
+      screenHeight = gScreenHeight - gViewportMargins.top - gViewportMargins.bottom;
+      viewportHeight = screenHeight / zoom;
+    }
+    if ((pageWidth * zoom) < gScreenWidth - (gViewportMargins.left + gViewportMargins.right) / 2) {
+      screenWidth = gScreenWidth - gViewportMargins.left - gViewportMargins.right;
+      viewportWidth = screenWidth / zoom;
+    }
+
     // Make sure the aspect ratio of the screen is maintained when setting
     // the clamping scroll-port size.
-    let factor = Math.min(viewportWidth / gScreenWidth, pageWidth / gScreenWidth,
-                          viewportHeight / gScreenHeight, pageHeight / gScreenHeight);
-    let scrollPortWidth = gScreenWidth * factor;
-    let scrollPortHeight = gScreenHeight * factor;
+    let factor = Math.min(viewportWidth / screenWidth, pageWidth / screenWidth,
+                          viewportHeight / screenHeight, pageHeight / screenHeight);
+    let scrollPortWidth = Math.min(screenWidth * factor, pageWidth * zoom);
+    let scrollPortHeight = Math.min(screenHeight * factor, pageHeight * zoom);
 
     let win = this.browser.contentWindow;
     win.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils).
@@ -3291,6 +3392,19 @@ Tab.prototype = {
     if (aViewport.displayPort)
       this.setDisplayPort(aViewport.displayPort);
 
+    // Store fixed margins for later retrieval in getViewport.
+    this._fixedMarginLeft = aViewport.fixedMarginLeft;
+    this._fixedMarginTop = aViewport.fixedMarginTop;
+    this._fixedMarginRight = aViewport.fixedMarginRight;
+    this._fixedMarginBottom = aViewport.fixedMarginBottom;
+
+    let dwi = win.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowUtils);
+    dwi.setContentDocumentFixedPositionMargins(
+      aViewport.fixedMarginTop / aViewport.zoom,
+      aViewport.fixedMarginRight / aViewport.zoom,
+      aViewport.fixedMarginBottom / aViewport.zoom,
+      aViewport.fixedMarginLeft / aViewport.zoom);
+
     Services.obs.notifyObservers(null, "after-viewport-change", "");
   },
 
@@ -3314,20 +3428,27 @@ Tab.prototype = {
   },
 
   getViewport: function() {
+    let screenW = gScreenWidth - gViewportMargins.left - gViewportMargins.right;
+    let screenH = gScreenHeight - gViewportMargins.top - gViewportMargins.bottom;
+
     let viewport = {
-      width: gScreenWidth,
-      height: gScreenHeight,
-      cssWidth: gScreenWidth / this._zoom,
-      cssHeight: gScreenHeight / this._zoom,
+      width: screenW,
+      height: screenH,
+      cssWidth: screenW / this._zoom,
+      cssHeight: screenH / this._zoom,
       pageLeft: 0,
       pageTop: 0,
-      pageRight: gScreenWidth,
-      pageBottom: gScreenHeight,
+      pageRight: screenW,
+      pageBottom: screenH,
       // We make up matching css page dimensions
       cssPageLeft: 0,
       cssPageTop: 0,
-      cssPageRight: gScreenWidth / this._zoom,
-      cssPageBottom: gScreenHeight / this._zoom,
+      cssPageRight: screenW / this._zoom,
+      cssPageBottom: screenH / this._zoom,
+      fixedMarginLeft: this._fixedMarginLeft,
+      fixedMarginTop: this._fixedMarginTop,
+      fixedMarginRight: this._fixedMarginRight,
+      fixedMarginBottom: this._fixedMarginBottom,
       zoom: this._zoom,
     };
 
@@ -3377,6 +3498,20 @@ Tab.prototype = {
     let displayPort = getBridge().getDisplayPort(aPageSizeUpdate, BrowserApp.isBrowserContentDocumentDisplayed(), this.id, viewport);
     if (displayPort != null)
       this.setDisplayPort(displayPort);
+
+    // If the page size has changed so that it might or might not fit on the
+    // screen with the margins included, run updateViewportSize to resize the
+    // browser accordingly. The -1 is to account for rounding errors.
+    if (!this.updatingViewportForPageSizeChange) {
+      this.updatingViewportForPageSizeChange = true;
+      if (((viewport.pageBottom - viewport.pageTop <= gScreenHeight - 1) !=
+           this.viewportExcludesVerticalMargins) ||
+          ((viewport.pageRight - viewport.pageLeft <= gScreenWidth - 1) !=
+           this.viewportExcludesHorizontalMargins)) {
+        this.updateViewportSize(gScreenWidth);
+      }
+      this.updatingViewportForPageSizeChange = false;
+    }
   },
 
   handleEvent: function(aEvent) {
@@ -3803,9 +3938,11 @@ Tab.prototype = {
     if (!browser)
       return;
 
-    let screenW = gScreenWidth;
-    let screenH = gScreenHeight;
+    let screenW = gScreenWidth - gViewportMargins.left - gViewportMargins.right;
+    let screenH = gScreenHeight - gViewportMargins.top - gViewportMargins.bottom;
     let viewportW, viewportH;
+    this.viewportExcludesHorizontalMargins = true;
+    this.viewportExcludesVerticalMargins = true;
 
     let metadata = this.metadata;
     if (metadata.autoSize) {
@@ -3860,7 +3997,21 @@ Tab.prototype = {
       // this may get run during a Viewport:Change message while the document
       // has not yet loaded, so need to guard against a null document.
       let [pageWidth, pageHeight] = this.getPageSize(this.browser.contentDocument, viewportW, viewportH);
-      minScale = gScreenWidth / pageWidth;
+
+      minScale = screenW / pageWidth;
+
+      // In the situation the page size exceeds the screen size minus the
+      // viewport margins on either axis, lengthen the viewport on the
+      // corresponding axis to include the margins.
+      // The +1 is to account for rounding errors.
+      if (pageWidth * this._zoom >= screenW + 1) {
+        screenW = gScreenWidth;
+        this.viewportExcludesHorizontalMargins = false;
+      }
+      if (pageHeight * this._zoom >= screenH + 1) {
+        screenH = gScreenHeight;
+        this.viewportExcludesVerticalMargins = false;
+      }
     }
     minScale = this.clampZoom(minScale);
     viewportH = Math.max(viewportH, screenH / minScale);
@@ -3932,7 +4083,9 @@ Tab.prototype = {
         // Is it on the top level?
         let contentDocument = aSubject;
         if (contentDocument == this.browser.contentDocument) {
-          BrowserApp.displayedDocumentChanged();
+          if (BrowserApp.selectedTab == this) {
+            BrowserApp.displayedDocumentChanged();
+          }
           this.contentDocumentIsDisplayed = true;
 
           // reset CSS viewport and zoom to default on new page, and then calculate
@@ -5167,18 +5320,6 @@ var FormAssistant = {
     return suggestions;
   },
 
-  // Gets the element position data necessary for the Java UI to position
-  // the form assist popup.
-  _getElementPositionData: function _getElementPositionData(aElement) {
-    let rect = ElementTouchHelper.getBoundingContentRect(aElement);
-    let viewport = BrowserApp.selectedTab.getViewport();
-    
-    return { rect: [rect.x - (viewport.x / viewport.zoom),
-                    rect.y - (viewport.y / viewport.zoom),
-                    rect.w, rect.h],
-             zoom: viewport.zoom }
-  },
-
   // Retrieves autocomplete suggestions for an element from the form autocomplete service
   // and sends the suggestions to the Java UI, along with element position data.
   // Returns true if there are suggestions to show, false otherwise.
@@ -5203,12 +5344,10 @@ var FormAssistant = {
     if (!suggestions.length)
       return false;
 
-    let positionData = this._getElementPositionData(aElement);
     sendMessageToJava({
       type:  "FormAssist:AutoComplete",
       suggestions: suggestions,
-      rect: positionData.rect,
-      zoom: positionData.zoom
+      rect: ElementTouchHelper.getBoundingContentRect(aElement)
     });
 
     // Keep track of input element so we can fill it in if the user
@@ -5238,12 +5377,10 @@ var FormAssistant = {
     if (!this._isValidateable(aElement))
       return false;
 
-    let positionData = this._getElementPositionData(aElement);
     sendMessageToJava({
       type: "FormAssist:ValidationMessage",
       validationMessage: aElement.validationMessage,
-      rect: positionData.rect,
-      zoom: positionData.zoom
+      rect: ElementTouchHelper.getBoundingContentRect(aElement)
     });
 
     return true;
@@ -5621,30 +5758,32 @@ var PopupBlockerObserver = {
 
         let strings = Strings.browser;
         if (popupCount > 1)
-          message = strings.formatStringFromName("popupWarningMultiple", [brandShortName, popupCount], 2);
+          message = strings.formatStringFromName("popup.warningMultiple", [brandShortName, popupCount], 2);
         else
-          message = strings.formatStringFromName("popupWarning", [brandShortName], 1);
+          message = strings.formatStringFromName("popup.warning", [brandShortName], 1);
 
         let buttons = [
           {
-            label: strings.GetStringFromName("popupButtonAllowOnce"),
-            callback: function() { PopupBlockerObserver.showPopupsForSite(); }
-          },
-          {
-            label: strings.GetStringFromName("popupButtonAlwaysAllow2"),
-            callback: function() {
+            label: strings.GetStringFromName("popup.show"),
+            callback: function(aChecked) {
               // Set permission before opening popup windows
-              PopupBlockerObserver.allowPopupsForSite(true);
+              if (aChecked)
+                PopupBlockerObserver.allowPopupsForSite(true);
+
               PopupBlockerObserver.showPopupsForSite();
             }
           },
           {
-            label: strings.GetStringFromName("popupButtonNeverWarn2"),
-            callback: function() { PopupBlockerObserver.allowPopupsForSite(false); }
+            label: strings.GetStringFromName("popup.dontShow"),
+            callback: function(aChecked) {
+              if (aChecked)
+                PopupBlockerObserver.allowPopupsForSite(false);
+            }
           }
         ];
 
-        NativeWindow.doorhanger.show(message, "popup-blocked", buttons);
+        let options = { checkbox: Strings.browser.GetStringFromName("popup.dontAskAgain") };
+        NativeWindow.doorhanger.show(message, "popup-blocked", buttons, null, options);
       }
       // Record the fact that we've reported this blocked popup, so we don't
       // show it again.
@@ -5731,18 +5870,16 @@ var OfflineApps = {
       }
     },
     {
-      label: strings.GetStringFromName("offlineApps.never"),
-      callback: function() {
-        OfflineApps.disallowSite(aContentWindow.document);
+      label: strings.GetStringFromName("offlineApps.dontAllow2"),
+      callback: function(aChecked) {
+        if (aChecked)
+          OfflineApps.disallowSite(aContentWindow.document);
       }
-    },
-    {
-      label: strings.GetStringFromName("offlineApps.notNow"),
-      callback: function() { /* noop */ }
     }];
 
-    let message = strings.formatStringFromName("offlineApps.available2", [host], 1);
-    NativeWindow.doorhanger.show(message, notificationID, buttons, tab.id);
+    let message = strings.formatStringFromName("offlineApps.ask", [host], 1);
+    let options = { checkbox: Strings.browser.GetStringFromName("offlineApps.dontAskAgain") };
+    NativeWindow.doorhanger.show(message, notificationID, buttons, tab.id, options);
   },
 
   allowSite: function(aDocument) {
@@ -5813,7 +5950,7 @@ var IndexedDB = {
 
     let message, responseTopic;
     if (topic == this._permissionsPrompt) {
-      message = strings.formatStringFromName("offlineApps.available2", [host], 1);
+      message = strings.formatStringFromName("offlineApps.ask", [host], 1);
       responseTopic = this._permissionsResponse;
     } else if (topic == this._quotaPrompt) {
       message = strings.formatStringFromName("indexedDBQuota.wantsTo", [ host, data ], 2);
@@ -5861,21 +5998,16 @@ var IndexedDB = {
       }
     },
     {
-      label: strings.GetStringFromName("offlineApps.never"),
-      callback: function() {
+      label: strings.GetStringFromName("offlineApps.dontAllow2"),
+      callback: function(aChecked) {
         clearTimeout(timeoutId);
-        observer.observe(null, responseTopic, Ci.nsIPermissionManager.DENY_ACTION);
-      }
-    },
-    {
-      label: strings.GetStringFromName("offlineApps.notNow"),
-      callback: function() {
-        clearTimeout(timeoutId);
-        observer.observe(null, responseTopic, Ci.nsIPermissionManager.UNKNOWN_ACTION);
+        let action = aChecked ? Ci.nsIPermissionManager.DENY_ACTION : Ci.nsIPermissionManager.UNKNOWN_ACTION;
+        observer.observe(null, responseTopic, action);
       }
     }];
 
-    NativeWindow.doorhanger.show(message, notificationID, buttons, tab.id);
+    let options = { checkbox: Strings.browser.GetStringFromName("offlineApps.dontAskAgain") };
+    NativeWindow.doorhanger.show(message, notificationID, buttons, tab.id, options);
 
     // Set the timeoutId after the popup has been created, and use the long
     // timeout value. If the user doesn't notice the popup after this amount of
@@ -6142,11 +6274,11 @@ var PluginHelper = {
       return;
     }
 
-    let message = Strings.browser.formatStringFromName("clickToPlayPlugins.message1",
+    let message = Strings.browser.formatStringFromName("clickToPlayPlugins.message2",
                                                        [uri.host], 1);
     let buttons = [
       {
-        label: Strings.browser.GetStringFromName("clickToPlayPlugins.yes"),
+        label: Strings.browser.GetStringFromName("clickToPlayPlugins.activate"),
         callback: function(aChecked) {
           // If the user checked "Don't ask again", make a permanent exception
           if (aChecked)
@@ -6156,7 +6288,7 @@ var PluginHelper = {
         }
       },
       {
-        label: Strings.browser.GetStringFromName("clickToPlayPlugins.no"),
+        label: Strings.browser.GetStringFromName("clickToPlayPlugins.dontActivate"),
         callback: function(aChecked) {
           // If the user checked "Don't ask again", make a permanent exception
           if (aChecked)
@@ -6406,29 +6538,29 @@ var PermissionsHelper = {
                     "offline-app", "desktop-notification", "plugins", "native-intent"],
   _permissionStrings: {
     "password": {
-      label: "password.rememberPassword",
-      allowed: "password.remember",
-      denied: "password.never"
+      label: "password.savePassword",
+      allowed: "password.save",
+      denied: "password.dontSave"
     },
     "geolocation": {
       label: "geolocation.shareLocation",
-      allowed: "geolocation.alwaysAllow",
-      denied: "geolocation.neverAllow"
+      allowed: "geolocation.allow",
+      denied: "geolocation.dontAllow"
     },
     "popup": {
       label: "blockPopups.label",
-      allowed: "popupButtonAlwaysAllow2",
-      denied: "popupButtonNeverWarn2"
+      allowed: "popup.show",
+      denied: "popup.dontShow"
     },
     "indexedDB": {
       label: "offlineApps.storeOfflineData",
       allowed: "offlineApps.allow",
-      denied: "offlineApps.never"
+      denied: "offlineApps.dontAllow2"
     },
     "offline-app": {
       label: "offlineApps.storeOfflineData",
       allowed: "offlineApps.allow",
-      denied: "offlineApps.never"
+      denied: "offlineApps.dontAllow2"
     },
     "desktop-notification": {
       label: "desktopNotification.useNotifications",
@@ -6436,9 +6568,9 @@ var PermissionsHelper = {
       denied: "desktopNotification.dontAllow"
     },
     "plugins": {
-      label: "clickToPlayPlugins.playPlugins",
-      allowed: "clickToPlayPlugins.yes",
-      denied: "clickToPlayPlugins.no"
+      label: "clickToPlayPlugins.activatePlugins",
+      allowed: "clickToPlayPlugins.activate",
+      denied: "clickToPlayPlugins.dontActivate"
     },
     "native-intent": {
       label: "helperapps.openWithList2",
@@ -6732,8 +6864,8 @@ var CharacterEncoding = {
 
   setEncoding: function setEncoding(aEncoding) {
     let browser = BrowserApp.selectedBrowser;
-    let docCharset = browser.docShell.QueryInterface(Ci.nsIDocCharset);
-    docCharset.charset = aEncoding;
+    browser.docShell.gatherCharsetMenuTelemetry();
+    browser.docShell.charset = aEncoding;
     browser.reload(Ci.nsIWebNavigation.LOAD_FLAGS_CHARSET_CHANGE);
   }
 };
@@ -7587,14 +7719,14 @@ var Telemetry = {
                                                   [serverOwner, brandShortName], 2);
     buttons = [
       {
-        label: Strings.browser.GetStringFromName("telemetry.optin.yes"),
+        label: Strings.browser.GetStringFromName("telemetry.optin.send"),
         callback: function () {
           Services.prefs.setIntPref(self._PREF_TELEMETRY_DISPLAYED, self._TELEMETRY_DISPLAY_REV);
           Services.prefs.setBoolPref(self._PREF_TELEMETRY_ENABLED, true);
         }
       },
       {
-        label: Strings.browser.GetStringFromName("telemetry.optin.no"),
+        label: Strings.browser.GetStringFromName("telemetry.optin.dontSend"),
         callback: function () {
           Services.prefs.setIntPref(self._PREF_TELEMETRY_DISPLAYED, self._TELEMETRY_DISPLAY_REV);
           Services.prefs.setBoolPref(self._PREF_TELEMETRY_REJECTED, true);

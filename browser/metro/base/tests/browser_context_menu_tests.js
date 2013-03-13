@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+// -*- Mode: js2; tab-width: 2; indent-tabs-mode: nil; js2-basic-offset: 2; js2-skip-preprocessor-directives: t; -*-
 /* vim: set ts=2 et sw=2 tw=80: */
 /* Any copyright is dedicated to the Public Domain.
    http://creativecommons.org/publicdomain/zero/1.0/ */
@@ -26,6 +26,14 @@ function emptyClipboard() {
                                        .emptyClipboard(Ci.nsIClipboard.kGlobalClipboard);
 }
 
+function checkContextMenuPositionRange(aElement, aMinLeft, aMaxLeft, aMinTop, aMaxTop) {
+  ok(aElement.left > aMinLeft && aElement.left < aMaxLeft,
+    "Left position is " + aElement.left + ", expected between " + aMinLeft + " and " + aMaxLeft);
+
+  ok(aElement.top > aMinTop && aElement.top < aMaxTop, 
+    "Top position is " + aElement.top + ", expected between " + aMinTop + " and " + aMaxTop);
+}
+
 gTests.push({
   desc: "text context menu",
   run: function test() {
@@ -35,6 +43,7 @@ gTests.push({
     yield addTab(chromeRoot + "browser_context_menu_tests_02.html");
 
     purgeEventQueue();
+    emptyClipboard();
 
     let win = Browser.selectedTab.browser.contentWindow;
 
@@ -60,10 +69,21 @@ gTests.push({
     checkContextUIMenuItemVisibility(["context-copy",
                                       "context-search"]);
 
+    let menuItem = document.getElementById("context-copy");
     promise = waitForEvent(document, "popuphidden");
-    ContextMenuUI.hide();
+    EventUtils.synthesizeMouse(menuItem, 10, 10, {}, win);
+
     yield promise;
     ok(promise && !(promise instanceof Error), "promise error");
+
+    // The wait is needed to give time to populate the clipboard.
+    let string = "";
+    yield waitForCondition(function () {
+      string = SpecialPowers.getClipboardData("text/unicode");
+      return string === span.textContent;
+    });
+    ok(string === span.textContent, "copied selected text from span");
+
     win.getSelection().removeAllRanges();
 
     ////////////////////////////////////////////////////////////
@@ -128,21 +148,46 @@ gTests.push({
     // should be visible
     ok(ContextMenuUI._menuPopup._visible, "is visible");
 
-    checkContextUIMenuItemVisibility(["context-copy",
+    checkContextUIMenuItemVisibility(["context-select",
+                                      "context-select-all"]);
+
+    // copy menu item should not exist when no text is selected
+    let menuItem = document.getElementById("context-copy");
+    ok(menuItem && menuItem.hidden, "menu item is not visible");
+
+    promise = waitForEvent(document, "popuphidden");
+    ContextMenuUI.hide();
+    yield promise;
+    ok(promise && !(promise instanceof Error), "promise error");
+
+    ////////////////////////////////////////////////////////////
+    // context in input with selection copied to clipboard
+
+    let input = win.document.getElementById("text3-input");
+    input.value = "hello, I'm sorry but I must be going.";
+    input.setSelectionRange(0, 5);
+    promise = waitForEvent(document, "popupshown");
+    sendContextMenuClickToElement(win, input, 20, 10);
+    yield promise;
+    ok(promise && !(promise instanceof Error), "promise error");
+
+    // should be visible
+    ok(ContextMenuUI._menuPopup._visible, "is visible");
+
+    checkContextUIMenuItemVisibility(["context-cut",
+                                      "context-copy",
                                       "context-select",
                                       "context-select-all"]);
 
-    // copy menu item should copy all text
     let menuItem = document.getElementById("context-copy");
-    ok(menuItem, "menu item exists");
-    ok(!menuItem.hidden, "menu item visible");
-
     let popupPromise = waitForEvent(document, "popuphidden");
     EventUtils.synthesizeMouse(menuItem, 10, 10, {}, win);
+
     yield popupPromise;
     ok(popupPromise && !(popupPromise instanceof Error), "promise error");
+
     let string = SpecialPowers.getClipboardData("text/unicode");
-    ok(string, "hello, I'm sorry but I must be going.", "copy all");
+    ok(string === "hello", "copied selected text");
 
     emptyClipboard();
 
@@ -160,8 +205,8 @@ gTests.push({
     ok(ContextMenuUI._menuPopup._visible, "is visible");
 
     // selected text context:
-    checkContextUIMenuItemVisibility(["context-copy",
-                                      "context-search"]);
+    checkContextUIMenuItemVisibility(["context-cut",
+                                      "context-copy"]);
 
     promise = waitForEvent(document, "popuphidden");
     ContextMenuUI.hide();
@@ -183,14 +228,49 @@ gTests.push({
     ok(ContextMenuUI._menuPopup._visible, "is visible");
 
     // selected text context:
-    checkContextUIMenuItemVisibility(["context-copy",
-                                      "context-search",
+    checkContextUIMenuItemVisibility(["context-cut",
+                                      "context-copy",
                                       "context-paste"]);
 
     promise = waitForEvent(document, "popuphidden");
     ContextMenuUI.hide();
     yield promise;
     ok(promise && !(promise instanceof Error), "promise error");
+
+    ////////////////////////////////////////////////////////////
+    // context in input with selection cut to clipboard
+
+    emptyClipboard();
+
+    let input = win.document.getElementById("text3-input");
+    input.value = "hello, I'm sorry but I must be going.";
+    input.setSelectionRange(0, 5);
+    promise = waitForEvent(document, "popupshown");
+    sendContextMenuClickToElement(win, input, 20, 10);
+    yield promise;
+    ok(promise && !(promise instanceof Error), "promise error");
+
+    // should be visible
+    ok(ContextMenuUI._menuPopup._visible, "is visible");
+
+    checkContextUIMenuItemVisibility(["context-cut",
+                                      "context-copy",
+                                      "context-select",
+                                      "context-select-all"]);
+
+    let menuItem = document.getElementById("context-cut");
+    let popupPromise = waitForEvent(document, "popuphidden");
+    EventUtils.synthesizeMouse(menuItem, 10, 10, {}, win);
+
+    yield popupPromise;
+    ok(popupPromise && !(popupPromise instanceof Error), "promise error");
+
+    let string = SpecialPowers.getClipboardData("text/unicode");
+    let inputValue = input.value;
+    ok(string === "hello", "cut selected text in clipboard");
+    ok(inputValue === ", I'm sorry but I must be going.", "cut selected text from input value");
+
+    emptyClipboard();
 
     ////////////////////////////////////////////////////////////
     // context in empty input, data on clipboard (paste operation)
@@ -424,8 +504,7 @@ gTests.push({
     // should be visible
     ok(ContextMenuUI._menuPopup._visible, "is visible");
 
-    ok(ContextMenuUI._panel.left > 375 && ContextMenuUI._panel.left < 390, "position");
-    ok(ContextMenuUI._panel.top > 235 && ContextMenuUI._panel.top < 245, "position");
+    checkContextMenuPositionRange(ContextMenuUI._panel, 560, 570, 175, 190);
 
     promise = waitForEvent(document, "popuphidden");
     ContextMenuUI.hide();
@@ -442,8 +521,7 @@ gTests.push({
     // should be visible
     ok(ContextMenuUI._menuPopup._visible, "is visible");
 
-    ok(ContextMenuUI._panel.left > 375 && ContextMenuUI._panel.left < 390, "position");
-    ok(ContextMenuUI._panel.top > 35 && ContextMenuUI._panel.top < 45, "position");
+    checkContextMenuPositionRange(ContextMenuUI._panel, 560, 570, 95, 110);
 
     promise = waitForEvent(document, "popuphidden");
     ContextMenuUI.hide();
@@ -460,8 +538,7 @@ gTests.push({
     // should be visible
     ok(ContextMenuUI._menuPopup._visible, "is visible");
 
-    ok(ContextMenuUI._panel.left > 730 && ContextMenuUI._panel.left < 745, "position");
-    ok(ContextMenuUI._panel.top > 600 && ContextMenuUI._panel.top < 610, "position");
+    checkContextMenuPositionRange(ContextMenuUI._panel, 910, 925, 540, 555);
 
     promise = waitForEvent(document, "popuphidden");
     ContextMenuUI.hide();
@@ -478,8 +555,7 @@ gTests.push({
     // should be visible
     ok(ContextMenuUI._menuPopup._visible, "is visible");
 
-    ok(ContextMenuUI._panel.left > 730 && ContextMenuUI._panel.left < 745, "position");
-    ok(ContextMenuUI._panel.top > 400 && ContextMenuUI._panel.top < 410, "position");
+    checkContextMenuPositionRange(ContextMenuUI._panel, 910, 925, 340, 355);
 
     promise = waitForEvent(document, "popuphidden");
     ContextMenuUI.hide();
@@ -499,8 +575,7 @@ gTests.push({
     info(ContextMenuUI._panel.left);
     info(ContextMenuUI._panel.top);
 
-    ok(ContextMenuUI._panel.left > 380 && ContextMenuUI._panel.left < 390, "position");
-    ok(ContextMenuUI._panel.top > 170 && ContextMenuUI._panel.top < 185, "position");
+    checkContextMenuPositionRange(ContextMenuUI._panel, 560, 570, 110, 125);
 
     promise = waitForEvent(document, "popuphidden");
     ContextMenuUI.hide();

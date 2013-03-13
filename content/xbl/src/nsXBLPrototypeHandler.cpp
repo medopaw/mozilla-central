@@ -290,7 +290,7 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventTarget* aTarget,
   rv = EnsureEventHandler(boundGlobal, boundContext, onEventAtom, handler);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  JSContext* cx = boundContext->GetNativeContext();
+  AutoPushJSContext cx(boundContext->GetNativeContext());
   JSAutoRequest ar(cx);
   JSObject* globalObject = boundGlobal->GetGlobalJSObject();
   JSObject* scopeObject = xpc::GetXBLScope(cx, globalObject);
@@ -370,7 +370,7 @@ nsXBLPrototypeHandler::EnsureEventHandler(nsIScriptGlobalObject* aGlobal,
   nsDependentString handlerText(mHandlerText);
   NS_ENSURE_TRUE(!handlerText.IsEmpty(), NS_ERROR_FAILURE);
 
-  JSContext* cx = aBoundContext->GetNativeContext();
+  AutoPushJSContext cx(aBoundContext->GetNativeContext());
   JSObject* globalObject = aGlobal->GetGlobalJSObject();
   JSObject* scopeObject = xpc::GetXBLScope(cx, globalObject);
 
@@ -390,7 +390,7 @@ nsXBLPrototypeHandler::EnsureEventHandler(nsIScriptGlobalObject* aGlobal,
          .setVersion(JSVERSION_LATEST)
          .setUserBit(true); // Flag us as XBL
 
-  js::RootedObject rootedNull(cx, nullptr); // See bug 781070.
+  JS::RootedObject rootedNull(cx, nullptr); // See bug 781070.
   JSObject* handlerFun = nullptr;
   nsresult rv = nsJSUtils::CompileFunction(cx, rootedNull, options,
                                            nsAtomCString(aName), argCount,
