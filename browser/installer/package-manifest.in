@@ -413,6 +413,7 @@
 @BINPATH@/browser/components/PlacesProtocolHandler.js
 @BINPATH@/components/PlacesCategoriesStarter.js
 @BINPATH@/components/ColorAnalyzer.js
+@BINPATH@/components/Interests.js
 @BINPATH@/components/PageThumbsProtocol.js
 @BINPATH@/components/nsDefaultCLH.manifest
 @BINPATH@/components/nsDefaultCLH.js
