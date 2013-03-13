@@ -18,11 +18,11 @@ XPCSHELL_TESTS = \
   expiration \
   favicons \
   inline \
+  interests \
   migration \
   network \
   queries \
   unit \
-  interests \
   $(NULL)
 
 # Files in the main "tests" folder.

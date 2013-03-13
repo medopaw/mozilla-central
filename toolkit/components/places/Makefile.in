@@ -26,6 +26,7 @@ XPIDLSRCS += \
   mozIAsyncHistory.idl \
   mozIAsyncFavicons.idl \
   mozIAsyncLivemarks.idl \
+  mozIInterestsWebAPI.idl \
   mozIPlacesAutoComplete.idl \
   mozIColorAnalyzer.idl \
   nsIAnnotationService.idl \
@@ -35,7 +36,6 @@ XPIDLSRCS += \
   nsITaggingService.idl  \
   nsPIPlacesDatabase.idl \
   nsPIPlacesHistoryListenersNotifier.idl \
-  mozIInterestsWebAPI.idl \
   $(NULL)
 
 EXPORTS_NAMESPACES = mozilla/places
