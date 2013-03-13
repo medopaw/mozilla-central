@@ -61,6 +61,7 @@ Interests.prototype = {
       Services.obs.addObserver(this, "places-init-complete", false);
     }
     else if (aTopic == "places-init-complete") {
+      Services.obs.removeObserver(this, "places-init-complete", false);
       PlacesUtils.history.addObserver(this, false);
     }
     else if (aTopic == "toplevel-window-ready") {
