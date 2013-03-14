@@ -90,7 +90,10 @@ add_task(function test_PlacesInterestsStorage()
   });
 
   do_check_eq(buckets.immediate, 2);
+});
 
+add_task(function test_PlacesInterestsStorageClearTables()
+{
   // cleanup the tables
   yield PlacesInterestsStorage.clearTables(100);
 
