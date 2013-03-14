@@ -27,8 +27,8 @@ add_task(function addGoingOlder() {
 
   // Add a couple visits from 3 weeks ago for recent
   let recentTime = Date.now() - 3 * 7 * 24 * 60 * 60 * 1000;
-  yield PlacesInterestsStorage.addInterestVisit(interest, recentTime);
-  yield PlacesInterestsStorage.addInterestVisit(interest, recentTime);
+  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
+  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
 
   yield PlacesInterestsStorage.getBucketsForInterest(interest).then(function(result) {
     do_check_eq(result.immediate, 1);
@@ -38,9 +38,9 @@ add_task(function addGoingOlder() {
 
   // Add a few visits from 5 weeks ago for past
   let pastTime = Date.now() - 5 * 7 * 24 * 60 * 60 * 1000;
-  yield PlacesInterestsStorage.addInterestVisit(interest, pastTime);
-  yield PlacesInterestsStorage.addInterestVisit(interest, pastTime);
-  yield PlacesInterestsStorage.addInterestVisit(interest, pastTime);
+  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
+  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
+  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
 
   yield PlacesInterestsStorage.getBucketsForInterest(interest).then(function(result) {
     do_check_eq(result.immediate, 1);
@@ -56,7 +56,7 @@ add_task(function addGoingNewer() {
 
   // Add a visit from 5 weeks ago for past
   let pastTime = Date.now() - 5 * 7 * 24 * 60 * 60 * 1000;
-  yield PlacesInterestsStorage.addInterestVisit(interest, pastTime);
+  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
 
   yield PlacesInterestsStorage.getBucketsForInterest(interest).then(function(result) {
     do_check_eq(result.immediate, 0);
@@ -66,8 +66,8 @@ add_task(function addGoingNewer() {
 
   // Add a couple visits from 3 weeks ago for recent
   let recentTime = Date.now() - 3 * 7 * 24 * 60 * 60 * 1000;
-  yield PlacesInterestsStorage.addInterestVisit(interest, recentTime);
-  yield PlacesInterestsStorage.addInterestVisit(interest, recentTime);
+  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
+  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
 
   yield PlacesInterestsStorage.getBucketsForInterest(interest).then(function(result) {
     do_check_eq(result.immediate, 0);
