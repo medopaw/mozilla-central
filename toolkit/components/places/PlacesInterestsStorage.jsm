@@ -99,7 +99,6 @@ let PlacesInterestsStorage = {
    */
   addInterestVisit: function(interest, visitTime) {
     let deferred = Promise.defer();
-
     // Increment or initialize the visit count for the interest for the date
     let stmt = this.db.createAsyncStatement(
       "INSERT OR REPLACE INTO moz_up_interests_visits " +
@@ -124,12 +123,21 @@ let PlacesInterestsStorage = {
     return deferred.promise;
   },
 
-  addInterestForHost: function (aInterest, aHost) {
+  /**
+   * adds interest,host,date tuple to the moz_up_interests_hosts
+   * @param   interest
+   *          The interest string
+   * @param   host
+   *          The host string
+   * @param   [optional] visitTime
+   *          Date/time to associate with the visit defaulting to today
+   * @returns Promise for when the row is added
+   */
+  addInterestForHost: function (aInterest, aHost, visitTime) {
     let returnDeferred = Promise.defer();
     Cu.reportError(typeof(aInterest));
     Cu.reportError("aInterest: " + aInterest);
     Cu.reportError("aHost: " + aHost);
-    let currentTs = this._getRoundedTime();
     let stmt = this.db.createAsyncStatement(
       "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id, date_added) " +
       "VALUES((SELECT id FROM moz_up_interests WHERE interest =:interest) " +
@@ -137,7 +145,7 @@ let PlacesInterestsStorage = {
       ", :dateAdded)");
     stmt.params.host = aHost;
     stmt.params.interest = aInterest;
-    stmt.params.dateAdded = currentTs;
+    stmt.params.dateAdded = this._getRoundedTime(visitTime);
     stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
     return returnDeferred.promise;
@@ -201,8 +209,8 @@ let PlacesInterestsStorage = {
 
     // Aggregate the visits into each bucket for the interest
     let stmt = this.db.createAsyncStatement(
-      "SELECT CASE WHEN v.date_added >= :immediateBucket THEN 'immediate' " +
-                  "WHEN v.date_added >= :recentBucket THEN 'recent' " +
+      "SELECT CASE WHEN v.date_added > :immediateBucket THEN 'immediate' " +
+                  "WHEN v.date_added > :recentBucket THEN 'recent' " +
                   "ELSE 'past' END AS bucket, " +
              "v.visit_count " +
       "FROM moz_up_interests i " +
@@ -241,6 +249,28 @@ let PlacesInterestsStorage = {
     });
     stmt.finalize();
     return deferred.promise;
+  },
+  /**
+   * Clears tables from N last days worth of daya
+   * @param   daysAgo
+   *          Number of days to be cleaned
+   * @returns Promise for when the tables will be cleaned up
+   */
+  clearTables: function (daysAgo) {
+    let timeStamp = this._getRoundedTime() - daysAgo * MS_PER_DAY;
+    let borrowers = [Promise.defer(),Promise.defer()];
+    let stmt = this.db.createStatement("DELETE FROM moz_up_interests_visits where date_added > :timeStamp");
+    stmt.params.timeStamp = timeStamp;
+    stmt.executeAsync(new AsyncPromiseHandler(borrowers[0]));
+    stmt.finalize();
+
+    stmt = this.db.createStatement("DELETE FROM moz_up_interests_hosts where date_added > :timeStamp");
+    stmt.params.timeStamp = timeStamp;
+    stmt.executeAsync(new AsyncPromiseHandler(borrowers[1]));
+    stmt.finalize();
+
+    // return the promises resolved when both deletes are complete
+    return Promise.promised(Array)(borrowers.map(function(deferred) {return deferred.promise;})).then();
   }
 }
 

@@ -82,7 +82,6 @@ add_task(function test_PlacesInterestsStorage()
     buckets = results;
   });
 
-  dump( JSON.stringify(buckets) + " <<<<==== \n");
   do_check_eq(buckets.immediate , 1);
 
   thePromise = PlacesInterestsStorage.getBucketsForInterest("cars");
@@ -91,5 +90,94 @@ add_task(function test_PlacesInterestsStorage()
   });
 
   do_check_eq(buckets.immediate, 2);
+
+  // cleanup the tables
+  yield PlacesInterestsStorage.clearTables(100);
+
+  // check that tables are empty
+  yield PlacesInterestsStorage.getBucketsForInterest("computers").then(function(results) {
+    do_check_eq(results.immediate , 0);
+    do_check_eq(results.past , 0);
+    do_check_eq(results.recent , 0);
+  });
+
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 0);
+    do_check_eq(results.past , 0);
+    do_check_eq(results.recent , 0);
+  });
+
+  yield PlacesInterestsStorage.getInterestsForHost("cars.com").then(function(results) {
+    do_check_true(results == null);
+  });
+
+  // make a bunch of insertions for a number of days
+  const MS_PER_DAY = 86400000;
+  let now = Date.now();
+
+  for(let i = 0; i < 100; i++) {
+    yield PlacesInterestsStorage.addInterestVisit("cars", (now - MS_PER_DAY*i));
+    yield PlacesInterestsStorage.addInterestForHost("cars","cars.com",(now - MS_PER_DAY*i));
+  }
+
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 14);
+    do_check_eq(results.recent , 14);
+    do_check_eq(results.past , 72);
+  });
+
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 100);
+  });
+
+  // test deletions
+  yield PlacesInterestsStorage.clearTables(14);
+
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 0);
+    do_check_eq(results.recent , 14);
+    do_check_eq(results.past , 72);
+  });
+
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 86);
+  });
+
+  yield PlacesInterestsStorage.clearTables(28);
+
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 0);
+    do_check_eq(results.recent , 0);
+    do_check_eq(results.past , 72);
+  });
+
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 72);
+  });
+
+  yield PlacesInterestsStorage.clearTables(50);
+
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 0);
+    do_check_eq(results.recent , 0);
+    do_check_eq(results.past , 50);
+  });
+
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 50);
+  });
+
+  yield PlacesInterestsStorage.clearTables(100);
+
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 0);
+    do_check_eq(results.recent , 0);
+    do_check_eq(results.past , 0);
+  });
+
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_true(results == null);
+  });
+
 });
 
