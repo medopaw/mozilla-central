@@ -119,7 +119,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
   let now = Date.now();
 
   for(let i = 0; i < 100; i++) {
-    yield PlacesInterestsStorage.addInterestVisit("cars", (now - MS_PER_DAY*i));
+    yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*i)});
     yield PlacesInterestsStorage.addInterestForHost("cars","cars.com",(now - MS_PER_DAY*i));
   }
 

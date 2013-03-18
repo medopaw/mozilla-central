@@ -18,7 +18,6 @@ XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/P
 
 const MS_PER_DAY = 86400000;
 
-
 function AsyncPromiseHandler(deferred, rowCallback) {
   this.deferred = deferred;
   this.rowCallback = rowCallback;
@@ -91,23 +90,29 @@ let PlacesInterestsStorage = {
 
   /**
    * Increments the number of visits for an interest for a day
-   * @param   interest
+   * @param   aInterest
    *          The interest string
-   * @param   [optional] visitTime
-   *          Date/time to associate with the visit defaulting to today
+   * @param   {aVisitTime, aVisitCount}
+   *          An object with the option names as keys
+   *          aVisitTime: Date/time to associate with the visit, defaulting to today
+   *          aVisitCount: The number of counts to add, defaulting to 1
    * @returns Promise for when the interest's visit is added
    */
-  addInterestVisit: function(interest, visitTime) {
+  addInterestVisit: function(interest, optional={}){ 
+    let {visitTime, visitCount} = optional;
+    visitCount = visitCount || 1;
+
     let deferred = Promise.defer();
     // Increment or initialize the visit count for the interest for the date
     let stmt = this.db.createAsyncStatement(
       "INSERT OR REPLACE INTO moz_up_interests_visits " +
-      "SELECT i.id, IFNULL(v.date_added, :dateAdded), IFNULL(v.visit_count, 0) + 1 " +
+      "SELECT i.id, IFNULL(v.date_added, :dateAdded), IFNULL(v.visit_count, 0) + :visitCount " +
       "FROM moz_up_interests i " +
       "LEFT JOIN moz_up_interests_visits v " +
         "ON v.interest_id = i.id AND v.date_added = :dateAdded " +
       "WHERE i.interest = :interest");
     stmt.params.interest = interest;
+    stmt.params.visitCount = visitCount;
     stmt.params.dateAdded = this._getRoundedTime(visitTime);
     stmt.executeAsync({
       handleResult: function (result) {},
@@ -251,7 +256,7 @@ let PlacesInterestsStorage = {
     return deferred.promise;
   },
   /**
-   * Clears tables from N last days worth of daya
+   * Clears tables from N last days worth of days
    * @param   daysAgo
    *          Number of days to be cleaned
    * @returns Promise for when the tables will be cleaned up
