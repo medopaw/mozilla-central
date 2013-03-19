@@ -825,6 +825,8 @@ Database::InitSchema(bool* aDatabaseMigrated)
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_VISITS);
     NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_VISITS_DATEADDED);
+    NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_HOSTS);
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1909,6 +1911,8 @@ Database::MigrateV22Up()
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_META);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_VISITS);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_VISITS_DATEADDED);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_HOSTS);
     NS_ENSURE_SUCCESS(rv, rv);

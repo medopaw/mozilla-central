@@ -199,6 +199,88 @@ let PlacesInterestsStorage = {
   },
 
   /**
+   * Obtains a list of interests that occured 28 days from query time, ordered by score.
+   * @param   interestLimit
+   *          The number of interests to limit the result by.
+   *          A negative value will not limit the results. Defaults to 5
+   * @returns Promise with the interest and counts for each bucket
+   */
+  getTopInterests: function getTopInterests(interestLimit) {
+    interestLimit = interestLimit || 5;
+    let returnDeferred = Promise.defer();
+
+    // Figure out the cutoff time for computation
+    let currentTs = this._getRoundedTime();
+    let cutOffDay = currentTs - 28 * MS_PER_DAY;
+
+    let stmt = this.db.createStatement(
+        "SELECT i.interest, v.visit_count, (:currentTs-v.date_added)/:MS_PER_DAY 'days_ago' " +
+        "FROM moz_up_interests i " +
+        "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
+        "WHERE v.date_added >= :cutOffDay " +
+        "ORDER BY v.date_added DESC"
+    );
+    stmt.params.MS_PER_DAY = MS_PER_DAY;
+    stmt.params.currentTs = currentTs;
+    stmt.params.cutOffDay = cutOffDay;
+
+    let scores = {};
+    let topInterests = [];
+    let queryDeferred = Promise.defer();
+
+    let promiseHandler = new AsyncPromiseHandler(queryDeferred,function(row) {
+      let interest = row.getResultByName("interest");
+      let visitCount = row.getResultByName("visit_count");
+      let daysAgo = row.getResultByName("days_ago");
+
+      if (!scores.hasOwnProperty(interest)) {
+        scores[interest] = 0;
+      }
+
+      scores[interest] += visitCount * (1 - (daysAgo/29))
+    });
+    stmt.executeAsync(promiseHandler);
+    stmt.finalize();
+
+    queryDeferred.promise.then(function(resultSet) {
+      // sort scores and cut off
+      let interests = Object.keys(scores);
+      for (let interestIndex=0; interestIndex < interests.length; interestIndex++) {
+        let interest = interests[interestIndex];
+        topInterests.push({name: interest, score: scores[interest]});
+      }
+      scores = null;
+
+      topInterests.sort(function(x, y){return y.score - x.score});
+      if (interestLimit > -1) {
+        topInterests = topInterests.slice(0, interestLimit);
+      }
+    }).then(function() {
+      // augment with bucket data
+
+      let bucketPromises = [];
+      for(let index=0; index < topInterests.length; index++) {
+        let interest = topInterests[index];
+        bucketPromises.push(PlacesInterestsStorage.getBucketsForInterest(interest.name));
+      }
+
+      Promise.promised(Array)(bucketPromises).then(function(buckets){
+
+        for(let index=0; index < buckets.length; index++) {
+          let bucket = buckets[index];
+          topInterests[index]["recency"] = {
+            immediate: bucket['immediate'],
+            recent: bucket['recent'],
+            past: bucket['past'],
+          }
+        }
+        returnDeferred.resolve(topInterests);
+      });
+    });
+    return returnDeferred.promise;
+  },
+
+  /**
    * Increments the number of visits for an interest for a day
    * @param   interest
    *          The interest string

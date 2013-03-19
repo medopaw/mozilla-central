@@ -182,6 +182,35 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_true(results == null);
   });
 
+  yield PlacesInterestsStorage.clearTables(100);
+
+  // test visitCounts when adding visits
+
+  // add one today
+  yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0)});
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 1);
+    do_check_eq(results.recent , 0);
+    do_check_eq(results.past , 0);
+  });
+
+  // add a couple more yesterday
+  yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*1), visitCount: 4});
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 5);
+    do_check_eq(results.recent , 0);
+    do_check_eq(results.past , 0);
+  });
+
+  // add some in the recent bucket, some in the past
+  // recent assumed to be 14-28 days ago, past > 28 days
+  yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*15), visitCount: 3});
+  yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*31), visitCount: 10});
+  yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
+    do_check_eq(results.immediate , 5);
+    do_check_eq(results.recent , 3);
+    do_check_eq(results.past , 10);
+  });
 });
 
 add_task(function test_PlacesInterestsStorageResubmitHistory()
