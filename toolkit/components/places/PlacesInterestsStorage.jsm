@@ -276,6 +276,38 @@ let PlacesInterestsStorage = {
 
     // return the promises resolved when both deletes are complete
     return Promise.promised(Array)(borrowers.map(function(deferred) {return deferred.promise;})).then();
+  },
+
+  /**
+   * returns tuples of (place_id,url,title) visisted between now and daysAgo
+   * @param   daysAgo
+   *          Number of days to be cleaned
+   * @param   interestsCallback
+   *          a callback handling url,title,visit_date,count tuple
+   * @returns Promise for when the tables will be cleaned up
+   */
+   reprocessHistory: function (daysAgo,interestsCallback) {
+    let returnDeferred = Promise.defer();
+
+    let microSecondsAgo = this._getRoundedTime() - daysAgo * MS_PER_DAY * 1000;  // move to microseconds
+    let query = "SELECT p.url url, p.title title, v.visit_day_stamp date, v.count count " +
+    "FROM (SELECT place_id, visit_date - (visit_date % :MICROS_PER_DAY) visit_day_stamp, count(1) count " +
+    "      FROM moz_historyvisits WHERE visit_date > :microSecondsAgo GROUP BY place_id,visit_day_stamp) v " +
+    "JOIN moz_places p ON p.id = v.place_id " +
+    "WHERE p.hidden = 0 AND p.visit_count > 0 ";
+    stmt = this.db.createStatement(query);
+    stmt.params.MICROS_PER_DAY = MS_PER_DAY * 1000;  // move to microseconds
+    stmt.params.microSecondsAgo = microSecondsAgo;
+
+    let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
+        interestsCallback({visitDate: (+ row.getResultByName("date")) / 1000 ,  // this has to be in milliseconds
+                           visitCount: row.getResultByName("count"),
+                           url: row.getResultByName("url"),
+                           title: row.getResultByName("title")});
+    });
+    stmt.executeAsync(promiseHandler);
+    stmt.finalize();
+    return returnDeferred.promise;
   }
 }
 
