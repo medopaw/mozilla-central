@@ -232,15 +232,14 @@ add_task(function test_PlacesInterestsStorageResubmitHistory()
     // make sure oneRecord looks kosher
     do_check_eq(oneRecord.url, "http://www.cars.com/");
     do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");
-    do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");
     do_check_true(oneRecord.visitDate != null);
     do_check_true(oneRecord.visitCount != null);
-
     results[oneRecord.visitDate] = oneRecord.visitCount;
   }).then(function() {
-    // make sure we 3 for 2 days ago
-    // 2 for 1 day ago
-    // 1 for today
+    // make sure we have:
+    // 3 visits for 2 days ago
+    // 2 visits for 1 day ago
+    // 1 visit for today
     do_check_eq(Object.keys(results).length, 3);
     do_check_eq(results["" + PlacesInterestsStorage._getRoundedTime(now)], 1);
     do_check_eq(results["" + PlacesInterestsStorage._getRoundedTime(now-MICROS_PER_DAY/1000)], 2);
