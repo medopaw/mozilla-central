@@ -15,8 +15,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
-let consoleService = Services.console;
-
 let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
 
@@ -99,10 +97,7 @@ Interests.prototype = {
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests) {
     let deferred = Promise.defer();
     let addInterestPromises = [];
-    consoleService.logStringMessage("adding interests for host");
-    consoleService.logStringMessage("host: " + aHost);
-    consoleService.logStringMessage(typeof(aInterests));
-    consoleService.logStringMessage("interests: " + aInterests);
+
     // TODO - this is a hack - we do not need to keep inserting into interests table
     // we should do it ones on startup or update
     for (let interest of aInterests) {
@@ -113,9 +108,6 @@ Interests.prototype = {
     Promise.promised(Array)(addInterestPromises).then(function(results) {
       let addVisitPromises = [];
       for (let interest of aInterests) {
-        consoleService.logStringMessage("interest: " + typeof(interest) + " " + interest);
-        consoleService.logStringMessage("host: " + typeof(aHost) + "  " + aHost);
-
         // we need to wait until interest is added to the inerestes table
         addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest));
         addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
@@ -172,7 +164,6 @@ Interests.prototype = {
       if (gServiceEnabled) {
         let doc = aEvent.target;
         if (doc instanceof Ci.nsIDOMHTMLDocument && doc.defaultView == doc.defaultView.top) {
-          consoleService.logStringMessage("handling the doc");
           this._handleNewDocument(doc);
         }
       }
