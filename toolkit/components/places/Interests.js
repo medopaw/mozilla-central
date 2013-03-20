@@ -14,6 +14,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/NetUtil.jsm");
 
 let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
@@ -94,7 +95,8 @@ Interests.prototype = {
     return aURI.host.replace(/^www\./, "");
   },
 
-  _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests) {
+  _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests, aVisitDate, aVisitCount) {
+    let thisObject = this;
     let deferred = Promise.defer();
     let addInterestPromises = [];
 
@@ -109,10 +111,14 @@ Interests.prototype = {
       let addVisitPromises = [];
       for (let interest of aInterests) {
         // we need to wait until interest is added to the inerestes table
-        addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest));
+        addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
         addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
       }
       Promise.promised(Array)(addVisitPromises).then(function(results) {
+        // this is for testing only - if _report_add_interest exists, give it a promise
+        if (thisObject["_report_add_interest"]) {
+          thisObject["_report_add_interest"](results);
+        }
         deferred.resolve(results);
       },
       function(error) {
@@ -150,9 +156,7 @@ Interests.prototype = {
   },
 
   _handleInterestsResults: function I__handleInterestsResults(aData) {
-    let host = aData.host;
-    let interests = aData.interests;
-    this._addInterestsForHost(host, interests);
+    this._addInterestsForHost(aData.host, aData.interests, aData.visitDate, aData.visitCount);
   },
 
   //////////////////////////////////////////////////////////////////////////////
@@ -178,6 +182,41 @@ Interests.prototype = {
       //TODO:handle error
       Cu.reportError(aEvent.message);
     }
+  },
+
+  clearHistoryVisits: function I_clearHistoryVisits(daysBack) {
+    return PlacesInterestsStorage.clearTables(daysBack);
+  },
+
+  resubmitHistoryVisits: function I_resubmitHistoryVisits(daysBack) {
+    // clean interest tables first
+    this.clearHistoryVisits(daysBack).then(function() {
+      // read moz_places data and massage it
+      PlacesInterestsStorage.reprocessHistory(daysBack, function(item) {
+        let uri = NetUtil.newURI(item.url);
+        item["message"] = "getInterestsForDocument";
+        item["host"] = this._getPlacesHostForURI(uri);
+        item["path"] = uri["path"];
+        item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
+        item["metaData"] = {};
+        item["language"] = "en";
+        this._callMatchingWorker(item);
+      }.bind(this));
+    }.bind(this));
+  },
+
+  onDeleteURI: function(aURI, aGUID, aReason) {
+    // TODO - we need to implement URI deletion probably, by classifiing that
+    // URI again and removing it from the tables - potentially a call tp
+    // PlacesInterestsStorage
+    /*
+    console.log(JSON.stringify(aURI));
+    let host = this._getPlacesHostForURI(aURI);
+    let hostInterests = this._getInterestsForHost(host);
+    for (let interest of hostInterests) {
+      this._invalidateBucketsForInterest(interest);
+    }
+    */
   },
 
   //////////////////////////////////////////////////////////////////////////////
