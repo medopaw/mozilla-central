@@ -12,11 +12,9 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesUtils.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
-
-let consoleService = Services.console;
+Cu.import("resource://gre/modules/NetUtil.jsm");
 
 let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
@@ -43,32 +41,12 @@ Services.obs.addObserver(function xpcomShutdown() {
 function Interests() {
   gInterestsService = this;
 }
-
 Interests.prototype = {
-  classID: Components.ID("{DFB46031-8F05-4577-80A4-F4E5D492881F}"),
-  _xpcom_factory: XPCOMUtils.generateSingletonFactory(Interests),
+  //////////////////////////////////////////////////////////////////////////////
+  //// Interests API
 
-  QueryInterface: XPCOMUtils.generateQI([
-  , Ci.nsIObserver
-  , Ci.nsIDOMEventListener
-  ]),
-
-  get wrappedJSObject() this,
-
-  observe: function I_observe(aSubject, aTopic, aData) {
-    if (aTopic == "app-startup") {
-      Services.obs.addObserver(this, "toplevel-window-ready", false);
-      Services.obs.addObserver(this, "places-init-complete", false);
-    }
-    else if (aTopic == "places-init-complete") {
-      Services.obs.removeObserver(this, "places-init-complete", false);
-      PlacesUtils.history.addObserver(this, false);
-    }
-    else if (aTopic == "toplevel-window-ready") {
-      // Top level window is the browser window, not the content window(s).
-      aSubject.addEventListener("DOMContentLoaded", this, true);
-    }
-  },
+  //////////////////////////////////////////////////////////////////////////////
+  //// Interests Helpers
 
   get _worker() {
     if (gServiceEnabled && !("__worker " in this)) {
@@ -117,13 +95,11 @@ Interests.prototype = {
     return aURI.host.replace(/^www\./, "");
   },
 
-  _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests) {
+  _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests, aVisitDate, aVisitCount) {
+    let thisObject = this;
     let deferred = Promise.defer();
     let addInterestPromises = [];
-    consoleService.logStringMessage("adding interests for host");
-    consoleService.logStringMessage("host: " + aHost);
-    consoleService.logStringMessage(typeof(aInterests));
-    consoleService.logStringMessage("interests: " + aInterests);
+
     // TODO - this is a hack - we do not need to keep inserting into interests table
     // we should do it ones on startup or update
     for (let interest of aInterests) {
@@ -134,14 +110,15 @@ Interests.prototype = {
     Promise.promised(Array)(addInterestPromises).then(function(results) {
       let addVisitPromises = [];
       for (let interest of aInterests) {
-        consoleService.logStringMessage("interest: " + typeof(interest) + " " + interest);
-        consoleService.logStringMessage("host: " + typeof(aHost) + "  " + aHost);
-
         // we need to wait until interest is added to the inerestes table
-        addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest));
+        addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
         addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
       }
       Promise.promised(Array)(addVisitPromises).then(function(results) {
+        // this is for testing only - if _report_add_interest exists, give it a promise
+        if (thisObject["_report_add_interest"]) {
+          thisObject["_report_add_interest"](results);
+        }
         deferred.resolve(results);
       },
       function(error) {
@@ -179,10 +156,11 @@ Interests.prototype = {
   },
 
   _handleInterestsResults: function I__handleInterestsResults(aData) {
-    let host = aData.host;
-    let interests = aData.interests;
-    this._addInterestsForHost(host, interests);
+    this._addInterestsForHost(aData.host, aData.interests, aData.visitDate, aData.visitCount);
   },
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsIDOMEventListener
 
   handleEvent: function I_handleEvent(aEvent) {
     let eventType = aEvent.type;
@@ -190,7 +168,6 @@ Interests.prototype = {
       if (gServiceEnabled) {
         let doc = aEvent.target;
         if (doc instanceof Ci.nsIDOMHTMLDocument && doc.defaultView == doc.defaultView.top) {
-          consoleService.logStringMessage("handling the doc");
           this._handleNewDocument(doc);
         }
       }
@@ -207,6 +184,27 @@ Interests.prototype = {
     }
   },
 
+  clearHistoryVisits: function I_clearHistoryVisits(daysBack) {
+    return PlacesInterestsStorage.clearTables(daysBack);
+  },
+
+  resubmitHistoryVisits: function I_resubmitHistoryVisits(daysBack) {
+    // clean interest tables first
+    this.clearHistoryVisits(daysBack).then(function() {
+      // read moz_places data and massage it
+      PlacesInterestsStorage.reprocessHistory(daysBack, function(item) {
+        let uri = NetUtil.newURI(item.url);
+        item["message"] = "getInterestsForDocument";
+        item["host"] = this._getPlacesHostForURI(uri);
+        item["path"] = uri["path"];
+        item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
+        item["metaData"] = {};
+        item["language"] = "en";
+        this._callMatchingWorker(item);
+      }.bind(this));
+    }.bind(this));
+  },
+
   onDeleteURI: function(aURI, aGUID, aReason) {
     // TODO - we need to implement URI deletion probably, by classifiing that
     // URI again and removing it from the tables - potentially a call tp
@@ -221,46 +219,39 @@ Interests.prototype = {
     */
   },
 
-  onDeleteVisits: function(aURI) {
-    // TODO - same thing as above figure what to do if a visit is deleted
-    /*
-    let host = this._getPlacesHostForURI(aURI);
-    let hostInterests = this._getInterestsForHost(host);
-    for (let interest of hostInterests) {
-      this._invalidateBucketsForInterest(interest);
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsIObserver
+
+  observe: function I_observe(aSubject, aTopic, aData) {
+    if (aTopic == "app-startup") {
+      Services.obs.addObserver(this, "toplevel-window-ready", false);
     }
-    */
+    else if (aTopic == "toplevel-window-ready") {
+      // Top level window is the browser window, not the content window(s).
+      aSubject.addEventListener("DOMContentLoaded", this, true);
+    }
   },
 
-  onClearHistory: function() {
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsISupports
 
-  },
-
-  onVisit: function() {},
-  onTitleChanged: function() {},
-  onBeforeDeleteURI: function() {},
-  onPageChanged: function() {}
-};
-
-function InterestsWebAPI() {}
-
-InterestsWebAPI.prototype = {
-  classID: Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
-  _xpcom_factory: XPCOMUtils.generateSingletonFactory(InterestsWebAPI),
+  classID: Components.ID("{DFB46031-8F05-4577-80A4-F4E5D492881F}"),
 
   QueryInterface: XPCOMUtils.generateQI([
-  , Ci.mozIInterestsWebAPI
-  , Ci.nsIDOMGlobalPropertyInitializer
+  , Ci.nsIDOMEventListener
+  , Ci.nsIObserver
   ]),
 
-  classInfo: XPCOMUtils.generateCI({
-    "classID": Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
-    "contractID": "@mozilla.org/InterestsWebAPI;1",
-    "interfaces": [Ci.mozIInterestsWebAPI, Ci.nsIDOMGlobalPropertyInitializer],
-    "flags": Ci.nsIClassInfo.DOM_OBJECT,
-    "classDescription": "Interests Web API"}),
+  get wrappedJSObject() this,
 
-  init: function(aWindow) {},
+  _xpcom_factory: XPCOMUtils.generateSingletonFactory(Interests),
+};
+
+function InterestsWebAPI() {
+}
+InterestsWebAPI.prototype = {
+  //////////////////////////////////////////////////////////////////////////////
+  //// mozIInterestsWebAPI
 
   checkInterests: function(aInterests) {
     let deferred = Promise.defer();
@@ -283,7 +274,32 @@ InterestsWebAPI.prototype = {
       deferred.reject(error);
     });
     return deferred.promise;
-  }
+  },
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsIDOMGlobalPropertyInitializer
+
+  init: function(aWindow) {},
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsISupports
+
+  classID: Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
+
+  classInfo: XPCOMUtils.generateCI({
+    "classID": Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
+    "contractID": "@mozilla.org/InterestsWebAPI;1",
+    "interfaces": [Ci.mozIInterestsWebAPI, Ci.nsIDOMGlobalPropertyInitializer],
+    "flags": Ci.nsIClassInfo.DOM_OBJECT,
+    "classDescription": "Interests Web API"
+  }),
+
+  QueryInterface: XPCOMUtils.generateQI([
+  , Ci.mozIInterestsWebAPI
+  , Ci.nsIDOMGlobalPropertyInitializer
+  ]),
+
+  _xpcom_factory: XPCOMUtils.generateSingletonFactory(InterestsWebAPI),
 };
 
 let components = [Interests, InterestsWebAPI];

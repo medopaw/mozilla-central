@@ -133,7 +133,9 @@ function getInterestsForDocument(aMessageData) {
     host: aMessageData.host,
     interests: interests,
     message: "InterestsForDocument",
-    url: aMessageData.url
+    url: aMessageData.url,
+    visitDate: aMessageData.visitDate,
+    visitCount: aMessageData.visitCount
   });
 }
 
