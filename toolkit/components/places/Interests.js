@@ -42,27 +42,12 @@ Services.obs.addObserver(function xpcomShutdown() {
 function Interests() {
   gInterestsService = this;
 }
-
 Interests.prototype = {
-  classID: Components.ID("{DFB46031-8F05-4577-80A4-F4E5D492881F}"),
-  _xpcom_factory: XPCOMUtils.generateSingletonFactory(Interests),
+  //////////////////////////////////////////////////////////////////////////////
+  //// Interests API
 
-  QueryInterface: XPCOMUtils.generateQI([
-  , Ci.nsIObserver
-  , Ci.nsIDOMEventListener
-  ]),
-
-  get wrappedJSObject() this,
-
-  observe: function I_observe(aSubject, aTopic, aData) {
-    if (aTopic == "app-startup") {
-      Services.obs.addObserver(this, "toplevel-window-ready", false);
-    }
-    else if (aTopic == "toplevel-window-ready") {
-      // Top level window is the browser window, not the content window(s).
-      aSubject.addEventListener("DOMContentLoaded", this, true);
-    }
-  },
+  //////////////////////////////////////////////////////////////////////////////
+  //// Interests Helpers
 
   get _worker() {
     if (gServiceEnabled && !("__worker " in this)) {
@@ -178,6 +163,9 @@ Interests.prototype = {
     this._addInterestsForHost(host, interests);
   },
 
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsIDOMEventListener
+
   handleEvent: function I_handleEvent(aEvent) {
     let eventType = aEvent.type;
     if (eventType == "DOMContentLoaded") {
@@ -200,27 +188,40 @@ Interests.prototype = {
       Cu.reportError(aEvent.message);
     }
   },
-};
 
-function InterestsWebAPI() {}
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsIObserver
 
-InterestsWebAPI.prototype = {
-  classID: Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
-  _xpcom_factory: XPCOMUtils.generateSingletonFactory(InterestsWebAPI),
+  observe: function I_observe(aSubject, aTopic, aData) {
+    if (aTopic == "app-startup") {
+      Services.obs.addObserver(this, "toplevel-window-ready", false);
+    }
+    else if (aTopic == "toplevel-window-ready") {
+      // Top level window is the browser window, not the content window(s).
+      aSubject.addEventListener("DOMContentLoaded", this, true);
+    }
+  },
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsISupports
+
+  classID: Components.ID("{DFB46031-8F05-4577-80A4-F4E5D492881F}"),
 
   QueryInterface: XPCOMUtils.generateQI([
-  , Ci.mozIInterestsWebAPI
-  , Ci.nsIDOMGlobalPropertyInitializer
+  , Ci.nsIDOMEventListener
+  , Ci.nsIObserver
   ]),
 
-  classInfo: XPCOMUtils.generateCI({
-    "classID": Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
-    "contractID": "@mozilla.org/InterestsWebAPI;1",
-    "interfaces": [Ci.mozIInterestsWebAPI, Ci.nsIDOMGlobalPropertyInitializer],
-    "flags": Ci.nsIClassInfo.DOM_OBJECT,
-    "classDescription": "Interests Web API"}),
+  get wrappedJSObject() this,
 
-  init: function(aWindow) {},
+  _xpcom_factory: XPCOMUtils.generateSingletonFactory(Interests),
+};
+
+function InterestsWebAPI() {
+}
+InterestsWebAPI.prototype = {
+  //////////////////////////////////////////////////////////////////////////////
+  //// mozIInterestsWebAPI
 
   checkInterests: function(aInterests) {
     let deferred = Promise.defer();
@@ -243,7 +244,32 @@ InterestsWebAPI.prototype = {
       deferred.reject(error);
     });
     return deferred.promise;
-  }
+  },
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsIDOMGlobalPropertyInitializer
+
+  init: function(aWindow) {},
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// nsISupports
+
+  classID: Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
+
+  classInfo: XPCOMUtils.generateCI({
+    "classID": Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
+    "contractID": "@mozilla.org/InterestsWebAPI;1",
+    "interfaces": [Ci.mozIInterestsWebAPI, Ci.nsIDOMGlobalPropertyInitializer],
+    "flags": Ci.nsIClassInfo.DOM_OBJECT,
+    "classDescription": "Interests Web API"
+  }),
+
+  QueryInterface: XPCOMUtils.generateQI([
+  , Ci.mozIInterestsWebAPI
+  , Ci.nsIDOMGlobalPropertyInitializer
+  ]),
+
+  _xpcom_factory: XPCOMUtils.generateSingletonFactory(InterestsWebAPI),
 };
 
 let components = [Interests, InterestsWebAPI];
