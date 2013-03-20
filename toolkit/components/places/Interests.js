@@ -12,7 +12,6 @@ const Cu = Components.utils;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesUtils.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
@@ -58,11 +57,6 @@ Interests.prototype = {
   observe: function I_observe(aSubject, aTopic, aData) {
     if (aTopic == "app-startup") {
       Services.obs.addObserver(this, "toplevel-window-ready", false);
-      Services.obs.addObserver(this, "places-init-complete", false);
-    }
-    else if (aTopic == "places-init-complete") {
-      Services.obs.removeObserver(this, "places-init-complete", false);
-      PlacesUtils.history.addObserver(this, false);
     }
     else if (aTopic == "toplevel-window-ready") {
       // Top level window is the browser window, not the content window(s).
@@ -206,40 +200,6 @@ Interests.prototype = {
       Cu.reportError(aEvent.message);
     }
   },
-
-  onDeleteURI: function(aURI, aGUID, aReason) {
-    // TODO - we need to implement URI deletion probably, by classifiing that
-    // URI again and removing it from the tables - potentially a call tp
-    // PlacesInterestsStorage
-    /*
-    console.log(JSON.stringify(aURI));
-    let host = this._getPlacesHostForURI(aURI);
-    let hostInterests = this._getInterestsForHost(host);
-    for (let interest of hostInterests) {
-      this._invalidateBucketsForInterest(interest);
-    }
-    */
-  },
-
-  onDeleteVisits: function(aURI) {
-    // TODO - same thing as above figure what to do if a visit is deleted
-    /*
-    let host = this._getPlacesHostForURI(aURI);
-    let hostInterests = this._getInterestsForHost(host);
-    for (let interest of hostInterests) {
-      this._invalidateBucketsForInterest(interest);
-    }
-    */
-  },
-
-  onClearHistory: function() {
-
-  },
-
-  onVisit: function() {},
-  onTitleChanged: function() {},
-  onBeforeDeleteURI: function() {},
-  onPageChanged: function() {}
 };
 
 function InterestsWebAPI() {}
