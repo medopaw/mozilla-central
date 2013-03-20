@@ -45,6 +45,23 @@ Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Interests API
 
+  resubmitRecentHistoryVisits: function I_resubmitRecentHistory(daysBack) {
+    // clean interest tables first
+    this._clearRecentInterests(daysBack).then(function() {
+      // read moz_places data and massage it
+      PlacesInterestsStorage.reprocessRecentHistoryVisits(daysBack, function(item) {
+        let uri = NetUtil.newURI(item.url);
+        item["message"] = "getInterestsForDocument";
+        item["host"] = this._getPlacesHostForURI(uri);
+        item["path"] = uri["path"];
+        item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
+        item["metaData"] = {};
+        item["language"] = "en";
+        this._callMatchingWorker(item);
+      }.bind(this));
+    }.bind(this));
+  },
+
   //////////////////////////////////////////////////////////////////////////////
   //// Interests Helpers
 
@@ -159,6 +176,10 @@ Interests.prototype = {
     this._addInterestsForHost(aData.host, aData.interests, aData.visitDate, aData.visitCount);
   },
 
+  _clearRecentInterests: function I__clearRecentInterests(daysBack) {
+    return PlacesInterestsStorage.clearRecentInterests(daysBack);
+  },
+
   //////////////////////////////////////////////////////////////////////////////
   //// nsIDOMEventListener
 
@@ -182,41 +203,6 @@ Interests.prototype = {
       //TODO:handle error
       Cu.reportError(aEvent.message);
     }
-  },
-
-  clearHistoryVisits: function I_clearHistoryVisits(daysBack) {
-    return PlacesInterestsStorage.clearTables(daysBack);
-  },
-
-  resubmitHistoryVisits: function I_resubmitHistoryVisits(daysBack) {
-    // clean interest tables first
-    this.clearHistoryVisits(daysBack).then(function() {
-      // read moz_places data and massage it
-      PlacesInterestsStorage.reprocessHistory(daysBack, function(item) {
-        let uri = NetUtil.newURI(item.url);
-        item["message"] = "getInterestsForDocument";
-        item["host"] = this._getPlacesHostForURI(uri);
-        item["path"] = uri["path"];
-        item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
-        item["metaData"] = {};
-        item["language"] = "en";
-        this._callMatchingWorker(item);
-      }.bind(this));
-    }.bind(this));
-  },
-
-  onDeleteURI: function(aURI, aGUID, aReason) {
-    // TODO - we need to implement URI deletion probably, by classifiing that
-    // URI again and removing it from the tables - potentially a call tp
-    // PlacesInterestsStorage
-    /*
-    console.log(JSON.stringify(aURI));
-    let host = this._getPlacesHostForURI(aURI);
-    let hostInterests = this._getInterestsForHost(host);
-    for (let interest of hostInterests) {
-      this._invalidateBucketsForInterest(interest);
-    }
-    */
   },
 
   //////////////////////////////////////////////////////////////////////////////

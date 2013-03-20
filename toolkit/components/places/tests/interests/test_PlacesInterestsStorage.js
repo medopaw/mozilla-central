@@ -95,7 +95,7 @@ add_task(function test_PlacesInterestsStorage()
 add_task(function test_PlacesInterestsStorageClearTables()
 {
   // cleanup the tables
-  yield PlacesInterestsStorage.clearTables(100);
+  yield PlacesInterestsStorage.clearRecentInterests(100);
 
   // check that tables are empty
   yield PlacesInterestsStorage.getBucketsForInterest("computers").then(function(results) {
@@ -134,7 +134,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
   });
 
   // test deletions
-  yield PlacesInterestsStorage.clearTables(14);
+  yield PlacesInterestsStorage.clearRecentInterests(14);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
@@ -146,7 +146,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.length , 86);
   });
 
-  yield PlacesInterestsStorage.clearTables(28);
+  yield PlacesInterestsStorage.clearRecentInterests(28);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
@@ -158,7 +158,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.length , 72);
   });
 
-  yield PlacesInterestsStorage.clearTables(50);
+  yield PlacesInterestsStorage.clearRecentInterests(50);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
@@ -170,7 +170,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.length , 50);
   });
 
-  yield PlacesInterestsStorage.clearTables(100);
+  yield PlacesInterestsStorage.clearRecentInterests(100);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
@@ -182,7 +182,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_true(results == null);
   });
 
-  yield PlacesInterestsStorage.clearTables(100);
+  yield PlacesInterestsStorage.clearRecentInterests(100);
 
   // test visitCounts when adding visits
 
@@ -228,7 +228,7 @@ add_task(function test_PlacesInterestsStorageResubmitHistory()
 
   let results = {};
 
-  yield PlacesInterestsStorage.reprocessHistory(3,function(oneRecord) {
+  yield PlacesInterestsStorage.reprocessRecentHistoryVisits(3,function(oneRecord) {
     // make sure oneRecord looks kosher
     do_check_eq(oneRecord.url, "http://www.cars.com/");
     do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");

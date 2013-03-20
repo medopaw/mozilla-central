@@ -62,7 +62,7 @@ add_task(function test_Interests() {
 add_task(function test_ResubmitHistoryVisits() {
 
   let myDef = Promise.defer();
-  yield iServiceObject.clearHistoryVisits(100).then(function(data) {
+  yield iServiceObject._clearRecentInterests(100).then(function(data) {
     // test that interests are all empty
     iServiceObject._getBucketsForInterests(["cars" , "computers","movies"]).then(function(data) {
       myDef.resolve(data);
@@ -99,7 +99,7 @@ add_task(function test_ResubmitHistoryVisits() {
     }
   };
 
-  iServiceObject.resubmitHistoryVisits(60);
+  iServiceObject.resubmitRecentHistoryVisits(60);
 
   yield myDef.promise;
 

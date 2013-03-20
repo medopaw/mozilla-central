@@ -343,7 +343,7 @@ let PlacesInterestsStorage = {
    *          Number of days to be cleaned
    * @returns Promise for when the tables will be cleaned up
    */
-  clearTables: function (daysAgo) {
+   clearRecentInterests: function (daysAgo) {
     let timeStamp = this._getRoundedTime() - daysAgo * MS_PER_DAY;
     let borrowers = [Promise.defer(),Promise.defer()];
     let stmt = this.db.createStatement("DELETE FROM moz_up_interests_visits where date_added > :timeStamp");
@@ -368,11 +368,10 @@ let PlacesInterestsStorage = {
    *          a callback handling url,title,visit_date,count tuple
    * @returns Promise for when the tables will be cleaned up
    */
-   reprocessHistory: function (inDays,interestsCallback) {
+  reprocessRecentHistoryVisits: function (daysAgo,interestsCallback) {
     let returnDeferred = Promise.defer();
-    let daysAgo = inDays || 300;
 
-    let microSecondsAgo = (this._getRoundedTime() - (daysAgo * MS_PER_DAY)) * 1000;  // move to microseconds
+    let microSecondsAgo = (this._getRoundedTime() - ((daysAgo || 0) * MS_PER_DAY)) * 1000; // move to microseconds
     let query = "SELECT p.url url, p.title title, v.visit_day_stamp date, v.count count " +
     "FROM (SELECT place_id, visit_date - (visit_date % :MICROS_PER_DAY) visit_day_stamp, count(1) count " +
     "      FROM moz_historyvisits WHERE visit_date > :microSecondsAgo GROUP BY place_id,visit_day_stamp) v " +
