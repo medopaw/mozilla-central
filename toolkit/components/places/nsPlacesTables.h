@@ -157,8 +157,10 @@
 #define CREATE_MOZ_UP_INTERESTS_META NS_LITERAL_CSTRING( \
   "CREATE TABLE moz_up_interests_meta (" \
     "  interest_id INTEGER PRIMARY KEY" \
+    ", bucket_visit_count_threshold INTEGER" \
+    ", bucket_duration INTEGER" \
+    ", ignored_flag INTEGER" \
     ", date_updated INTEGER NOT NULL DEFAULT 0" \
-    ", meta BLOB" \
   ")" \
 )
 

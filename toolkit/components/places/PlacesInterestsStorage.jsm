@@ -3,6 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+"use strict";
+
 this.EXPORTED_SYMBOLS = [
   "PlacesInterestsStorage"
 ]
@@ -17,6 +19,17 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
 
 const MS_PER_DAY = 86400000;
+
+function genSQLParamList(someArray) {
+  let paramStr = "";
+  for(let index = 1; index <= someArray.length; index++) {
+    paramStr += "?" + index;
+    if (index < someArray.length) {
+      paramStr += ",";
+    }
+  }
+  return paramStr
+}
 
 function AsyncPromiseHandler(deferred, rowCallback) {
   this.deferred = deferred;
@@ -281,9 +294,99 @@ let PlacesInterestsStorage = {
   },
 
   /**
+   * Stores metadata for an interest. If the optional parameters are not passed, existing values will be preserved.
+   * @param     interestName
+   *            Interest name to store data for
+   * @param     {threshold, duration, ignored, dateUpdated}
+   *            An object with the option names as keys
+   *            threshold: The visit count threshold that counts as a positive signal in bucket computation
+   *            duration: The length of the 'immediate' and 'recent' periods in bucket computation
+   *            ignored: Whether or not to use this interest when computing interest information
+   *            dateUpdated: The timestamp in milliseconds of the day this interest was last updated. 0 means it was never updated. by default dateUpdated is today's date timestamp
+   * @returns   promise for when the data is set
+   */
+  setMetaForInterest: function(interestName, optional={}) {
+    let returnDeferred = Promise.defer();
+
+    let {threshold, duration, ignored, dateUpdated} = optional;
+    threshold = (typeof threshold == 'number') ? threshold : null;
+    duration = (typeof duration == 'number') ? duration : null;
+    ignored = (typeof ignored == 'boolean') ? ignored : null;
+    dateUpdated = (typeof dateUpdated == 'undefined') ? this._getRoundedTime() : dateUpdated;
+
+    let idSubQuery = "SELECT id FROM moz_up_interests WHERE interest = :interestName";
+    // if interestName does not exist in moz_up_interests, query will fail
+    let query = "INSERT OR REPLACE INTO moz_up_interests_meta (interest_id, bucket_visit_count_threshold, bucket_duration, ignored_flag, date_updated) "+
+                "VALUES (" +
+                "  ifnull((" + idSubQuery +"), 'invalid'), " +
+                "  coalesce(:threshold, (SELECT bucket_visit_count_threshold FROM moz_up_interests_meta WHERE interest_id = (" + idSubQuery + "))), " +
+                "  coalesce(:duration, (SELECT bucket_duration FROM moz_up_interests_meta WHERE interest_id = (" + idSubQuery + "))), " +
+                "  coalesce(:ignored, (SELECT ignored_flag FROM moz_up_interests_meta WHERE interest_id = (" + idSubQuery + "))), " +
+                "  coalesce(:dateUpdated, (SELECT date_updated FROM moz_up_interests_meta WHERE interest_id = (" + idSubQuery + ")))" +
+                ")";
+    let stmt = this.db.createAsyncStatement(query);
+    stmt.params.interestName = interestName;
+    stmt.params.threshold = threshold;
+    stmt.params.duration = duration;
+    stmt.params.ignored = ignored;
+    stmt.params.dateUpdated = dateUpdated;
+    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
+    stmt.finalize();
+    return returnDeferred.promise;
+  },
+
+  /**
+   * Obtains interest metadata for a list of interests
+   * @param interests
+            An array of interest names
+   * @returns A promise with the interest metadata for each interest
+   */
+  getMetaForInterests: function(interests) {
+    let returnDeferred = Promise.defer();
+
+    if (!Array.isArray(interests)) {
+      return deferred.reject(Error("invalid input"));
+    }
+
+    let query = "SELECT m.bucket_visit_count_threshold, " +
+                "       m.bucket_duration, " +
+                "       m.ignored_flag, " +
+                "       m.date_updated " +
+                "FROM moz_up_interests_meta m " +
+                "JOIN moz_up_interests i ON m.interest_id = i.id " +
+                "WHERE i.interest IN (" + genSQLParamList(interests) + ")";
+
+    let stmt = this.db.createAsyncStatement(query);
+    for(let i = 0; i < interests.length; i++) {
+      stmt.bindByIndex(i, interests[i]);
+    }
+
+    let queryDeferred = Promise.defer();
+    let promiseHandler = new AsyncPromiseHandler(queryDeferred,function(row) {
+      promiseHandler.addToResultSet({
+        threshold: row.getResultByName('bucket_visit_count_threshold'),
+        duration: row.getResultByName('bucket_duration'),
+        ignored: row.getResultByName('ignored_flag') ? true : false,
+        dateUpdated: row.getResultByName('date_updated'),
+      });
+    });
+    stmt.executeAsync(promiseHandler);
+    stmt.finalize();
+
+    queryDeferred.promise.then(function(resultSet){
+      if(resultSet == undefined) {
+        resultSet = [];
+      }
+      returnDeferred.resolve(resultSet);
+    });
+
+    return returnDeferred.promise;
+  },
+
+  /**
    * Increments the number of visits for an interest for a day
    * @param   interest
-   *          The interest string
+   *          The interest name string
    * @returns Promise with the interest and counts for each bucket
    */
   getBucketsForInterest: function(interest) {
@@ -377,7 +480,7 @@ let PlacesInterestsStorage = {
     "      FROM moz_historyvisits WHERE visit_date > :microSecondsAgo GROUP BY place_id,visit_day_stamp) v " +
     "JOIN moz_places p ON p.id = v.place_id " +
     "WHERE p.hidden = 0 AND p.visit_count > 0 ";
-    stmt = this.db.createStatement(query);
+    let stmt = this.db.createStatement(query);
     stmt.params.MICROS_PER_DAY = MS_PER_DAY * 1000;  // move to microseconds
     stmt.params.microSecondsAgo = microSecondsAgo;
 
