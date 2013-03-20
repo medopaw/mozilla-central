@@ -219,8 +219,12 @@ let PlacesInterestsStorage = {
    * @returns Promise with the interest and counts for each bucket
    */
   getTopInterests: function getTopInterests(interestLimit) {
-    interestLimit = interestLimit || 5;
     let returnDeferred = Promise.defer();
+    interestLimit = interestLimit || 5;
+
+    if(typeof interestLimit != 'number' || interestLimit < 1) {
+      return returnDeferred.reject("invalid input");
+    }
 
     // Figure out the cutoff time for computation
     let currentTs = this._getRoundedTime();
