@@ -85,13 +85,9 @@ add_task(function test_PlacesInterestsStorage_getMetaForInterests()
   // INSERT cases
 
   // calling with an interest that doesn't exist
-  try {
-    err = yield PlacesInterestsStorage.setMetaForInterest("idontexist", {dateUpdated: 0});
-    do_throw("Exception did not occur");
-  } catch(e) {
-    do_print("Exception is thrown");
-    do_check_true(true);
-  }
+  yield PlacesInterestsStorage.setMetaForInterest("idontexist", {});
+  results = yield PlacesInterestsStorage.getMetaForInterests(["idontexist"]);
+  isIdentical([], results);
 
   // inserting with parameters works
   let todayTime = PlacesInterestsStorage._getRoundedTime();

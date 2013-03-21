@@ -318,16 +318,16 @@ let PlacesInterestsStorage = {
     ignored = (typeof ignored == 'boolean') ? ignored : null;
     dateUpdated = (typeof dateUpdated == 'undefined') ? this._getRoundedTime() : dateUpdated;
 
-    let idSubQuery = "SELECT id FROM moz_up_interests WHERE interest = :interestName";
-    // if interestName does not exist in moz_up_interests, query will fail
-    let query = "INSERT OR REPLACE INTO moz_up_interests_meta (interest_id, bucket_visit_count_threshold, bucket_duration, ignored_flag, date_updated) "+
-                "VALUES (" +
-                "  ifnull((" + idSubQuery +"), 'invalid'), " +
-                "  coalesce(:threshold, (SELECT bucket_visit_count_threshold FROM moz_up_interests_meta WHERE interest_id = (" + idSubQuery + "))), " +
-                "  coalesce(:duration, (SELECT bucket_duration FROM moz_up_interests_meta WHERE interest_id = (" + idSubQuery + "))), " +
-                "  coalesce(:ignored, (SELECT ignored_flag FROM moz_up_interests_meta WHERE interest_id = (" + idSubQuery + "))), " +
-                "  coalesce(:dateUpdated, (SELECT date_updated FROM moz_up_interests_meta WHERE interest_id = (" + idSubQuery + ")))" +
-                ")";
+    let query = "REPLACE INTO moz_up_interests_meta "+
+                "SELECT i.id," +
+                "  coalesce(:threshold, m.bucket_visit_count_threshold), " +
+                "  coalesce(:duration, m.bucket_duration), " +
+                "  coalesce(:ignored, m.ignored_flag), " +
+                "  coalesce(:dateUpdated, m.date_updated) " +
+                "FROM moz_up_interests i " + 
+                "LEFT JOIN moz_up_interests_meta m " +
+                "  ON m.interest_id = i.id " +
+                "WHERE i.interest = :interestName";
     let stmt = this.db.createAsyncStatement(query);
     stmt.params.interestName = interestName;
     stmt.params.threshold = threshold;
