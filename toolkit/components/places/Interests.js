@@ -48,7 +48,7 @@ Interests.prototype = {
   //// Interests Helpers
 
   get _worker() {
-    if (gServiceEnabled && !("__worker " in this)) {
+    if (gServiceEnabled && !("__worker" in this)) {
       // Use a ChromeWorker to workaround Bug 487070.
       this.__worker = new ChromeWorker("chrome://global/content/interestsWorker.js");
       this.__worker.addEventListener("message", this, false);
