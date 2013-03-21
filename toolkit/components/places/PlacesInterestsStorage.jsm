@@ -169,16 +169,11 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  getInterestsForHost: function(aHost, handleDataCallBack) {
+  getInterestsForHost: function(aHost) {
     let returnDeferred = Promise.defer();
     let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
       let interest = row.getResultByName("interest");
-      if (handleDataCallBack) {
-        handleDataCallBack(interest);
-      }
-      else {
-        promiseHandler.addToResultSet(interest);
-      }
+      promiseHandler.addToResultSet(interest);
     });
 
     let stmt = this.db.createAsyncStatement(
@@ -190,16 +185,11 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  getHostsForInterest: function (aInterest, handleDataCallBack) {
+  getHostsForInterest: function (aInterest) {
     let returnDeferred = Promise.defer();
     let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
       let host = row.getResultByName("host");
-      if (handleDataCallBack) {
-        handleDataCallBack(host);
-      }
-      else {
-        promiseHandler.addToResultSet(host);
-      }
+      promiseHandler.addToResultSet(host);
     });
 
     let stmt = this.db.createStatement(
