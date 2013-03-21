@@ -139,7 +139,6 @@ let riggedMatchTests = [
         info: "RiggedTextClassifier Test 3: both equally likely",
         url:  "http://example.com/testing/foo/qux",
         title: "bar baz",
-        // will pick foo because foo is first in index
         expectedInterests:  {"foo": 1, "bar": 1}
       },
       {

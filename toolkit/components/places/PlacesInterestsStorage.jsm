@@ -3,6 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+"use strict";
+
 this.EXPORTED_SYMBOLS = [
   "PlacesInterestsStorage"
 ]
@@ -17,6 +19,17 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
 
 const MS_PER_DAY = 86400000;
+
+function genSQLParamList(aNumber) {
+  let paramStr = "";
+  for(let index = 1; index <= aNumber; index++) {
+    paramStr += "?" + index;
+    if (index < aNumber) {
+      paramStr += ",";
+    }
+  }
+  return paramStr
+}
 
 function AsyncPromiseHandler(deferred, rowCallback) {
   this.deferred = deferred;
@@ -92,10 +105,10 @@ let PlacesInterestsStorage = {
    * Increments the number of visits for an interest for a day
    * @param   aInterest
    *          The interest string
-   * @param   {aVisitTime, aVisitCount}
+   * @param   {visitTime, visitCount}
    *          An object with the option names as keys
-   *          aVisitTime: Date/time to associate with the visit, defaulting to today
-   *          aVisitCount: The number of counts to add, defaulting to 1
+   *          visitTime: Date/time to associate with the visit, defaulting to today
+   *          visitCount: The number of counts to add, defaulting to 1
    * @returns Promise for when the interest's visit is added
    */
   addInterestVisit: function(interest, optional={}){ 
@@ -105,7 +118,7 @@ let PlacesInterestsStorage = {
     let deferred = Promise.defer();
     // Increment or initialize the visit count for the interest for the date
     let stmt = this.db.createAsyncStatement(
-      "INSERT OR REPLACE INTO moz_up_interests_visits " +
+      "REPLACE INTO moz_up_interests_visits " +
       "SELECT i.id, IFNULL(v.date_added, :dateAdded), IFNULL(v.visit_count, 0) + :visitCount " +
       "FROM moz_up_interests i " +
       "LEFT JOIN moz_up_interests_visits v " +
@@ -206,8 +219,12 @@ let PlacesInterestsStorage = {
    * @returns Promise with the interest and counts for each bucket
    */
   getTopInterests: function getTopInterests(interestLimit) {
-    interestLimit = interestLimit || 5;
     let returnDeferred = Promise.defer();
+    interestLimit = interestLimit || 5;
+
+    if(typeof interestLimit != 'number' || interestLimit < 1) {
+      return returnDeferred.reject("invalid input");
+    }
 
     // Figure out the cutoff time for computation
     let currentTs = this._getRoundedTime();
@@ -281,9 +298,99 @@ let PlacesInterestsStorage = {
   },
 
   /**
+   * Stores metadata for an interest. If the optional parameters are not passed, existing values will be preserved.
+   * @param     interestName
+   *            Interest name to store data for
+   * @param     {threshold, duration, ignored, dateUpdated}
+   *            An object with the option names as keys
+   *            threshold: The visit count threshold that counts as a positive signal in bucket computation
+   *            duration: The length of the 'immediate' and 'recent' periods in bucket computation
+   *            ignored: Whether or not to use this interest when computing interest information
+   *            dateUpdated: The timestamp in milliseconds of the day this interest was last updated. 0 means it was never updated. by default dateUpdated is today's date timestamp
+   * @returns   promise for when the data is set
+   */
+  setMetaForInterest: function(interestName, optional={}) {
+    let returnDeferred = Promise.defer();
+
+    let {threshold, duration, ignored, dateUpdated} = optional;
+    threshold = (typeof threshold == 'number') ? threshold : null;
+    duration = (typeof duration == 'number') ? duration : null;
+    ignored = (typeof ignored == 'boolean') ? ignored : null;
+    dateUpdated = (typeof dateUpdated == 'undefined') ? this._getRoundedTime() : dateUpdated;
+
+    let query = "REPLACE INTO moz_up_interests_meta "+
+                "SELECT i.id," +
+                "  coalesce(:threshold, m.bucket_visit_count_threshold), " +
+                "  coalesce(:duration, m.bucket_duration), " +
+                "  coalesce(:ignored, m.ignored_flag), " +
+                "  coalesce(:dateUpdated, m.date_updated) " +
+                "FROM moz_up_interests i " + 
+                "LEFT JOIN moz_up_interests_meta m " +
+                "  ON m.interest_id = i.id " +
+                "WHERE i.interest = :interestName";
+    let stmt = this.db.createAsyncStatement(query);
+    stmt.params.interestName = interestName;
+    stmt.params.threshold = threshold;
+    stmt.params.duration = duration;
+    stmt.params.ignored = ignored;
+    stmt.params.dateUpdated = dateUpdated;
+    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
+    stmt.finalize();
+    return returnDeferred.promise;
+  },
+
+  /**
+   * Obtains interest metadata for a list of interests
+   * @param interests
+            An array of interest names
+   * @returns A promise with the interest metadata for each interest
+   */
+  getMetaForInterests: function(interests) {
+    let returnDeferred = Promise.defer();
+
+    if (!Array.isArray(interests)) {
+      return deferred.reject(Error("invalid input"));
+    }
+
+    let query = "SELECT m.bucket_visit_count_threshold, " +
+                "       m.bucket_duration, " +
+                "       m.ignored_flag, " +
+                "       m.date_updated " +
+                "FROM moz_up_interests_meta m " +
+                "JOIN moz_up_interests i ON m.interest_id = i.id " +
+                "WHERE i.interest IN (" + genSQLParamList(interests.length) + ")";
+
+    let stmt = this.db.createAsyncStatement(query);
+    for(let i = 0; i < interests.length; i++) {
+      stmt.bindByIndex(i, interests[i]);
+    }
+
+    let queryDeferred = Promise.defer();
+    let promiseHandler = new AsyncPromiseHandler(queryDeferred,function(row) {
+      promiseHandler.addToResultSet({
+        threshold: row.getResultByName('bucket_visit_count_threshold'),
+        duration: row.getResultByName('bucket_duration'),
+        ignored: row.getResultByName('ignored_flag') ? true : false,
+        dateUpdated: row.getResultByName('date_updated'),
+      });
+    });
+    stmt.executeAsync(promiseHandler);
+    stmt.finalize();
+
+    queryDeferred.promise.then(function(resultSet){
+      if(resultSet == undefined) {
+        resultSet = [];
+      }
+      returnDeferred.resolve(resultSet);
+    });
+
+    return returnDeferred.promise;
+  },
+
+  /**
    * Increments the number of visits for an interest for a day
    * @param   interest
-   *          The interest string
+   *          The interest name string
    * @returns Promise with the interest and counts for each bucket
    */
   getBucketsForInterest: function(interest) {
@@ -377,7 +484,7 @@ let PlacesInterestsStorage = {
     "      FROM moz_historyvisits WHERE visit_date > :microSecondsAgo GROUP BY place_id,visit_day_stamp) v " +
     "JOIN moz_places p ON p.id = v.place_id " +
     "WHERE p.hidden = 0 AND p.visit_count > 0 ";
-    stmt = this.db.createStatement(query);
+    let stmt = this.db.createStatement(query);
     stmt.params.MICROS_PER_DAY = MS_PER_DAY * 1000;  // move to microseconds
     stmt.params.microSecondsAgo = microSecondsAgo;
 
