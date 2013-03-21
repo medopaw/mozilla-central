@@ -20,11 +20,11 @@ XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/P
 
 const MS_PER_DAY = 86400000;
 
-function genSQLParamList(someArray) {
+function genSQLParamList(aNumber) {
   let paramStr = "";
-  for(let index = 1; index <= someArray.length; index++) {
+  for(let index = 1; index <= aNumber; index++) {
     paramStr += "?" + index;
-    if (index < someArray.length) {
+    if (index < aNumber) {
       paramStr += ",";
     }
   }
@@ -358,7 +358,7 @@ let PlacesInterestsStorage = {
                 "       m.date_updated " +
                 "FROM moz_up_interests_meta m " +
                 "JOIN moz_up_interests i ON m.interest_id = i.id " +
-                "WHERE i.interest IN (" + genSQLParamList(interests) + ")";
+                "WHERE i.interest IN (" + genSQLParamList(interests.length) + ")";
 
     let stmt = this.db.createAsyncStatement(query);
     for(let i = 0; i < interests.length; i++) {
