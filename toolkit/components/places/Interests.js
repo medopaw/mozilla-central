@@ -23,13 +23,10 @@ let gInterestsService = null;
 function prefObserver(subject, topic, data) {
   let enable = Services.prefs.getBoolPref("interests.enabled");
   if (enable && !gServiceEnabled) {
-    this._worker;
-    this._ResubmitRecentHistoryDeferred;
-    this._ResubmitRecentHistoryEchoReceived;
     gServiceEnabled = true;
   }
   else if (!enable && gServiceEnabled) {
-    delete this.__worker;
+    delete gInterestsService.__worker;
     gServiceEnabled = false;
   }
 }

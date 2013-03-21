@@ -98,7 +98,7 @@ add_task(function test_PlacesInterestsStorage_getTopInterest()
       {"name":"technology","score":2,"recency":{"immediate":2,"recent":0,"past":0}},
   ], results);
 
-  yield PlacesInterestsStorage.clearTables(100);
+  yield PlacesInterestsStorage.clearRecentInterests(100);
   // add visits to a category beyond test threshold, i.e. 29 days and beyond
   // the category should not show up
   yield PlacesInterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*29), visitCount: 2});
