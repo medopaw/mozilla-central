@@ -105,10 +105,10 @@ let PlacesInterestsStorage = {
    * Increments the number of visits for an interest for a day
    * @param   aInterest
    *          The interest string
-   * @param   {aVisitTime, aVisitCount}
+   * @param   {visitTime, visitCount}
    *          An object with the option names as keys
-   *          aVisitTime: Date/time to associate with the visit, defaulting to today
-   *          aVisitCount: The number of counts to add, defaulting to 1
+   *          visitTime: Date/time to associate with the visit, defaulting to today
+   *          visitCount: The number of counts to add, defaulting to 1
    * @returns Promise for when the interest's visit is added
    */
   addInterestVisit: function(interest, optional={}){ 
@@ -118,7 +118,7 @@ let PlacesInterestsStorage = {
     let deferred = Promise.defer();
     // Increment or initialize the visit count for the interest for the date
     let stmt = this.db.createAsyncStatement(
-      "INSERT OR REPLACE INTO moz_up_interests_visits " +
+      "REPLACE INTO moz_up_interests_visits " +
       "SELECT i.id, IFNULL(v.date_added, :dateAdded), IFNULL(v.visit_count, 0) + :visitCount " +
       "FROM moz_up_interests i " +
       "LEFT JOIN moz_up_interests_visits v " +
