@@ -20,6 +20,11 @@ let gClassifier = null;
 let gInterestsData = null;
 const kSplitter = /[^-\w\xco-\u017f\u0380-\u03ff\u0400-\u04ff]+/;
 
+// echo back the message as is
+function echoMessage(aMessageData) {
+  self.postMessage(aMessageData);
+}
+
 // bootstrap the worker with data and models
 function bootstrap(aMessageData) {
   //expects : {interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}

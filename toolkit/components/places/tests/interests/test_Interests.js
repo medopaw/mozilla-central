@@ -88,20 +88,7 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
-  myDef = Promise.defer();
-  // we expect 3 rows being submitted to Interests.js for each day
-  // hence count to 3 and resolve the promise then
-  let count = 0;
-  iServiceObject["_report_add_interest"] = function(data) {
-    count++;
-    if (count == 3) {
-      myDef.resolve();
-    }
-  };
-
-  iServiceObject.resubmitRecentHistoryVisits(60);
-
-  yield myDef.promise;
+  yield iServiceObject.resubmitRecentHistoryVisits(60);
 
   // so we have processed the history, let's make sure we get interests back
   yield iServiceObject._getBucketsForInterests(["cars"]).then(function(data) {

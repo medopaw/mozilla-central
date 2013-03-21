@@ -24,6 +24,8 @@ function prefObserver(subject, topic, data) {
   let enable = Services.prefs.getBoolPref("interests.enabled");
   if (enable && !gServiceEnabled) {
     this._worker;
+    this._ResubmitRecentHistoryDeferred;
+    this._ResubmitRecentHistoryEchoReceived;
     gServiceEnabled = true;
   }
   else if (!enable && gServiceEnabled) {
@@ -46,27 +48,38 @@ Interests.prototype = {
   //// Interests API
 
   resubmitRecentHistoryVisits: function I_resubmitRecentHistory(daysBack) {
+    let self = this;
+    this._ResubmitRecentHistoryDeferred = Promise.defer();
     // clean interest tables first
     this._clearRecentInterests(daysBack).then(function() {
       // read moz_places data and massage it
       PlacesInterestsStorage.reprocessRecentHistoryVisits(daysBack, function(item) {
         let uri = NetUtil.newURI(item.url);
         item["message"] = "getInterestsForDocument";
-        item["host"] = this._getPlacesHostForURI(uri);
+        item["host"] = self._getPlacesHostForURI(uri);
         item["path"] = uri["path"];
         item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
         item["metaData"] = {};
         item["language"] = "en";
-        this._callMatchingWorker(item);
-      }.bind(this));
-    }.bind(this));
+        self._callMatchingWorker(item);
+      }).then(function() {
+        // we are done sending recent visits to the worker
+        // hence, we can send an echo message to the worker
+        // to indicate completion of the history re-processing
+        self._callMatchingWorker({
+          message: "echoMessage",
+          type: "resubmitRecentHistory"
+        });
+      });
+    });
+    return this._ResubmitRecentHistoryDeferred.promise;
   },
 
   //////////////////////////////////////////////////////////////////////////////
   //// Interests Helpers
 
   get _worker() {
-    if (gServiceEnabled && !("__worker " in this)) {
+    if (gServiceEnabled && !("__worker" in this)) {
       // Use a ChromeWorker to workaround Bug 487070.
       this.__worker = new ChromeWorker("chrome://global/content/interestsWorker.js");
       this.__worker.addEventListener("message", this, false);
@@ -113,7 +126,7 @@ Interests.prototype = {
   },
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests, aVisitDate, aVisitCount) {
-    let thisObject = this;
+    let self = this;
     let deferred = Promise.defer();
     let addInterestPromises = [];
 
@@ -132,11 +145,15 @@ Interests.prototype = {
         addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
       }
       Promise.promised(Array)(addVisitPromises).then(function(results) {
-        // this is for testing only - if _report_add_interest exists, give it a promise
-        if (thisObject["_report_add_interest"]) {
-          thisObject["_report_add_interest"](results);
-        }
         deferred.resolve(results);
+        // test if resubmitRecentHistory echo message arrrived
+        // if so, we have added all resubmitted interests and
+        // need to resolve _ResubmitRecentHistoryDeferred promise
+        if (self._ResubmitRecentHistoryEchoReceived) {
+          self._ResubmitRecentHistoryDeferred.resolve();
+          self._ResubmitRecentHistoryDeferred = null;
+          self._ResubmitRecentHistoryEchoReceived = false;
+        }
       },
       function(error) {
         deferred.reject(error);
@@ -172,12 +189,18 @@ Interests.prototype = {
     return deferred.promise;
   },
 
+  _clearRecentInterests: function I__clearRecentInterests(daysBack) {
+    return PlacesInterestsStorage.clearRecentInterests(daysBack);
+  },
+
   _handleInterestsResults: function I__handleInterestsResults(aData) {
     this._addInterestsForHost(aData.host, aData.interests, aData.visitDate, aData.visitCount);
   },
 
-  _clearRecentInterests: function I__clearRecentInterests(daysBack) {
-    return PlacesInterestsStorage.clearRecentInterests(daysBack);
+  _handleEchoMessage: function I__handleInterestsResults(aData) {
+    if (aData.type == "resubmitRecentHistory") {
+      this._ResubmitRecentHistoryEchoReceived = true;
+    }
   },
 
   //////////////////////////////////////////////////////////////////////////////
@@ -197,6 +220,9 @@ Interests.prototype = {
       let msgData = aEvent.data;
       if (msgData.message == "InterestsForDocument") {
         this._handleInterestsResults(msgData);
+      }
+      else if (msgData.message == "echoMessage") {
+        this._handleEchoMessage(msgData);
       }
     }
     else if (eventType == "error") {
