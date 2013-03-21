@@ -151,19 +151,17 @@ let PlacesInterestsStorage = {
    *          Date/time to associate with the visit defaulting to today
    * @returns Promise for when the row is added
    */
-  addInterestForHost: function (aInterest, aHost, visitTime) {
+  addInterestForHost: function (aInterest, aHost) {
     let returnDeferred = Promise.defer();
     Cu.reportError(typeof(aInterest));
     Cu.reportError("aInterest: " + aInterest);
     Cu.reportError("aHost: " + aHost);
     let stmt = this.db.createAsyncStatement(
-      "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id, date_added) " +
+      "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id) " +
       "VALUES((SELECT id FROM moz_up_interests WHERE interest =:interest) " +
-      ", (SELECT id FROM moz_hosts WHERE host = :host) " +
-      ", :dateAdded)");
+      ", (SELECT id FROM moz_hosts WHERE host = :host))" );
     stmt.params.host = aHost;
     stmt.params.interest = aInterest;
-    stmt.params.dateAdded = this._getRoundedTime(visitTime);
     stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
     return returnDeferred.promise;
@@ -435,26 +433,30 @@ let PlacesInterestsStorage = {
     return deferred.promise;
   },
   /**
-   * Clears tables from N last days worth of days
+   * Clears interests_visits table from N last days worth of days
    * @param   daysAgo
    *          Number of days to be cleaned
-   * @returns Promise for when the tables will be cleaned up
+   * @returns Promise for when the table will be cleaned up
    */
    clearRecentInterests: function (daysAgo) {
-    let timeStamp = this._getRoundedTime() - daysAgo * MS_PER_DAY;
-    let borrowers = [Promise.defer(),Promise.defer()];
+    let returnDeferred = Promise.defer();
+    let timeStamp = this._getRoundedTime() - (daysAgo || 300) * MS_PER_DAY;
     let stmt = this.db.createStatement("DELETE FROM moz_up_interests_visits where date_added > :timeStamp");
     stmt.params.timeStamp = timeStamp;
-    stmt.executeAsync(new AsyncPromiseHandler(borrowers[0]));
+    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
-
-    stmt = this.db.createStatement("DELETE FROM moz_up_interests_hosts where date_added > :timeStamp");
-    stmt.params.timeStamp = timeStamp;
-    stmt.executeAsync(new AsyncPromiseHandler(borrowers[1]));
+    return returnDeferred.promise;
+  },
+  /**
+   * Clears interests_hosts table
+   * @returns Promise for when the table will be cleaned up
+   */
+   clearInterestsHosts: function () {
+    let returnDeferred = Promise.defer();
+    let stmt = this.db.createStatement("DELETE FROM moz_up_interests_hosts");
+    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
-
-    // return the promises resolved when both deletes are complete
-    return Promise.promised(Array)(borrowers.map(function(deferred) {return deferred.promise;})).then();
+    return returnDeferred.promise;
   },
 
   /**

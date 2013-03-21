@@ -71,6 +71,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
 {
   // cleanup the tables
   yield PlacesInterestsStorage.clearRecentInterests(100);
+  yield PlacesInterestsStorage.clearInterestsHosts();
 
   // check that tables are empty
   yield PlacesInterestsStorage.getBucketsForInterest("computers").then(function(results) {
@@ -105,7 +106,8 @@ add_task(function test_PlacesInterestsStorageClearTables()
   });
 
   yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
-    do_check_eq(results.length , 100);
+    do_check_eq(results.length , 1);
+    do_check_eq(results[0] , "cars.com");
   });
 
   // test deletions
@@ -118,7 +120,8 @@ add_task(function test_PlacesInterestsStorageClearTables()
   });
 
   yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
-    do_check_eq(results.length , 86);
+    do_check_eq(results.length , 1);
+    do_check_eq(results[0] , "cars.com");
   });
 
   yield PlacesInterestsStorage.clearRecentInterests(28);
@@ -129,10 +132,6 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.past , 72);
   });
 
-  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
-    do_check_eq(results.length , 72);
-  });
-
   yield PlacesInterestsStorage.clearRecentInterests(50);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
@@ -141,20 +140,12 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.past , 50);
   });
 
-  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
-    do_check_eq(results.length , 50);
-  });
-
   yield PlacesInterestsStorage.clearRecentInterests(100);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
     do_check_eq(results.recent , 0);
     do_check_eq(results.past , 0);
-  });
-
-  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
-    do_check_true(results == null);
   });
 
   yield PlacesInterestsStorage.clearRecentInterests(100);
@@ -186,6 +177,12 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.recent , 3);
     do_check_eq(results.past , 10);
   });
+
+  yield PlacesInterestsStorage.clearInterestsHosts();
+  yield PlacesInterestsStorage.getInterestsForHost("cars.com").then(function(results) {
+    do_check_true(results == null);
+  });
+
 });
 
 add_task(function test_PlacesInterestsStorageResubmitHistory()
