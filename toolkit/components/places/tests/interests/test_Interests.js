@@ -110,3 +110,12 @@ add_task(function test_ResubmitHistoryVisits() {
         do_check_eq(data["cars"]["past"], 3);
   });
 });
+
+add_task(function test_Interests_Service() {
+  // verify that worker is removed when the feature is disabled
+  Services.prefs.setBoolPref("interests.enabled", false);
+  do_check_true(iServiceObject.__worker == undefined)
+  Services.prefs.setBoolPref("interests.enabled", true);
+  let worker = iServiceObject._worker;
+  do_check_eq(iServiceObject.__worker, worker)
+});
