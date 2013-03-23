@@ -159,7 +159,7 @@
     "  interest_id INTEGER PRIMARY KEY" \
     ", bucket_visit_count_threshold INTEGER" \
     ", bucket_duration INTEGER" \
-    ", ignored_flag INTEGER" \
+    ", ignored_flag INTEGER NOT NULL DEFAULT 0" \
     ", date_updated INTEGER NOT NULL DEFAULT 0" \
   ")" \
 )

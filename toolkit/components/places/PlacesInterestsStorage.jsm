@@ -243,7 +243,7 @@ let PlacesInterestsStorage = {
     if (filterIgnores) {
       sql += "JOIN moz_up_interests_meta m ON m.interest_id = i.id " +
              "WHERE v.date_added >= :cutOffDay " +
-             "AND m.ignored_flag is NULL " +
+             "AND m.ignored_flag = 0 " +
              "AND m.date_updated != 0 ";
     } else {
       sql += "WHERE v.date_added >= :cutOffDay ";
@@ -308,12 +308,13 @@ let PlacesInterestsStorage = {
     let returnDeferred = Promise.defer();
 
     let {threshold, duration, ignored, dateUpdated} = optional;
+
     threshold = (typeof threshold == 'number') ? threshold : null;
     duration = (typeof duration == 'number') ? duration : null;
     ignored = (typeof ignored == 'boolean') ? ignored : null;
     dateUpdated = (typeof dateUpdated == 'undefined') ? this._getRoundedTime() : dateUpdated;
 
-    let query = "REPLACE INTO moz_up_interests_meta "+
+    let query = "REPLACE INTO moz_up_interests_meta " +
                 "SELECT i.id," +
                 "  coalesce(:threshold, m.bucket_visit_count_threshold), " +
                 "  coalesce(:duration, m.bucket_duration), " +

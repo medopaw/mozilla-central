@@ -237,6 +237,14 @@ Interests.prototype = {
     return deferred.promise;
   },
 
+  _setIgnoredForInterest: function I__setIgnoredForInterest(interest) {
+    return PlacesInterestsStorage.setMetaForInterest(interest, {ignored: true});
+  },
+
+  _unsetIgnoredForInterest: function I__setIgnoredForInterest(interest) {
+    return PlacesInterestsStorage.setMetaForInterest(interest, {ignored: false});
+  },
+
   _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {
   },
 

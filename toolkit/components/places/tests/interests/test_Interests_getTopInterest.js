@@ -106,6 +106,25 @@ add_task(function test_Interest_getTopInterest()
       {"name":"technology","score":2,"recency":{"immediate":2,"recent":0,"past":0}},
   ], results);
 
+  // set ignored for an interest
+  yield iServiceObject._setIgnoredForInterest("video-games");
+  results = yield iServiceObject._getTopInterests();
+  isIdentical([
+      {"name":"cars","score":3,"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"technology","score":2,"recency":{"immediate":2,"recent":0,"past":0}},
+  ], results);
+
+  // unset ignored for an interest
+  yield iServiceObject._unsetIgnoredForInterest("video-games");
+  results = yield iServiceObject._getTopInterests();
+  isIdentical([
+      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28),"recency":{"immediate":6,"recent":0,"past":0}},
+      {"name":"cars","score":3,"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"technology","score":2,"recency":{"immediate":2,"recent":0,"past":0}},
+  ], results);
+
   yield PlacesInterestsStorage.clearRecentInterests(100);
   // add visits to a category beyond test threshold, i.e. 29 days and beyond
   // the category should not show up
