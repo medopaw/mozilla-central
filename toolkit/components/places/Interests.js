@@ -238,11 +238,11 @@ Interests.prototype = {
   },
 
   _setIgnoredForInterest: function I__setIgnoredForInterest(interest) {
-    return PlacesInterestsStorage.setMetaForInterest(interest, {ignored: true});
+    return PlacesInterestsStorage.updateIgnoreFlagForInterest(interest, true);
   },
 
   _unsetIgnoredForInterest: function I__setIgnoredForInterest(interest) {
-    return PlacesInterestsStorage.setMetaForInterest(interest, {ignored: false});
+    return PlacesInterestsStorage.updateIgnoreFlagForInterest(interest, false);
   },
 
   _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {

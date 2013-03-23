@@ -293,6 +293,30 @@ let PlacesInterestsStorage = {
   },
 
   /**
+   * Updates the ignore flag for an interest
+   * @param     interest
+   *            The interest name to update
+   * @param     value
+   *            Value is either true or false
+   */
+  updateIgnoreFlagForInterest: function(interest, value) {
+    let returnDeferred = Promise.defer();
+    let query = "UPDATE moz_up_interests_meta " +
+                "SET ignored_flag = :value " +
+                "WHERE interest_id = (" +
+                "  SELECT id " +
+                "  FROM moz_up_interests " +
+                "  WHERE interest = :interest" +
+                ")";
+    let stmt = this.db.createAsyncStatement(query);
+    stmt.params.interest = interest;
+    stmt.params.value = value;
+    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
+    stmt.finalize();
+    return returnDeferred.promise;
+  },
+
+  /**
    * Stores metadata for an interest. If the optional parameters are not passed, existing values will be preserved.
    * @param     interestName
    *            Interest name to store data for
