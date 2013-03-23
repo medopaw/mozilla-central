@@ -16,6 +16,9 @@ Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 
+const DEFAULT_THRESHOLD = 5;
+const DEFAULT_DURATION = 14;
+
 let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
 
@@ -29,6 +32,26 @@ function prefObserver(subject, topic, data) {
     delete gInterestsService.__worker;
     gServiceEnabled = false;
   }
+}
+
+function exposeAll(obj) {
+  // Filter for Objects and Arrays.
+  if (typeof obj !== "object" || !obj)
+    return;
+
+  // Recursively expose our children.
+  Object.keys(obj).forEach(function(key) {
+    exposeAll(obj[key]);
+  });
+
+  // If we're not an Array, generate an __exposedProps__ object for ourselves.
+  if (obj instanceof Array)
+    return;
+  var exposed = {};
+  Object.keys(obj).forEach(function(key) {
+    exposed[key] = 'r';
+  });
+  obj.__exposedProps__ = exposed;
 }
 
 Services.prefs.addObserver("interests.enabled", prefObserver, false);
@@ -162,8 +185,54 @@ Interests.prototype = {
     return deferred.promise;
   },
 
-  _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {
+  _getTopInterests: function I__getTopInterests(aNumber) {
+    let returnDeferred = Promise.defer();
+    PlacesInterestsStorage.getTopInterests(aNumber).then(function(topInterests) {
+      // augment with bucket data
+      let bucketPromises = [];
+      for(let index=0; index < topInterests.length; index++) {
+        let interest = topInterests[index];
+        bucketPromises.push(PlacesInterestsStorage.getBucketsForInterest(interest.name));
+      }
+      Promise.promised(Array)(bucketPromises).then(function(buckets){
 
+        for(let index=0; index < buckets.length; index++) {
+          let bucket = buckets[index];
+          topInterests[index].recency = {
+            immediate: bucket.immediate,
+            recent: bucket.recent,
+            past: bucket.past,
+          }
+        }
+        returnDeferred.resolve(topInterests);
+      },
+      function(error) {
+        returnDeferred.reject(error);
+      });
+    });
+    return returnDeferred.promise;
+  },
+
+  _getMetaForInterests: function I__getMetaForInterests(interestNames) {
+    let deferred = Promise.defer();
+    PlacesInterestsStorage.getMetaForInterests(interestNames).then(function(metaData) {
+      for(let index=0; index < metaData.length; index++) {
+        let threshold = metaData[index].threshold;
+        let duration = metaData[index].duration;
+        metaData[index].threshold = threshold ? threshold : DEFAULT_THRESHOLD;
+        metaData[index].duration = duration ? duration : DEFAULT_DURATION;
+        delete metaData[index].ignored;
+        delete metaData[index].dateUpdated;
+      }
+      deferred.resolve(metaData);
+    },
+    function(error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  },
+
+  _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {
   },
 
   _getBucketsForInterests: function I__getBucketsForInterests(aInterests) {
@@ -265,6 +334,9 @@ InterestsWebAPI.prototype = {
   checkInterests: function(aInterests) {
     let deferred = Promise.defer();
     gInterestsService._getBucketsForInterests(aInterests).then(function(results) {
+
+      results = JSON.parse(JSON.stringify(results));
+
       results["__exposedProps__"] = {};
       // decorate results before sending it back to the caller
       Object.keys(results).forEach(function(interest) {
@@ -280,6 +352,40 @@ InterestsWebAPI.prototype = {
       deferred.resolve(results);
     },
     function(error) {
+      deferred.reject(error);
+    });
+    return deferred.promise;
+  },
+
+  getTopInterests: function(aNumber) {
+    let deferred = Promise.defer();
+    
+    let aNumber = 5; // always 5 for now, will be subject to a whitelist
+    gInterestsService._getTopInterests(aNumber).then(function(topInterests) {
+
+      topInterests = JSON.parse(JSON.stringify(topInterests));
+
+      let interestNames = [];
+      let scoreTotal = 0;
+      for(let index=0; index < topInterests.length; index++) {
+        interestNames.push(topInterests[index].name);
+        scoreTotal += topInterests[index].score;
+      }
+      gInterestsService._getMetaForInterests(interestNames).then(function(metaData){
+        for(let index=0; index < metaData.length; index++) {
+          // obtain metadata and apply thresholds
+          topInterests[index].recency.immediate = topInterests[index].recency.immediate >= metaData[index].threshold;
+          topInterests[index].recency.recent = topInterests[index].recency.recent >= metaData[index].threshold;
+          topInterests[index].recency.past = topInterests[index].recency.past >= metaData[index].threshold;
+          
+          // normalize scores
+          topInterests[index].score /= scoreTotal;
+        }
+        exposeAll(topInterests);
+        deferred.resolve(topInterests);
+      });
+    },
+    function(error){
       deferred.reject(error);
     });
     return deferred.promise;

@@ -19,7 +19,12 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
 
 const MS_PER_DAY = 86400000;
+const DEFAULT_THRESHOLD = 5;
+const DEFAULT_DURATION = 14;
 
+/*
+ * Generates a string for use with the SQLite client for binding parameters by array indexing
+ */
 function genSQLParamList(aNumber) {
   let paramStr = "";
   for(let index = 1; index <= aNumber; index++) {
@@ -29,6 +34,18 @@ function genSQLParamList(aNumber) {
     }
   }
   return paramStr
+}
+
+/*
+ * Generates a string for generating case/when/then clauses for use in ordering sequences
+ */
+function genCaseOrdering(aFieldName, aNumber) {
+  let caseStr = "CASE ";
+  for(let index = 1; index <= aNumber; index++) {
+    caseStr += "WHEN " + aFieldName + " = ?" + (index) + " THEN " + (index-1) + " ";
+  }
+  caseStr += "END";
+  return caseStr;
 }
 
 function AsyncPromiseHandler(deferred, rowCallback) {
@@ -216,13 +233,15 @@ let PlacesInterestsStorage = {
    * @param   interestLimit
    *          The number of interests to limit the result by.
    *          A negative value will not limit the results. Defaults to 5
+   * @param   filterIgnores [optional]
+   *          Optional parameter that sets whether to filter ignored and to-be downloaded interests. Defaults to true.
    * @returns Promise with the interest and counts for each bucket
    */
-  getTopInterests: function getTopInterests(interestLimit) {
+  getTopInterests: function getTopInterests(interestLimit, filterIgnores=true) {
     let returnDeferred = Promise.defer();
     interestLimit = interestLimit || 5;
 
-    if(typeof interestLimit != 'number' || interestLimit < 1) {
+    if (typeof interestLimit != 'number' || interestLimit < 1) {
       return returnDeferred.reject("invalid input");
     }
 
@@ -230,13 +249,20 @@ let PlacesInterestsStorage = {
     let currentTs = this._getRoundedTime();
     let cutOffDay = currentTs - 28 * MS_PER_DAY;
 
-    let stmt = this.db.createStatement(
-        "SELECT i.interest, v.visit_count, (:currentTs-v.date_added)/:MS_PER_DAY 'days_ago' " +
-        "FROM moz_up_interests i " +
-        "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
-        "WHERE v.date_added >= :cutOffDay " +
-        "ORDER BY v.date_added DESC"
-    );
+    let sql = "SELECT i.interest, v.visit_count, (:currentTs-v.date_added)/:MS_PER_DAY 'days_ago' " +
+              "FROM moz_up_interests i " +
+              "JOIN moz_up_interests_visits v ON v.interest_id = i.id ";
+    if (filterIgnores) {
+      sql += "JOIN moz_up_interests_meta m ON m.interest_id = i.id " +
+             "WHERE v.date_added >= :cutOffDay " +
+             "AND m.ignored_flag is NULL " +
+             "AND m.date_updated != 0 ";
+    } else {
+      sql += "WHERE v.date_added >= :cutOffDay ";
+    }
+    sql += "ORDER BY v.date_added DESC";
+
+    let stmt = this.db.createStatement(sql);
     stmt.params.MS_PER_DAY = MS_PER_DAY;
     stmt.params.currentTs = currentTs;
     stmt.params.cutOffDay = cutOffDay;
@@ -259,7 +285,7 @@ let PlacesInterestsStorage = {
     stmt.executeAsync(promiseHandler);
     stmt.finalize();
 
-    queryDeferred.promise.then(function(resultSet) {
+    queryDeferred.promise.then(function() {
       // sort scores and cut off
       let interests = Object.keys(scores);
       for (let interestIndex=0; interestIndex < interests.length; interestIndex++) {
@@ -272,28 +298,9 @@ let PlacesInterestsStorage = {
       if (interestLimit > -1) {
         topInterests = topInterests.slice(0, interestLimit);
       }
-    }).then(function() {
-      // augment with bucket data
-
-      let bucketPromises = [];
-      for(let index=0; index < topInterests.length; index++) {
-        let interest = topInterests[index];
-        bucketPromises.push(PlacesInterestsStorage.getBucketsForInterest(interest.name));
-      }
-
-      Promise.promised(Array)(bucketPromises).then(function(buckets){
-
-        for(let index=0; index < buckets.length; index++) {
-          let bucket = buckets[index];
-          topInterests[index]["recency"] = {
-            immediate: bucket['immediate'],
-            recent: bucket['recent'],
-            past: bucket['past'],
-          }
-        }
-        returnDeferred.resolve(topInterests);
-      });
+      returnDeferred.resolve(topInterests);
     });
+
     return returnDeferred.promise;
   },
 
@@ -358,7 +365,12 @@ let PlacesInterestsStorage = {
                 "       m.date_updated " +
                 "FROM moz_up_interests_meta m " +
                 "JOIN moz_up_interests i ON m.interest_id = i.id " +
-                "WHERE i.interest IN (" + genSQLParamList(interests.length) + ")";
+                "WHERE i.interest IN (" + genSQLParamList(interests.length) + ") ";
+
+    // this is to emulate ORDER BY FIELD, which sqlite doesn't have
+    if (interests.length > 0) {
+      query += "ORDER BY " + genCaseOrdering("i.interest", interests.length);
+    }
 
     let stmt = this.db.createAsyncStatement(query);
     for(let i = 0; i < interests.length; i++) {
@@ -378,7 +390,7 @@ let PlacesInterestsStorage = {
     stmt.finalize();
 
     queryDeferred.promise.then(function(resultSet){
-      if(resultSet == undefined) {
+      if (resultSet == undefined) {
         resultSet = [];
       }
       returnDeferred.resolve(resultSet);
@@ -398,50 +410,55 @@ let PlacesInterestsStorage = {
 
     // Figure out the cutoff times for each bucket
     let currentTs = this._getRoundedTime();
-    let immediateBucket = currentTs - 14 * MS_PER_DAY;
-    let recentBucket = currentTs - 28 * MS_PER_DAY;
+    this.getMetaForInterests([interest]).then(function(metaData) {
 
-    // Aggregate the visits into each bucket for the interest
-    let stmt = this.db.createAsyncStatement(
-      "SELECT CASE WHEN v.date_added > :immediateBucket THEN 'immediate' " +
-                  "WHEN v.date_added > :recentBucket THEN 'recent' " +
-                  "ELSE 'past' END AS bucket, " +
-             "v.visit_count " +
-      "FROM moz_up_interests i " +
-      "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
-      "WHERE i.interest = :interest");
-    stmt.params.interest = interest;
-    stmt.params.immediateBucket = immediateBucket;
-    stmt.params.recentBucket = recentBucket;
+      let duration;
 
-    // Initialize the result to have something for each bucket
-    let result = {
-      immediate: 0,
-      interest: interest,
-      past: 0,
-      recent: 0
-    };
-
-    stmt.executeAsync({
-      handleCompletion: function(reason) {
-        deferred.resolve(result);
-      },
-
-      handleError: function(error) {
-        deferred.reject(error);
-      },
-
-      handleResult: function(resultSet) {
-        let row;
-        while (row = resultSet.getNextRow()) {
-          // Add up the total number of visits for this bucket
-          let bucket = row.getResultByName("bucket");
-          let visitCount = row.getResultByName("visit_count");
-          result[bucket] += visitCount;
-        }
+      if (metaData.length == 0) {
+        // in case no metadata exists for this interests
+        duration = DEFAULT_DURATION;
+      } else {
+        duration = metaData[0].duration || DEFAULT_DURATION;
       }
+
+      let immediateBucket = currentTs - duration * MS_PER_DAY;
+      let recentBucket = currentTs - duration*2 * MS_PER_DAY;
+
+      // Aggregate the visits into each bucket for the interest
+      let stmt = PlacesInterestsStorage.db.createAsyncStatement(
+        "SELECT CASE WHEN v.date_added > :immediateBucket THEN 'immediate' " +
+                    "WHEN v.date_added > :recentBucket THEN 'recent' " +
+                    "ELSE 'past' END AS bucket, " +
+                    "v.visit_count " +
+        "FROM moz_up_interests i " +
+        "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
+        "WHERE i.interest = :interest");
+      stmt.params.interest = interest;
+      stmt.params.immediateBucket = immediateBucket;
+      stmt.params.recentBucket = recentBucket;
+
+      // Initialize the result to have something for each bucket
+      let result = {
+        immediate: 0,
+        interest: interest,
+        past: 0,
+        recent: 0
+      };
+
+      let queryDeferred = Promise.defer();
+      let promiseHandler = new AsyncPromiseHandler(queryDeferred, function(row) {
+        let bucket = row.getResultByName("bucket");
+        let visitCount = row.getResultByName("visit_count");
+        result[bucket] += visitCount;
+      });
+      stmt.executeAsync(promiseHandler);
+      stmt.finalize();
+
+      queryDeferred.promise.then(function(){
+        deferred.resolve(result);
+      });
     });
-    stmt.finalize();
+
     return deferred.promise;
   },
   /**

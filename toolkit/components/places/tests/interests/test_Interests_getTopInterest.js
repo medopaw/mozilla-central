@@ -8,21 +8,21 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
+let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
+
 function run_test() {
   run_next_test();
 }
 
-add_task(function test_PlacesInterestsStorage_getTopInterest()
+add_task(function test_Interest_getTopInterest()
 {
   yield PlacesInterestsStorage.addInterest("cars");
   yield PlacesInterestsStorage.addInterest("movies");
   yield PlacesInterestsStorage.addInterest("technology");
   yield PlacesInterestsStorage.addInterest("video-games");
   yield PlacesInterestsStorage.addInterest("history");
-  yield PlacesInterestsStorage.addInterest("ignored-interest");
 
   yield PlacesInterestsStorage.setMetaForInterest("cars");
-  yield PlacesInterestsStorage.setMetaForInterest("ignored-interest", {ignored:true});
   yield PlacesInterestsStorage.setMetaForInterest("movies");
   yield PlacesInterestsStorage.setMetaForInterest("technology");
   yield PlacesInterestsStorage.setMetaForInterest("video-games");
@@ -57,77 +57,68 @@ add_task(function test_PlacesInterestsStorage_getTopInterest()
   let results;
 
   // no visits, empty results
-  results = yield PlacesInterestsStorage.getTopInterests();
+  results = yield iServiceObject._getTopInterests();
   isIdentical([], results);
-
-  // add ignored interest
-  yield PlacesInterestsStorage.addInterestVisit("ignored-interest", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  results = yield PlacesInterestsStorage.getTopInterests();
-  isIdentical([], results);
-
-  // show ignored interests
-  results = yield PlacesInterestsStorage.getTopInterests(undefined, false);
-  isIdentical([{"name":"ignored-interest","score":1}], results);
 
   // add visit
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  results = yield PlacesInterestsStorage.getTopInterests();
-  isIdentical([{"name":"technology","score":1}], results);
+  results = yield iServiceObject._getTopInterests();
+  isIdentical([{"name":"technology","score":1,"recency":{"immediate":1,"recent":0,"past":0}}], results);
 
   // add another visit for the same category, same day
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  results = yield PlacesInterestsStorage.getTopInterests();
-  isIdentical([{"name":"technology","score":2}], results);
+  results = yield iServiceObject._getTopInterests();
+  isIdentical([{"name":"technology","score":2,"recency":{"immediate":2,"recent":0,"past":0}}], results);
 
   // add 3 visits for another category, same day, new top interest
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
-  results = yield PlacesInterestsStorage.getTopInterests();
+  results = yield iServiceObject._getTopInterests();
   isIdentical([
-      {"name":"cars","score":3},
-      {"name":"technology","score":2},
+      {"name":"cars","score":3,"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"technology","score":2,"recency":{"immediate":2,"recent":0,"past":0}},
   ], results);
 
   // add visits for another category, one day ago
   yield PlacesInterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
-  results = yield PlacesInterestsStorage.getTopInterests();
+  results = yield iServiceObject._getTopInterests();
   isIdentical([
-      {"name":"cars","score":3},
-      {"name":"movies","score":scoreDecay(3, 1, 28)},
-      {"name":"technology","score":2},
+      {"name":"cars","score":3,"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"technology","score":2,"recency":{"immediate":2,"recent":0,"past":0}},
   ], results);
 
   // get top 2 visits, test result limiting
-  results = yield PlacesInterestsStorage.getTopInterests(2);
+  results = yield iServiceObject._getTopInterests(2);
   isIdentical([
-      {"name":"cars","score":3},
-      {"name":"movies","score":scoreDecay(3, 1, 28)},
+      {"name":"cars","score":3,"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"recency":{"immediate":3,"recent":0,"past":0}},
   ], results);
 
   // add visits to the same category over multiple days
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*1), visitCount: 2});
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*2), visitCount: 1});
-  results = yield PlacesInterestsStorage.getTopInterests();
+  results = yield iServiceObject._getTopInterests();
   isIdentical([
-      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28)},
-      {"name":"cars","score":3},
-      {"name":"movies","score":scoreDecay(3, 1, 28)},
-      {"name":"technology","score":2},
+      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28),"recency":{"immediate":6,"recent":0,"past":0}},
+      {"name":"cars","score":3,"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"technology","score":2,"recency":{"immediate":2,"recent":0,"past":0}},
   ], results);
 
   yield PlacesInterestsStorage.clearRecentInterests(100);
   // add visits to a category beyond test threshold, i.e. 29 days and beyond
   // the category should not show up
   yield PlacesInterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*29), visitCount: 2});
-  results = yield PlacesInterestsStorage.getTopInterests();
+  results = yield iServiceObject._getTopInterests();
   isIdentical([], results);
 
   // add visits within test-threshold, modifying buckets
   // assuming recent is: 14-28 days, past is > 28 days
   yield PlacesInterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*15), visitCount: 3});
-  results = yield PlacesInterestsStorage.getTopInterests();
+  results = yield iServiceObject._getTopInterests();
   isIdentical([
-      {"name":"history","score":scoreDecay(3, 15, 28)},
+      {"name":"history","score":scoreDecay(3, 15, 28),"recency":{"immediate":0,"recent":3,"past":2}},
   ], results);
 });
 
