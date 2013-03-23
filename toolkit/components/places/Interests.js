@@ -69,6 +69,11 @@ Interests.prototype = {
 
   resubmitRecentHistoryVisits: function I_resubmitRecentHistory(daysBack) {
     let self = this;
+    // check if history is in progress
+    if (this._ResubmitRecentHistoryDeferred) {
+      return this._ResubmitRecentHistoryDeferred.promise;
+    }
+
     this._ResubmitRecentHistoryDeferred = Promise.defer();
     // clean interest tables first
     this._clearRecentInterests(daysBack).then(function() {

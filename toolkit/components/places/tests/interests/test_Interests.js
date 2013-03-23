@@ -88,7 +88,15 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
-  yield iServiceObject.resubmitRecentHistoryVisits(60);
+  let promise1 = iServiceObject.resubmitRecentHistoryVisits(60);
+  let promise2 = iServiceObject.resubmitRecentHistoryVisits(60);
+  let promise3 = iServiceObject.resubmitRecentHistoryVisits(60);
+
+  // all of the promisses above should be the same promise
+  do_check_true(promise1 == promise2);
+  do_check_true(promise1 == promise3);
+
+  yield promise1;
 
   // so we have processed the history, let's make sure we get interests back
   yield iServiceObject._getBucketsForInterests(["cars"]).then(function(data) {

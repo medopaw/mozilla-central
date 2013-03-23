@@ -177,8 +177,7 @@
   "CREATE TABLE moz_up_interests_hosts (" \
     "  interest_id INTEGER NOT NULL DEFAULT 0" \
     ", host_id INTEGER NOT NULL DEFAULT 0" \
-    ", date_added INTEGER NOT NULL DEFAULT 0" \
-    ",PRIMARY KEY (interest_id, host_id, date_added)" \
+    ",PRIMARY KEY (interest_id, host_id)" \
   ")" \
 )
 
