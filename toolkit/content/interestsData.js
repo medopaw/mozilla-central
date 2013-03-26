@@ -1,110 +1,110 @@
 var interestsData =
 {
    "coquette.blogs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "thepensblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "structuralarchaeology.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "netflix.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "sidereel.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "auto-loans.wellsfargo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "indianadillmans.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "stonegenepool.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "speedtest.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "cleveland.indians.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "oaklandgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "stumblebakc.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sfbagenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "style.mtv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "sn.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "awfulmodifications.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion",
          "society"
       ]
    },
    "oldcolonygraveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "usaa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "finance"
       ]
    },
    "adviceanimals.reddit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "samsung.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ],
@@ -112,28 +112,28 @@ var interestsData =
       "us support" : "computers"
    },
    "list-manage1.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email",
          "business"
       ]
    },
    "funnyordie.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "thezoeblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "lwken.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "bettysgenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -144,29 +144,29 @@ var interestsData =
       "management" : "business"
    },
    "datehookup.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "branchesofmyfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "elgincountyogs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mkezluc.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "businessinsider.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "finance"
       ],
@@ -174,12 +174,12 @@ var interestsData =
       "sopa" : "politics"
    },
    "sleep.med.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "basketbawful.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -187,123 +187,123 @@ var interestsData =
       "profile" : "reviews"
    },
    "xhamster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "eff-stoplocal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "citysearch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "coachingyouthsoccerdrills.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "kinderpendent.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "suffragewagon.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogyramblings.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "history.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "mii.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "infusionsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "photography.nationalgeographic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "bostondirtdogs.boston.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "brainyquote.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "scottishancestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "erniemargheim.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kongregate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "scottyhockey.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ndbc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "networksolutions.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "bluffsidebombers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "metrodad.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "newsandviewsbychrisbarat.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jeanbduncan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -312,67 +312,67 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "avast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "scandiamusings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "csrees.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ],
       "ecosystems cfm" : "science"
    },
    "peabody.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "wimp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "homeofsherlocks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "worldstaruncut.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "north-country-chronicles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "k12.ca.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "rockies.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "genoasis.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mercurynews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "warriors" : "sports",
@@ -383,56 +383,56 @@ var interestsData =
       "athletics" : "sports"
    },
    "earlystlouis.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "flixster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "nationalreview.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ]
    },
    "creativecookinggf.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "museumoffamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "changingclimate.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "myflorida.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "barrycountymogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dictionary.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "mam-massouthernfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -441,7 +441,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "qvc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
@@ -449,12 +449,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "itunesconnect.apple.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mangafox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
@@ -462,50 +462,50 @@ var interestsData =
       "profile" : "reviews"
    },
    "ft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ],
       "uk arts leisure" : "arts"
    },
    "reversewhois.domaintools.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mbi.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "jollettetc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cats.oodle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "stylelist.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "blog.uscis.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "digitalcemeterywalk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "inplaymagpistons.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -516,44 +516,44 @@ var interestsData =
       ]
    },
    "mypapasbook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lyngenealogystories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "images.jsc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "yummysupper.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "developer.force.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ssd.jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "joystiq.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "review" : "reviews"
@@ -565,223 +565,223 @@ var interestsData =
       "blogs regulatingwallstreet" : "finance"
    },
    "ilivid.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cafemom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "emice.nci.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "mitbbs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "closetcooking.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "glutenfreevegan.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "climatechange.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "dal.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "radiok.cce.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "turning-of-generations.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "laurelin.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "tomorrowsmemorieskjlb.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "quest.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "bobbyfamilytree.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "healthysleep.med.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "svn.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "journeyspast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "couponnetwork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "komonews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "recenteats.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "palongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kvracingtechnology.homestead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "anzman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "channeladvisor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "mississippistate.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "biblegateway.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "tepper.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "usnews.rankingsandreviews.com" : {
       "cars trucks" : "cars",
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "onionstand.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "codeigniter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "msn.foxsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "news"
       ]
    },
    "genealogy-books.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "parkinsons.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "louisianagraveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "spankwirecams.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "getglue.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "cliphunter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "thegenealogymom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oneperfectbite.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "python.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "retirementplans.vanguard.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "sfsu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -789,29 +789,29 @@ var interestsData =
       "profile" : "reviews"
    },
    "techknitting.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "pds.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "kickstarter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "technology"
       ]
    },
    "moyermystery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whitleykinexxions.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -820,18 +820,18 @@ var interestsData =
       "polyphred" : "science"
    },
    "phpwiki.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lineagefan.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nws.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "weather"
       ],
@@ -841,149 +841,149 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "rosannasgenealogicalthoughts.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "southcarolinapioneers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "butlercemetery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "heavenandhelton.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "fopnews.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "walrus.wr.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "prohockeytalk.nbcsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "thebarbiequeue.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "ciccolella.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "flahertyfindings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "neags.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familyhistoryleads.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "akrunning.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "climate.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "bodybuilding.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "palindromeknits.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "store.nba.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "fashion"
       ]
    },
    "edline.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "hmnh.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "nyc.ny.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "thegoddesskitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "savings.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "albanyhilltowns.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "damarisfish.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cns.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "my100familyhistories.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "perl6advent.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -991,89 +991,89 @@ var interestsData =
       "colauntie htm" : "science"
    },
    "pyobjc.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "abclocal.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "news"
       ]
    },
    "thesituationist.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "health"
       ]
    },
    "zinelibraryday.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "weather.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "on-ruby.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "bats.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "community.babycenter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "rottentomatoes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "movies"
       ]
    },
    "staples.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "shopping"
       ]
    },
    "robertsnascarnotes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "realtor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "lovetoknow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "reference",
          "society"
       ]
    },
    "italktodeadpeople.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "noupe.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "wiki.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -1081,7 +1081,7 @@ var interestsData =
       "library" : "reference"
    },
    "diggingundermyfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -1090,39 +1090,39 @@ var interestsData =
       "urban planning" : "government"
    },
    "bps-research-digest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "mail.opera.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "bn-gr.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "inourhearts.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cancer.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "googlesystem.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "quod.lib.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "g gefame" : "history",
@@ -1138,33 +1138,33 @@ var interestsData =
       "h homeop" : "health"
    },
    "genwriting.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "physics-dph.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "myhabit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "timeout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "ccinsider.comedycentral.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "resorts.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
@@ -1172,96 +1172,96 @@ var interestsData =
       "rubber stamping" : "hobby"
    },
    "epydoc.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "perl-yarg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "electionreturns.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "charles-mikkelshus.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "seattle.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ionarts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "losabuelosdemihistoria.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brandywine.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "shivelyfamilygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "family-ancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mywdfamilies.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "onlinedirectorysite.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gingerlemongirl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ]
    },
    "woodentoddlertoys.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "boisdejasmin.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "dilbert.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "bluegrassandbuckeyeroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -1270,38 +1270,38 @@ var interestsData =
       "doitt nycitymap" : "maps"
    },
    "scriptorium.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "zoosk.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "jjay.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "lsu.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "netsuite.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "howdidigetheremygenealogyjourney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "iybd.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -1309,7 +1309,7 @@ var interestsData =
       "product photoshop" : "photography"
    },
    "fnce.wharton.upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
@@ -1319,46 +1319,46 @@ var interestsData =
       "management consultant" : "business"
    },
    "needhamgenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nutsfromthefamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ancestralpaths.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cccgs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "benwitherington.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "todaysinspiration.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "mjsyarnbombs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "addons.mozilla.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -1366,28 +1366,28 @@ var interestsData =
       "profile" : "reviews"
    },
    "thepiecesofmypast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "formula1.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "at.ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "guidance.fidelity.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "pwcogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -1396,56 +1396,56 @@ var interestsData =
       "ncaa football" : "sports"
    },
    "lostinthefamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "java.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "travel.aaa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "polishorperish.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "patryangenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "home.ingdirect.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "fling.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "nancynurse1.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wikihow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "usmagazine.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
@@ -1454,106 +1454,106 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "webcrawler.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "genea-adventures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "historyofthesouth.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vulture.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "news",
          "movies"
       ]
    },
    "codecanyon.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "seamless.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "homesupport.cisco.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "thetravelinggenealogist.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "avira.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "poopsheet.ecrater.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "beerleaguer.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "zagg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "paychex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "jonesfamilymatters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogyaddiction.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "albioncooks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "uible.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "instruments.shop.ebay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "simplyhired.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
@@ -1561,35 +1561,35 @@ var interestsData =
       "index wii faqs" : "video-games"
    },
    "instructables.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion",
          "society"
       ]
    },
    "etoh.niaaa.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "allthingsquebec.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "areyoumycousin-lisa.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hardballtalk.nbcsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mapquest.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "maps"
       ]
    },
@@ -1597,50 +1597,50 @@ var interestsData =
       "events thanksgiving" : "society"
    },
    "illinoisharvest.grainger.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "panicanddepression.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "whiletheysnooze.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "sony.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography",
          "shopping",
          "consumer-electronics"
       ]
    },
    "townhall-talk.edmunds.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "mapleleafslegends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "zinelibrary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "cbsnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sopa" : "politics"
    },
    "vancouversun.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
@@ -1648,12 +1648,12 @@ var interestsData =
       "richmond" : "education"
    },
    "armchairgolfblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "un.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ],
       "en events chemistry2011" : "science",
@@ -1668,58 +1668,58 @@ var interestsData =
       "profile" : "reviews"
    },
    "genealogy-georgiapioneers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "enterprise.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "dexknows.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "hockey.fantasysports.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "education.nationalgeographic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ],
       "education" : "education"
    },
    "ourattictreasures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "buzzle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "losangeles.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "stephenrmills.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gcc.gnu.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -1730,48 +1730,48 @@ var interestsData =
       ]
    },
    "moralmachines.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "powerwall.msnbc.msn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "prweb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "library.upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "msn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "strobist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "stylesalvage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "webmasterworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "scottrade.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
@@ -1779,7 +1779,7 @@ var interestsData =
       "pubmnem" : "reference"
    },
    "jcpenney.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "shopping",
@@ -1787,7 +1787,7 @@ var interestsData =
       ]
    },
    "klm.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -1795,23 +1795,23 @@ var interestsData =
       "nanotechfacility" : "science"
    },
    "battlingbucs.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mybigfatfamilyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "godvine.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "blessingofkings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
@@ -1824,7 +1824,7 @@ var interestsData =
          "religion",
          "society"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "clothes"
       ],
@@ -1836,29 +1836,29 @@ var interestsData =
       "posters" : "shopping"
    },
    "football.guardian.co.uk" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "chelli11.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "video.dot.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "society"
       ]
    },
    "freshbooks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "kan.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -1869,72 +1869,72 @@ var interestsData =
       ]
    },
    "ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
    },
    "harn.ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "lawsonresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familyhistorytracing.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "1bluejaysway.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "scrapyourroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "graveyardrabbitofsanduskybay.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mcz.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "lan.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "overview.mail.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "voyager.jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "themwordblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "abcfamily.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
@@ -1948,197 +1948,197 @@ var interestsData =
       ]
    },
    "yidwithlid.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "growingmyfamtree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "help.joomla.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "celebritybabies.people.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "nccam.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ],
       "health taichi" : "sports"
    },
    "sell.autotrader.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
    },
    "riteaid.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "troop21cliftonnj.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "homesicktexan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "uvgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "marquee.blogs.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "tvapps.directv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "cherryteatime.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "children.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health",
          "family"
       ],
       "kids coping divorce" : "law"
    },
    "britishairways.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "annalespatrio.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "esupport.sony.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "knitandtonic.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "dsl.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "darknickerbockers.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "talkingroots.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brownwheelerfamilyhistory.posterous.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bbc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "phillies.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ancestorslivehere.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geneajulia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "usafamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "the-lost-colony.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "texas.rangers.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "eitc.irs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "law",
          "finance"
       ]
    },
    "happyhomebaking.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "cfn.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "scoop.it" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "activemq.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "scitechbizdev.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -2150,82 +2150,82 @@ var interestsData =
       ]
    },
    "poker.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "wayfair.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "emmas.blogg.se" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "fantasyhockey.usatoday.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lumosity.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "health"
       ]
    },
    "themagiconions.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "education"
       ]
    },
    "ancestorrootdigger.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "probasketballtalk.nbcsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "delivery.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "judy-webster.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "enlightenedcooking.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "tdameritrade.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "familylineagesandhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "links.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "thefreedictionary.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -2233,40 +2233,40 @@ var interestsData =
       "adc" : "health"
    },
    "local.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "swac.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "lsuwbkb.posterous.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "baahgs.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "boards.fool.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "last2cu.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "djsgenealogydesk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -2275,7 +2275,7 @@ var interestsData =
       "tennisworld index html" : "sports"
    },
    "littleilluminations.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
@@ -2285,72 +2285,72 @@ var interestsData =
       "hiv" : "health"
    },
    "joshsopinion.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "python-mock.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "4tube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "urpl.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "newyork.wallstreet.andaz.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "reviews.cnet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ],
       "macfixit" : "computers"
    },
    "bsd.slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lessonsfrommyancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "findingafamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "imdb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "movies"
       ],
       "title tt0088258" : "dance"
    },
    "ballymote.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "news-briefs.ew.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "genealem-geneticgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -2368,7 +2368,7 @@ var interestsData =
       ]
    },
    "techbargains.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
@@ -2378,82 +2378,82 @@ var interestsData =
       "hunting" : "outdoors"
    },
    "animationbackgrounds.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "turnitin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "soyouwannagogeocaching.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "gerrysgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carlisle.army.mil" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "cracked.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "scpgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "insidesearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "sandiego.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "northcarolina.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "familyhistorynews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "agenealogylady.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "corporate.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "rollingstone.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music",
          "news"
       ],
@@ -2464,50 +2464,50 @@ var interestsData =
       "reviews" : "reviews"
    },
    "southerngreens.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "niams.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "themmedfords.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rootsandrambles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "baruch.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "wardomatic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "liveperson.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "boardreader.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "proxyhacklab.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -2518,114 +2518,114 @@ var interestsData =
       "fantasyfootball" : "sports"
    },
    "nancyshively.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "allyou.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "ubuntu.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "tam.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "oceanservice.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "science"
       ]
    },
    "snopes.com" : {
       "holidays newyears" : "society",
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "billylovesstue.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "genealogist-in-training.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "largeporntube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "cancerdiagnosis.nci.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "hobbylobby.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "dmfantasy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "foodandspice.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "denver.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ancestortrackingdreamroadtrip.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "atl.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "celiac.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "onceuponaplaterecipes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "denver.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "chandra.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sacramento.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
@@ -2635,83 +2635,83 @@ var interestsData =
       "ecards" : "entertainment"
    },
    "auctionzip.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "phil.cdc.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "adage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "news"
       ]
    },
    "nasdaq.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "travelocity.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "veganfeastkitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "sherifenleyrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "marlins.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "katiescrivenhall.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "poetrydispatch.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "lakingslegends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "thefamilygriot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pineyprairie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "forage.bigcartel.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "examiner.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "genealogy in boston" : [
@@ -2721,82 +2721,82 @@ var interestsData =
       "bonnaroo" : "music"
    },
    "aweber.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "openjpa.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "break.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "slime-tips.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hongkiat.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ew.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "movies"
       ],
       "ew tv" : "tv"
    },
    "wordplay.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "writefamilystories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "arkansasroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wellimtryingtorun.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "iqfashion.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "aikidoforbeginners.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "moneybookers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "withleather.uproxx.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "insiderpages.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "reviews"
       ]
@@ -2806,100 +2806,100 @@ var interestsData =
       "diseases aids" : "health"
    },
    "ourmillerhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thegraveyardrabbitofthehooverclan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jchistorycenter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ancestorsattic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jacksoncountyindiana.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "suesgenblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "londonrootsresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bartowfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "oscar.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "movies"
       ]
    },
    "chesapeakebay.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "tcfexpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "spreadshirt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "clothes"
       ]
    },
    "familytrees.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geniethoughts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "presque-isle-alpena-history.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carcarfamilies.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -2908,44 +2908,44 @@ var interestsData =
       "profile" : "reviews"
    },
    "medscape.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "whitesox.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "thebigredbiotechblog.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "technology"
       ]
    },
    "allergicgirl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "exploratorylaboratory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "citymama.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "lambersongenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "welcomingkitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
@@ -2953,7 +2953,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "olympics.wikia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -2961,61 +2961,61 @@ var interestsData =
       "category" : "science"
    },
    "ollar-flock.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sharks.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "melomeals.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "extratv.warnerbros.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ],
       "television" : "tv"
    },
    "fleet.ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "alzheimers.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "continental.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "sevenforums.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "grovecreekfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "metafilter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "kbb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
@@ -3025,70 +3025,70 @@ var interestsData =
       "francinemckenna" : "business"
    },
    "slac.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "aforestofoakes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "newcatholicculture.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "handheldlib.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "technology"
       ]
    },
    "perlqt.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "orea.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "frugalupstate.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "csail.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "barrys-wine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "stmarysbirkenhead.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pengskitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "newark.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "padrestrail.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -3096,84 +3096,84 @@ var interestsData =
       "halfassedkitchen" : "cuisine"
    },
    "csom.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "clevelandcavaliersblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "sharon-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sandiego.padres.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "newser.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news",
          "finance"
       ]
    },
    "women.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "tools.mozilla.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mymouseisbroken.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tsgsblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "phc.amedd.army.mil" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "child-of-eden.us.ubi.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "hamptonbaycabinetry.homedepot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "potatoroots.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "packersuniforms.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "zappos.com" : {
       "jeans" : "clothes",
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "shoes"
@@ -3183,18 +3183,18 @@ var interestsData =
    },
    "wunderground.com" : {
       "ski" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "rockdale-myhometown.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "phiyakushi.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
@@ -3202,13 +3202,13 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "treaties.un.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "nytimes.com" : {
       "lollapalooza" : "music",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "pages sports olympics" : "sports",
@@ -3231,105 +3231,105 @@ var interestsData =
       "pages fashion" : "fashion"
    },
    "kithandkinresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "keirahenninger.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "citytech.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "abitofthepieces.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blackhatteam.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "houseplans.bhg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "creativegene.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "spongebob.nick.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "elec.state.nj.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "rael.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "lesliebrinkleylawson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yesistilluseperl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "nekramblings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fannation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pensiveharpy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "impersonated.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "botzgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "xlab.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "planetgreen.discovery.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "food",
          "society"
@@ -3339,29 +3339,29 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "smartfootball.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lowes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "herbstgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genbriandenglish.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bruins.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -3373,18 +3373,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "adni.loni.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "obituariesfromsouthomahasunnewspaper.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familystoriesinstone.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -3393,13 +3393,13 @@ var interestsData =
       "profile" : "reviews"
    },
    "genealogysf.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "library.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -3407,22 +3407,22 @@ var interestsData =
       "eve" : "home"
    },
    "conduit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "stampfrancisco.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "bigcommerce.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "bracketchallenge.ncaa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -3433,72 +3433,72 @@ var interestsData =
       "en" : "sports"
    },
    "umvolleyballclub.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "familyknitnspindles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "samplicio.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news"
       ]
    },
    "bordoverview.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "totsy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "family"
       ]
    },
    "ultrarunandski.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "coralreef.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "greenchemistry.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "familystorykeeping.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jansfamilyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bfx.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "steamcommunity.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "luckyllama.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -3507,23 +3507,23 @@ var interestsData =
       "paris" : "cuisine"
    },
    "anglersrest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ziprecruiter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "data.un.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "charter.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
@@ -3531,42 +3531,42 @@ var interestsData =
       "ringtone" : "shopping"
    },
    "metrolyrics.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "integrate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "musiciansfriend.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "geocachingwithjim.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "cmetim.ning.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "seamless.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "lycos.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "stardoll.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
@@ -3574,7 +3574,7 @@ var interestsData =
       "stressors pollution" : "science"
    },
    "irishheritagecarnival.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -3583,41 +3583,41 @@ var interestsData =
       "profile" : "reviews"
    },
    "conferenciadegenealogia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lewisvilleminnesota.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wowthinktank.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "patriotboy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "louisianagenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "empowernetwork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "toluna.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -3628,17 +3628,17 @@ var interestsData =
       ]
    },
    "xvideoslive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "machicolate.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ],
       "disneychannel" : "tv",
@@ -3646,55 +3646,55 @@ var interestsData =
       "disneyjunior coloring create" : "hobby"
    },
    "tarot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "moviesblog.mtv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "nessasarymakeup.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "soccerway.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "abt-unk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cavecibum.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "robotics.utexas.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "textsrv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "anandtech.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "technology"
       ]
    },
    "forbes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "finance"
       ],
@@ -3703,7 +3703,7 @@ var interestsData =
       "sopa" : "politics"
    },
    "soxbronzetitan.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -3711,34 +3711,34 @@ var interestsData =
       "product reviews" : "reviews"
    },
    "symbolicpast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "findingfamily101.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dominos.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "classesusa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "science.nationalgeographic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "dream-of-genea.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -3747,88 +3747,88 @@ var interestsData =
       "lsa memf" : "music"
    },
    "puttingfamilypuzzletogether.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "glutenagogo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "mybloodline.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "heritagefiles.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "disneycruise.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel",
          "movies"
       ]
    },
    "fitbit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "computers"
       ]
    },
    "hellenicgenealogygeek.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nmgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "att.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "email",
          "tv"
       ]
    },
    "bugzilla.mozilla.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "math.lib.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "bennightsunite.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rootcellarramblings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "campaspegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "komando.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news",
          "shopping"
@@ -3836,13 +3836,13 @@ var interestsData =
    },
    "chase.com" : {
       "auto loan" : "cars",
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ],
       "online home lending" : "real-estate"
    },
    "originhunters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -3851,39 +3851,39 @@ var interestsData =
       "muradora" : "reference"
    },
    "picasaweb.google.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "nhlab.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genes-r-us.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "apple.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "nssdc.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "1000fragrances.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "xerces.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -3894,25 +3894,25 @@ var interestsData =
       ]
    },
    "shopathome.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "ge-ne-al-o-gy101.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogygrammy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carmeloorlando.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -3921,22 +3921,22 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "speedchange.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "hollywoodlife.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "growthehunt.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "predators.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -3945,12 +3945,12 @@ var interestsData =
       "python" : "computers"
    },
    "nyu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "linguistgenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -3959,131 +3959,131 @@ var interestsData =
       "apa" : "home"
    },
    "stamps.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "struts.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "abebooks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ],
       "books textbooks" : "education"
    },
    "worldcat.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "webdesignledger.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "rootsresearcher.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geocachegals.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "rebelhand.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "springerlink.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "ldeo.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "cwp.library.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "heritageheart.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "herbarium.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "nor.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "clubpenguin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "cynwise.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "afamilytapestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "diggingdowneast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familyrecordkeeper.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blazerfan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "psynister.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "jobmarket.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "baseballdocent.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "marilynsfamilyhistorynews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -4092,29 +4092,29 @@ var interestsData =
       "sopa" : "politics"
    },
    "funnyordie.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "eatslikeahuman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "airquality.weather.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "dlisted.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "philly.com" : {
       "philly sports flyers" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "philly blogs sixerville" : "sports"
@@ -4126,61 +4126,61 @@ var interestsData =
       ]
    },
    "waldorfastoria3.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "timespanner.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "snackbox.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fhpublishing.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "photobucket.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "pack471tiffin.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "apulodge2.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "straybones.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "emedicinehealth.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "en.support.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "mec.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -4188,7 +4188,7 @@ var interestsData =
       "grants ccne t" : "science"
    },
    "lpcgs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -4201,39 +4201,39 @@ var interestsData =
       "wiki python programming" : "computers"
    },
    "sports.espn.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wordartworld.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "officemax.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "shopping"
       ]
    },
    "ivanmiljenovic.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "umd.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "southernobits.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "niaid.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ],
       "topics vaccines" : "family"
@@ -4242,102 +4242,102 @@ var interestsData =
       "profile" : "reviews"
    },
    "philabertfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "skfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sandsoftime-karen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "franlife.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "1625lincolnavenue.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thegenealogysearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wildfireapp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "mymetsjournal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wikipedia.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "turpintraces.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vanillakitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "pregnancyandbaby.sheknows.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "health"
       ]
    },
    "stlcardinals.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "shefindsgraves.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "onlinebank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "bickerstaff-eng-neweng.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lundology.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rushlimbaugh.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
@@ -4345,12 +4345,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "my.screenname.aol.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "discussions.apple.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -4358,7 +4358,7 @@ var interestsData =
       "review" : "reviews"
    },
    "energy.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -4369,7 +4369,7 @@ var interestsData =
       ]
    },
    "pinoy-roots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -4384,13 +4384,13 @@ var interestsData =
       ]
    },
    "cwemancipation.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gearsofwar.xbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
@@ -4401,52 +4401,52 @@ var interestsData =
       "surveys libraries" : "reference"
    },
    "journeyhome-jack.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "zulily.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "thedailybeast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ],
       "business html" : "finance"
    },
    "ecosystems.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "hugoalloa.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cassmob.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "webhosting.att.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "desperatelyseekingmeglones.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ohspusch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -4464,69 +4464,69 @@ var interestsData =
       ]
    },
    "ds.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "articles" : "reviews"
    },
    "people.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "pandora.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
    "perl-xml.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fashionistable.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "brooklyn.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "musingsaboutlibrarianship.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "whiterivertownship.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "terri-thetiesthatbind.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mygenresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blackplanet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship",
          "society"
       ]
    },
    "androidcentral.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
@@ -4534,115 +4534,115 @@ var interestsData =
       "education" : "health"
    },
    "logicalmedia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "bricxcc.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "nederlandsevoorouders.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "seoworld.entrepreneur.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "gotomypc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "flexmls.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "losangeles.angels.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cangenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jpindycarthoughts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "shelleemorehead2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "basicsofgenealogyreference.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kinfolit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "redtube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "www1.macys.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "stonybrookkartpark.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "library.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "freerangekids.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "splonderzoek.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "peoplesmart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "business"
       ]
    },
    "rootsandbranchesfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "insurance.wa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
@@ -4650,22 +4650,22 @@ var interestsData =
       "library" : "reference"
    },
    "usna.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "mailchimp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "justhookup.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "reuters.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "news",
          "finance"
@@ -4674,17 +4674,17 @@ var interestsData =
       "sopa" : "politics"
    },
    "spacemath.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "youthsoccerlessonplans.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "buy.norton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -4695,24 +4695,24 @@ var interestsData =
       "ringtones" : "shopping"
    },
    "ar15.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "passwordsafe.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ticketmaster.com" : {
       "broadway" : "music",
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "washington.edu" : {
       "alpine" : "email",
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -4723,44 +4723,44 @@ var interestsData =
       ]
    },
    "planetminecraft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "catmap.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "wildwallawallawinewoman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "justhost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pollysgranddaughter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "beyondthestarsastrology.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "fns.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "health"
       ]
    },
    "haaretz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
@@ -4769,67 +4769,67 @@ var interestsData =
       "us gpudownload" : "computers"
    },
    "identifinders.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "magentocommerce.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hotair.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "id-perl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "threadless.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes"
       ]
    },
    "odesk.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "mountaingenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "doorkeepergenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vse.marketwatch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "doughnuthole.aarp.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "health"
       ]
    },
    "yourfamilysecret.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nymag.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "travel" : "travel",
@@ -4840,89 +4840,89 @@ var interestsData =
       "reviews" : "reviews"
    },
    "hardsextube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "walmartmoneycard.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "graveyarddetective.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cristacowan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nzgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "maggieholmes.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "debsresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ladolcivita.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "yourpedigree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "spc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "shop.us.samsung.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "screencast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "holtdale.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "stdcxx.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "eye-on-football.blogs.cbssports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "everythingesl-everythingesl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -4930,111 +4930,111 @@ var interestsData =
       "profile" : "reviews"
    },
    "iris.usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "filezilla-project.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "wenxuecity.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "tmz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "thesuperficial.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "ancestraltimes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cwc.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "martialarts.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "familytreeuk.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mountainrun.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "gilesbowkett.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mycoloredroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tweetmeme.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "odataobjc.codeplex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "betanews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "dailydeals.target.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "read.amazon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "masters.krannert.purdue.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "etsystatic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "psyco.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "commuknitteacalgary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -5042,13 +5042,13 @@ var interestsData =
       "consumer electricity" : "science"
    },
    "pettorano.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sonoranjackrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -5057,24 +5057,24 @@ var interestsData =
       "profile" : "reviews"
    },
    "mcduffwine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "findingtheflock.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aboutourfreedom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ourfamilyvine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -5084,100 +5084,100 @@ var interestsData =
       "licensing homeinspect" : "home"
    },
    "cnsblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "upromise.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "discounts",
          "finance"
       ]
    },
    "nvidia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "brendadougallmerriman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thejourneytakers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ahco.army.mil" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "rangers.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "getuntracked.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "aetna.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance",
          "health"
       ]
    },
    "ldd.lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "airberlin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "library.umd.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "cte.ed.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "leah333.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "colleges.usnews.rankingsandreviews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "camelbones.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "explosm.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "society"
       ]
    },
    "viddy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -5185,56 +5185,56 @@ var interestsData =
       "boxing" : "sports"
    },
    "sl.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "cookalmostanything.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "javascriptkit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "steers-ons.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "huntbot.andrew.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ],
       "asba" : "reference"
    },
    "porn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "posiesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "concordpastor.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "salliemae.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "finance"
       ]
    },
    "nodescendants.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -5243,45 +5243,45 @@ var interestsData =
       "hotel hoteldetailreviewread do" : "reviews"
    },
    "search4agnes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "palottery.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "seaofshoes.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "gilt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "pornhub.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "piercelevel.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thefacesofmyfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "larry-family-history.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -5290,93 +5290,93 @@ var interestsData =
       "profile" : "reviews"
    },
    "morrisonsofderryhale.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "4yourfamilystory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "heartsturned.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ibanking-services.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "hedding-family.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ninas-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mt-timpgraveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jstor.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "stagram.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "image-sharing"
       ]
    },
    "womenshealthmag.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "news"
       ]
    },
    "jirenegen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "emergency.cdc.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "tmgsydney.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "leonerds-code.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ginisology.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "clker.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "image-sharing",
          "computers"
@@ -5386,41 +5386,41 @@ var interestsData =
       "profile" : "reviews"
    },
    "allevan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "anotherindycarblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "bozeman.mbt.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "onbeingabridgebuilder.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lynda.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "computers"
       ],
       "photoshop cs5 tutorials" : "photography"
    },
    "larryferlazzo.edublogs.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "vxl.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -5428,23 +5428,23 @@ var interestsData =
       "profile" : "reviews"
    },
    "mnfamilyhistorian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "semrush.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "kids.woot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "sgesnotes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -5453,117 +5453,117 @@ var interestsData =
       "profile" : "reviews"
    },
    "babiloniafamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gpshome.ssc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "molbio.info.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "websitewelcome.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "mcgenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cobramgg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "navyfcu.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "quotes.nasdaq.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "broadstreetbullies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "store.nike.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "clothes"
       ]
    },
    "tunein.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
    "shaking-leaves.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "stlouis.cardinals.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "outback-story.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pursuitofjoe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "travelzoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "library.brooklyn.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "genealogywithtony.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "georgiasports.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "theorganicbeautyexpert.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "niceperl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -5571,7 +5571,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "bravenet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -5590,97 +5590,97 @@ var interestsData =
       "dla archives" : "reference"
    },
    "wadingthegenepool.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "searchenginewatch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "barnard.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "enchantingdeals.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "yummly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "gravatar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "computers"
       ]
    },
    "milesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nucciasthoughts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "howtogeek.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "computers"
       ]
    },
    "photoshelter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "danielsen-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tombstoneterritory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "stylenews.peoplestylewatch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "spiritsoftheold.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kuzmichgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tatteredpast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "health.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks",
          "health"
       ],
@@ -5693,7 +5693,7 @@ var interestsData =
       ]
    },
    "education.rec.ri.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ],
       "content lego" : [
@@ -5702,69 +5702,69 @@ var interestsData =
       ]
    },
    "jolt.law.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "beatlesonfilm.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "mytrailsintothepast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adsabs.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "volvocars.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "jango.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
    "robonaut.jsc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "naruto-manga-read.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "imlsdcc.grainger.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "ancestralwormhole.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "imageshack.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "tag.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "forge.mysql.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -5772,76 +5772,76 @@ var interestsData =
       "techpr" : "marketing"
    },
    "justjared.buzznet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "erh.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "topgear.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "governmentjobs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "ducks.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pubchem.ncbi.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "swansborohistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cocoasamurai.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "statelibraryohiogen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "craftlady-searchfamilies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "organicdeals.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "cbssports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "greycountyhs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "leprechaunrabbit.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -5850,12 +5850,12 @@ var interestsData =
       "storage" : "computers"
    },
    "classifiedads.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "astro.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -5863,111 +5863,111 @@ var interestsData =
       "textbooks" : "education"
    },
    "lfmccauley.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sqlserversamples.codeplex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "bigpapelbon.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "sunscholars.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "nickmgombash.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "peanutbutterandjulie.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "terrigoldphoto.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "skipcottagecurling.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "blog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "qualtrics.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "woot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping",
          "consumer-electronics"
       ]
    },
    "glutenfreemom.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "f-words.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "youcanfindthem.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "americangreetings.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "gardenweb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "echidneofthesnakes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "alz.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "searchcompletion.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "whois.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -5975,40 +5975,40 @@ var interestsData =
       "buy financing center" : "cars"
    },
    "dailymail.co.uk" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "harriet-genealogyfun.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "investopedia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "gigaom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "apple" : "computers"
    },
    "livejasmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "lounsbury-tree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whois.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -6016,40 +6016,40 @@ var interestsData =
       "articles" : "reviews"
    },
    "seagensociety.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "airasia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "saulsancestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hepatitis.med.nyu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "fidelity.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "slate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sopa" : "politics"
    },
    "climate.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -6058,7 +6058,7 @@ var interestsData =
       "history symbols html" : "government"
    },
    "americanpomeroys.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -6070,72 +6070,72 @@ var interestsData =
       ]
    },
    "na.leagueoflegends.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "mytoribug.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "riadamazigh-meknes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "danstoymuseum.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "thehammerspeaks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "greenleafbbq.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ]
    },
    "bizjournals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "evenue.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "inlinkz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "food",
          "shopping"
       ]
    },
    "ancestry-stickynotes.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "connect.garmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "bskg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "ecosystems.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -6146,27 +6146,27 @@ var interestsData =
       "consumer" : "shopping"
    },
    "talk1450.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "simple-green-frugal-co-op.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "hrsonline.isr.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "dsrudmann.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "miami.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -6174,14 +6174,14 @@ var interestsData =
       "profile" : "reviews"
    },
    "bugs.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "learning.blogs.nytimes.com" : {
       "category geography" : "science",
       "category science" : "science",
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "category economics" : "finance",
@@ -6189,7 +6189,7 @@ var interestsData =
       "category american history" : "history"
    },
    "hardware.slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
@@ -6197,27 +6197,27 @@ var interestsData =
       "ijli" : "reference"
    },
    "sendori.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "united.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "sourjayne-ux.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hotels.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "cvent.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
@@ -6225,7 +6225,7 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "geologymuseum.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -6233,40 +6233,40 @@ var interestsData =
       "profile" : "reviews"
    },
    "wwwtouchingfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "orlandostonesoup.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "menupages.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "giants.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "australianhistoryforgenealogists.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "andersoncooper.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "ibuildrobots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -6275,72 +6275,72 @@ var interestsData =
          "education",
          "finance"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "genealogyheroes.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pgatour.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "michigan.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "weather.weatherbug.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "graveyardrabbitgrey.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adjuggler.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "univinn.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "ruse.us.ubi.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "fitness.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "health"
       ]
    },
    "blog.sephora.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "pastvoices.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "food.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ],
       "recipes low calorie" : [
@@ -6349,45 +6349,45 @@ var interestsData =
       ]
    },
    "themoveablealphabet.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "family"
       ]
    },
    "fanfiction.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "jmlr.csail.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "apr.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "blunderingblindlybackwards.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "simplygluten-free.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ]
    },
    "tomschrijvers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "web.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "nuclearpower" : "science",
@@ -6398,50 +6398,50 @@ var interestsData =
       "isn" : "science"
    },
    "justrakudoit.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "dcsteelernation.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cafevegnews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "stolensharpie.livejournal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "concursolutions.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "computers"
       ]
    },
    "genealogies.over-blog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "forums.directv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "cin.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "overstock.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "home"
       ],
@@ -6469,7 +6469,7 @@ var interestsData =
       "comedy" : "society"
    },
    "genfamilies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -6478,55 +6478,55 @@ var interestsData =
       "profile" : "reviews"
    },
    "findingmickey.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "knowlescollection.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "threadingneedlesinahaystack.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "powersports.honda.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "motorcycles"
       ]
    },
    "drgangrene.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "ecls.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "graphical.weather.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "zimmermaniacs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "genealogiablog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "perl.oreilly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -6534,76 +6534,76 @@ var interestsData =
       "saving money tips" : "finance"
    },
    "as.utexas.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "fitzmarvelous.posterous.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "atlanta.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "groupon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ],
       "getaways" : "travel"
    },
    "uwwomensvballclub.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "edgcm.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "wetransfer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "rewards.xbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "rsjpo.army.mil" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "demandinggenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mstaub-familyconnections.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bioenergy.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "framed-mylifeonepictureatatime.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "iowaadmin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
@@ -6611,33 +6611,33 @@ var interestsData =
       "profile" : "reviews"
    },
    "feministallies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "fetefanatic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "smartgrid.ieee.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "bonnaroo.proboards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "quizlet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "about.digg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
@@ -6649,18 +6649,18 @@ var interestsData =
       ]
    },
    "triberr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "mikeeliasz.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "openoffice.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -6668,12 +6668,12 @@ var interestsData =
       "index wii guides" : "video-games"
    },
    "umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "disneyland.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment",
          "movies"
       ]
@@ -6683,18 +6683,18 @@ var interestsData =
       "dogs" : "pets"
    },
    "kjohnsonnz.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wmjasco.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "writing"
       ]
    },
    "wine-by-benito.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
@@ -6704,183 +6704,183 @@ var interestsData =
       "retirement" : "finance"
    },
    "texasblu7.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ecdms.energy.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "mainisusuallyafunction.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "braves.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jewelry.hsn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "mediatakeout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "searchengineland.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "technology"
       ],
       "sopa" : "politics"
    },
    "myvi.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "physics.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "chfreedman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rutgersgardens.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "fountaindalegenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "usreeves.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "firstaid.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "mycheckfree.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "weather.com" : {
       "life ski" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "blueskydisney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "coris.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "bcsmaps.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "nealgorman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "malucayarnbombing.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "shiro.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "premierleague.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "arrowoodpigeonroostnc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "morontina23.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "muskogeecountygenealogicalsociety.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "excite.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "govcentral.monster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "safe-swaps.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "peekingintothepast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "marketplace.xbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "csi.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "gtk.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
@@ -6888,24 +6888,24 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "sew-fantastic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "gusmarsh.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fark.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "causes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -6913,79 +6913,79 @@ var interestsData =
       "clark" : "history"
    },
    "emilyslegacy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "webdesignerdepot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "marshall.usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "iowagirlmemories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "judywilkenfeld.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "conradsstories.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brghs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bluegraysky.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "imbibemagazine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "historybybrubaker.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "foodiewife-kitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "classics.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "geoffsgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mywot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -6998,7 +6998,7 @@ var interestsData =
    "engadget.com" : {
       "topics robots" : "science",
       "imac" : "computers",
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "shopping",
          "consumer-electronics"
@@ -7007,23 +7007,23 @@ var interestsData =
       "tag nintendowiiu" : "video-games"
    },
    "crunchbase.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "technology"
       ]
    },
    "docusign.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "simonsaysstampblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "irs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "law",
          "business",
@@ -7031,7 +7031,7 @@ var interestsData =
       ]
    },
    "retirementplans.irs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "law",
          "finance"
@@ -7041,40 +7041,40 @@ var interestsData =
       "urbanplanning" : "government"
    },
    "ebay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "cpo" : "cars"
    },
    "pymol.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "wanderingvine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mobile9.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "findingelizawms.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "detroit.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "forever21.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion",
          "shoes"
       ]
@@ -7088,7 +7088,7 @@ var interestsData =
       "showtracker" : "tv"
    },
    "content.lib.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "protestsweb" : "history",
@@ -7097,7 +7097,7 @@ var interestsData =
       "costumehistweb" : "fashion"
    },
    "arizona.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -7105,12 +7105,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "shenango.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "ruelala.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
@@ -7118,30 +7118,30 @@ var interestsData =
       "hotel hotelreviewsguide do" : "reviews"
    },
    "missminutia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dmbr622.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nationalaquarium.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "rememberingancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "usnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "congress" : "politics",
@@ -7157,84 +7157,84 @@ var interestsData =
       "developerworks java" : "computers"
    },
    "ins.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "decorativearts.library.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "creditcards.chase.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "brooklynstars-forever.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "nsec.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "temp.lavaalpacainncom.officelive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "artsbeat.blogs.nytimes.com" : {
       "lollapalooza" : "music",
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ],
       "tag poetry" : "reading"
    },
    "anaharcockermom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tomcat.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "news.zdnet.co.uk" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "wiki.eclipse.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "googlemobile.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "k12.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "family"
       ]
    },
    "pascogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "who.int" : {
       "topics nutrition en" : "food",
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "health"
       ],
@@ -7245,27 +7245,27 @@ var interestsData =
       "ith en" : "travel"
    },
    "kmeleon.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pirates.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "webconfs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "raspberryroaddesigns.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "bmjmiller.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -7274,110 +7274,110 @@ var interestsData =
       "tv" : "tv"
    },
    "familytreerings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "google-lego-engineering.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "diggingintomypast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shiningsultra.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "reachlocal.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "nightbeforenoon.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tinypic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "warriorsrundown.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lib.jjay.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "bankofamerica.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "iknityouknot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "istockphoto.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "parentspictures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sdems.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "ffnet.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "eugenealogia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "georgiablackcrackers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tv-links.eu" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "movies"
       ]
    },
    "anchorfree.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "rangerscards.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -7385,45 +7385,45 @@ var interestsData =
       "english" : "technology"
    },
    "isr.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "terk.ri.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "miami.marlins.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "stayexempt.irs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "law",
          "finance"
       ]
    },
    "infospace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "inspiredkitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "rememberwhengenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wwwheritageamericainc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -7432,40 +7432,40 @@ var interestsData =
       "profile" : "reviews"
    },
    "absolutepanthers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jandamonroe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "conradhotels3.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "maryannsmenagerie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "astepinline.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ohiostate.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "neic.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -7475,79 +7475,79 @@ var interestsData =
       "economy finance" : "finance"
    },
    "miniclip.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ],
       "games en" : "video-games"
    },
    "geneabrarian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mistertristan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "homer-ny.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "footballrecruiting.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "acrobat.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "signon.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "society"
       ]
    },
    "plants.ifas.ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "clisp.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "sfo.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "graveyardrabbitofcontracostacounty.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dallas.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "ohiohistory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mcgraw-hill.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -7555,58 +7555,58 @@ var interestsData =
       "topics jrr tolkien" : "reading"
    },
    "ohiogenealogicalsociety.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "warrentonjournal.stltoday.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "care.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health",
          "family"
       ]
    },
    "healdsburgheritagehound.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gayle-family-history.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "majorboutroncompagnies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aol.sportingnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "nuremberg.law.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "myfamilybrickwalls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ozarkshistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -7621,7 +7621,7 @@ var interestsData =
       "support photoshop" : "photography"
    },
    "unyearbook.un.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
@@ -7632,50 +7632,50 @@ var interestsData =
       "profile" : "reviews"
    },
    "tgarnett.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oralsox.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "saturdayschild-jama.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "video.tvguide.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "optmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "toxnet.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "klout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "marketing"
       ]
    },
    "sabres.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "paypal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
@@ -7683,46 +7683,46 @@ var interestsData =
       "uk blog" : "marketing"
    },
    "genealogymemorylane.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "asus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "computers"
       ]
    },
    "smilebox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "momentsintimeagenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "classifieds.oregonlive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "order.1and1.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "generationspast99.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sfgate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "warriors" : "sports",
@@ -7736,61 +7736,61 @@ var interestsData =
       "sharks" : "sports"
    },
    "imaginativeplay.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "mlb.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "maryjlohr.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "artcarto.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "twins.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "papiers.poussieres.free.fr" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pinkydots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "supportforum.philips.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "lacma.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "dropcopy.en.softonic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "graveyardhopping.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -7799,111 +7799,111 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "forksinmyfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jobsearch.monster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "genblog.myheritage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jacobaabrahamina.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wardillsofyorkshireandbeyond.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genimates.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "diginit.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "rakudoport.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "news.com.au" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "footstepspast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "prh.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "impactradius.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "radio"
       ]
    },
    "fishermanswharf.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "jac.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jewishhomeschool.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "family"
       ]
    },
    "stardust.jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "grandwashington.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "kolliesgenealogy.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "redlegsbaseball.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "azcentral.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports" : "sports",
@@ -7914,13 +7914,13 @@ var interestsData =
       "members blog nickpiecoro" : "sports"
    },
    "dotearth.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "society"
       ]
    },
    "pin.primate.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -7933,29 +7933,29 @@ var interestsData =
       "guides dogs" : "pets"
    },
    "panoramio.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "globalgrind.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "wyklekin.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cvgencafe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pumpkinrot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -7963,122 +7963,122 @@ var interestsData =
       "foolsaurus" : "finance"
    },
    "searchinforkinfolk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "infoplease.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "pepperjamnetwork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "thenextfiftyyears.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gemsofthepast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "marysfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cpanel.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "social.ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "macarthurgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shop.lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "thosechampions.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "atomz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "virtualtourist.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "securepaynet.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "hollisterco.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes",
          "fashion"
       ]
    },
    "alicebot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "stampgirl.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "stewartsadoption.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "emedicine.medscape.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "ugagenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genweblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "omniture.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -8086,186 +8086,186 @@ var interestsData =
       "profile" : "reviews"
    },
    "royals.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "genealogicalhistoryresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "augustlegacy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "warriorplus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "sirigenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "motherhooduncensored.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "support.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "gp outlook express" : "email"
    },
    "historiansfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "facebook.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "sharonhr.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "alwaysanxiouslyengaged.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "findinglacasadeayala.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kandeethemakeupartist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "roundtuitgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "clmroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "technology.inc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "movies.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "moca.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "kissingsuzykolber.uproxx.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "psychiatry.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "duanekeiser.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "littlestbirdsstudio.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "news.moviefone.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "centralpagenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tracingmytreeroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "responsebeacon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "photoloom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "colbertwhelanfamily.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "usa.canon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography",
          "shopping"
       ],
       "cusa support" : "computers"
    },
    "sbc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "rzamor1.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ausiellofiles.ew.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "nyc.gov" : {
       "html ocdv" : "law",
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ],
       "html records" : [
@@ -8286,83 +8286,83 @@ var interestsData =
       "msatlas" : "science"
    },
    "bankrate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ],
       "funnel personal loans" : "banking"
    },
    "breitbart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "justanswer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "6guts.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "thewiltseyway.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eve-tushnet.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "betweenthegateposts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pubs.niaaa.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks",
          "health"
       ]
    },
    "scotsinamerica.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "photolib.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "anatquest.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "ebaumsworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "gunbroker.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "200inparadise.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "glutenfreesteve.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
@@ -8377,159 +8377,159 @@ var interestsData =
       ]
    },
    "support.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "nampa10.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "the-panopticon.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "news.discovery.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ],
       "tech" : "technology"
    },
    "mymississippimemories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "library-thing-thing.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "scientificamerican.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "wetpaint.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "faroutflora.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "fightingyankees.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "habslegends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "me.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "cartographymaps.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "maps"
       ]
    },
    "community.us.playstation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "psbehrend.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "opera.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "mail" : "email"
    },
    "glovis.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "nehousehistorian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "manageyourcellar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "wufoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "business"
       ]
    },
    "zeobit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "familypilgrimage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "indexing.familysearch.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "solarsystem.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "allofasuddenpartjew.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "maps.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "maps"
       ]
    },
    "entertainexchange.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "neworleanshornetsblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ajc.com" : {
       "sports atlanta falcons" : "sports",
       "sports atlanta hawks" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "s sports" : "sports",
@@ -8542,61 +8542,61 @@ var interestsData =
       ]
    },
    "valuemeals.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gamehouse.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "oldworldwar.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "parents.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "tastesofhome.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "kosherbaker.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "food"
       ]
    },
    "tracingdescendants-blog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "livingblog.marthastewart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "sealegsgirl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ancestorinvestigator.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jcrew.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "clothes",
          "fashion"
@@ -8604,24 +8604,24 @@ var interestsData =
       "wedding" : "family"
    },
    "deadspace.ea.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "onlinegenguy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "storiesofmyancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "instagram.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
@@ -8629,40 +8629,40 @@ var interestsData =
       "profile" : "reviews"
    },
    "jezebel.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "snapdragonzinefair.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "financial-net.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "glutenfreegoddess.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ]
    },
    "yourstorycoach.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "home.live.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -8670,24 +8670,24 @@ var interestsData =
       "profile" : "reviews"
    },
    "iplay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "judiology.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thenxtstep.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "lorelle.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
@@ -8695,28 +8695,28 @@ var interestsData =
       "profile" : "reviews"
    },
    "toxtown.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "lib1point5.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "granite-in-my-blood.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "animals.nationalgeographic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "healthcentral.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "health",
          "family"
@@ -8726,23 +8726,23 @@ var interestsData =
       "mac" : "computers"
    },
    "inbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "volusion.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "shopping"
       ]
    },
    "micromath.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "midwestancestree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -8754,98 +8754,98 @@ var interestsData =
       ]
    },
    "happstack.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "plplot.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "middleburghlibrary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "society"
       ]
    },
    "navgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "marvelouskiddo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "usctchronicle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "piecebypiecemyfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "minquawelshmountan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "paida.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "thylandviews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "ewebse.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "tamparegency.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "alexandermckee.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "enom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "video-one.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "celiacdiseasecenter.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "khanacademy.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "codeproject.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -8853,7 +8853,7 @@ var interestsData =
       "sports" : "sports",
       "p blogs hardball" : "sports",
       "p pagesix" : "society",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "p sports rangers" : "sports",
@@ -8864,126 +8864,126 @@ var interestsData =
       "sports knicks" : "sports"
    },
    "grannygrampsplace.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pumas.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "byroncitycemetery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "deliasgenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "iamthediaspora.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "epson.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "chersfmly.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genpals.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "chercheurnomade.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "perltidy.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "herc.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "orioles.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "bing.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "travel" : "travel"
    },
    "scrapbooking-warehouse.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "cheekfam.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "marriott.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "buzzfeed.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "avvo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "law"
       ]
    },
    "nia.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "exploreim.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "bossip.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "spamarrest.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pcworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news"
       ],
@@ -8992,7 +8992,7 @@ var interestsData =
       "sopa" : "politics"
    },
    "philadelphia.bellevue.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -9000,36 +9000,36 @@ var interestsData =
       "odata4objc" : "computers"
    },
    "storiesfrommanymoonsago.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "spidr.ngdc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sandiegogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "milb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "news"
       ]
    },
    "rhsvnews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "photo.walgreens.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
@@ -9058,45 +9058,45 @@ var interestsData =
       "apumensvolleyball" : "sports"
    },
    "newgrounds.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "googleblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "uwdc.library.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "reference",
          "society"
       ]
    },
    "anatomy.med.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "geneology-nut.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "theknot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "wadler.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "state.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ],
       "g oes env" : "science",
@@ -9104,125 +9104,125 @@ var interestsData =
       "g oes climate" : "science"
    },
    "mjhellman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wiktionary.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "praresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "livestrong.com" : {
       "thedailyplate" : "food",
-      "__HOST" : [
+      "__ANY" : [
          "health",
          "cuisine"
       ]
    },
    "7search.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "mma.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "sendspace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "salfordzinefair.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "begayaboutit.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "multimedia.mcb.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "onceuponaplate.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "annaleenashem.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "cvs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "health"
       ]
    },
    "gettingreal.37signals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "prnewswire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "itsagreatdayforgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wai.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "feedburner.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "wino-sapien.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "slidingintohome.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "easyhits4u.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "boardgames.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "shopping",
          "family"
       ]
    },
    "roboform.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -9230,116 +9230,116 @@ var interestsData =
       "profile" : "reviews"
    },
    "ocregister.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "minecraft.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "celiacsinthehouse.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "allmusic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "familyandotherstuff.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "southcarolinaroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mygenealogyfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "getfirebug.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "bishopfarrell.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "genieo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "mcafee.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "beforeitsnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "society",
          "news"
       ]
    },
    "glutenfree.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "viveleveganrecipes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "starfall.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "cornandcottongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "investing.businessweek.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "bloomberg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ],
       "sopa" : "politics",
       "radio" : "radio"
    },
    "boston1775.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "honolulucountygenealogicalsociety.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ants.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -9347,12 +9347,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "online.wsj.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "news",
          "finance"
@@ -9367,7 +9367,7 @@ var interestsData =
          "society",
          "news"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ],
       "lisa mirza grotts" : "society",
@@ -9376,23 +9376,23 @@ var interestsData =
       "weddings" : "family"
    },
    "leavesofheritage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blogs.lightning.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "fotosearch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "socorrograveyard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -9404,51 +9404,51 @@ var interestsData =
       ]
    },
    "genblogjulie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ucmp.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "langgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "haveyouseenmyroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "coatsandclarksewingsecrets.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "computationalthoughts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "dps.state.ny.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "branchingoutthroughtheyears.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oprah.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "book club html" : [
@@ -9458,50 +9458,50 @@ var interestsData =
       "relationships" : "relationship"
    },
    "audacity.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "computers"
       ]
    },
    "bleacherreport.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "e-rewards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "ux.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "nmfs.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ],
       "pr" : "science"
    },
    "digital.lib.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "newtheologicalmovement.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "picturethisaustin.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mashable.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "technology",
          "news"
@@ -9512,34 +9512,34 @@ var interestsData =
       "sopa" : "politics"
    },
    "abc.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "susansgeni.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jewishgraveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "huntingtonbeach.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "allposters.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "itawambahistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -9548,18 +9548,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "mangafox.me" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "traffic.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "society"
       ]
    },
    "coloring-nicole.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -9567,12 +9567,12 @@ var interestsData =
       "fantasy football" : "sports"
    },
    "toylab.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "zap2it.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
@@ -9580,128 +9580,128 @@ var interestsData =
       "review" : "reviews"
    },
    "rwrankings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "myjamaicanfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pchgames.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "discounts"
       ]
    },
    "dreambound-druid.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "arh.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "fuelgaugereport.aaa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "scotlandsgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "footepaths.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "privacyruleandresearch.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "historyiselementary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "thejonesgenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "trinidad.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "elysesgenes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blogs.alternet.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "racines-djief.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "glutenfreebay.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ]
    },
    "training.apple.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "alvispat.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "boingboing.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "page.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "buycheapr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "easyjet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "smlr.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
@@ -9710,18 +9710,18 @@ var interestsData =
       "football" : "sports"
    },
    "arthritis.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "scottishemigration.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "newyorkliberty.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -9729,35 +9729,35 @@ var interestsData =
       "softagents" : "science"
    },
    "wewantarock.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "livinginthepastlane.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dish.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "climbing-the-genealogy-tree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "statlerhotel.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "geotripper.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -9765,19 +9765,19 @@ var interestsData =
       "vhi" : "history"
    },
    "sneuperdokkum.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "traceyourroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "walksaber.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -9787,13 +9787,13 @@ var interestsData =
       "sharks" : "sports"
    },
    "minus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "image-sharing"
       ]
    },
    "radar.weather.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
@@ -9809,42 +9809,42 @@ var interestsData =
       "atlas" : "science"
    },
    "vervephoto.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "finallyfeminism101.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "dell.com" : {
       "support drivers" : "computers",
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "rockssandfruit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "just-bottom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "beekeeperlinda.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "pets",
          "home"
       ]
    },
    "sun-sentinel.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports" : "sports",
@@ -9855,7 +9855,7 @@ var interestsData =
       "sports miami marlins" : "sports"
    },
    "slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "technology",
          "shopping",
@@ -9864,19 +9864,19 @@ var interestsData =
       ]
    },
    "researchingoconnells.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "schweer-moore.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oceanexplorer.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -9884,13 +9884,13 @@ var interestsData =
       "profile" : "reviews"
    },
    "thehembreehombre.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ten.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -9925,7 +9925,7 @@ var interestsData =
          "travel",
          "outdoors"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "news"
       ],
@@ -9958,73 +9958,73 @@ var interestsData =
       ]
    },
    "peerlessprognosticator.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "censusjunkie.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blogs.zdnet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "texasfamilystories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "modernknitting.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "cousinonceremoved.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nano.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "techspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "review" : "reviews"
    },
    "gamestop.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "disneyvacationclub.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "wicci.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "science"
       ],
       "features lewisandclark html" : "history"
    },
    "theverge.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "sopa" : "politics"
@@ -10040,12 +10040,12 @@ var interestsData =
       ]
    },
    "aa.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "foodblogga.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
@@ -10056,25 +10056,25 @@ var interestsData =
       ]
    },
    "gawker.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ],
       "television" : "tv",
       "reality tv" : "tv"
    },
    "angiesrootsareshowing.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nintendo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "auntieknickers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -10083,86 +10083,86 @@ var interestsData =
       "logic emotion" : "computers"
    },
    "stockcharts.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "gatapleytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "livestream.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "whitesox.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "estoredmemories2009.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "politicalticker.blogs.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "starbucks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ],
       "shop card" : "shopping"
    },
    "lib.utexas.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "maps" : "maps",
       "maps glossary html" : "science"
    },
    "keezmovies.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "chrb.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "potterybarn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ],
       "shop gifts" : "shopping"
    },
    "fashiondollreview.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "shopping"
       ]
    },
    "familyhistorysa.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "homedepot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "home"
       ]
    },
    "superpoints.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -10170,95 +10170,95 @@ var interestsData =
       "libraries maps" : "reference"
    },
    "pinkandgreenmama.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "jobs.wsj.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "familytech.familysearch.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "undsci.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "cduniverse.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music",
          "shopping"
       ]
    },
    "mcraeandersongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "barkingupourfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wisestewartgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "noisylibrarian.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "forums.devshed.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "channel4.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "dusp.sfsu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "freep.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "sleep.health.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "physics.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "youravon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "shopping"
       ]
    },
    "girlsgogames.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "games"
       ]
@@ -10267,72 +10267,72 @@ var interestsData =
       "swep" : "science"
    },
    "blog.myheritage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bearshare.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "blackhatworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "playdom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "tagesdotter.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "abh21.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "aq.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "urban-rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "sassyjanegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "clevelandtribeblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "aljazeera.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "yummy411.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ],
       "medicare" : "government",
@@ -10346,7 +10346,7 @@ var interestsData =
       "parenting baby" : "family"
    },
    "freegenealogyresources.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -10362,18 +10362,18 @@ var interestsData =
    },
    "omg.yahoo.com" : {
       "blogs golden globes" : "tv",
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "stemcells.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "technology"
       ]
    },
    "microbricks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
@@ -10382,7 +10382,7 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "whitehouse.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ],
       "issues economy" : "finance",
@@ -10399,46 +10399,46 @@ var interestsData =
       "administration eop onap" : "health"
    },
    "redeye.chicagotribune.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "growyourownfamilytree.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "autoblog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "fjellsiden.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yourrootsareshowingdearie.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gis.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sactogyr.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ers.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "finance"
       ],
@@ -10448,29 +10448,29 @@ var interestsData =
       ]
    },
    "linkstothepast.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "download.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ampnetwork.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "mawbeyfamilyaustralia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "haplogrouph.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -10479,28 +10479,28 @@ var interestsData =
       "category ebooks do" : "reading"
    },
    "alzonline.phhp.ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "quantcast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "codex.wordpress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "theatlantic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ]
    },
    "disneyparks.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
@@ -10508,7 +10508,7 @@ var interestsData =
       "articles" : "reviews"
    },
    "fas.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
@@ -10518,12 +10518,12 @@ var interestsData =
       "fish bytes" : "sports"
    },
    "disneymovierewards.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "coyotes.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -10534,46 +10534,46 @@ var interestsData =
       ]
    },
    "numberswillwork.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sanetra-genhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hub.motors.ebay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
    },
    "austin.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "notes-on-haskell.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "tastyeatsathome.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "xpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "mississippistate.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -10581,48 +10581,48 @@ var interestsData =
       "profile" : "reviews"
    },
    "ourtwigsandbranches.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cowdrickfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rememberingthefamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "m14genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ems.music.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "rootdigginnana.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genwishlist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "plimus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
@@ -10630,66 +10630,66 @@ var interestsData =
       "sport category boxing" : "sports"
    },
    "smiddyfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familycrypt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tvbythenumbers.zap2it.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "surveymonkey.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "zines.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "reflectingongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "toolongforgotten.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carpetbagger.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "akamaihd.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "ellenaguan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "claudiasgenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -10698,139 +10698,139 @@ var interestsData =
       "en us articles" : "computers"
    },
    "llbean.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "consanguinitatem.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familyforest.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pipl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "judysfamilystuff.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "doubletree1.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "writingyourmemories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "intellicast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "bamitbach.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "urbanplacesandspaces.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "imlive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "elgings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "justin.tv" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "rangerpundit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pasttimesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "artgallery.nsw.gov.au" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "keepingthestoryalive.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "starwars.tomtom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "davidmoolten.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "geneadiva.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "trailgirl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ancientimes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "edition.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sport" : "sports"
    },
    "humboldtstandard.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "nursinglink.monster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
@@ -10839,23 +10839,23 @@ var interestsData =
          "science",
          "health"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "texashistoryblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "chodrawings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "funwithobjc.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -10863,55 +10863,55 @@ var interestsData =
       "profile" : "reviews"
    },
    "dmsbr549.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "library.nps.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel",
          "outdoors"
       ]
    },
    "p2kmovie.warnerbros.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "wineverygame.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "tardisnewsroom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "healthmanager.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "windstream.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "legalzoom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "law"
       ]
    },
    "blackgenealogy-griot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thrashers.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -10925,12 +10925,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "penguins.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "barefootrunning.fas.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -10938,17 +10938,17 @@ var interestsData =
       "games" : "games"
    },
    "thechive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "knitorious.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "digitalprose.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -10956,23 +10956,23 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "sfgiants.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "comedycentral.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "tv"
       ]
    },
    "rbgsyd.nsw.gov.au" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "mikeydawson.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -10981,28 +10981,28 @@ var interestsData =
       "tag ruby" : "computers"
    },
    "jets.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pchiusano.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "defendingthestar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tv.philips.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "spyfu.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -11010,7 +11010,7 @@ var interestsData =
       "sws gsas" : "reference"
    },
    "m-w.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -11018,44 +11018,44 @@ var interestsData =
       "reviews" : "reviews"
    },
    "ctlc.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "findingthefeitnerfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vycurry.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shelliebee.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "epinions.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "blackpeoplemeet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "hellporno.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "tomclarkblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
@@ -11064,95 +11064,95 @@ var interestsData =
       "jrcole mideast htm" : "religion"
    },
    "sousoukitchen-en.over-blog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "moorehoustonrobertsongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wowalone.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "rootsandall.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wrh.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "washingtonexaminer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ]
    },
    "nibrofun.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "bi-gen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "itjustnevercameup.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blog.jquery.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "theteacupchronicles.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "developer.mozilla.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genwed.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ancestories2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cle.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "overdrive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music",
          "reading"
       ]
@@ -11161,149 +11161,149 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "alandofdeepestshade.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "echoesofelbertcounty.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fire.irs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "finance"
       ]
    },
    "danlakey.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "putlocker.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "careerbuilder.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "dsc.discovery.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "tv"
       ]
    },
    "nebraskarootsandramblings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "science.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "rareramblings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adpost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "firstread.msnbc.msn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "nk.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "turbotax.intuit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "mariegen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "coconutpoint.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "zoomerang.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "business"
       ]
    },
    "shakespeare.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "markshea.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "toyota.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "thesmokinggun.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "society"
       ]
    },
    "lostnewyorkcity.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "nwe.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "bjmcemeterydiscoveries.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eclipse.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cricketnext.in.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "shoprite.mywebgrocer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "shopping"
       ]
@@ -11312,75 +11312,75 @@ var interestsData =
       "q faq 2861" : "computers"
    },
    "catholicsensibility.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "glutenfreefun.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "irishstrawberryshortcake.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rosas-yummy-yums.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "tisallrelative.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cirm.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "technology"
       ],
       "parkinsons disease facts" : "health"
    },
    "howapoemhappens.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "map.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "swansonvitamins.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "health"
       ]
    },
    "researchergal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wellsgenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogybugkate.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cowieandshields.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -11389,57 +11389,57 @@ var interestsData =
       "profile" : "reviews"
    },
    "dalyhistory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geniebev.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "freegenealogytools.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lme.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "books.google.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "en.forums.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "mckinneylibrarygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "science.slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "technology"
       ]
    },
    "stitchnbitchdallas.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "cleveland.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -11447,33 +11447,33 @@ var interestsData =
       "profile" : "reviews"
    },
    "archbishopterry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "varnahs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "churchjewett.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "roobound.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "skyrim.nexusmods.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "nationals.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -11484,104 +11484,104 @@ var interestsData =
       ]
    },
    "mylife.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "bbandt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "rma.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "minnesotamilage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "sgps.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "boston.redsox.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "opera.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "gyrabbitnova.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kbuxradio.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "bookingbuddy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "undercovercook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "drudgereport.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "thevirtualdimemuseum.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ],
       "2008 03" : "reference"
    },
    "genealyn.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "affiliateshare.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "wiihacks.pbworks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "tillystales.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bujutsublogger.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "goodtoknowagenealogistsguide.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -11593,17 +11593,17 @@ var interestsData =
       "p" : "science"
    },
    "carboncycle.aos.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "runswithneedles.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "rootseek.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -11619,12 +11619,12 @@ var interestsData =
       "us" : "video-games"
    },
    "tacoma.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "gametrailers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
@@ -11635,109 +11635,109 @@ var interestsData =
       ]
    },
    "bible.cc" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "signature.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "justia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "law"
       ]
    },
    "utsandiego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "kerriecurtin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "generationsofgermans.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "searchcio.techtarget.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "bhphotovideo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography",
          "shopping",
          "consumer-electronics"
       ]
    },
    "cpaboard.wa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "postini.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email",
          "business"
       ]
    },
    "dmv.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "cars"
       ]
    },
    "theaccidentalgenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tgstopeka.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jmayhew.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oklahomaearps.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "chroniclingamerica.loc.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "reference",
          "society"
       ]
    },
    "monster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "soundcloud.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "babble.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ],
       "pregnancy" : [
@@ -11747,7 +11747,7 @@ var interestsData =
       "products" : "reviews"
    },
    "oscommerce.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -11755,189 +11755,189 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "uwpcc.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "patch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "banjosandbabydolls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thescrypt3141.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aima.cs.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "koshercamembert.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "food"
       ]
    },
    "breakingdownbrickwalls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "knowyourmeme.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "shyatwow.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "hurthawaii.blogs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cj.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "future.state.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "jobs.careerbuilder.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "apellidosenar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "royals.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "retailmenot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "wblakegray.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "wolfplex.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "gerkefamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hypebeast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "midwest-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "runsuerun.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "agoodappetite.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "chdk.wikia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "essexcountygraveyard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "perfumeshrine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "newatfamilytreefolk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "insightexpressai.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "web20classroom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "career-advice.monster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "lupus.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "wvultrarunner.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "www-personal.umd.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "runefficient.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "techsmith.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -11948,43 +11948,43 @@ var interestsData =
       "chemidplus" : "science"
    },
    "yarnbomblove.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "footysphere.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mrrc.isr.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "pokemon.wikia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "guru.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "genieinarizona.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "demo.joomla.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "oak.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -11998,29 +11998,29 @@ var interestsData =
       "mdrtc" : "health"
    },
    "geneamania.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jrog101.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "wonderwall.msn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "niaaa.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks",
          "health"
       ]
    },
    "thebachelor.warnerbros.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
@@ -12029,40 +12029,40 @@ var interestsData =
       "discoverypark energy" : "science"
    },
    "dailywag.marthastewart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "familyhistorytips.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jetstar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "swvault.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "bittersweetblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "classmates.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "nj.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "nets" : "sports",
@@ -12074,23 +12074,23 @@ var interestsData =
       "giants" : "sports"
    },
    "bitterleaf.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tricksofthetree.spaces.live.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bom.gov.au" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "hrblock.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
@@ -12099,47 +12099,47 @@ var interestsData =
       "academic library" : "reference"
    },
    "joanmcgov.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kbea831.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "frustratedgenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lilackitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "techrepublic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "technology"
       ]
    },
    "bridgetopast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cogracenotes.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "dol.wa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "cars"
       ],
@@ -12147,38 +12147,38 @@ var interestsData =
       "business appraisers" : "real-estate"
    },
    "issuu.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "radar.oreilly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "givingbacktokin.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "viglink.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "coopcatalyst.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "dusp.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "brewers.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -12186,18 +12186,18 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "milwaukeepolonia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "keychainserver.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "george-geder.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -12207,31 +12207,31 @@ var interestsData =
       "cfh hiv" : "health"
    },
    "aremyrootsshowing.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "weather.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "xfinity.comcast.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ],
       "learn internet xfinityconnect" : "email"
    },
    "kinexxions.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shbwgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -12240,28 +12240,28 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "univision.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "florida.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "arnspiger.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "poeticeconomics.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "ninds.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
@@ -12270,34 +12270,34 @@ var interestsData =
       "topogeo" : "science"
    },
    "btgenealogy.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "activerain.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "buy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "geneajourneys.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "knittaporfavor.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "wine-pictures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
@@ -12311,106 +12311,106 @@ var interestsData =
       "site sluclubvball" : "sports"
    },
    "thetopologist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cemeteriesofthecoveredbridges.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "philibertfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "crabillfamilychronicles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "redtubelive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "tmagazine.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ],
       "category mens fashion" : "men"
    },
    "inmotionhosting.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pilgrimsfootsteps.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "pittsburgh.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "blekko.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "haugenhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "payments.amazon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "jerseymo2010.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "miters.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "revenue.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "philadelphia.phillies.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "firstrowsports.eu" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "howtotalktogirlsatparties.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "allthenutsinthetree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -12420,86 +12420,86 @@ var interestsData =
       "finance" : "finance"
    },
    "stienstradl.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "davisgenealogyproject.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "realitykings.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "googleusercontent.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "misadventuresofagenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ancestorinvestigations.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "larkturnthehearts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "metropolitanpoliceresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fuse.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lifewellblended.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "parenthoodforme.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "seagenes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "uk-australia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "neohgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lindstroem.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -12510,7 +12510,7 @@ var interestsData =
          "travel",
          "outdoors"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "reference"
       ],
@@ -12521,25 +12521,25 @@ var interestsData =
       "ammem omhhtml" : "society"
    },
    "wcb.ny.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "career"
       ]
    },
    "my-yorkshire-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mgmt.wharton.upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "shutterfly.com" : {
       "photo gifts" : "shopping",
-      "__HOST" : [
+      "__ANY" : [
          "photography",
          "image-sharing"
       ],
@@ -12550,128 +12550,128 @@ var interestsData =
       "cards stationery invitations" : "society"
    },
    "praiseball.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "porntube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "rucker.army.mil" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "outdoors"
       ]
    },
    "ndep.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "who.godaddy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "card.cricket.indiatimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wow.joystiq.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "climate.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "todayinheritagehistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "livingrichwithcoupons.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "cubs.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mangahere.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "lakersblog.latimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "classictvhistory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "glinden.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "en us office365" : "business",
       "atwork productivity" : "business"
    },
    "reviveandrejuvenate.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "ci.med.nyu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "asimplewalk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "imgur.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "nrcc.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "hosemasterofwine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "writers.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "writing"
       ]
    },
    "tracingthetribe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -12684,23 +12684,23 @@ var interestsData =
       "jets" : "sports"
    },
    "ourtwigs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "register.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "onlinelibrary.wiley.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "classifiedsgiant.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
@@ -12714,115 +12714,115 @@ var interestsData =
       ]
    },
    "agame.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "uga.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jirenetreasures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ancestry.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fatquartershop.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "tubewolf.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "orwh.od.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "adult-empire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "wcgs-tx.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kings.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "eremiticshade.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fedex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "pittsburghsteelersfanatic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ivanhoetimes.freeservers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "wholepup.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "science",
          "weather"
       ]
    },
    "thestylebuff.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "geanderson.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "themeforest.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "slideshare.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "smartbrief.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "news bio" : [
@@ -12831,18 +12831,18 @@ var interestsData =
       ]
    },
    "randomrelatives.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "energy.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "philly100.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -12853,82 +12853,82 @@ var interestsData =
       "rockies" : "sports"
    },
    "steanne.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "arf.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "genealogycenter.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oilers.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "coolmath-games.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "education"
       ]
    },
    "destinationaustinfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "newyork.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "faq.en.playstation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "thegrammarvandal.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "writing"
       ]
    },
    "dmv.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "ncicb.nci.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "core.trac.wordpress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "lxr.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "gronow-one-name-study.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "us.norton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -12936,38 +12936,38 @@ var interestsData =
       "selfhelp protection dv" : "law"
    },
    "theweathernetwork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "br.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "audible.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "kitco.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "mlk-kpp01.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "houzz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "home"
       ]
    },
    "utdeafgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -12976,35 +12976,35 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "shopatron.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "lv.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "fastcompany.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "news",
          "finance"
       ]
    },
    "techland.time.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "localhistorygenealogyocpl.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jimsgirlfamilyhistoryblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -13013,39 +13013,39 @@ var interestsData =
       "profile" : "reviews"
    },
    "disciplinaryaction.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "fire.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "beautyanonymous.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "abev.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "ki.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "mikegen48.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -13055,98 +13055,98 @@ var interestsData =
       "gc" : "shopping"
    },
    "juju.ubuntu.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fashiondollchronicles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "bananarepublic.gap.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes"
       ]
    },
    "nevernotknitting.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "kansascity.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "washingtontimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "blog capitals watch" : "sports",
       "blog redskins watch" : "sports"
    },
    "sunnyancestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cdli.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "heathersgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "quant.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "king.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "shutterstock.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "lanncemetery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "masdesfigues.pagesperso-orange.fr" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "bulknews.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "conceptships.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "secureserver.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "web.uflib.ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -13154,108 +13154,108 @@ var interestsData =
       "profile" : "reviews"
    },
    "myfonts.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "anncoojournal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "nyislanderslegends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "broad.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sparknotes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "moviefone.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment",
          "movies"
       ]
    },
    "xboxlive.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "articles" : "reviews"
    },
    "steunenberg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "appalachianaristocracy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "was.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "aunttat.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lostgeologist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "www3.interscience.wiley.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "stlab.adobe.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "robotics.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "mariahszepher.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "osumarion.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "copyblogger.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "6-4-2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mediafire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -13263,38 +13263,38 @@ var interestsData =
       "profile" : "reviews"
    },
    "mobile.engadget.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "pastlane.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "haskellformaths.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ikea.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "totalkarate.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "nolimitstolearning.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "apod.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -13302,29 +13302,29 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "ant.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "channelinggrammy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "alternet.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "glassdoor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ],
       "reviews" : "reviews"
    },
    "jgg-online.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -13333,95 +13333,95 @@ var interestsData =
       "profile" : "reviews"
    },
    "colorado.rockies.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "abington.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "thegraytaylor.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sportsillustrated.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "vonage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "us.toshiba.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "glutenfreeislife.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "pinkscraps.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "youthsoccertalk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "albaria.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "mariners.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tigers.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "searchenginejournal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "adsoftheworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "rarediseases.info.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "cleanenergy.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "cdsmith.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "drugstore.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "health"
       ],
@@ -13431,196 +13431,196 @@ var interestsData =
       ]
    },
    "gscrapbooks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "thenextweb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "genealogybyjeanne.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "poptropica.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "family"
       ]
    },
    "credit.ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "solar-center.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "jimwinegar.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lyricsfreak.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "kajabi.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "jetsallout.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "family-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "funmoods.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "globaltestmarket.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "hendricks-history.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "supertroop197.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "wrightgen.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jocoksgw.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "peec.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "aislynnthompson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "irishmason1953.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "scrippsnetworks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "sipwithme.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "hip2save.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "customized-designs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "nuvid.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "srv2trk.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "dshs.state.tx.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks",
          "health"
       ]
    },
    "gtsaviel.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "regencyboston.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "manutd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "delta.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "sharonwine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "lightningsafety.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "who-knew-it.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "paper.li" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "jacksbox4you.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -13629,31 +13629,31 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "happili.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "research.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "computers"
       ],
       "apps tools tuva" : "science"
    },
    "kaiserpermanente.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "health",
          "family"
       ]
    },
    "genealogysleuth.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "virtualtombstonebiographer.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -13662,153 +13662,153 @@ var interestsData =
       "apa" : "home"
    },
    "dslreports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "comment" : "reviews"
    },
    "geico.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "genealogizer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jobs.un.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "clippers.ocregister.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "sulzmann.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "gfcfmommy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "winecask.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "will.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "beautyinreallife.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "creditkarma.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "validator.w3.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "media.ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "blog.wired.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "53.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "wonderfullymadebelliesandbabies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "health"
       ]
    },
    "tolkiengeek.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "anglo-celtic-connections.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "1channel.ch" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "movies"
       ]
    },
    "wznl.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "sandcreekboyds.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "haciendacircle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "osbp.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "hayesgreene.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whatismyipaddress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "htc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "bits.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "news.cnet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "apple" : "computers",
@@ -13816,73 +13816,73 @@ var interestsData =
       "sopa" : "politics"
    },
    "graveencounters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "caffeinatedyarn.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "starwoodhotels.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "sksgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mud.ced.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "dodgersims.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "heartsturn.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "namecheap.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genealogybyginger.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jahnroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "emirates.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "ypgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familysearch.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -13898,35 +13898,35 @@ var interestsData =
       "privacy" : "society"
    },
    "yoast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ],
       "wordpress" : "blogging"
    },
    "jamesgammellchronicles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pinterest.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ],
       "asiainferno food guides" : "cuisine"
    },
    "wnd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "igallo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "icpsr.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ],
       "icpsrweb samhda" : [
@@ -13935,7 +13935,7 @@ var interestsData =
       ]
    },
    "tsl.state.tx.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ],
@@ -13948,29 +13948,29 @@ var interestsData =
       ]
    },
    "karatejutsu.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ripoffreport.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "blacknashville.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sa2.www4.irs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "finance"
       ]
    },
    "kaspersky.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -13978,43 +13978,43 @@ var interestsData =
       "profile" : "reviews"
    },
    "findingfoleys.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "greenbriervalleygraves.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "beyondfabric.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "lib.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "mrc pacificapanthers html" : "history",
       "phys" : "science"
    },
    "digitalcollections.library.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "heartsnbones.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thoseoldmemories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -14023,35 +14023,35 @@ var interestsData =
       "sports magic" : "sports"
    },
    "healthgrades.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "health"
       ]
    },
    "cims.nyu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "last.fm" : {
-      "__HOST" : [
+      "__ANY" : [
          "music",
          "radio"
       ],
       "music spinal tap" : "dance"
    },
    "theregister.co.uk" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "aftermathnews.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "questionmarket.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
@@ -14059,65 +14059,65 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "yourstoryiswaiting.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ravelry.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "images-amazon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "noimpactman.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "alittlebitofirish.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fleander.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "oriolepost.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "barbmcbride.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pgpclassicsoaps.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "haddock2009.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lds.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "sockshare.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -14126,60 +14126,60 @@ var interestsData =
       "foul territory" : "sports"
    },
    "beautyoftheweb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genea-quilters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "paknitwit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "wildflowers.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "callmeshell.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cxx.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "jen-gen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "simplyrecipes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "somethingaboutmaps.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "cardgamerules.homestead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "wordpress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ],
       "extend plugins calendar" : "reference"
@@ -14191,73 +14191,73 @@ var interestsData =
       ]
    },
    "liverpoolfc.tv" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jobs.irs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "finance"
       ]
    },
    "inquisitr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "edcwww.cr.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "whispersthroughthewillows.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "open-perl-ide.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "isohunt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "cameroncollections.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "claudinehellmuth.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "barbie.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "babyonbored.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "free-tv-video-online.me" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "movies"
       ]
    },
    "shop.angrybirds.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
@@ -14269,123 +14269,123 @@ var interestsData =
       ]
    },
    "coupons.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "cancer.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "crk.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "library" : "reference"
    },
    "xxxmatch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "packerville.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "enduringlegacygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "drafthq.nbcsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pcsqult.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "atxglutenfree.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "chron.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports" : "sports"
    },
    "sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hostgator.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "flameslegends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "643putout.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ghcsparc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "banking.us.hsbc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "wumr.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "texasfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wizard101.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "saturn.jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "kathrynsmithlockhard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thedailyshow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "gsnocc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -14394,23 +14394,23 @@ var interestsData =
       "wiki spinal tap" : "dance"
    },
    "nyruralcemetery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "travel.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "marysaggies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "susaned2.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -14422,150 +14422,150 @@ var interestsData =
       ]
    },
    "hispanicgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "michaellaiskonis.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "yfrog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "image-sharing"
       ]
    },
    "desperatelyseekingsurnames.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "izznit.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "auction.wwe.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "logancountygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "imvu.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "ubuntu.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "iheartcraftythings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "sec.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "business",
          "finance"
       ]
    },
    "atticsandoldlace.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "clarenceslettershome.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "back-track.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "walmart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "cp credit cards" : "banking"
    },
    "pubs.er.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "lync.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "setoidsandcats.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "blackboard.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "interesting.cc" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "automobiles.honda.com" : {
       "certified used" : "shopping",
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "kitteekake.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "disneyweddings.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "acoupleofwhiles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "worldstarhiphop.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "rt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "lenovo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
@@ -14575,69 +14575,69 @@ var interestsData =
       "collections digital" : "reference"
    },
    "studentaid.ed.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "finance"
       ]
    },
    "saintcrossupheaval.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gtags79.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adp.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks",
          "health"
       ]
    },
    "milkforthemorningcake.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "copart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
    },
    "wordpress.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "robtsfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "textbook.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "argenevents.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "imagine.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "makingconnectionsgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -14649,34 +14649,34 @@ var interestsData =
       "fantasy news" : "sports"
    },
    "pizzahut.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "addictinggames.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "library.citytech.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "orbitz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ],
       "hotel" : "reviews"
    },
    "ontariogenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "peterfh.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -14685,46 +14685,46 @@ var interestsData =
       "profile" : "reviews"
    },
    "yourstoryhere.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dinnerwithmaxjenke.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "geonames.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "science",
          "society"
       ]
    },
    "nolichuckyroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wanderingtaxpro.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "phoenix.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "windows.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "macworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news",
          "computers"
@@ -14735,78 +14735,78 @@ var interestsData =
       "ms" : "health"
    },
    "kahngenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yardbarker.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "dccps.nci.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "cancun.regency.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "troop117.homestead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "funphysics.jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "whereicomefrom2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "findingpatrick.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "swagbucks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "wtknowles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "newbrunswick.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "w3.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "p3p" : "society"
    },
    "menepe.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "forums.appleinsider.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -14814,24 +14814,24 @@ var interestsData =
       "profile" : "reviews"
    },
    "brummiefamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "clocc.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "directv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "ae.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes",
          "family"
       ],
@@ -14841,7 +14841,7 @@ var interestsData =
       ]
    },
    "arstechnica.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "science" : "science",
@@ -14850,24 +14850,24 @@ var interestsData =
       "microsoft" : "computers"
    },
    "tobolds.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "enlnks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "storyapples.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "floridastate.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -14875,52 +14875,52 @@ var interestsData =
       "profile" : "reviews"
    },
    "greeneyedlookalike.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whatscookinginfrance.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "reds.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ],
       "appliances" : "home"
    },
    "rememberyourroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eggmenandotherstuff.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "epnet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "genea-related.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rootsresearcherrabbit.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -14929,33 +14929,33 @@ var interestsData =
       "profile" : "reviews"
    },
    "paulcornell.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "airbnb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "xkcd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "divorcedkid.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "family"
       ]
    },
    "hsbccreditcard.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "pcmag.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news"
       ],
@@ -14963,47 +14963,47 @@ var interestsData =
       "reviews" : "reviews"
    },
    "a3genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gentedeamer.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bsatroop174.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "ruthtruthsandruthisms.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "inekesmit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vegancrunk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "mlb.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "niehs.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "health"
       ]
@@ -15012,28 +15012,28 @@ var interestsData =
       "weather" : "weather"
    },
    "fromme-toyou.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "spanishdict.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "peachypast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "library.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "thewall.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -15041,17 +15041,17 @@ var interestsData =
       "quotes" : "reference"
    },
    "dandjurdjevic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "egotastic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "escwa.un.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
@@ -15065,23 +15065,23 @@ var interestsData =
    },
    "net-a-porter.com" : {
       "magazine" : "fashion",
-      "__HOST" : [
+      "__ANY" : [
          "shoes"
       ]
    },
    "rogerebert.suntimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "movies"
       ]
    },
    "cakephp.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "orlandosentinel.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports orlando magic" : "sports",
@@ -15089,7 +15089,7 @@ var interestsData =
       "the daily disney" : "movies"
    },
    "growingfamilytreesandvegetables.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -15098,12 +15098,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "robotics.usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "frontier.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "business"
       ]
@@ -15112,25 +15112,25 @@ var interestsData =
       "profile" : "reviews"
    },
    "kindredfootprints.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "89ww1heroes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familyhistoryalive.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thestar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports leafs" : "sports",
@@ -15138,74 +15138,74 @@ var interestsData =
       "superbowl" : "sports"
    },
    "buy.garmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "legacy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogymatters2me.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "streamate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "glutenfreeinla.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "news.fidelity.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "notigen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nanolab.me.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "blog.thefind.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "theoreticalphysics.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "accessgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "huntingancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "museum.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
@@ -15213,7 +15213,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "jan-davenport.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -15222,253 +15222,253 @@ var interestsData =
       "library" : "reference"
    },
    "auntsanduncles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genlibrarian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "heritagezen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "support.xbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "join.me" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "computers"
       ]
    },
    "capitalone.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ],
       "auto financing" : "cars",
       "home loans" : "real-estate"
    },
    "seekingalpha.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "factory.lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "365zines.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "demonoid.me" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "oxfordcounty.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lhillin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "deadline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "movies"
       ]
    },
    "pixlr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "bellmergenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "twosocialgraces.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "hermeneutics.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "bullrunnings.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "movies.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ],
       "feature oscars" : "tv"
    },
    "ducks.ocregister.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jaaga.wikidot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "astro.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "thevintageperfumevault.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "aikitube.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lucieslegacy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "turnernormingtonfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "doctoroz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health",
          "family"
       ]
    },
    "elgfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hulu.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ],
       "sesame street" : "family"
    },
    "edc.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "athletics.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "environment.guardian.co.uk" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "www-robotics.jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "starterhometodreamhome.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "gkupsidedown.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "headhardhat-geocache.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "drinkfactory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "slutload.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "feedingmyenthusiasms.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "real.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "jrul.libraries.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "shopify.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "shopping"
       ]
    },
    "ryanair.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "ancestorsearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tuckergenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "epicurious.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ],
       "articlesguides holidays thanksgiving" : "society",
@@ -15476,143 +15476,143 @@ var interestsData =
       "articlesguides holidays newyearsday" : "society"
    },
    "astronomy.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "pennysgenes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "annmartinpages.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oneartmama.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "xtube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "experienceproject.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "blogging"
       ]
    },
    "midgefrazel.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carters.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes",
          "shopping",
          "family"
       ]
    },
    "justacarguy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "fiverr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "phys.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "thehungaryexchange.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "neuropsychological.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "fleeglesblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "allrecipes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "tam.com.br" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "zedo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "tangledtrees.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "library.csi.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "thetreeward.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "norman.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "peerfly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "logging.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "undefeatedrunning.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "franchinisurname.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nextag.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
@@ -15620,69 +15620,69 @@ var interestsData =
       "finance" : "finance"
    },
    "roblox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "develop.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "weather.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ],
       "om csd" : "science"
    },
    "desertcandy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "math.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "groups.google.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "laidoffdad.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "den.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "minerals.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "samshistoryandgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "judaism.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "seminars.apple.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mytangledvine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -15691,22 +15691,22 @@ var interestsData =
       "profile" : "reviews"
    },
    "bedandbreakfast1.homestead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "sierraclub.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "diva.library.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "thompsonreidy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -15715,19 +15715,19 @@ var interestsData =
       "climate" : "science"
    },
    "msgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "skibgene.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "homeiswheretheholmansare.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
@@ -15735,61 +15735,61 @@ var interestsData =
       "profile" : "reviews"
    },
    "coco-knits.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "parenting.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "kathrynsgenealogyhelpcolumns.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "natgeomaps.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "troop641.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "sn.soapnet.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "big-ol-families.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lisaiscooking.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "ecollege.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "rr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "news"
       ]
    },
    "streetcolor.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -15797,13 +15797,13 @@ var interestsData =
       "cob management" : "business"
    },
    "ancestralpi.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blu-ray.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "movies"
       ]
@@ -15813,34 +15813,34 @@ var interestsData =
       "ceeep" : "science"
    },
    "bluejays.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wwe.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "news"
       ]
    },
    "sudoku.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "experiandirect.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "2338wwashingtonblvd.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oilpressure.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -15848,25 +15848,25 @@ var interestsData =
       "weather science fair" : "science"
    },
    "bladeshandy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ancestories1.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lifefromtheroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dailycaller.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ]
@@ -15878,164 +15878,164 @@ var interestsData =
       ]
    },
    "bushwoodcountryclub.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "compassweb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "sparkstudios.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "flygdynamikern.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cannelle-vanille.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "skyvington.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "photo-sleuth.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "timberwolvesbball.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "hotmail.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "manta.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "business"
       ]
    },
    "relativelycurious.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "homebrew.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "insurance.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "dodgers.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "dba.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "gamefly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "appledoesntfallfar2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cooking-books.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "anamericangenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "5earch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "libraries.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "oldpaulstownstories.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "prevention.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "masseffect.bioware.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "insidetv.ew.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "tv"
       ]
    },
    "active.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "health"
       ]
    },
    "endless.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "shoes"
       ]
    },
    "yarnificationz.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "rurdev.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "deniekasan.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16044,22 +16044,22 @@ var interestsData =
       "ebooks" : "reading"
    },
    "b100.homestead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "artyarn.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "elsevier.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "manhunt.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
@@ -16069,87 +16069,87 @@ var interestsData =
       "communities fantasywindup" : "sports"
    },
    "graymatterwow.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "fashiontribes.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "jquery.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "expression.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "icontact.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "dsw.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shoes"
       ]
    },
    "shadowstitch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "bus.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ],
       "academics departments finance" : "finance"
    },
    "polyvore.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ],
       "t shirts" : "clothes"
    },
    "mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tv.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ],
       "tv" : "tv"
    },
    "secureinternetbank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "foundatanauction.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "alothome.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "lindsaysinheber.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16158,12 +16158,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "tribetalk365.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "star wars characters" : "movies"
@@ -16172,90 +16172,90 @@ var interestsData =
       "category sports steelers" : "sports"
    },
    "beldinfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cchistoricalsociety.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hbogo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "movies"
       ]
    },
    "yourhistories.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "backpackingdad.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "blogtorwho.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "aboyandhisdeathrays.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "dpreview.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ],
       "reviews" : "reviews"
    },
    "swissramble.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "codeplex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "gcep.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "ks-gt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pghcomedy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "myfamilyresearchadventures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cenantua.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
@@ -16264,65 +16264,65 @@ var interestsData =
       "football" : "sports"
    },
    "diaryofanaustraliangenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lewrockwell.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "streamtheworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music",
          "computers"
       ]
    },
    "t.co" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "sportsauthority.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "clothes",
          "shoes"
       ]
    },
    "ancestorsoup.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brassring.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "yellowbook.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "reference",
          "business"
       ]
    },
    "wireless.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "troop205.multiply.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "hp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ],
@@ -16332,88 +16332,88 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "nslds.ed.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "finance"
       ]
    },
    "parrottslandingtree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "historicalcharts.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "maps"
       ]
    },
    "pawprintsguidingmetothepast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "elrodfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "scgsgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "myfitnesspal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine",
          "health"
       ]
    },
    "hawickcornets.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "diy.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "italianmomomaha.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cancergenome.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "cpa.state.tx.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "psychiatry.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "ancestorsconnect.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "schwab.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "finance"
       ]
@@ -16422,23 +16422,23 @@ var interestsData =
       "apa" : "home"
    },
    "ro-che.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "crossfit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "health"
       ]
    },
    "calibex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "medhelp.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
@@ -16446,89 +16446,89 @@ var interestsData =
       "garbl stylemanual" : "writing"
    },
    "bandcamp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "music"
       ]
    },
    "escalatenetwork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "blues.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "momto2poshlildivas.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "distantharmony.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oaktree-familytreeresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fantasy.nfl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "min.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "chicago.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "goal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "genealojournal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "leshergenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "soillmensvolleyball.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "okcupid.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "chi.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "swinfieldblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16537,12 +16537,12 @@ var interestsData =
       "bankusa" : "banking"
    },
    "calicoracing.squarespace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mcc.sws.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -16550,22 +16550,22 @@ var interestsData =
       "buddhist" : "religion"
    },
    "nssl.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "management.fortune.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "noteverstill.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "genealogical.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16573,7 +16573,7 @@ var interestsData =
    "loc.gov" : {
       "rr main olympics" : "sports",
       "rr askalib" : "education",
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "history",
          "reference"
@@ -16587,12 +16587,12 @@ var interestsData =
       "crsinfo" : "politics"
    },
    "desertculinary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "thecantyquest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16601,7 +16601,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "aquamarinesteph.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16613,13 +16613,13 @@ var interestsData =
       "us" : "computers"
    },
    "delicious.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "ivillage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "health",
          "family"
@@ -16627,19 +16627,19 @@ var interestsData =
       "hair inspiration galleries" : "fashion"
    },
    "compellingjewishstories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gyrwesternny.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ibtimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "news",
          "finance"
@@ -16656,19 +16656,19 @@ var interestsData =
       "apa" : "home"
    },
    "walnutacres805.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gplgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "scotsue-familyhistoryfun.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16681,13 +16681,13 @@ var interestsData =
       "elections" : "politics"
    },
    "funeralcards.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "crazyknittinglady.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -16701,50 +16701,50 @@ var interestsData =
       ]
    },
    "googlegeodevelopers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "thewaldorfway.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "education"
       ]
    },
    "tennesseepryors.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "evernote.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "yourdictionary.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "marilynadventures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thesensitiveepicure.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "executive.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "perl-ldap.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -16755,38 +16755,38 @@ var interestsData =
       ]
    },
    "horror-movie-a-day.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "library.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "nedoba.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aawu.arh.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "gaming.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "viewfrombernieschalet.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "communionews.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
@@ -16794,19 +16794,19 @@ var interestsData =
       "lsa writing awi" : "writing"
    },
    "frontporchrockernews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "everydaygenealogycalendar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "allmykithandkin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16815,64 +16815,64 @@ var interestsData =
       "stateclim" : "science"
    },
    "ancestorseekersbytherootbound.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "everymanaquotation.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "devshed.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "15minbeauty.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "inc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "news"
       ]
    },
    "julietarr.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ancestorsinthenews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whosyourgranddaddy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bettycrocker.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "myvidster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "christianadivine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
@@ -16881,35 +16881,35 @@ var interestsData =
       "profile" : "reviews"
    },
    "nickjr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ],
       "printables" : "hobby"
    },
    "captnsblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mybigcommerce.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "shopping"
       ]
    },
    "ausgenjourneys.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gonzogastro.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "ashleymadison.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
@@ -16920,23 +16920,23 @@ var interestsData =
       ]
    },
    "myway.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "wowvault.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "minecraftwiki.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "thewildgeesegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16945,23 +16945,23 @@ var interestsData =
       "clews" : "history"
    },
    "rocksinmydryer.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "christianity.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "tjlgenes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yesterdayspapers.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -16973,68 +16973,68 @@ var interestsData =
       ]
    },
    "finnestadhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oakland.athletics.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ancestralconnect.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "accuweather.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "inchmark.squarespace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "thesportsbizblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "unshovelingthepast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cnpp.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "food",
          "health"
       ]
    },
    "winesleuth.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "freeze.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "computers"
       ]
    },
    "christianmingle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "howstuffworks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
@@ -17042,73 +17042,73 @@ var interestsData =
       "apa" : "home"
    },
    "music-mix.ew.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "curbowfamily.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "libladygenblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "treeroots.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tv.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "whatwastheirstory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eleanor23things.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "us.playstation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "adorama.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "mkaymac.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "parktoronto.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "mainegenealogical.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lyrics007.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
@@ -17116,127 +17116,127 @@ var interestsData =
       "downloads" : "computers"
    },
    "happy-girl-24.livejournal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "veganmenu.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "diabetes.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "grubhub.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "freelancer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "twigstoroots.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "digitalriver.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "xmonad.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "jobs.monster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "autozone.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "arboretum.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "elance.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "blackbluegold.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "leisurefamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "comics.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "ccr.aos.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "constantcontact.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "jessicagenejournal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gladtobeglutenfree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "halsca.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rumtalk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "mykitch3n.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "sciencedirect.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "cricbuzz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -17251,138 +17251,138 @@ var interestsData =
       ]
    },
    "libraries.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "iamaresearchjunkie.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "the-historyman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "harvardbusinessonline.hbsp.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "dwellers.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "qc.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "goal.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "omchorations.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tv.univision.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "halfgoblin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "today.msnbc.msn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "twins.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "familyhistorian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fsis.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "food",
          "health"
       ]
    },
    "dfhcc.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "raleigh.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "relativemusings.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "starwarsremix.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "ir.chem.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "bioenergybridge.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "joeeverett.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sweetpleasure.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "gotprint.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "southparkstudios.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "kindlereader.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
@@ -17390,12 +17390,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "joghard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "digitallibrary.usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -17403,24 +17403,24 @@ var interestsData =
       "ceic" : "science"
    },
    "goaskalice.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks",
          "health"
       ]
    },
    "heborola.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geocachingtheobx.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "heidiswapp.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -17428,7 +17428,7 @@ var interestsData =
       "reviews" : "reviews"
    },
    "ams.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "food"
       ]
@@ -17437,107 +17437,107 @@ var interestsData =
       "perl" : "computers"
    },
    "prepaid.verizon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "hcgsohio.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yarngraffitidocumentary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "thepostgame.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "atlanta.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "jnrd.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tiffsgenealogyadventure.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sxc.hu" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "joyofsox.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "centurylink.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "news"
       ]
    },
    "coldwatercreek.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "annapolisroyalheritage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "akismet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "personal.vanguard.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "ezinearticles.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "pegslist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cam4.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "nrcs.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "science"
       ]
    },
    "shellee-morehead.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -17546,55 +17546,55 @@ var interestsData =
       "profile" : "reviews"
    },
    "agoda.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "alemi2424.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "wickedfire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "mymothersfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "studioservices.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "fishschooled.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "ancestrymusings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "famhist2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "foreignpolicy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "broncosarebest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -17602,12 +17602,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "archaeology.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "familyfriendsandneighbors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -17616,19 +17616,19 @@ var interestsData =
       "software awdtools purify" : "computers"
    },
    "columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "cu ccbh mxp" : "history",
       "cu lweb" : "reference"
    },
    "classifieds.nypost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "iowisbrassfield.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -17637,32 +17637,32 @@ var interestsData =
       "profile" : "reviews"
    },
    "auburn.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "complex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "videogames.lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "passionforsavings.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "dragonflybsd.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "abcnews.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports" : "sports",
@@ -17671,17 +17671,17 @@ var interestsData =
       "blogs politics" : "politics"
    },
    "angels.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "quercus-robur.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "education.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -17689,295 +17689,295 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "storiesofacanadianfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "umma.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "chapterandwurst.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "womanlondonblitz.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oeb.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "heroku.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "realage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "mysavings.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "hsn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "snagajob.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "mobile-libraries.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "sxsw.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music",
          "movies"
       ]
    },
    "focfriendsofcarlotta.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "saga.pmel.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "discogs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "york.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "uscnorriscancer.usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "drawnandquarterly.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "ps3.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "articles" : "reviews"
    },
    "lastwordsblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sepultura.uol.com.br" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "ngdc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "divyascookbook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "tombstonetravels-beverly.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "androidforums.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "stilinberlin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "onekingslane.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "pastinthepresent.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "familycherished.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "job.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "w3schools.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fnic.nal.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "health"
       ]
    },
    "afgs-acadian-heritage-news.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shopwiki.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "shopping"
       ]
    },
    "findmyroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "burntlumpia.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "herb.umd.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "community.wizards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "honorscode.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "espncricinfo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "conservativebrawler.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "gurneyjourney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "lasvegas.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "onthisdayinhistory-timeline.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "deb-adventuresingenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hipstrick-claudianeugebauer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "library.sfsu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "library.gc.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "circlemending.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tesstree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mlxchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "vistahispano.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "houston.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "pdc.wa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "caffevita.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
@@ -17985,89 +17985,89 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "wilnoworcester.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "garrisoncommunications.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "squidoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "atpworldtour.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "reverbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "extremeliberal.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "julieberg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lopucki.law.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "toptenreviews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "reviews"
       ]
    },
    "easternkentuckygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sqlazuremw.codeplex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pinkparsleycatering.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "ilgensoc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "famresearch.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cfa.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "soonergraveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -18076,325 +18076,325 @@ var interestsData =
       "masteringnode" : "computers"
    },
    "itp.nyu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pof.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "plantfacts.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "rosie-cotton.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "discovercard.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "new.evite.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "ebates.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "anniebartos.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thegraveyardsoftherunnellsiowaarea.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oregonlive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "blazers" : "sports",
       "march madness" : "sports"
    },
    "aebn.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "scrapbookideas.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "burlinghamrudd.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "company.wizards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "suntrust.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "yclibrary.homestead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "society"
       ]
    },
    "oodle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "astoundingpast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dienekes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blogsvertise.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "worldwarone.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "moneysavingmom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "ancestordetector.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "weisman.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "dept.physics.upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sprl.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "andrewsullivan.thedailybeast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "nba.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ],
       "tickets tickets html" : "entertainment"
    },
    "libraryreserve.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "reading"
       ]
    },
    "cecblog.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "progolftalk.nbcsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "heschistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gottracked.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "magnoliamornings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whattofeedyourkids.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "weichert.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "thehopechestgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "1stwebdesigner.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "richlandroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "j-macsjourney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cumpstonresearch.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "babasyarnbombs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "zanderfin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "kelzagenie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "womenshistorysources.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "women"
       ]
    },
    "ngs.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "conversationswithmyancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "pingomatic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "gather.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "ml.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "wrightarchives.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "womenandhollywood.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "ngmdb.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "kauaimark.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "cafepress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ],
       "posters" : "shopping"
    },
    "goulooze.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cebillingsley.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "myfamilylines-johnson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -18406,12 +18406,12 @@ var interestsData =
       ]
    },
    "shaadi.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "thestreet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
@@ -18419,50 +18419,50 @@ var interestsData =
       "sport tennis" : "sports"
    },
    "kzsulive.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
    "pc.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "articles" : "reviews"
    },
    "bayarea.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "brewers.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pk-pollyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "auto.howstuffworks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "jntefamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "health.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "ocp.hul.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "immigration" : [
@@ -18472,7 +18472,7 @@ var interestsData =
       "expeditions" : "history"
    },
    "copod3.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
@@ -18480,27 +18480,27 @@ var interestsData =
       "english" : "education"
    },
    "futurelib.pbworks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "studiopress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "theenglishmanner.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "craftbomberassociation.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "jackiesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -18509,23 +18509,23 @@ var interestsData =
       "ai" : "computers"
    },
    "cns.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "gerisgenes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dailydelicious.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "enjoythetimeleft.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -18535,17 +18535,17 @@ var interestsData =
       "kol 2 homeworkhelp" : "education"
    },
    "zmovie.tv" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "archhaskell.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "firelink.monster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
@@ -18553,25 +18553,25 @@ var interestsData =
       "c45800 htm" : "politics"
    },
    "hildrethancestorhunt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "solarscience.msfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "freefile.irs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "law",
          "finance"
       ]
    },
    "stonegardens-explorer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -18580,38 +18580,38 @@ var interestsData =
       "profile" : "reviews"
    },
    "tastefullyentertaining.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "musclecardreaming.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "pantilat.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "camposanto-holyground.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "achsaromatherapy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "blogs.adobe.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "mediatemple.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -18619,23 +18619,23 @@ var interestsData =
       "topic giftcards" : "shopping"
    },
    "kauai.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "bdp.law.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "aging.ny.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "molegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -18646,108 +18646,108 @@ var interestsData =
       "sports football dolphins" : "sports"
    },
    "newsinc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "curiousprogrammer.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "wskb.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "blog.searchenginewatch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "acer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "branchesleavespollen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "travel.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "athletics.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ma.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "reds.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "npdor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "giftoffamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wonkroom.thinkprogress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "echosign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "kayak.com" : {
       "page reviews" : "reviews",
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "alwaysatiger.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "goodreads.com" : {
       "quotes" : "reference",
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "portland.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "exclamationmark.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "linksynergy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -18762,62 +18762,62 @@ var interestsData =
       ]
    },
    "search4rootsandbranches.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "teambeachbody.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "99designs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "business"
       ]
    },
    "onlinemeetingnow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "genealitalia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kindle.amazon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "adnxs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "olgasdaughter.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "canadianlibgenie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cookingwithamy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "cartonerd.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -18825,100 +18825,100 @@ var interestsData =
       "grace" : "science"
    },
    "mairsiedotes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "southlogancounty.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "runningmanz.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "czechgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bossypally.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "sherylsfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thinkprogress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "e360.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "backpage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "nike.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "clothes",
          "shoes"
       ]
    },
    "wigetmedia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "mycenturylink.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "writing.engr.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "writing"
       ]
    },
    "unholyrandomness.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "news.ycombinator.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "devils.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cloudsecurity.trendmicro.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mtv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ],
       "news" : "music",
@@ -18926,25 +18926,25 @@ var interestsData =
       "music radio" : "radio"
    },
    "phi.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "hypnobabies.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "health"
       ]
    },
    "esrl.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ],
       "csd" : "science",
       "psd data usclimate" : "science"
    },
    "alviesgenealogyspot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -18960,7 +18960,7 @@ var interestsData =
       "education special education" : "education",
       "aperture" : "photography",
       "the beatles" : "music",
-      "__HOST" : [
+      "__ANY" : [
          "computers",
          "technology"
       ],
@@ -18968,12 +18968,12 @@ var interestsData =
       "webapps productivity" : "business"
    },
    "games.aarp.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "slashgear.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "shopping",
          "consumer-electronics"
@@ -18981,48 +18981,48 @@ var interestsData =
       "review" : "reviews"
    },
    "zion100.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tvrecaps.ew.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "pypanel.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ymoyl.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "literotica.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "ghr.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "health"
       ]
    },
    "mail.python.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "managementcraft.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "thereadingzone.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -19030,76 +19030,76 @@ var interestsData =
       "nanomedicine" : "science"
    },
    "maringensoc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "diggingupstones.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lambdacolyte.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "beautyaddict.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "jackandhill.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "newark.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "pdprootsandbranches.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "prairiebluestem.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gfearonhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "comingsoon.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ],
       "reviews" : "reviews"
    },
    "feministcarnival.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "wb.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "salon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ],
@@ -19107,7 +19107,7 @@ var interestsData =
       "books" : "reading"
    },
    "us.boots.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
@@ -19116,13 +19116,13 @@ var interestsData =
       "wiki psychology wiki" : "health"
    },
    "kershawcountywanderer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bbqilluminati.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ]
@@ -19131,7 +19131,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "technorati.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
@@ -19140,35 +19140,35 @@ var interestsData =
       "profile" : "reviews"
    },
    "listal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "marcpm.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "annlenth.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blackberry.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "myancestorsname.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "urthgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -19177,17 +19177,17 @@ var interestsData =
       "cuppages" : "science"
    },
    "windowsupdate.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hd.engadget.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "gretabog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -19196,51 +19196,51 @@ var interestsData =
       "profile" : "reviews"
    },
    "rays.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "crateandbarrel.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ],
       "gift cards" : "shopping",
       "gift ideas" : "shopping"
    },
    "highway8a.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "ai.cs.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "scarlet.capitals.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lindasflipside.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familytreebuilder.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "azlyrics.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "seattletimes.nwsource.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "special mlk" : "history",
@@ -19253,38 +19253,38 @@ var interestsData =
       "mage" : "science"
    },
    "owner.ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "gimp.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography",
          "computers"
       ]
    },
    "modernesia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "annesfood.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "takingcharge.csh.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "listingbook.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "drbilltellsancestorstories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -19293,12 +19293,12 @@ var interestsData =
       "lib" : "reference"
    },
    "jvzoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "ncbi.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "technology",
          "health"
@@ -19306,122 +19306,122 @@ var interestsData =
       "pmc journals 93" : "reference"
    },
    "jobamatic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "nebraska.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "creativecommons.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "packers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "men.style.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "southernsavers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "retracingthepast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "treehugger.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "food",
          "society"
       ]
    },
    "the5thdecade.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "hugin.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "growingupinunionvillelouisiana.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gforcef1.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wetree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "smashingmagazine.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "basketball.fantasysports.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "shop.avon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "appalachiaponderings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "imagespast.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "darkbluejacket.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "sportingnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "nfl" : "sports"
    },
    "bluejays.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -19429,122 +19429,122 @@ var interestsData =
       "up mensclubvolleyball" : "sports"
    },
    "lakesmum.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "noblehorseforest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "redbirdridge.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "perlalchemy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "photo.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "benandnatasha.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "goodbirdinc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "library.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "mymissingcousins.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "canucks.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "chadao.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "stlouis.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "theviewfromthetreehouse.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nuestrafamiliaenelmundo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ecls.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "flac.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "computers"
       ]
    },
    "broersmafamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "angelswinblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "volcanoes.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "wowaltaddiction.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "pyui.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fastmail.fm" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
@@ -19553,45 +19553,45 @@ var interestsData =
       "nuclear" : "science"
    },
    "livecd-openbsd.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ameritrade.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "softwaresimply.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "andihelped.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dlspeedwaytest.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "swveterans.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cardjunk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "cleveland.com" : {
       "cavs" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "consumeraffairs" : "shopping",
@@ -19600,34 +19600,34 @@ var interestsData =
       "marchmadness" : "sports"
    },
    "freecreditreport.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "shoutcast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
    "ccgsil.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "consumerwiki.dca.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "dhgate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "e-p-i-c.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -19635,7 +19635,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "bloggingprojectrunway.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
@@ -19643,27 +19643,27 @@ var interestsData =
       "twincities campuses php" : "education"
    },
    "nicktoons.nick.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "cartastrophe.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "unstats.un.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "travian.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "lilslittleluxury.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -19674,36 +19674,36 @@ var interestsData =
       "recruiting" : "sports"
    },
    "genealotech.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "collections.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "slice213.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "motherless.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "landsend.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes",
          "shopping"
       ]
    },
    "cnet.com" : {
       "xbox 360" : "video-games",
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "shopping",
          "consumer-electronics"
@@ -19714,22 +19714,22 @@ var interestsData =
       "huntwild hunt" : "outdoors"
    },
    "areaconnect.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "websitetonight.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hrsmart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "perl-hunting.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -19738,23 +19738,23 @@ var interestsData =
       "ports netbsd" : "computers"
    },
    "johncesano.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "matthewkahle.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "expedia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ],
       "hotel reviews" : "reviews"
    },
    "eventbrite.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
@@ -19765,24 +19765,24 @@ var interestsData =
       ]
    },
    "peeplo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "startnow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "watchtower.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "news"
       ]
    },
    "kotaku.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
@@ -19793,61 +19793,61 @@ var interestsData =
       ]
    },
    "gentoohaskell.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "gotomeeting.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "flickr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "subway.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "shopping"
       ]
    },
    "springwoodhistorians.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gcchat.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "news.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pyke.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "office.microsoft.com" : {
       "en us outlook" : "reference",
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "tigers.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "theorytopractice.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "health"
       ]
@@ -19856,17 +19856,17 @@ var interestsData =
       "apa" : "home"
    },
    "ocsn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "thewellseasonedcook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "gizmodo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "shopping",
          "consumer-electronics"
@@ -19875,34 +19875,34 @@ var interestsData =
       "review" : "reviews"
    },
    "ccc.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "hbr.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "fish.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "gailgrunstgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "connectingkin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "regions.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
@@ -19916,17 +19916,17 @@ var interestsData =
       "m math" : "science"
    },
    "blog.us.playstation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "coloringsheets.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "utrechthaskellcompiler.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -19934,54 +19934,54 @@ var interestsData =
       "sceti furness" : "reading"
    },
    "jl8comic.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "exchanges.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "dealextreme.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "pshs.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "filehippo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fatcow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "losangeles.dodgers.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ancestreesprite.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oilersrepublic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "reachlocal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -20004,7 +20004,7 @@ var interestsData =
       "music thebeatles" : "music"
    },
    "thehensdenteam.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -20012,17 +20012,17 @@ var interestsData =
       "profile" : "reviews"
    },
    "vmn.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "dealbook.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "motorcycles.oodle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "motorcycles"
       ]
    },
@@ -20030,23 +20030,23 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "tutsplus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "tampabay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "syrendell.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "education"
       ]
    },
    "vimeo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ],
       "11611900" : [
@@ -20055,45 +20055,45 @@ var interestsData =
       ]
    },
    "usajobs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "genghiscon.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "robotics.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "aga2428.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ismeetswas.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hackerspace.ning.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "zacathan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "preservingheritage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -20102,7 +20102,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "cemeteryexplorers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -20114,18 +20114,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "geeilovegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "guecoaction.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "ourfamilyology.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -20134,18 +20134,18 @@ var interestsData =
       "learningenglish home" : "education"
    },
    "ungergenealogy.xanga.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ea.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "camden.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -20153,61 +20153,61 @@ var interestsData =
       "cilc images bibs" : "society"
    },
    "abruzzojournal.squarespace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nigeltufnelday.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "dance"
       ]
    },
    "giss.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "gonnawantseconds.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "bobbi-kalule.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "boxofficemojo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "rockies.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "genealogyetc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ndbserver.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "jenny-rakingtheleaves.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "penrosemornings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -20216,70 +20216,70 @@ var interestsData =
       "apa" : "home"
    },
    "php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ashemaletube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "mandilockley.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "pornerbros.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "genealogysearchtip.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "socialpsychologyeye.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "africanroots-pbj.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geneapprentice.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rpszinelibrary.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "sei.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "www-sul.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "accorhotels.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "tardis-base.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
@@ -20287,200 +20287,200 @@ var interestsData =
       "cricket" : "sports"
    },
    "gotowebinar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "business",
          "computers"
       ]
    },
    "urbanoutfitters.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes"
       ]
    },
    "foxsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "healthypets.mercola.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "jltp.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "psp.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "articles" : "reviews"
    },
    "generationsgoneby.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brantcountyogs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "videobash.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "uncategorized"
       ]
    },
    "sports.break.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "atropesend.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "evolution.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "colsbluejackets.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "awards.tv.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "graveyardrabbitofsouthalamedaco.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "doc.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "svalz.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "depositphotos.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "lotuspalace.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "grampsandmamawsgirls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "slaktforskning.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "logmein.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "glutenfreetasteofhome.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "history.army.mil" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ],
       "moh html" : "society"
    },
    "everydayhealth.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine",
          "health"
       ]
    },
    "ucdavis.place.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "genealogyeducation.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hsbc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "duckduckgo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "doubleclick.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "grepolis.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "ohiosyesterdays.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wing-ops.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogybycindy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "manhub.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "bzzagent.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -20488,96 +20488,96 @@ var interestsData =
       "profile" : "reviews"
    },
    "fly.garmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "scrabblefinder.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "gadgets.boingboing.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "wilderness.nps.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel",
          "outdoors"
       ]
    },
    "christoph-sack-of-jasper-co-in.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "growupgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aeriagames.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "denimoholic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes"
       ]
    },
    "mycokerewards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "discounts"
       ]
    },
    "tv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ],
       "reviews html" : "reviews"
    },
    "savoringfruitfromthefamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "looking4more.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "motorcycles.about.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "motorcycles"
       ]
    },
    "singlesnet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "stylebistro.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "shakespeare.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "video2mp3.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -20585,35 +20585,35 @@ var interestsData =
       "profile" : "reviews"
    },
    "support.directv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "d23.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "africanamericansoldiers.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "routes.tomtom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "pumpedlibrarian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "addtoany.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -20621,57 +20621,57 @@ var interestsData =
       "profile" : "reviews"
    },
    "newsgrist.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "womensglib.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "pype.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "arcamax.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "family"
       ]
    },
    "tantenoura.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pornhublive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "the3daysofourlife4.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "evachen212.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "green.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "society"
       ]
    },
    "adoseoflogic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -20679,7 +20679,7 @@ var interestsData =
       "win7developerguide" : "computers"
    },
    "crawford-connections.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -20691,45 +20691,45 @@ var interestsData =
       "docs" : "computers"
    },
    "css-tricks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "sandersfamilia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "java.dzone.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "dinonationblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "genealogygenie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "windowsphone.wordpress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "genealogyresearchservice.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "morethannames.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -20740,7 +20740,7 @@ var interestsData =
    },
    "psychologytoday.com" : {
       "basics domestic violence" : "law",
-      "__HOST" : [
+      "__ANY" : [
          "drinks",
          "news",
          "health"
@@ -20755,45 +20755,45 @@ var interestsData =
       "fermentation" : "drinks"
    },
    "worldwinner.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "inboxdollars.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "shop.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "fashion"
       ]
    },
    "andrelacombegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bal.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "gailgrunstgenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dailymed.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "genwestuk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -20802,273 +20802,273 @@ var interestsData =
       "thereadingexperience" : "reading"
    },
    "entrepreneur.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "news"
       ]
    },
    "mademan.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "society"
       ]
    },
    "cliffordbeshers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "angelaskitchen.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "druginfo.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "sea.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "omchodoy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "80breakfasts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "southwestarkie.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "johnbrownkin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "letsgosox.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "hazleton.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "ssdcgraveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "naplesyouthsoccer.shutterfly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "aidsinfo.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "aga2428too.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "calbar.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "peekyou.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "woodshole.er.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sports-law.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "newman.baruch.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "campbaybeachadventur.fatcow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "pypi.python.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "venturebeat.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "sopa" : "politics"
    },
    "jewishgenealogyjourney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thelastleafonthisbranch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "elections.ny.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "badladies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "9gag.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "whatsforlunchhoney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "lessonslearnedingenealogyresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cemeterieshillcountry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "realitytvmagazine.sheknows.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "foodwishes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "smallsmallbaker.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "dailyfinance.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "diabetes.niddk.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "illustrationart.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "rougedeluxe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "kykinfolk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "travel.usatoday.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "simpsongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "taylorstales-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jplzinelibrary.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "kosherscene.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "food"
       ]
    },
    "mindbodyonline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "familytwigs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "freecause.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "metropcs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "kidshealth.org" : {
       "teen drug alcohol" : "drinks",
-      "__HOST" : [
+      "__ANY" : [
          "health",
          "family"
       ],
@@ -21077,101 +21077,101 @@ var interestsData =
       "parent nutrition center" : "food"
    },
    "levingstongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "alot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "herbarium.lsa.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "genieroadtrip.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rajeevtherunner.sports.officelive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "basicbeekeeping.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "pets",
          "home"
       ]
    },
    "mirrorofjustice.blogs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "jeaniesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pacingthepanicroom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "andyabramson.blogs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "woothemes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "blogging"
       ]
    },
    "baltimore.bizjournals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "telltheirstory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "boe.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "runmoretalkless.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "nco.ncep.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "fitz-henry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "spdf.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -21179,18 +21179,18 @@ var interestsData =
       "the classical beat" : "music"
    },
    "mcb.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "www8.garmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "sixrevisions.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -21199,7 +21199,7 @@ var interestsData =
       "everyday gasstations aspx" : "cars"
    },
    "hertz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -21207,23 +21207,23 @@ var interestsData =
       "school psychiatry narcolepsy" : "health"
    },
    "credoaction.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "society"
       ]
    },
    "mfb.morningstar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "photo.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "booksearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
@@ -21231,67 +21231,67 @@ var interestsData =
       "profile" : "reviews"
    },
    "heirloomsreunited.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "backcountry.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "rossgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nationals.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "basecamp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "computers"
       ]
    },
    "swtor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "familiesofoldhawaii.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "affilorama.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "zend.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "reinerp.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "store.sony.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "pattengenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -21300,17 +21300,17 @@ var interestsData =
       "perl" : "computers"
    },
    "thepiratebay.se" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "docs.python.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "baseball.fantasysports.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -21318,73 +21318,73 @@ var interestsData =
       "cac2 cgsc" : "education"
    },
    "ca.indeed.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "bonanza.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "mgoblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ofkells.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "shirt.woot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "clothes"
       ]
    },
    "shopzilla.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "stripepoles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "mangastream.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "ethunter1.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ftmuser.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogy-quest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rotoworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "macdonellfamily.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -21393,53 +21393,53 @@ var interestsData =
       "khrca" : "history"
    },
    "tomtom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "coloradoreflections.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "willardfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gardening.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "progenygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mariners.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "90210manners.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "justfab.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion",
          "shoes"
       ]
    },
    "lifehacker.com" : {
       "email" : "email",
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "technology",
          "shopping",
@@ -21452,32 +21452,32 @@ var interestsData =
       "org raptp" : "science"
    },
    "wiki.python.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "robotic.media.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "tv.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "nzherald.co.nz" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "accountonline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "ourblackancestry.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -21486,12 +21486,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "network.smashingmagazine.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -21499,44 +21499,44 @@ var interestsData =
       "lollapalooza" : "music"
    },
    "ups.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "ringcentral.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "home",
          "consumer-electronics"
       ]
    },
    "security.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "map.lib.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "mom2my6pack.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "edwardbyrne.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "waikikibeach.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "rackspace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -21547,29 +21547,29 @@ var interestsData =
       "product" : "clothes"
    },
    "exacttarget.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "girloftherandomleaf.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mom-101.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "a-geek-girl-does-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nyg.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -21577,77 +21577,77 @@ var interestsData =
       "profile" : "reviews"
    },
    "brandtgibson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "westggsa.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tmailhes.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "care2.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "hubspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "escapetothesilentcities.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vegandad.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "menards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "shopping",
          "home"
       ]
    },
    "priceline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "watchismo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "mika2mickey.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "acadian-ancestral-home.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "othejoys.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
@@ -21662,19 +21662,19 @@ var interestsData =
       "raptors" : "sports"
    },
    "synacor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news",
          "finance"
       ]
    },
    "scrapbook-crazy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "readwriteweb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
@@ -21682,39 +21682,39 @@ var interestsData =
       "profile" : "reviews"
    },
    "boutiquehotelsguanacaste.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "ditonb.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "stern.nyu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "usps.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "charteroakgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blogs.nfl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "khcplgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -21724,78 +21724,78 @@ var interestsData =
       "maplib" : "reference"
    },
    "flmnh.ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "pittsburgh.pirates.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "grindtv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "tv"
       ]
    },
    "grainger.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "mint.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "finance"
       ]
    },
    "toronto1861.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nowrigglingoutofwriting.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "angryblackbitch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "yellowpages.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "spiritsandcocktails.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "familypast.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "boxingledger.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "download.openoffice.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "appleinsider.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "computers"
       ]
@@ -21807,23 +21807,23 @@ var interestsData =
       "eeb" : "science"
    },
    "health.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "nutfieldgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "digital.library.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "aidsposters" : "health"
@@ -21832,179 +21832,179 @@ var interestsData =
       "profile" : "reviews"
    },
    "diaryofadisillusioneddater.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "sisterscafe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "elyrics.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "icsc.un.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "updatesgenie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yapgh.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "indeeds.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mumpsimus.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "sweetcandydistro.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "qrcodememorials.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thebrickwallprotocol.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bricksmith.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "harborfreight.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "home"
       ]
    },
    "ancestroschilenos.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "discover.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "aradicle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "sacbee.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "classified ads" : "shopping"
    },
    "quora.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "entrepreneurship" : "business"
    },
    "www4.gsb.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "kitchen-parade-veggieventure.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "graphicriver.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography",
          "image-sharing"
       ]
    },
    "hempsteadfam-bklyn-ny.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "keillorsmith.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mail.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "mckeegenealogy.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "beckysgraceandglory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thehandthatrockstheladle.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "stanford.edu" : {
       "group cpn" : "science",
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "dept archaeology" : "history"
    },
    "familypuzzle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "outlook.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "water.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "chuckcowdery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
@@ -22012,7 +22012,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "myspace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ],
       "music" : "radio",
@@ -22020,7 +22020,7 @@ var interestsData =
       "theofficialdeicidemyspacepage" : "music"
    },
    "iberia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -22028,30 +22028,30 @@ var interestsData =
       "projects" : "science"
    },
    "logio2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bestbuy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "mngs.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "agplaythings.proboards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "shopping"
       ]
    },
    "playattheplatedude.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -22061,7 +22061,7 @@ var interestsData =
       "formula1" : "sports"
    },
    "watchseries.eu" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
@@ -22069,28 +22069,28 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "orchardbank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "comenity.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "wildrhodes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "westseattlemovies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "theatlanticwire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
@@ -22098,38 +22098,38 @@ var interestsData =
       "herbaria" : "science"
    },
    "cemeteriesofdancingrabbitcreek.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thewizardofodds.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "howtomakediapercakes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "detroit.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "panotools.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "cpec.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "polishamericangenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -22144,67 +22144,67 @@ var interestsData =
       "maps" : "maps"
    },
    "ohbabyshowerdecor.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "wisteria-dawn.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vanguard.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "28cooks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "facecandy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "mmmmmovies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "gcchat1.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "coffeycousins.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cad.chp.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "society"
       ]
    },
    "trialpay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "reviews.bodybuilding.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "granitegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -22212,7 +22212,7 @@ var interestsData =
    "startribune.com" : {
       "sports twins" : "sports",
       "sports wolves" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports vikings" : "sports",
@@ -22220,39 +22220,39 @@ var interestsData =
       "sports wild" : "sports"
    },
    "kroger.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "shopping"
       ]
    },
    "kirstenskitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "findingauntdelia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thecaucus.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "aquanautixblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "vidxden.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "tlngenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -22261,7 +22261,7 @@ var interestsData =
       "genetics" : "science"
    },
    "kbrobaseball.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -22269,18 +22269,18 @@ var interestsData =
       "apa" : "home"
    },
    "qld-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "homewoodsuites1.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "spiralmontessorimama.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "family"
       ]
@@ -22289,55 +22289,55 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "dontmesswithtaxes.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "genealogycanada.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ibawcross-culturalgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "energy.usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "soccernet.espn.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ypmate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "a-friend-to-knit-with.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "newhorizonsgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "daytimeconfidential.zap2it.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "bkinloveandwar.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -22346,31 +22346,31 @@ var interestsData =
       "support" : "computers"
    },
    "irish-genealogy-news.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ping.fm" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "tineye.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "yougogenealogygirls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cr.nps.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "travel",
          "outdoors"
@@ -22378,76 +22378,76 @@ var interestsData =
       "museum exhibits jomu" : "science"
    },
    "gambit.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "sports"
       ]
    },
    "spaceplace.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "seroundtable.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "video.pbs.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "dre.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "dreamstime.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "xbox.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "fourgenerationsgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thejonessurname.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "seattlepi.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "pisces49.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "digiresults.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "bitly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "vjthompson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -22459,74 +22459,74 @@ var interestsData =
       "profile" : "reviews"
    },
    "kentuckypioneers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lifeofrileyancestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nai.arc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "vintagevines.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genmadscientist.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eckstel.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sohowww.nascom.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "travel.state.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "ancestorsatrest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nasilemaklover.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "roostersrunning.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mdfamilies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oca.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
@@ -22534,79 +22534,79 @@ var interestsData =
       "node" : "reference"
    },
    "teamdelta1.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "hunter.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "fit.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "health",
          "family"
       ]
    },
    "letkidscreate.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "shoebuy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "shoes"
       ]
    },
    "soaps.sheknows.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "forums.macrumors.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "usairways.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "myyearbook.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "games"
       ]
    },
    "norwaytoamerica.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "profootballtalk.nbcsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "calixtlahuaca.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "tampabay.rays.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "anthropologie.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "clothes",
          "fashion",
@@ -22614,74 +22614,74 @@ var interestsData =
       ]
    },
    "kkrk989.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "free.avg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "scrapbooksisters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "2happy.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "javapeople.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "nano.med.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "change.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "music.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ],
       "launchcast" : "radio"
    },
    "film.guardian.co.uk" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "corporationwiki.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "business"
       ]
    },
    "svok.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "travel.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "wiki.jqueryui.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mnwildfreak.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -22689,51 +22689,51 @@ var interestsData =
       "profile" : "reviews"
    },
    "ancienthearth2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "education"
       ]
    },
    "ths.gardenweb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ],
       "forums appl" : "shopping"
    },
    "opentable.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "eharmony.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "symptoms.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "yourfamilystory-cmpointer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gosolarcalifornia.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "ancestortracking.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "publix.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "shopping"
       ]
@@ -22742,18 +22742,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "weather.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "womenst.library.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "calottery.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
@@ -22761,13 +22761,13 @@ var interestsData =
       "dst lispbook" : "computers"
    },
    "genealogicabounds.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "motortrend.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "news"
       ],
@@ -22775,24 +22775,24 @@ var interestsData =
       "used cars" : "shopping"
    },
    "usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ],
       "rus electric" : "science",
       "oce weather" : "weather"
    },
    "beatlephoto.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "theenvelope.latimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "wtb.wa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -22805,105 +22805,105 @@ var interestsData =
       "mac drivers" : "computers"
    },
    "fromatozophar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "media.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "xdating.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "answers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "postsecret.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "thedeadlibrarian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "stubhub.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "webmasters.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hoovers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "ioa.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "chplib.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fafsa.ed.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "finance"
       ]
    },
    "bronto.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "stumbleback.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bayernroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "innesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ncdc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "weather"
       ]
    },
    "wellerharvey.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "stltoday.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports" : "sports",
@@ -22912,22 +22912,22 @@ var interestsData =
       "sports football professional" : "sports"
    },
    "finance.google.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "cardiffgigposters.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "sharepoint.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -22935,39 +22935,39 @@ var interestsData =
       "urbanbeegardens" : "science"
    },
    "ennishackerspace.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "abeautyfulsentiment.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "television.aol.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "forums.gardenweb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "nattermorphisms.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "grantparishlaobits.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "webmail.earthlink.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
@@ -22975,46 +22975,46 @@ var interestsData =
       "horoscopes" : "society"
    },
    "michaelsavage.wnd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "geneascraps.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "foodsafety.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "health"
       ]
    },
    "wild.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cancer.med.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "genealogyvt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "archivesresearch.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sparkpeople.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine",
          "health"
@@ -23025,17 +23025,17 @@ var interestsData =
          "food",
          "health"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "bigcharts.marketwatch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "iaagg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -23050,13 +23050,13 @@ var interestsData =
       "fishingpassport" : "outdoors"
    },
    "grandmaaustinsdiaries.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mediaite.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ]
@@ -23065,87 +23065,87 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "seomoz.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "zillow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "scrappingenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jenniferslinks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "talkingpointsmemo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "toysrus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "abuiles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "dagtho.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cooking.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "usbuildingdigest.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "ds.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "eastonad.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "pegsandmjsgenex.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "grasp.upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "mann-genealojist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yelp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
@@ -23153,27 +23153,27 @@ var interestsData =
       "app herbarium" : "science"
    },
    "bobweeksoncurling.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "madmimi.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "detroit.tigers.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "digestive.niddk.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "programmers.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -23181,55 +23181,55 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "torresfamilyhistorynm.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jakarta.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "comeyoumastersofwar.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "einstein.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "webmail.verizon.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "bedbathandbeyond.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "nascar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "climbingmyfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familyfolklore.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "metalia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
@@ -23237,27 +23237,27 @@ var interestsData =
       "super bowl" : "sports"
    },
    "cpc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "davekriegsstrikebeard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "carlatpsychiatry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "spoonriverspeedway.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "folkarchivist.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -23269,27 +23269,27 @@ var interestsData =
       "fba" : "sports"
    },
    "virtualedge.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "xda-developers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "deviantart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "intentmedia.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "spotify.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
@@ -23304,57 +23304,57 @@ var interestsData =
       ]
    },
    "unforgotten-g.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "apackaday.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "tennesseememories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dirtyrunning.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "hbg.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "library" : "reference"
    },
    "itgraveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whippersnappergenealogist.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "seanramblings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "aprintaday.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "thekrazycouponlady.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
@@ -23362,7 +23362,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "florida.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -23371,13 +23371,13 @@ var interestsData =
       "world" : "education"
    },
    "genealogyinwestbrookfieldmass.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "chgs.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
@@ -23385,53 +23385,53 @@ var interestsData =
       "prc" : "science"
    },
    "vivelevegan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "olivetreegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sgossfamily.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "twinwoodcarving.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "sasquatchswatch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "americanexpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ],
       "gift cards" : "shopping"
    },
    "environment.nationalgeographic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "society"
       ]
    },
    "thegraveyardrabbitofchristianco.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "freedom150.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -23441,12 +23441,12 @@ var interestsData =
       "topic diwali" : "religion"
    },
    "capitals.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "library.linode.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -23454,140 +23454,140 @@ var interestsData =
       "baseball" : "sports"
    },
    "eea.europa.eu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "jpost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "secondlife.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "senators.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pastprotectors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yale.edu" : {
       "marshgardens" : "science",
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "eeb" : "science",
       "imaging echo atlas" : "science"
    },
    "onlinecreditcenter6.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "zoho.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "jennifergenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "techradar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "reviews" : "reviews"
    },
    "couponmom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "jobs.businessweek.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "thesartorialist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "hendcogen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "youtube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ],
       "watch" : "dance"
    },
    "sierravistagenie.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "leavesfortrees.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dkdeathgoddess.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "modelmayhem.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "rentals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate",
          "home"
       ]
    },
    "blockbuster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "webex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "datpiff.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "moodle.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "ktcmmo.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
@@ -23596,37 +23596,37 @@ var interestsData =
       "product reviews" : "reviews"
    },
    "apple.slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "scribbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "redcard.target.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "newyork.yankees.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "library.hunter.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "us.trendmicro.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "wpdevel.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
@@ -23634,23 +23634,23 @@ var interestsData =
       "homeandgarden" : "shopping"
    },
    "bluehost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ip-adress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mycambriacoconnection.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "homeaway.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -23658,23 +23658,23 @@ var interestsData =
       "climate" : "science"
    },
    "yk.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "beckywilloughby.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "caskstrength.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "genealogyisruthlesswithoutme.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -23683,7 +23683,7 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "alpineberry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
@@ -23698,7 +23698,7 @@ var interestsData =
       "review" : "reviews"
    },
    "gnu.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -23706,50 +23706,50 @@ var interestsData =
       "index aspx" : "health"
    },
    "raisingmattcain.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "trailsofmyimagination.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "library.calumet.purdue.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "panthers.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "hodderhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geocaching.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "joann.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "hobby"
       ]
    },
    "opensource.apple.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "clickbank.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -23760,61 +23760,61 @@ var interestsData =
       ]
    },
    "wikimedia.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "brooklynguyloveswine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "blogoba.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whois.domaintools.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "grooveshark.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
    "creativegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pocketfulloffamilymemories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "krannert.purdue.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "ants.wetpaint.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "thechartchick.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kohls.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "kohlsstore big tall" : "fashion",
@@ -23825,13 +23825,13 @@ var interestsData =
       "kohlsstore storage organization" : "home"
    },
    "casimirsdream.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "patchingmyfamilykin.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -23840,38 +23840,38 @@ var interestsData =
       "cimr" : "science"
    },
    "simplyscrapbooksoh.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "edtechdigest.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "churchillhouse.homestead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "fundsxpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "pastprologue.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "live.xbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "thepioneerwoman.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine",
          "family"
       ]
@@ -23880,73 +23880,73 @@ var interestsData =
       "ap organic" : "food"
    },
    "agenealogygarden.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "store.apple.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "us personalize" : "shopping"
    },
    "thegrammargang.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "writing"
       ]
    },
    "threecousins1862.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blogdorfgoodman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "salesforce.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ],
       "ice tickets" : "entertainment"
    },
    "developers.slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "earthobservatory.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "ssupsychology.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "growingupinwillowcreek.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thinkexist.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "tinashopesanddreams.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -23955,109 +23955,109 @@ var interestsData =
       "profile" : "reviews"
    },
    "mnemosynesmagicmirror.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "k12.fl.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "seattle.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "mets.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "nominolo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ichotelsgroup.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "avon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "chicago.whitesox.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "staden.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "artgallery.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "glutendoctors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "gumbogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "glutenfreekatie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "spokeo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "bitten.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "webapps.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genealogysstar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familyhistorybydebbie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "woyswocy.homestead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "generationstv.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -24066,12 +24066,12 @@ var interestsData =
       "d00" : "politics"
    },
    "moa.cit.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "movies.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
@@ -24079,59 +24079,59 @@ var interestsData =
       "profile" : "reviews"
    },
    "shellyfish.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "vivificat1.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "news.smh.com.au" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "nass.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "tropaion.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "pyclips.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "linktrackr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "advertising.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "fetlife.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "relationship"
       ]
    },
    "genealogysks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yasni.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
@@ -24141,29 +24141,29 @@ var interestsData =
       "apa" : "home"
    },
    "genealogygazette.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ri.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "mymtlookoutheritage.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lyricsmode.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "qkme.me" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "computers"
       ]
@@ -24173,23 +24173,23 @@ var interestsData =
       "sleepctr" : "health"
    },
    "browncountygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "climate.agry.purdue.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "fezaya.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "hiltongardeninn.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -24197,12 +24197,12 @@ var interestsData =
       "wiki portal mathematics" : "science"
    },
    "savingtowardabetterlife.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "webcammayhem.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -24210,7 +24210,7 @@ var interestsData =
       "apa" : "home"
    },
    "weaverknits.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -24218,7 +24218,7 @@ var interestsData =
       "reviews" : "reviews"
    },
    "awheelerfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -24227,7 +24227,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "community.webshots.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
@@ -24235,27 +24235,27 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "donsbot.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mediaplex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "cancerresearch.purdue.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "innocentsaccidentshints.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "intelius.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
@@ -24263,7 +24263,7 @@ var interestsData =
       "summermovies" : "movies"
    },
    "ballinisahabit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -24273,13 +24273,13 @@ var interestsData =
       "technologydevelopment nanotechnology" : "science"
    },
    "comcast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "metacritic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ],
       "movie" : "reviews",
@@ -24289,45 +24289,45 @@ var interestsData =
       "game wii" : "video-games"
    },
    "henthorn-website-obits.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pantheranetwork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "channingtatumunwrapped.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "pirates.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ohyoucook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "food"
       ]
    },
    "mvp.support.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "gtownma.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jeannealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -24336,41 +24336,41 @@ var interestsData =
       "reviews" : "reviews"
    },
    "cwtv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "archercwdiary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "psychiatrist-blog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "100inamerica.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "twiginmytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sepiasaturday.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "plantjourneys.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
@@ -24381,37 +24381,37 @@ var interestsData =
       "hyatt hotels" : "travel"
    },
    "hotfile.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "adoption.state.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "mail.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "padres.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "slicedperl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "yesterdaysperfume.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
@@ -24423,89 +24423,89 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "icloud.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "thelivesweweave.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "express.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes"
       ]
    },
    "cemeterieswithtexasties.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "quiltstoriesbysherryann.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "opendns.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genealogyfreelancers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "promadvice.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "fashion",
          "shopping"
       ]
    },
    "pear.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "docs.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "sasquatchmusicfestival.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "sanctuaries.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "withgratitude-sandy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "www3.dps.state.ny.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "squirrel-sql.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fantasygames.sportingnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -24513,60 +24513,60 @@ var interestsData =
       "esa salmon listings" : "science"
    },
    "talks.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "renocogensoc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "myblogofcheese.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "angelfire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ],
       "wy2 marathon" : "sports"
    },
    "ucsbclubvolleyball.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mattiasa.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "seobook.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "blackgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thecb.state.tx.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "zynga.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "samsclub.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "home"
       ]
@@ -24575,80 +24575,80 @@ var interestsData =
       "erg paleontology" : "science"
    },
    "neogaf.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "blinkx.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "archive.org" : {
       "details classic tv" : "tv",
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "details openmind ep727" : "history",
       "details oldtimeradio" : "radio"
    },
    "mbostock.github.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cancer.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "warpinghistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "fantastic-electrisoil.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "discoveringyesterday.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lagazettedesancetres.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "buggynamehistory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "amtrak.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "ask.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "5013isarks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "archipelagoblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -24656,62 +24656,62 @@ var interestsData =
       "arboretum" : "science"
    },
    "raeburn-family.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "roguevalleyrunners.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "kickasssuec.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "oldbucs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "historytnumc.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pets.oodle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "statcounter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "totallyrelated.blog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bloggingadeadhorse-dmt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogiahistorias.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "climate.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -24719,35 +24719,35 @@ var interestsData =
       "search label entertaining" : "entertainment"
    },
    "barclayspineriver.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "emc.ncep.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "accsec.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jigsaw.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "insightscoop.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "cupcakestakethecake.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
@@ -24755,39 +24755,39 @@ var interestsData =
       "garden galleries" : "home"
    },
    "cancer.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "gwensstampinfun.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "fresh.amazon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "shopping"
       ]
    },
    "civilwarnotebook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "fascinationwithfear.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "graveyardrabbitbc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brightbulb.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -24796,18 +24796,18 @@ var interestsData =
    },
    "zdnet.com" : {
       "blog apple" : "computers",
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "reviews" : "reviews"
    },
    "yrupdates.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "patientgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -24816,101 +24816,101 @@ var interestsData =
       "puc energy electric" : "science"
    },
    "berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "edrn.nci.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "oilerslegends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "reardoncannon.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "games.latimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "boardmanbrown.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brumleybranchesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "europeanfootballweekends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "energy.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "healthymeals.nal.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "health"
       ]
    },
    "activesearchresults.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "wkygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogyandme.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bibliodyssey.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "diamondbacks.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "shop.sprint.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "italiansurnames.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mozilla.org" : {
       "en us thunderbird" : "email",
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "projects calendar" : "reference"
@@ -24919,12 +24919,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "beyondtherack.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "neworleansancestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -24941,24 +24941,24 @@ var interestsData =
       "m mayantislavery" : "history"
    },
    "notevenoneemptychair.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ca-highway99.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "h2porn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "chicago.cubs.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -24966,12 +24966,12 @@ var interestsData =
       "mail" : "email"
    },
    "dallasgarland.place.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "cogsci.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
@@ -24979,61 +24979,61 @@ var interestsData =
       "tutorials photoshop" : "photography"
    },
    "canadiens.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "glimpsingthepast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "findingkline.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pisg.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "gamedev.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "newhopecemetery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "forums.garmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "fantasybasketball.usatoday.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "usun.state.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "dribbble.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "goingfivehole.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -25041,58 +25041,58 @@ var interestsData =
       "profile" : "reviews"
    },
    "hillmansofelgin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eliyahusbranches.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "city-data.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "dawesroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fjeldtownship.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fab.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "gnb.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "foodsafety.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "health"
       ]
    },
    "fixya.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "jsfiddle.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -25100,66 +25100,66 @@ var interestsData =
       "2012" : "politics"
    },
    "postgresql.meetup.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lima.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "topix.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "assassinscreed.us.ubi.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "creditcards.citi.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "android.wordpress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "francoamericangravy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "meanderingthroughourroots.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "18thccuisine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "lonelyplanet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ],
       "maps" : "maps"
    },
    "theoatmeal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "society"
       ]
    },
    "website-unavailable.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -25175,7 +25175,7 @@ var interestsData =
       "sports horses" : "sports",
       "life television" : "tv",
       "reviews" : "reviews",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports baseball fantasy" : "sports",
@@ -25183,37 +25183,37 @@ var interestsData =
       "sports olympics" : "sports"
    },
    "familyhistoryresearchbyjody.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "multitudeofsens.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "keredria.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "familylines.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "matplotlib.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "computers"
       ]
    },
    "uxdesign.smashingmagazine.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -25221,18 +25221,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "cemeteries.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sidcrosby.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "stlr.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -25240,29 +25240,29 @@ var interestsData =
       "profile" : "reviews"
    },
    "pnc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "fanningknightonfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mymidwestgenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pabaseball.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "twigstotreasures.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -25271,17 +25271,17 @@ var interestsData =
       "lollapalooza" : "music"
    },
    "climate.met.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "paris.charlesdegaulle.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "mooneevalleyfamilylocalhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -25292,7 +25292,7 @@ var interestsData =
    "wired.com" : {
       "wiredscience frontal cortex" : "health",
       "wiredscience clasticdetritus" : "science",
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics",
          "technology",
@@ -25304,18 +25304,18 @@ var interestsData =
       "wiredscience dotphysics" : "science"
    },
    "debbysindianagenie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "momstyleicons.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "usbank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ],
       "mortgage" : "real-estate",
@@ -25326,62 +25326,62 @@ var interestsData =
       "prepaid" : "shopping"
    },
    "citybees.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "pets",
          "home"
       ]
    },
    "sohssouthernoregonstories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "peaknit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "jobvite.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "nookandpantry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "lockerz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "johnheard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "tigerdirect.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "rainydayreadings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tubegalore.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "genealogypisces.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -25393,19 +25393,19 @@ var interestsData =
       ]
    },
    "sanduskyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "braswellgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "miami.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
@@ -25414,17 +25414,17 @@ var interestsData =
       "profile" : "reviews"
    },
    "developer.apple.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "brooklyncollegezines.commons.gc.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "deals.woot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
@@ -25433,156 +25433,156 @@ var interestsData =
          "sports",
          "clothes"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "atlanta.braves.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "usa.kaspersky.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "basecamphq.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "policelink.monster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "ravennahistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "scrappygenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "doubledaybookclub.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading",
          "shopping"
       ]
    },
    "esltogo.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "sierracemetery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "economics.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "covers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "news"
       ]
    },
    "gubr.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "reagan.utexas.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "history"
       ]
    },
    "disneyworld.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment",
          "movies"
       ]
    },
    "ogsottawa.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lane.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "aroostookrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wizzair.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "lerwillresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kmart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "home"
       ]
    },
    "addthis.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "steelcurtainrising.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "townhall.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "businesswire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "news",
          "finance"
       ]
    },
    "nano.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "battlefield.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "grantland.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -25590,77 +25590,77 @@ var interestsData =
       "tablas" : "drinks"
    },
    "shinseidokandojo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "atwaterkartclub.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "www-cyanosite.bio.purdue.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "orangette.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "pastebin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "whittierareagenealogicalsociety.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "potterprofiles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ourfamilyquilt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "milwaukee.brewers.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "redsox.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "glutenfreecrumpette.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ]
    },
    "betsycross.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yousendit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "funny.reddit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -25668,72 +25668,72 @@ var interestsData =
       "review" : "reviews"
    },
    "dealspl.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "scifun.chem.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "freegensites.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "politicsandfinance.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "aws.amazon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genealogyrooter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "glutenfreeveganfam.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "blutarsky.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "findmyancestor.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sportsmediawatch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "nationalgeographic.com" : {
       "ngbeyond" : "reading",
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "news"
       ]
    },
    "pch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "waite-shepard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -25745,7 +25745,7 @@ var interestsData =
       ]
    },
    "leafstembranchroot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -25754,7 +25754,7 @@ var interestsData =
       "exhibition bindingwounds" : "history",
       "hmd collections digital" : "reference",
       "medlineplus childrenshealth html" : "family",
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ],
       "medlineplus domesticviolence html" : "law",
@@ -25772,27 +25772,27 @@ var interestsData =
       "medlineplus immunization html" : "family"
    },
    "scholar.google.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "videolan.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "taoofstieb.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cdl.library.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "louromano.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
@@ -25802,7 +25802,7 @@ var interestsData =
    "history.com" : {
       "topics halloween" : "society",
       "topics new years" : "society",
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ],
       "topics thanksgiving" : "society",
@@ -25825,13 +25825,13 @@ var interestsData =
       ]
    },
    "seldovialibrary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "society"
       ]
    },
    "ed4.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
@@ -25840,51 +25840,51 @@ var interestsData =
       "centers climatechange" : "science"
    },
    "csmonitor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "books book reviews" : "reading"
    },
    "sogoodandgfree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "commissionbreakthrough.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "callingallcousins-cshultz.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pirates.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "nancy-mancuso.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "playerstage.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "insidehistorymagazine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kids.discovery.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ],
       "activities" : [
@@ -25896,7 +25896,7 @@ var interestsData =
       "sports" : "sports",
       "gossip" : "society",
       "blogs giants" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "blogs jets" : "sports",
@@ -25906,29 +25906,29 @@ var interestsData =
       "blogs rangers" : "sports"
    },
    "family.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies",
          "family"
       ],
       "crafts" : "hobby"
    },
    "usda.mannlib.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "hrsaccount.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "braves.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "genrootsblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -25937,51 +25937,51 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "ladiesdotdotdot.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "southerngraves.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pleasedonteatsushi.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "www2.niddk.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "macformat.techradar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "transylvaniandutch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "justjared.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "xsnerg-accidentalanarchist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -25999,65 +25999,65 @@ var interestsData =
       "mang" : "business"
    },
    "chinainterlude.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "seochat.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "mosga.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genie-leftovers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "weheartit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "sloanreview.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "lindsayjanedesigns.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "wisegeek.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "setiathome.ssl.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "libraries.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "botanicalgarden.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "artoftrolling.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -26070,7 +26070,7 @@ var interestsData =
       "zoom activities sci" : "science",
       "itsmylife games" : "education",
       "coloring" : "hobby",
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ],
       "sesame" : [
@@ -26081,40 +26081,40 @@ var interestsData =
       "berenstainbears art ecard" : "entertainment"
    },
    "mrgenwishlist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pulse360.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "thamesnz-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "scotgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "edublogs.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "corporate.ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "ixxx.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -26125,18 +26125,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "geniausevents.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "johnson.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "genfriends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -26146,19 +26146,19 @@ var interestsData =
       "departments finance" : "finance"
    },
    "pack825.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "scotchcolony1873.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "directtrack.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -26166,112 +26166,112 @@ var interestsData =
       "css validator" : "computers"
    },
    "ccrma.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "picasa.google.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "scottdodge.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "dc.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "deadspin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "icanhascheezburger.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "pets"
       ]
    },
    "pornmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "ima.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "rainsgenealogyvines.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carrollfamilysaga.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "straightdope.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "thejamesscrolls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "idlastro.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "myrebelroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "charmingcocktails.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "theonlinephotographer.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "mentalfloss.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "linkwithin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "rapfix.mtv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "silkroad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "aarp.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance",
          "society",
          "news"
@@ -26287,17 +26287,17 @@ var interestsData =
       "money scams fraud" : "law"
    },
    "rexwordpuzzle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "quiltstory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "papajohns.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
@@ -26305,42 +26305,42 @@ var interestsData =
       "philobiblon" : "reference"
    },
    "gigya.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "business"
       ]
    },
    "citizensbankonline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "nancysgenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "helenvsmithresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bavettagenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geneapost.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vote.sos.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
@@ -26348,13 +26348,13 @@ var interestsData =
       "intldl cuneihtml" : "history"
    },
    "fox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ],
       "familyguy" : "movies"
    },
    "etsy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion",
          "society",
          "shoes",
@@ -26363,18 +26363,18 @@ var interestsData =
       "category clothing tshirt" : "clothes"
    },
    "wibblingjogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "teamtobeat.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "worldwar1letters.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -26386,24 +26386,24 @@ var interestsData =
       ]
    },
    "my-family-orchard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "parallelcontext.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "gluten-free-blog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "hsph.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ],
       "nutritionsource" : [
@@ -26412,42 +26412,42 @@ var interestsData =
       ]
    },
    "lifescript.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "health"
       ]
    },
    "thanksgivingvillageward.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tierneyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "westinnewengland.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "boston.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "henthorn-website-news.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "golgolgirl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -26459,17 +26459,17 @@ var interestsData =
       ]
    },
    "blogs.state.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "hanielas.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "espn.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "tv",
          "news"
@@ -26482,62 +26482,62 @@ var interestsData =
       "webhosting" : "computers"
    },
    "samoangenealogygroup.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "akronwbb.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cars.oodle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
    },
    "citrixonline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "bangbros.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "mmracewaypark.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "centralcoast-graveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "disputations.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "geniecropwriter.livejournal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shawgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "skype.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
@@ -26545,41 +26545,41 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "wowhead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "bowdenspopescreek.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "isgs.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "myscotsancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "style.com" : {
       "fashionshows review" : "reviews",
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "drugs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "bostonherald.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports" : "sports",
@@ -26589,7 +26589,7 @@ var interestsData =
       "sports football" : "sports"
    },
    "wchgenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -26598,20 +26598,20 @@ var interestsData =
       "journals lawreview" : "reference"
    },
    "nothingbuttombstones.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dupagecountygenealogicalsociety.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familyfun.go.com" : {
       "new years" : "society",
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "family"
       ],
@@ -26627,12 +26627,12 @@ var interestsData =
       "svc s utils" : "computers"
    },
    "sanfrancisco.giants.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "popcap.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
@@ -26640,74 +26640,74 @@ var interestsData =
       "comp" : "dance"
    },
    "caseygenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tomshardware.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "reviews" : "reviews"
    },
    "dollepic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "corneliabush.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "suburbanturmoil.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "nmancuso.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oklahomacitythunderblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "honorancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "doctorwho.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "arizona.diamondbacks.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "emmasology.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mcssl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
@@ -26715,165 +26715,165 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "headstonecollection.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "awardswatch.fandango.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "spillthezines.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "insidethepadres.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "stealthissweater.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "dowdle-stott.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ianhaddenfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "boredombustingmommy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "dev.mysql.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "recyclebank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "hpd.nlm.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "genealogiit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bblimes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "optimum.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "dianelockward.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "digiarchive.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vendaria.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "shopping.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "shopping"
       ]
    },
    "1saleaday.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "sjsuspecialcollections.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rpg.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "drbamboo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "pinpoint.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "glutenfreesoxfan.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "pakgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "foodlibrarian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "warcraftscout.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "jessica-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pioneerportraits.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "benjamin-kingman-curtis.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -26882,44 +26882,44 @@ var interestsData =
       "advicecenter" : "computers"
    },
    "drtuber.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "mets.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "acevola.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "myjclibrarylh.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "unapologetic.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "cpc.ncep.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "weather"
       ]
    },
    "cravebakery.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "collegenetwork.cbssports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -26927,30 +26927,30 @@ var interestsData =
       "profile" : "reviews"
    },
    "asenseoffamily-sb.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dummies.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "reading"
       ]
    },
    "genhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cecilialcoelho.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "cssf" : "science",
@@ -26963,30 +26963,30 @@ var interestsData =
    },
    "us.battle.net" : {
       "d3 en" : "hobby",
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "video-games"
       ],
       "wow" : "hobby"
    },
    "plainchicken.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "afamilysstory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "googledevelopers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "imagefap.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -26997,7 +26997,7 @@ var interestsData =
       "sp7084" : "writing"
    },
    "car.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -27012,90 +27012,90 @@ var interestsData =
       ]
    },
    "astros.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lotterypost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "thevaultofhorror.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "honda.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "regionroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "llnw.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "graveyardsofnorthernarizona.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nordstrom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shoes",
          "shopping"
       ]
    },
    "creativejewishmom.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "scribbler714.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "memoryhook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dwsuddarth.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "english.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "writing"
       ]
    },
    "files.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "itsaboutyouandme.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "antonyoilersupdate.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -27103,19 +27103,19 @@ var interestsData =
       "technology" : "technology"
    },
    "frys.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "sadp.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "joannagoddard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
@@ -27123,65 +27123,65 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "sciencedaily.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "makeupbytiffanyd.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "gallifreynewsbase.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "readingyear.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "teachpaperless.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "coolclimate.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "geomblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "detourthroughhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mgid.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "men.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "growingyourfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ineverknewmyfather.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -27190,70 +27190,70 @@ var interestsData =
       "researchscience geologyearthsciences" : "science"
    },
    "getclicky.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "xbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games",
          "computers"
       ]
    },
    "grad-schools.usnews.rankingsandreviews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "deviantclip.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "georgia.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "morethanburnttoast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "mmgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adam4adam.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "geology.cr.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "cartoonnetwork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ],
       "tv shows pokemon" : "video-games"
    },
    "lastpass.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "imagevenue.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "net.tutsplus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -27261,51 +27261,51 @@ var interestsData =
       "kids matching htm" : "government"
    },
    "classiccartoons.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "penny-arcade.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "games"
       ]
    },
    "genealogytoursofscotland.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "informationweek.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news"
       ]
    },
    "theadventureblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "cgsc.biology.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "id.trove.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "tube8.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "biglots.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
@@ -27315,24 +27315,24 @@ var interestsData =
       "ammem aaohtml exhibit" : "history"
    },
    "gilkalai.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "hlntv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "news",
          "finance"
       ]
    },
    "productivity.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "basementgeographer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -27344,12 +27344,12 @@ var interestsData =
       "programs aids" : "health"
    },
    "calclimate.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "money.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "finance"
       ],
@@ -27360,7 +27360,7 @@ var interestsData =
       "oasis deliver deeplink" : "dance"
    },
    "saksfifthavenue.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "clothes",
@@ -27371,12 +27371,12 @@ var interestsData =
       "robotics" : "science"
    },
    "yimcatholic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "rk.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
@@ -27384,256 +27384,256 @@ var interestsData =
       "dept taub" : "health"
    },
    "gggiraffe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "storesonlinepro.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "cubs.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "viewfromthebluffs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "leepike.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "kalynskitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "roku.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "computers"
       ]
    },
    "asp.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "convio.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "prlog.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "werearewillbefamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hostmonster.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "whatsmylineage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "elysesgyrb.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "theprospectpark.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "shopbop.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "shoes"
       ]
    },
    "shea.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "bhort.bh.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "karenaboutgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ballbureau.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "en.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "merzkesmarczfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "theaddknitter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "chicagofamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogyconnections.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "travel.aol.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "kendricksofsanfrancisco.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "indgensoc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "philingmyroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "radaronline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "anna-karinsgenealogicalblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "perlgolf.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "historicdutchesstowns.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "moultriecreek.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yuku.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "baker1865.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kimberly-crawford.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "fingerhut.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion",
          "shopping"
       ]
    },
    "houston.astros.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "passagetothepast.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "classifieds.nydailynews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "watchinghorrorfilmsfrombehindthecouch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "roppgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pack368.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "creepycupcakes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "newyorkislandersadrift.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -27641,12 +27641,12 @@ var interestsData =
       "java" : "computers"
    },
    "joyinmykitchen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "failblog.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -27654,24 +27654,24 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "cald.cs.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genealogy123.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genehunt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "classifieds.nj.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
@@ -27679,34 +27679,34 @@ var interestsData =
       "profile" : "reviews"
    },
    "statigr.am" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "wilwheaton.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "hurricanes.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "glutenfreeoptimist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "fromwhencewecome.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "businessweek.com" : {
       "politics and policy" : "politics",
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "finance"
       ],
@@ -27718,50 +27718,50 @@ var interestsData =
       "sopa" : "politics"
    },
    "dor.wa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "20secondtimeout.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "housecall.trendmicro.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "kansascity.royals.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "whitepages.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "lambda-view.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "redwings.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jchemed.chem.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "drrevfolk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -27770,171 +27770,171 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "ingdirect.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "pablomarin-garcia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "theshygenealogist.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "peabody.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "strickbombe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "buysub.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "shopping"
       ]
    },
    "ibstreatmentcenter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "abercrombie.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes",
          "shoes",
          "family"
       ]
    },
    "seoquake.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "trulia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "mirtle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "aircanada.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "nkdep.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "e3.nintendo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "marychrapliwy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "socalgenie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "liveleak.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "valmayyoung.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dailykos.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "hillsandhackettree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ioffer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "firstgentrekkie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "mytimelessreunion.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "classifieds.wsj.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "billboard.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music",
          "news"
       ],
       "artist spinal tap" : "dance"
    },
    "newyork.5thavenue.andaz.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "themuppetmindset.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "family"
       ]
    },
    "worldofaromatherapy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "login.live.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "lowvilleobits.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eprize.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -27942,52 +27942,52 @@ var interestsData =
       "history civilwar" : "history"
    },
    "barefruit.co.uk" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "shoedazzle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shoes"
       ]
    },
    "journeytothepastblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wildrosewigenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nichd.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health",
          "family"
       ]
    },
    "pooh53-ancestorsearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "caps247.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "bggenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "evanak-onemoremile.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -27998,33 +27998,33 @@ var interestsData =
       "sp se" : "education"
    },
    "moreleaves.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "siteadvisor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "smugmug.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "stlport.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cardinals.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "beyondthehome.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -28033,20 +28033,20 @@ var interestsData =
       "identitytheft" : "law"
    },
    "suddenlink.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "tv",
          "shopping"
       ]
    },
    "genealogydragnet.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sears.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "home"
       ],
@@ -28056,45 +28056,45 @@ var interestsData =
       "profile" : "reviews"
    },
    "buyersguide.macrumors.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cwba.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "geneapoppop.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ideeli.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "foxtab.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "jeffersoncountygenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cousinhunters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "washingtondc.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
@@ -28103,17 +28103,17 @@ var interestsData =
       "apa" : "home"
    },
    "iheart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
    "islanders.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "android.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ],
@@ -28129,75 +28129,75 @@ var interestsData =
       ]
    },
    "bcgcertification.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tangledbranches.livejournal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "libraries.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "adventures-in-perl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "bradfordww1.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "365genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "games.slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "myuncleralphsletters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dee-burris.livejournal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ps3.gametrailers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "firelands.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rootdig.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dec.state.ny.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
@@ -28208,84 +28208,84 @@ var interestsData =
       "paleo" : "science"
    },
    "wingitvegan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "performersoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "psych.upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "tikasthoughtsandteachings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hangingwithdonna.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "heatherdevaun.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "freerepublic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "cox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "medicinenet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "downinthemeadow.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "education",
          "family"
       ]
    },
    "rangers.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tieking.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "classifieds.cleveland.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "hpc.ncep.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "gmpack471.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
@@ -28294,87 +28294,87 @@ var interestsData =
       "forty deuce" : "sports"
    },
    "wn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "sharonscrapbook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "crackle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "movies"
       ]
    },
    "pimacountygenealogyclub.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mydeeproots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "damnlol.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "morris.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "hoffman-news.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "homepath.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "speckyboy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "polarbears.si.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "chztdwtease.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "catholickey.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "terrytao.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "avalanche.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "hte46.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -28383,7 +28383,7 @@ var interestsData =
       "blackhistory" : "history"
    },
    "heasarc.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -28392,7 +28392,7 @@ var interestsData =
       "topics halloween" : "society",
       "handmade" : "hobby",
       "landscaping" : "arts",
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "home"
       ],
@@ -28407,13 +28407,13 @@ var interestsData =
       "hosting the holidays" : "entertainment"
    },
    "irgsblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "realsimple.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "holidays entertaining entertaining" : "entertainment",
@@ -28423,14 +28423,14 @@ var interestsData =
       "work life etiquette" : "society"
    },
    "thehuntforhenrietta.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "denverpost.com" : {
       "nuggets" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports" : "sports",
@@ -28439,84 +28439,84 @@ var interestsData =
       "rockies" : "sports"
    },
    "javaboutique.internet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "fantasybookcritic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "anapplefalls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "zimbio.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "hugedomains.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "dragonage.bioware.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "lostmementos.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ostkcdn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "atlantaeast.place.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "montanacoffman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cachebar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "lookingintothepast-searchfamilies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gyrabbitafield.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "angieslist.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "reviews"
       ]
    },
    "chicagotribune.com" : {
       "lollapalooza" : "music",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports" : "sports",
@@ -28528,23 +28528,23 @@ var interestsData =
       "sports baseball cubs" : "sports"
    },
    "nmgsblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "science-education.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "veganyear.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "nanotech.upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -28552,48 +28552,48 @@ var interestsData =
       "profile" : "reviews"
    },
    "badpitch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "strandheritage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "webshots.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "realclearpolitics.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "siteground.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "couchsurfing.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "download.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "rdc.library.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "foxnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ],
@@ -28603,74 +28603,74 @@ var interestsData =
       "nha sthc" : "reference"
    },
    "foodnetwork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "cuisine"
       ],
       "topics thanksgiving" : "society"
    },
    "leavesnbranches.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wisewomanchildbirth.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "health"
       ]
    },
    "classifieds.startribune.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "vitacost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "health"
       ]
    },
    "belvederefrance.pagesperso-orange.fr" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "walkingyourtree.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hints.macworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "indiatimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "secrest.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "wayport.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "saviane.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "embassysuites.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -28684,12 +28684,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "beatle-girls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "mikebaileyultrarunning.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -28703,7 +28703,7 @@ var interestsData =
          "shopping",
          "consumer-electronics"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "travel",
          "outdoors"
@@ -28716,29 +28716,29 @@ var interestsData =
       "jomu" : "science"
    },
    "livingsocial.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ],
       "escapes" : "travel"
    },
    "montfortfamilyetc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kidsblogs.nationalgeographic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "stl.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "thinkgeek.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ],
@@ -28749,12 +28749,12 @@ var interestsData =
       "tshirts apparel" : "clothes"
    },
    "moremoney.blogs.money.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "tellingtheirtale.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -28763,7 +28763,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "neimanmarcus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "men",
          "fashion",
@@ -28772,17 +28772,17 @@ var interestsData =
       ]
    },
    "lefashionimage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "twitter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "escalatenetwork.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -28790,17 +28790,17 @@ var interestsData =
       "library" : "reference"
    },
    "godshot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "moreindirection.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "scottishgenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -28813,17 +28813,17 @@ var interestsData =
       ]
    },
    "jetblue.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "dropbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cristinwilson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -28837,68 +28837,68 @@ var interestsData =
       "parents" : "family"
    },
    "shimmerkisser.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "empirecall.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "philosnyder.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carrowandfauntfamilytales.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "knittygraffity.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "keywordspy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "thecraftsdept.marthastewart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "crissyscrafts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "genealogyresources.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "myfreecams.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "tasteofhome.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "pjmedia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
@@ -28912,7 +28912,7 @@ var interestsData =
    },
    "mlive.com" : {
       "tigers" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "lions" : "sports",
@@ -28924,33 +28924,33 @@ var interestsData =
       "sweather html" : "weather"
    },
    "tvguide.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "arvixe.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "allexperts.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "kuschwantz.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rapidgator.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "freshlypieced.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -28958,19 +28958,19 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "kytnstories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "atouchofblusher.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "little-people.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
@@ -28978,51 +28978,51 @@ var interestsData =
       "category run well" : "sports"
    },
    "genealogymysteriessolved.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rays.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "d.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "lib" : "reference"
    },
    "ah-me.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "library.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "newyork.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "scratchingthebark.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wishful-linking-family-history.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "statefarm.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ],
       "bank loans" : "banking",
@@ -29032,14 +29032,14 @@ var interestsData =
       "racelaw" : "reference"
    },
    "fandango.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment",
          "movies"
       ],
       "fbs" : "shopping"
    },
    "packpeddler.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -29048,12 +29048,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "yiiframework.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ars.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ],
       "is np fnrb" : [
@@ -29063,12 +29063,12 @@ var interestsData =
       "is kids" : "science"
    },
    "dcrp.ced.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "images.library.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ],
       "projects maps" : "maps"
@@ -29077,29 +29077,29 @@ var interestsData =
       "en" : "technology"
    },
    "leagueoflegends.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "infowars.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "society"
       ]
    },
    "hackerspacehof.pbworks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "toofab.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "movies"
       ]
    },
    "g2.t-mobile.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
@@ -29109,35 +29109,35 @@ var interestsData =
       "chemhealth" : "science"
    },
    "downtothesea.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "msualumni.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nas.er.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "lyndasrecipebox.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "onthetrailofhillhouse.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "untangledfamilyroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -29146,65 +29146,65 @@ var interestsData =
       "profile" : "reviews"
    },
    "descendantdestiny.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "scrantonzinefest.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "justthinking130.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "knitified.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "twitpic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "microcenter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "ukyarchives.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "community.weightwatchers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine",
          "health"
       ]
    },
    "boysndog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fxgenealogical.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kathrynsquest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -29213,13 +29213,13 @@ var interestsData =
       "foodanimal organic" : "food"
    },
    "wizards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ],
       "dnd" : "hobby"
    },
    "classifieds.orlandosentinel.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
@@ -29239,7 +29239,7 @@ var interestsData =
       "health" : "health",
       "cro subaru" : "cars",
       "cro bmw" : "cars",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "cro cars" : "cars",
@@ -29251,102 +29251,102 @@ var interestsData =
       "cro money" : "finance"
    },
    "smarter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "shopping"
       ]
    },
    "965tic.radio.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "nashvilleearlymusic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "cosmiclog.msnbc.msn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "genedocs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sharonsfamilyandotherstuff.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kids.nationalgeographic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "news"
       ],
       "kids games" : "education"
    },
    "avalon.law.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "sephora.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "authorize.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "msnbc.msn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "energyigert.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "familyphotoreunion.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carmax.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
    },
    "brokeknits.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "edmunds.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ],
       "used cars" : "shopping",
       "2011" : "reviews"
    },
    "alphaporno.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "box.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -29354,23 +29354,23 @@ var interestsData =
       "museum" : "science"
    },
    "caps.fool.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "etrade.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "vgeniebeth.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lisp.meetup.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -29378,17 +29378,17 @@ var interestsData =
       "perlt" : "computers"
    },
    "qa.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mechanics.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "loopnet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
@@ -29396,64 +29396,64 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "cabaltest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ndc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "outdoors"
       ]
    },
    "paperlessgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "auburn.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "searchforfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "beginwithcraft.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eonline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ],
       "news redcarpet" : "tv"
    },
    "njbgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "benaughty.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "mywebbancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "socialsecurity.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "finance"
       ]
@@ -29463,7 +29463,7 @@ var interestsData =
          "law",
          "family"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ],
       "health fitness" : "sports",
@@ -29473,23 +29473,23 @@ var interestsData =
       "health intervention" : "drinks"
    },
    "people.aol.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "socialspark.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "threebeehives.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nme.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ],
       "news spinal tap" : "dance",
@@ -29497,90 +29497,90 @@ var interestsData =
       "tickets" : "entertainment"
    },
    "disneyworldforum.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "naturalnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "health"
       ]
    },
    "elegantthemes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "brazzers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "parisbreakfasts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "nbp.rutgers.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "theonion.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "creditonebank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "beespotter.mste.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "outdoors.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "ind.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "dinsmoreworkshop.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "familyface.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geocachingidaho.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "imesh.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "suessgeisel.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "theexorcist.warnerbros.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
@@ -29588,29 +29588,29 @@ var interestsData =
       "profile" : "reviews"
    },
    "cheapoair.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "bisnonni.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dafont.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "computers"
       ]
    },
    "noticias.univision.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "fantasticfamilyfindings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -29619,7 +29619,7 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "sodahead.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "marketing"
       ]
@@ -29631,72 +29631,72 @@ var interestsData =
       ]
    },
    "makingamark.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "billbuchanan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "swedenroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "watchcartoononline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "coconutlime.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "willowbirdbaking.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "geosci64.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lisson.over-blog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "nhlbi.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "russellpl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "society"
       ]
    },
    "familybibles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ilgelsobiancovieste.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -29707,20 +29707,20 @@ var interestsData =
       ]
    },
    "jklsmith.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "6pm.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "shoes"
       ]
    },
    "theyreallmyown.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
@@ -29728,23 +29728,23 @@ var interestsData =
       "finance" : "finance"
    },
    "pahistoryblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "allthebases.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "code.google.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "thesearchforanneandmichael.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -29753,12 +29753,12 @@ var interestsData =
       "weather menu" : "weather"
    },
    "dont-be-a-slut.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "cgap.nci.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
@@ -29785,7 +29785,7 @@ var interestsData =
          "arts",
          "home"
       ],
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "276967 valentines day" : "society",
@@ -29799,89 +29799,89 @@ var interestsData =
       "851863 party invitations" : "society"
    },
    "bradpoppele.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "stocktonschool.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "get-answers-fast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "bbb.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "business reviews" : "reviews",
       "charity" : "society"
    },
    "witchgenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "conradhotels.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "eversave.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "cloudfront.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "scientistatwork.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "foxbusiness.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance",
          "news"
       ]
    },
    "chacha.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "apprenticegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yimg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "doubletree.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "riversongwaldorf.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "education"
       ]
    },
    "tsbpa.state.tx.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
@@ -29889,38 +29889,38 @@ var interestsData =
       "techblog" : "technology"
    },
    "newportbeach.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "kidney.niddk.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "tagged.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "stickkontakt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "lakers.ocregister.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "minneapolis.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "treadawayextendedfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -29932,53 +29932,53 @@ var interestsData =
       ]
    },
    "2sidesoftheocean.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "picturit-restoration.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pkg-perl.alioth.debian.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "jerkinsjourney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sierratradingpost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shoes",
          "outdoors"
       ]
    },
    "slapshot.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wowenomics.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "postcardsfrommary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genegenie-scotland.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -29987,111 +29987,111 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "granddenver.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "startsampling.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "groovyageofhorror.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "swpc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "bk.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "eztv.it" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "hautelook.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "bergschneidersandbeyond.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aging.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "chezpim.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "easterfamilygenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "soft32.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "twimg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "turbotax.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "vevo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "entertainment",
          "music"
       ]
    },
    "logitech.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "newsvine.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "hrgenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "incredimail.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email",
          "society"
       ]
    },
    "momdot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
@@ -30102,7 +30102,7 @@ var interestsData =
       ]
    },
    "mycricket.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
@@ -30111,44 +30111,44 @@ var interestsData =
       "urban" : "government"
    },
    "live.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "crh.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "remember51.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "blitzology.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lacompagniedesarbres.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "frankensteinia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "marketwatch.com" : {
       "taxes" : "law",
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ],
       "careers" : "career",
@@ -30156,23 +30156,23 @@ var interestsData =
       "subjects gas prices" : "cars"
    },
    "knittygrittycommittee.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "sports.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "marysellslv.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "queersunited.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -30180,23 +30180,23 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "markets.on.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "dogpile.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "webpronews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "sopa" : "politics"
    },
    "cmgurney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -30205,7 +30205,7 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "veganlunchbox.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
@@ -30213,174 +30213,174 @@ var interestsData =
       "profile" : "reviews"
    },
    "sundayafternoonclub.blogs.topgear.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "frc.ri.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sartoriallyinclined.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion"
       ]
    },
    "waldorfmama.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "education"
       ]
    },
    "dealnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "grogenealogylocalhistory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whereyoucamefrom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "porter-family-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cookeasyvegan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "anaigeon.free.fr" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "thewoolenrabbit.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "leblancroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ehow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "lightning.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "surveyrouter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "reedhayley.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "4chan.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "watchfreemovies.ch" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "foresteriaorsa.altervista.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "loop.nigms.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "blog.majesticseo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "networkedblogs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "xrefer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "technology"
       ]
    },
    "googlemapsmania.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "maps"
       ]
    },
    "treeclimbingwithsonja.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "exoclick.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "nathanielmchorneysdiary.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "teresastangledroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "debs-midlife.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "godaddy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "deepening.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "shop.nordstrom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "men",
          "fashion",
@@ -30389,17 +30389,17 @@ var interestsData =
       ]
    },
    "tech.fortune.cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "cantuar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "familyarchaeologist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -30408,34 +30408,34 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "search-results.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "behance.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "manalicious.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "mariners.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "vglasgowancestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -30446,40 +30446,40 @@ var interestsData =
       ]
    },
    "theycamebefore.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fancydoesit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "bsmeadow.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kolbegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "michigan.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "cltrda.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "ipt.arc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -30487,12 +30487,12 @@ var interestsData =
       "lenndevours" : "drinks"
    },
    "uline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "reference.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -30500,13 +30500,13 @@ var interestsData =
       "profile" : "reviews"
    },
    "genealogytipoftheday.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "happilygfree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
@@ -30514,17 +30514,17 @@ var interestsData =
       "profile" : "reviews"
    },
    "codingforums.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "elevage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "phonearena.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ],
@@ -30534,60 +30534,60 @@ var interestsData =
       "technologies cssregions" : "computers"
    },
    "github.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "microsoftonline.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "shakespeares.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "massandmoregenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "time.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "savingfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whispersintheloggia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "astros.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "flames.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "furtradefamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hollywoodreporter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "tv",
          "news",
@@ -30596,17 +30596,17 @@ var interestsData =
       "review" : "reviews"
    },
    "onefrugalgirl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "scribd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "runway.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
@@ -30614,69 +30614,69 @@ var interestsData =
       "annis creations pylisp" : "computers"
    },
    "askolivetree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hulkshare.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "anotherdaywithdonna.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "homes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "beachbody.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "health"
       ]
    },
    "ycba.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "notallergictoadventure.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "westlaw.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "law"
       ]
    },
    "genealogynext.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tessa-ericsson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genealogicaltreasures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "menshealth.com" : {
       "giftguide" : "shopping",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sex women" : "relationship"
@@ -30685,45 +30685,45 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "dge.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "myforefathers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vrbo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "docstoc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ],
       "oneclick" : "computers"
    },
    "zendesk.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "privacy.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "rogersfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "n4g.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
@@ -30731,174 +30731,174 @@ var interestsData =
       "fraud" : "law"
    },
    "chicagogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "icecube.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "johnson.library.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "dungeons.wikia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "ebayclassifieds.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "netbsd-soc.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "library.nyu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "scottishgenealogytipsntricks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adrc.usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "softlayer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "invokinglibitina.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gravemappers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "heyjude.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "technology"
       ]
    },
    "lib.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "walkingineternity.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "psych.nyu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "shakespearessister.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "inhonorofmyancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kbbgenblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "parkaviara.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "robotics.eecs.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "myloveforyou.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "gcmd.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "python-history.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "opinionshere.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "bigfishgames.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "logicaltypes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "chess.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "sports"
       ]
    },
    "billingstn.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brooksandwilliams.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "searchnu.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "artfulparent.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
@@ -30910,57 +30910,57 @@ var interestsData =
       ]
    },
    "renegadesouth.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "mmo-champion.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "lincecumlineage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "buddhiststudies.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "uspto.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ],
       "smallbusiness" : "business"
    },
    "tripadvisor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ],
       "review" : "reviews"
    },
    "ap.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "mediabistro.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ],
       "agencyspy" : "marketing"
    },
    "gophergenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "officedepot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "shopping"
       ]
@@ -30969,24 +30969,24 @@ var interestsData =
       "sports" : "sports"
    },
    "donshare.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "fletcherfamilytree.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "caringbridge.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion",
          "society"
       ]
    },
    "berrydna.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -30999,7 +30999,7 @@ var interestsData =
       "mapsdata" : "maps"
    },
    "byorgey.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -31013,46 +31013,46 @@ var interestsData =
       "nihinownwords" : "health"
    },
    "svenkagenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "filefactory.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "blackhawks.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "michaelhait.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gamefaqs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "review" : "reviews"
    },
    "xmlgraphics.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "autotrader.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
    },
    "ssa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "finance"
       ],
@@ -31060,151 +31060,151 @@ var interestsData =
       "oact babynames" : "family"
    },
    "intel.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "support network modemchipsets" : "computers"
    },
    "beautybanter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "beaufortdistrictcollectionconnections.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "boston.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "onepilotswar.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "edwardandrubythompson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hgdept.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jackandpauline.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ssisurveys.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "seattlepi.nwsource.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "kaaihue.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "longlostrelatives-smp.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "picnik.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "nami-nami.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "pogue.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "shopping",
          "consumer-electronics"
       ]
    },
    "superuser.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "disneydvd.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "annamariahorner.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "doublepointed.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "distlib.blogs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "hamcountry-blog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yankees.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jmtomko.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dodgers.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "keoughcorner.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "heelssoxsteelers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pastlivesresearch.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -31213,17 +31213,17 @@ var interestsData =
       "highlightreel" : "sports"
    },
    "warnerbros.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "adultfriendfinder.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "oldphotosblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -31232,24 +31232,24 @@ var interestsData =
       "curtis" : "science"
    },
    "washington.nationals.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "thewertzone.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "movies"
       ]
    },
    "twobubblesoffcenter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ted.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "education"
       ],
@@ -31259,107 +31259,107 @@ var interestsData =
       "guam" : "banking"
    },
    "voices.cla.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "newsinhealth.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "bizrate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "reviews"
       ]
    },
    "familytreequest.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "criminalcomic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "genealogyisaddicting.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mysavages.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lib.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "glutenfreeraleigh.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "thorntree.lonelyplanet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "srh.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "travelstwo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "webcomics.reddit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "newegg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ],
       "product product aspx" : "reviews"
    },
    "genealogy-new-zealand.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "greenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "youporn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "tapleysdesigns.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ccbill.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
@@ -31367,38 +31367,38 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "findingmickey.squarespace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "beeg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "advfn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "bravotube.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "myfamilyrootsrundeep.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bentobjects.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "dancinginthegardens.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -31407,63 +31407,63 @@ var interestsData =
       "greenchemistry" : "science"
    },
    "youtube-mp3.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "hornymatches.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "paspcr.med.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "parks.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "freeones.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "gamefront.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "wcmp.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "suburbanbushwacker.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "madamenoire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "kyliewillison.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "couponcabin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "urbanspoon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
@@ -31471,17 +31471,17 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "urban.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "sel.me.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "verticalresponse.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -31492,12 +31492,12 @@ var interestsData =
       ]
    },
    "foxthepoet.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "answerbag.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -31507,7 +31507,7 @@ var interestsData =
       "ultimateastros" : "sports"
    },
    "freedarko.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -31515,40 +31515,40 @@ var interestsData =
       "javascript" : "computers"
    },
    "adventure.nationalgeographic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "acadianroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hillnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ]
    },
    "darkwolfsfantasyreviews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "coasttocoastam.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "sharnsgenealogyhints.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "crypto.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -31559,67 +31559,67 @@ var interestsData =
    },
    "dca.ca.gov" : {
       "cba" : "business",
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "wikitravel.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "indians.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "adobeconnect.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "geneanotes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ccny.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ],
       "library" : "reference"
    },
    "kinless.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "disqus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "boards.ancestry.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "livescience.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sleepinggardens.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "target.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "shopping",
          "home"
@@ -31629,12 +31629,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "starchild.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "ari.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -31642,7 +31642,7 @@ var interestsData =
       "licensees cu" : "banking"
    },
    "reversemortgage.bankofamerica.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "real-estate"
       ]
@@ -31657,7 +31657,7 @@ var interestsData =
       "sports motorracing" : "sports",
       "sports college basketball" : "sports",
       "features food thanksgiving" : "society",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "travel" : "travel",
@@ -31665,95 +31665,95 @@ var interestsData =
       "entertainment news celebrity" : "society"
    },
    "bldgblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "nature.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "billmelater.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "shopping"
       ]
    },
    "steubenindianahistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tangledrootshistory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fsanne.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cathysgenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "parenting.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "glutenfreedogsandpeople.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "angiesrecipes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "youjizz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "2cuterubberstamps.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "mia.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "lejos.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "health"
       ],
       "science nanotechnology" : "science"
    },
    "orioles.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "nyj.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -31761,55 +31761,55 @@ var interestsData =
       "religion hinduism" : "religion"
    },
    "halo.xbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "latinainstitute.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "microsoftstore.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "uncoverthenet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "racing.ford.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "tsaleh.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "churchofthemasses.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "gyrippers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "imagebam.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "amazon.com" : {
       "textbook" : "education",
       "perl" : "computers",
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "credit cards" : "banking",
@@ -31818,28 +31818,28 @@ var interestsData =
       "kindle" : "reading"
    },
    "cornedbeefhash.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "java.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "brendassurvivorblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "familyhistory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mandtbank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
@@ -31847,7 +31847,7 @@ var interestsData =
       "profile" : "reviews"
    },
    "clinpsyc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
@@ -31855,61 +31855,61 @@ var interestsData =
       "dept neurology movdis" : "health"
    },
    "libland.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "returntopepperland.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "chicago.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "keepasssd.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "indeed.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "mcdlgenealogyspot.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "io9.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "news",
          "consumer-electronics"
       ]
    },
    "classifieds.mlive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "asrs.arc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "outdoors"
       ]
    },
    "collegebasketball.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "haskellwebnews.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -31917,29 +31917,29 @@ var interestsData =
       "textblock aspx" : "career"
    },
    "obscuraantiques.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "shopping"
       ]
    },
    "ohioriverways.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sitesell.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "info.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "whitesoxcards.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -31948,7 +31948,7 @@ var interestsData =
       "outdoor fishing" : "outdoors"
    },
    "blogs.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
@@ -31959,97 +31959,97 @@ var interestsData =
       "racing" : "sports"
    },
    "pbjclibrarygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "womanfreebies.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "discounts"
       ]
    },
    "glutenfreegirl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ]
    },
    "crunchingouthechurches.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tax.state.ny.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
    },
    "blog.compete.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "pichunter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "french-roots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blog.kissmetrics.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "montepython.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genealogypitstop.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "darraxusthewarrior.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "presidentialdebateblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "valentinoswife.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "madrc.mgh.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "moranfamilytn.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "healthlibrary.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "health"
@@ -32070,7 +32070,7 @@ var interestsData =
       "health" : "health"
    },
    "myoldohiohome.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -32081,34 +32081,34 @@ var interestsData =
       "sports kings" : "sports"
    },
    "opensiteexplorer.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "astro.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "www-robotics.usc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "goldrushadventure.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "goingtothewest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "robotics.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -32116,12 +32116,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "diythemes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "huh.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -32134,18 +32134,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "clepperfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dogs.icanhascheezburger.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "blogtalkradio.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging",
          "radio"
       ],
@@ -32156,14 +32156,14 @@ var interestsData =
       "search fantasy football" : "sports"
    },
    "recipes.sparkpeople.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine",
          "health"
       ]
    },
    "yourhome.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "law",
          "real-estate",
@@ -32171,66 +32171,66 @@ var interestsData =
       ]
    },
    "atsdr.cdc.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "health"
       ]
    },
    "ssa-custhelp.ssa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "560wind.townhall.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "genealogytraces.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ws.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "robots.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "paulastuartwarren.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "airliners.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "outdoors"
       ]
    },
    "taleo.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "footytube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "dogshowpoop.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "uflib.ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ],
@@ -32240,45 +32240,45 @@ var interestsData =
       "profile" : "reviews"
    },
    "instagr.am" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "livingancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "auctiva.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "ordway-swisher.ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "christiancountyilgenealogicalsociety.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "msftdbprodsamples.codeplex.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "theancestorfiles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "disciple-devel.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -32286,36 +32286,36 @@ var interestsData =
       "profile" : "reviews"
    },
    "spotisadog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "createspace.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music",
          "reading"
       ]
    },
    "aaggky.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "peoplestylewatch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ],
       "people stylewatch makeover" : "women"
    },
    "pgsgaag.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "chriscooley47.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -32327,134 +32327,134 @@ var interestsData =
       "wedding invitations" : "society"
    },
    "miami-heat-index.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jhdfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dmv.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "cars"
       ],
       "about senior" : "society"
    },
    "ursulawright.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nylottery.ny.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "baltimore.orioles.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "blog.games.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "circlehillcem.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "loststates.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "heb.fas.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "rootsnleaves.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fpbaseballoutsider.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "meandmyancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bytes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pearlsdaybooks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mygenealogygirl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pesd.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "veganeatsandtreats.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "pintagenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gglutenfree.canalblog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "skywriter.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "bigbrotheriswatchingme.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "apartmenttherapy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts",
          "home"
       ]
    },
    "blogs.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
@@ -32462,80 +32462,80 @@ var interestsData =
       "rcwest" : "reading"
    },
    "zerohedge.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "finance"
       ]
    },
    "gfingf.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "kentuckyinmyheart.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "marine.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "lib.purdue.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "skeltonsinmycloset.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "kelloggs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "billywardlegen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jaygenblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ixl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "family"
       ]
    },
    "redbox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "professionaldescendant.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pattyloof.livejournal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mitsloan.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ],
       "finance" : "finance"
@@ -32547,79 +32547,79 @@ var interestsData =
       ]
    },
    "elizabethsaunders.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shabbymissjenn.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "worthy2be.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "heritagehappens.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cgi-lib.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lastofthecarelessmen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "taphophilicmusings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "carigenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aaa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance",
          "news"
       ]
    },
    "traffic-counts.dot.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "society"
       ]
    },
    "anaba.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "fantasysports.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "januarymagazine.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "walkingmytree.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -32628,32 +32628,32 @@ var interestsData =
       "camp" : "outdoors"
    },
    "hacklibschool.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "guitarcenter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "mayersononanimation.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "sencha.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "vanillagarlic.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "fmapfixreturn.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -32663,7 +32663,7 @@ var interestsData =
       "sports baseball redsox" : "sports",
       "cars gasprices" : "cars",
       "ae food restaurants" : "reviews",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "ae music" : "music",
@@ -32672,43 +32672,43 @@ var interestsData =
       "sports football patriots" : "sports"
    },
    "erepublik.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "rainshadow-running.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tinyurl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "orangecounty.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "wix.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "store.steampowered.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "bethelcourt.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "longisland.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -32716,23 +32716,23 @@ var interestsData =
       "reviewlist en html" : "reviews"
    },
    "kcrx.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "timewarnercable.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "indians.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "rei.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "clothes",
          "shoes",
@@ -32741,58 +32741,58 @@ var interestsData =
       "water" : "home"
    },
    "newyork.mets.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tnaflix.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "socialmediaexaminer.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "boss.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "hrl.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "democraticunderground.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "nomorerack.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "susaned3.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bitchysurvivor.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "fool.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "bigstockphoto.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
@@ -32800,28 +32800,28 @@ var interestsData =
       "insurance" : "finance"
    },
    "stylebubble.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "deals.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "library.cmu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "findyourfolks.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ethnicscrapbooking.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -32830,19 +32830,19 @@ var interestsData =
       "tolkien" : "reading"
    },
    "paperbackswap.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "reading"
       ]
    },
    "money.usnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ],
       "money careers" : "career"
    },
    "thumbtack.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
@@ -32850,64 +32850,64 @@ var interestsData =
       "apa" : "home"
    },
    "bricks.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "yourscottishancestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "brickwallsociety.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "livemixtapes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "snfg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "beaufortartist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "myfamilystangledroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thebeautycounter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "thenetrat.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "music.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "wanderingshades.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -32916,102 +32916,102 @@ var interestsData =
       "campaign2012" : "politics"
    },
    "games.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "jobs.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "swedishancestorsiniowa.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wednesdaychef.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "saveeverystep.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gap.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "clothes"
       ]
    },
    "jpmoresmau.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hydrangeahippo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "lists.mysql.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "narutoget.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "oldstonesundeciphered.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "xnxx.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "redsox.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "usa.philips.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "sdg.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "theme.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "desktopgenealogistunplugged.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lhc-compiler.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "zinesforlunch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
@@ -33019,61 +33019,61 @@ var interestsData =
       "profile" : "reviews"
    },
    "cleage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sgweinberg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shoplocal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "jackiesobsessionmysanity.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bionicle.lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "webmail.cox.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "digitalcollections.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "skysports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "reachformore.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "deals.ebay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "massmeanderings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -33082,7 +33082,7 @@ var interestsData =
       "bs c html" : "computers"
    },
    "puzzles.usatoday.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -33090,13 +33090,13 @@ var interestsData =
       "profile" : "reviews"
    },
    "lundyfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jillblee.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -33105,161 +33105,161 @@ var interestsData =
       "profile" : "reviews"
    },
    "genealogygemspodcast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "munselle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "socalboxing.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "bibliocommons.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "samuelreedfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familytreetours.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "foundingamericans.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "livenation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "visnews-en.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "modules.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pecl.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "journals.cambridge.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "irishfamilyresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "atmos.uiuc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "motors.shop.ebay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "shopping"
       ]
    },
    "snaps.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "rangers.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "westernamericana2.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "skeffingtongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "forgottenjourneys.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "moreswansborohistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "newaygocountycemeteryladies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "birminghamgenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "savethephotos.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bcgc.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "flpgs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "padres.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "peterreinhart.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "babycenter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "health",
          "family"
@@ -33267,50 +33267,50 @@ var interestsData =
       "coloring" : "hobby"
    },
    "cybermetric.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "peacecorps.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "genealogyjamboree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fafinettex3.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "technology-tamers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "zomboscloset.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "mysql.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "photoshopdisasters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "brewers.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -33319,22 +33319,22 @@ var interestsData =
       "idtheft" : "law"
    },
    "smosh.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "rafflecopter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "quickmeme.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "miami.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
@@ -33343,54 +33343,54 @@ var interestsData =
       "digitallibrary lewis html" : "maps"
    },
    "freebeacon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "abovetopsecret.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "bluejackets.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "feedblitz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "ucjeps.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "cullengene.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lastoflands.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "packergeeks.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "webmisterradixlecti.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "macys.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion",
          "clothes",
@@ -33401,57 +33401,57 @@ var interestsData =
       "parade" : "society"
    },
    "glutenfreetravelblog.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "crazy-quilt-memories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bygonedaysphotography.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "socceryouth.smugmug.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "results-page.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "cabelas.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "outdoors"
       ]
    },
    "bridgwatergenepool.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nevadagenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "momentsingreekmythology.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "yankeecousin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -33463,12 +33463,12 @@ var interestsData =
       "wex pollution" : "science"
    },
    "shareasale.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "foursquare.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized",
          "reference"
       ]
@@ -33482,56 +33482,56 @@ var interestsData =
       "athletics" : "sports"
    },
    "pogo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "troop1.bsa.tripod.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "webhostingtalk.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "weeksfamilyresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "attracta.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "rosehillcemeterymacongeorgia.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "christman26.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "alpmestan.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "pyx.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "phoenix.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -33539,51 +33539,51 @@ var interestsData =
       "digital collections html" : "reference"
    },
    "digitalarchives.wa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "troop693.wikidot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "pympi.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genealogyjack.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "planet.mysql.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "cookiesandcups.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "soapysmiths.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "space.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "direcleit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -33592,116 +33592,116 @@ var interestsData =
       "climate" : "science"
    },
    "pruned.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "invitations.bedbathandbeyond.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "oaklandgeology.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "bestofpublib.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "paf-lug.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vmware.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "suesresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "scottishdna.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wareham-ma.netfirms.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "society"
       ]
    },
    "genegleaner.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "katiesgrove.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "startpage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "sharingtheirstories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nidcd.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "wheels.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "actlab.utexas.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genjourney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "westhollywood.andaz.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "netzero.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "email",
          "business"
       ]
    },
    "gogvo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "hsbcbillpay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
@@ -33709,151 +33709,151 @@ var interestsData =
       "thimbletheatre" : "movies"
    },
    "smallbusiness.forbes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "giveawayoftheday.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "genealogyframeofmind.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geder.posterous.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rushreunionbenedicta.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familypursuit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "msrrtc.washington.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "virgin-atlantic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "oba.od.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "theblaze.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "news"
       ]
    },
    "sugarpluminvitations.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "twitch.tv" : {
-      "__HOST" : [
+      "__ANY" : [
          "games",
          "uncategorized",
          "video-games"
       ]
    },
    "jewishgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sports.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "progressive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "pbase.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "hollingsworthrobbinsfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "velveteenrabbi.blogs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "mansfield.osu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "nonelitistraiding.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "genealogytranscriber.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "redfin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "cheetahmail.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email",
          "marketing"
       ]
    },
    "books.slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "wolframalpha.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "pronto.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "reviews",
          "shopping"
       ]
    },
    "seeber-wright-tree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -33862,30 +33862,30 @@ var interestsData =
       "profile" : "reviews"
    },
    "barbiestyle.barbie.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "planet.python.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "shop.siriusxm.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "radio"
       ]
    },
    "spinksville.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "lineagekeeper.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -33894,57 +33894,57 @@ var interestsData =
       "ftm" : "computers"
    },
    "all-abt-gen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hostelworld.com" : {
       "hosteldetails php" : "reviews",
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "keselowski.ning.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pureleads.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "business"
       ]
    },
    "petfinder.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "embassysuites1.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "thegenealogydude.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "edcorner.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "pack83.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors",
          "family"
       ]
    },
    "clearwaterbeach.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
@@ -33952,24 +33952,24 @@ var interestsData =
       "blogs mysql" : "computers"
    },
    "butterbeanz.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fhdnews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bnreview.barnesandnoble.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "catrackgraphics.spaces.live.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -33978,23 +33978,23 @@ var interestsData =
       "profile" : "reviews"
    },
    "agnosticmaybe.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "digg.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "montereybay.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "military.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "education"
       ]
@@ -34002,7 +34002,7 @@ var interestsData =
    "reddit.com" : {
       "r haskell" : "computers",
       "r java" : "computers",
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ],
@@ -34020,13 +34020,13 @@ var interestsData =
       "profile" : "reviews"
    },
    "thedollcafe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "winnipegjetslegends.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -34035,7 +34035,7 @@ var interestsData =
       "lifestyles crossword" : "hobby",
       "sports basketball bulls" : "sports",
       "sports baseball cubs" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "sports horseracing" : "sports",
@@ -34045,44 +34045,44 @@ var interestsData =
       "sports baseball whitesox" : "sports"
    },
    "campaignfinance.state.pa.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "texasimmigrantsgraveyardrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tuesdayswithdorie.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "mylinktothepast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hearth.library.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "serialdrama.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "crunkfeministcollective.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "worldwind.arc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
@@ -34090,114 +34090,114 @@ var interestsData =
       "congress" : "politics"
    },
    "det.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wellmanneredfrivolity.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "consumerguideauto.howstuffworks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "reviews"
       ]
    },
    "mainerunner.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "fivethirtyeight.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "prchecker.info" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "orientaltrading.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "home"
       ]
    },
    "distrob.cs.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "gtk2-perl.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "littlegreennotebook.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "home"
       ]
    },
    "netteller.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ],
       "firstbottineau" : "banking"
    },
    "citibank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "learnitalianwines.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "brblog-myotherblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dickssportinggoods.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "outdoors",
          "shopping"
       ]
    },
    "800notes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "desertcitydeathdistro.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "russellnuttree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "theyoungandthestylish.onsugar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "braincrater.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "kendalfhs.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -34210,7 +34210,7 @@ var interestsData =
       ],
       "itsallpolitics" : "politics",
       "sections art design" : "arts",
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ],
       "sections television" : "tv",
@@ -34227,37 +34227,37 @@ var interestsData =
       "blogs krulwich" : "science"
    },
    "zelsersk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "crave.cnet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "spectrum.ieee.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news"
       ],
       "robotics" : "science"
    },
    "cgkit.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "susischattyperformances.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mastatelibrary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -34266,19 +34266,19 @@ var interestsData =
       "profile" : "reviews"
    },
    "researchyourroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mygenealogypondering.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "motorola.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
@@ -34289,18 +34289,18 @@ var interestsData =
       "hedge funds" : "finance"
    },
    "uzlyanykaddish.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "plantbio.cornell.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "maven.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -34309,69 +34309,69 @@ var interestsData =
       "departments finance" : "finance"
    },
    "espnwwos.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "joansgenjottings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cl-cookbook.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "bucks.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "onmange.canalblog.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "ourscottishheritage.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "socrates58.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
    "astrogeology.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "clothdiapers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "gbtv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "runescape.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "gorillaleak.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "health.usnews.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ],
       "best diet" : [
@@ -34380,17 +34380,17 @@ var interestsData =
       ]
    },
    "indycarmn.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "arboretum.umn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "gillespie-genealojist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -34399,79 +34399,79 @@ var interestsData =
       "profile" : "reviews"
    },
    "sophrosynean.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ancestraldiscoveries.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "zerorobotics.mit.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "amarillomicro.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "anita-wills.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "michellespecialeducation.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "angels.ocregister.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "apellidoecheveste.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cp20.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "wemakezines.ning.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "unsolvedhistories-genealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "geneacentric.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "allthingsd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "sopa" : "politics"
    },
    "cbs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
@@ -34479,95 +34479,95 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "ancestralpaths.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nhc.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "weather"
       ]
    },
    "wireless.amazon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "cbslocal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "braves.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "marsprogram.jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "celebuzz.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "prowrestlingillustrated.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "maps.google.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "maps"
       ]
    },
    "fairydustteaching.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "mprobb.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "johnamosadams.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "technicolorkitcheninenglish.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "ultimate-guitar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ],
       "reviews" : "reviews"
    },
    "thejeromejournal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lufthansa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "fe.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
@@ -34576,7 +34576,7 @@ var interestsData =
       "miss manners" : "society",
       "entertainment books" : "reading",
       "blogs nationals journal" : "sports",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "blogs wizards insider" : "sports",
@@ -34588,7 +34588,7 @@ var interestsData =
       "sopa" : "politics"
    },
    "ancestryinsider.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -34600,133 +34600,133 @@ var interestsData =
       ]
    },
    "fallingleavesandwings.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "gingkobay.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "onecousin.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "explore.live.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "windows live writer" : "blogging",
       "hotmail" : "email"
    },
    "dalyplanet.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "xbox360.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "gregmankiw.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "stiffsandstones.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "perl.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "xe.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "pidwashername.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "advancedstyle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
    "bakingcakesgalore.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "onerhodeislandfamily.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bloomingdales.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shoes",
          "shopping"
       ]
    },
    "craftknife.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "gamespot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ],
       "review html" : "reviews"
    },
    "rodale.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "symantec.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "arsenal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "joomla.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "stumbleupon.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society",
          "news"
       ]
    },
    "stansberryresearch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "runtrails.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -34734,7 +34734,7 @@ var interestsData =
       "sports cricket" : "sports"
    },
    "shakingfamilytrees.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -34746,99 +34746,99 @@ var interestsData =
       ]
    },
    "aagenwv.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wine.woot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "johnstongenes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "snap.nal.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "health"
       ]
    },
    "allmybranches.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tahinitoo.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "quicken.intuit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "finance"
       ]
    },
    "noyesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "forestcity.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hackerspace-repdom.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "geniaus.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "shop.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports",
          "fashion"
       ]
    },
    "genealogyofoldendorfundnahrendorf.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "onwardtoourpast.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "williamscountyohiogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "philly.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "cnn.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "news"
       ],
@@ -34848,17 +34848,17 @@ var interestsData =
       "sopa" : "politics"
    },
    "tc.columbia.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "cal-access.ss.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "cooks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
@@ -34866,18 +34866,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "illuminatifordummies.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "theycametomontana.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "whosay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "music",
          "movies"
@@ -34885,7 +34885,7 @@ var interestsData =
       "robertkelly" : "society"
    },
    "playlist.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "radio"
       ]
    },
@@ -34896,13 +34896,13 @@ var interestsData =
       "cig" : "science"
    },
    "ataleoftwoancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wellsfargo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ],
       "autoloans" : "cars",
@@ -34914,163 +34914,163 @@ var interestsData =
       "wachovia mortgage" : "real-estate"
    },
    "priestlyendeavors.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "briles.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "eset.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "yarnoveratwork.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "morningstar.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "godlikeproductions.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "madness.nbcsports.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pingasnocopo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "mlmleadsystempro.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "homegrownkin.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "twiglets-gravematters.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "genitalesga.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "canadagenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mapleleafs.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tubeplus.me" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "therumhowlerblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "upinthetree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "aventuraconcepts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "goes.noaa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "weather"
       ]
    },
    "carolannkgfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "praiaserena.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "geology.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "oakforestplace.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "minecraftforum.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "treeofgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "confessionsofacookbookqueen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "spirit-dust.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "uefa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "kidneutrino.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "realestate.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ],
       "calculators" : "banking"
@@ -35082,95 +35082,95 @@ var interestsData =
       ]
    },
    "cincinnati.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "computerworld.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "news"
       ],
       "sopa" : "politics"
    },
    "flippa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business",
          "computers"
       ]
    },
    "mysurvey.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "salemcomedyblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "bsdtalk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "findingfamilystories.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dreamhost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "firstsecondbooks.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "rootsfinder.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "intheshadeofmyfamilytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "minnesota.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "forallmyrelations.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sethgodin.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "business"
       ]
    },
    "freemind.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ai.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "thenewgenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -35180,34 +35180,34 @@ var interestsData =
       "leonard perl" : "computers"
    },
    "ufdc.ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "cmjoffice.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "toolooney.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "blantonroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "meganmcardle.theatlantic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "thecakedcrusader.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
@@ -35215,34 +35215,34 @@ var interestsData =
       "apa" : "home"
    },
    "geocachingevelev.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "mymedievalgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "oracle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "computers"
       ]
    },
    "developer.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "connect.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lucascountygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -35251,18 +35251,18 @@ var interestsData =
       "consumer" : "shopping"
    },
    "midwesternmicrohistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "codestriker.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "araujoluis.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -35271,23 +35271,23 @@ var interestsData =
       "holidays entertaining gifts" : "shopping"
    },
    "genalines.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "spankwire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "labnol.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "newsmax.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
@@ -35295,35 +35295,35 @@ var interestsData =
       "handouts" : "reading"
    },
    "ipage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "rosebushclimbing.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mystart.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "ewgs-spokane.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "manageyourloans.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking",
          "finance"
       ]
    },
    "agile.dzone.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -35331,13 +35331,13 @@ var interestsData =
       "profile" : "reviews"
    },
    "mygenealogyobsession.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adolphusamesgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -35346,7 +35346,7 @@ var interestsData =
       "eda" : "politics"
    },
    "herstoryan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -35355,18 +35355,18 @@ var interestsData =
       "profile" : "reviews"
    },
    "problogger.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "geneageek.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "loft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
@@ -35375,38 +35375,38 @@ var interestsData =
       "profile" : "reviews"
    },
    "nsec.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "www-istp.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "paleontology.lsa.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "hannealong.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "cricket.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "pawanderings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "baysideblog.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -35418,47 +35418,47 @@ var interestsData =
       ]
    },
    "hou.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mba.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "mindstorms.lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "shopping",
          "family"
       ]
    },
    "reference.sitepoint.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "ancestrallychallenged.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "polo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion",
          "shopping"
       ]
    },
    "siriusxm.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars",
          "radio"
       ]
    },
    "nonjatta.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
@@ -35469,52 +35469,52 @@ var interestsData =
       ]
    },
    "relatedtopics.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "krugman.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "finance"
       ]
    },
    "incubator.apache.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "urbandictionary.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "runningwith4muddypaws.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "vidarsslektsblogg.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "g4beginners.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "bridgetoyesterday.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fatwallet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
@@ -35522,7 +35522,7 @@ var interestsData =
       "category instant entertaining" : "entertainment"
    },
    "wwtdd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -35530,53 +35530,53 @@ var interestsData =
       "icb icb do" : "writing"
    },
    "nfl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ],
       "thanksgiving" : "society",
       "tickets" : "entertainment"
    },
    "lemaisonduchamp.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "quickbooks.intuit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "setiathome.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "jgsgo.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "hydonian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "v2cigs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "nei.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ],
       "health eyediagram" : "science"
    },
    "baseballcardblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
@@ -35587,48 +35587,48 @@ var interestsData =
       "library" : "reference"
    },
    "jeanbduncan.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thefamilyrecorder.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thomas.loc.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "reference"
       ]
    },
    "free.ed.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "education"
       ],
       "subjects cfm" : "history"
    },
    "arootdigger.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dogs.oodle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "michiganzone.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "gizmag.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "shopping",
          "consumer-electronics"
@@ -35636,130 +35636,130 @@ var interestsData =
       "motorcycles" : "motorcycles"
    },
    "philadelphia.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
    },
    "stackoverflow.com" : {
       "questions tagged email" : "email",
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ],
       "questions tagged wordpress" : "blogging"
    },
    "talcb.state.tx.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "mercercarnegielibrary.webs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "society"
       ]
    },
    "ratemyprofessors.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "reviews"
       ]
    },
    "moderngenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "confirmit.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "technet.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "uhaul.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "edcsns17.cr.usgs.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ],
       "newearthexplorer" : "maps"
    },
    "losangeles.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "politico.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics",
          "society"
       ]
    },
    "johnkstuff.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "gipsa.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "rocksoccerclub.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "isuspecialcollections.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sitemeter.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "looneytunes.tomtom.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "oneminutebookreviews.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "reading"
       ]
    },
    "nordicblue.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "pattiannsblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adswww.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "sherifenley.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -35771,132 +35771,132 @@ var interestsData =
       ]
    },
    "costco.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "frontierbattles.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "ebookstore.sony.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "nikerunning.nike.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wowe989fm.netfirms.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "giants.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "drupal.org" : {
       "php" : "computers",
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ],
       "project whois" : "computers"
    },
    "deanna1952.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "56755.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jansgeneablog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "robvandrie.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "trollshaman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "kicker.de" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "barrysgenealogydiary.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "findmyscottishancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "emf.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "geography.wa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "piriform.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "dotcomsecrets.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "fifa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "us.hsbc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "patty-knight.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ecolibris.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "linkedin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ],
       "today" : [
@@ -35905,74 +35905,74 @@ var interestsData =
       ]
    },
    "rivalgaming.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "ve3d.ign.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "calumet.purdue.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "angels.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ods.od.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "edwardwinkleman.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "pisforparty.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
    "reflectionsfromthefence.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jointheimpact.wetpaint.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "cincinnati.reds.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "twilighttaggers.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "connertrailsofnorthcarolina.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "privacyprotection.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "law"
       ]
    },
    "merecomments.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "religion"
       ]
    },
@@ -35980,23 +35980,23 @@ var interestsData =
       "profile" : "reviews"
    },
    "traceysculinaryadventures.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "susaned1.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "digital.library.upenn.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "dietary-supplements.info.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine",
          "health"
@@ -36006,35 +36006,35 @@ var interestsData =
       "sports curling" : "sports"
    },
    "shockwave.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "sbcgs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "asia.cnet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "nydmv.state.ny.us" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "cars"
       ]
    },
    "yi-editor.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "nativefood.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
@@ -36042,110 +36042,110 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "acupuncture.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "cannelle-et-vanille.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "xhamstercams.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "atmospheres.gsfc.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "topreasonstolovethebachelor.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "mywebsearch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "hubpages.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "shed-skin.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "photojournal.jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "ufl.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "familytree4sargent.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "packerfansunited.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ninjago.lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "med.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "maui.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "myseoarticle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "amctv.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "wallingfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "anderson.ucla.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "fullsail.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "education"
       ]
@@ -36157,105 +36157,105 @@ var interestsData =
       "football" : "sports"
    },
    "cubs.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "downthedustyroad.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "animoto.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "funnyjunk.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "tightknitthebomb.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "limesstones.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "civilwarhistory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "sortyourstory.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cneu.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "fbcdn.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "dice.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career"
       ]
    },
    "outbrain.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "hotwire.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "residenciasalvacion.multiply.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "fanpop.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "rapmls.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "real-estate"
       ]
    },
    "mefeedia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "mostlypaved.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "sasquatchfest.proboards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "mygeorgiaroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -36264,42 +36264,42 @@ var interestsData =
       "resshow windpower" : "science"
    },
    "ingenious-cache-inventor.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "outdoors"
       ]
    },
    "lrp.info.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "finance"
       ]
    },
    "wizofozzy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "games.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ],
       "daily games dailycrosswords" : "hobby",
       "daily games sudokudaily" : "hobby"
    },
    "junghanshistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "flsgs.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sfbay.craigslist.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ],
       "apa" : "home"
@@ -36311,30 +36311,30 @@ var interestsData =
       "apa" : "home"
    },
    "excavatingformyroots.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yeahthatveganshit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "familyepic.posterous.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "therobertsonkubbernessconnection.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sassersagas.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -36343,12 +36343,12 @@ var interestsData =
       "reviews htm" : "reviews"
    },
    "custhelp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "pyparsing.wikispaces.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -36359,70 +36359,70 @@ var interestsData =
       ]
    },
    "hootsuite.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "solarcooking.wikia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "collegehumor.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "ovguide.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "ncaa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "findrelativesinmexico.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sharebeast.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "eclipsefp.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "football.fantasysports.yahoo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "freya-newenglandgenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sunbiz.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "federalstudentaid.ed.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "finance"
       ]
    },
    "circleofmoms.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society",
          "family"
@@ -36430,111 +36430,111 @@ var interestsData =
    },
    "nbc.com" : {
       "new years eve" : "society",
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ],
       "saturday night live" : "society"
    },
    "onlineaccess1.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "sing365.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ]
    },
    "clickbooth.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "fuelcostcalculator.aaa.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ]
    },
    "science.discovery.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "respectthetowel.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "hamptoninn.hilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "sharethis.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "librarianscommute.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "slickdeals.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "birthdaysofpoets.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "mysearchfordeadancestors.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "britishgenes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yardsellr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "packages.python.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "mangareader.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "yieldmanager.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "aphis.usda.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "cars.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ],
       "reviews" : "reviews"
    },
    "ldview.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
@@ -36543,29 +36543,29 @@ var interestsData =
       "profile" : "reviews"
    },
    "beiboer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ruya.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "world.honda.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cars"
       ],
       "motorsports" : "motorcycles"
    },
    "wordtracker.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "cvsold.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -36577,29 +36577,29 @@ var interestsData =
       "programs tcpvi" : "education"
    },
    "trafficbroker.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "familyvillage.wisc.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "afigen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "merchantcircle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "reviews"
       ]
    },
    "plainshollytree.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -36609,7 +36609,7 @@ var interestsData =
       "radioguide" : "radio"
    },
    "rodonline.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -36619,13 +36619,13 @@ var interestsData =
       "entries japanese zen" : "religion"
    },
    "slocogenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "garmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "fashion",
          "shopping",
@@ -36633,100 +36633,100 @@ var interestsData =
       ]
    },
    "movies.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "movies"
       ]
    },
    "jpl.nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "maxbounty.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "smugmug.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "image-sharing"
       ]
    },
    "tvtropes.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "reading"
       ]
    },
    "heritagerecipes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "warriorforum.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "kfaella.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "keeperoftherecords.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "radio.disney.go.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "movies",
          "radio"
       ]
    },
    "steadyhealth.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "nick.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "printpattern.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    },
    "mcwieser.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "reviews.pricegrabber.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews"
       ]
    },
    "debsdelvings.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "msdn.microsoft.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "dusttodustgyrabbitt.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -36735,41 +36735,41 @@ var interestsData =
       "sciencefair" : "science"
    },
    "knittingisknottyeugene.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "modcloth.com" : {
       "handbags" : "women",
-      "__HOST" : [
+      "__ANY" : [
          "clothes",
          "fashion"
       ]
    },
    "armorgames.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "games"
       ]
    },
    "les-familygenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sunsite.berkeley.edu" : {
       "histopo" : "maps",
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "lib.umich.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "buf.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -36777,59 +36777,59 @@ var interestsData =
       "nano tpen" : "science"
    },
    "boostmobile.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "ww2.cox.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv",
          "shopping"
       ]
    },
    "myfamilyspuzzle.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mypoints.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts",
          "shopping"
       ]
    },
    "vice.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "cemeterydivas.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cruwys.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fhd2010.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "civilwarlibrarian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "zinemobile.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "entertainment"
       ]
    },
@@ -36837,23 +36837,23 @@ var interestsData =
       "mysql201" : "computers"
    },
    "jamieintherough.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "gravestoned.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "arboretum.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "chow.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine"
       ],
@@ -36861,24 +36861,24 @@ var interestsData =
       "restaurants" : "reviews"
    },
    "typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "techcrunch.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "sopa" : "politics"
    },
    "greatgreats.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "askmen.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "men",
          "news"
       ],
@@ -36886,12 +36886,12 @@ var interestsData =
       "dating" : "relationship"
    },
    "yro.slashdot.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ]
    },
    "saxon.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -36899,48 +36899,48 @@ var interestsData =
       "profile" : "reviews"
    },
    "123rf.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "semmie.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gmailblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email",
          "technology"
       ]
    },
    "kinfolknews.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "superpages.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "maps"
       ]
    },
    "bgr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology"
       ],
       "tag wii u" : "video-games"
    },
    "scotlandcounty.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "familytreegal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -36949,17 +36949,17 @@ var interestsData =
       "profile" : "reviews"
    },
    "ancient-tides.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history"
       ]
    },
    "libraryhistorybuff.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "money.blogs.time.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
@@ -36967,65 +36967,65 @@ var interestsData =
       "arts" : "arts",
       "arts critics" : "reviews",
       "online blogs alexross" : "music",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "fiction poetry" : "reading",
       "online blogs books" : "reading"
    },
    "sprg.ssl.berkeley.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "javascript.internet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "nms-cgi.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lehman.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "avp.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "gc.cuny.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "pythonide.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "met-art.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "tuckerresearch.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "zachls.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "list-manage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
@@ -37033,12 +37033,12 @@ var interestsData =
       "profile" : "reviews"
    },
    "libetiquette.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "nature.nps.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel",
          "outdoors"
       ],
@@ -37047,46 +37047,46 @@ var interestsData =
       "geology" : "science"
    },
    "perezhilton.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "nimh.nih.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "health"
       ]
    },
    "michaels.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "shopping"
       ]
    },
    "beavercreek.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "vistaprint.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ],
       "invitations aspx" : "society"
    },
    "murmuringtrees.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "python-cluster.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "synergy2.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
@@ -37097,18 +37097,18 @@ var interestsData =
       "index2 aspx" : "education"
    },
    "biotech.icmb.utexas.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "thedollhead.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "family"
       ]
    },
    "findmycard.capitalone.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
@@ -37116,60 +37116,60 @@ var interestsData =
       "profile" : "reviews"
    },
    "centurylink.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "barackobama.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "morristown.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "peacecorps.tumblr.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "gift-certificates.shop.ebay.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "quibids.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "kenthomasongenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "weightwatchers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food",
          "cuisine",
          "health"
       ]
    },
    "clickbank.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
    "yankees.auction.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "verizonwireless.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ],
       "b2c store" : [
@@ -37178,91 +37178,91 @@ var interestsData =
       ]
    },
    "goodwineunder20.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "familymystery.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "wallst.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "panerabread.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "beehivegenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "peoplefinders.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science",
          "reference",
          "society"
       ]
    },
    "e-junkie.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "abakinglife.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "shopstyle.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion",
          "shoes"
       ]
    },
    "lailanc.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mdrosenbaum.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "vip.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "clairz-remember.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tvhforum.proboards.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "tv"
       ]
    },
    "socialdance.stanford.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "dance"
       ]
    },
    "facehunter.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "fashion"
       ]
    },
@@ -37281,12 +37281,12 @@ var interestsData =
       "njfacts njsymbol htm" : "government"
    },
    "tammytutterow.typepad.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "amazonservices.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
@@ -37298,96 +37298,96 @@ var interestsData =
       "profile" : "reviews"
    },
    "19thcenturyrhinelandlive.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "phillies.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "ga.psu.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "georgegmorgan.livejournal.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "iis.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "planet.wordpress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "fantasyhockeynerd.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "smithcenterpl.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference",
          "society"
       ]
    },
    "minnesota.twins.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "seniorpeoplemeet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "whisperingearth.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "td.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "banking"
       ]
    },
    "clgrabbit.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "cnbc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "celticsgreen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "siestakeybeach.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "economix.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "thisgayrelationship.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
@@ -37398,72 +37398,72 @@ var interestsData =
       ]
    },
    "ronfergy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ainscough-familyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "dlmomblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "ancestorsgottaeat.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "csac.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "education",
          "finance"
       ]
    },
    "biology.stackexchange.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "extremetube.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "skydrive.live.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "lib.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "newport.hyatt.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "digginforfamily.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tribune.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "dallas.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
@@ -37475,7 +37475,7 @@ var interestsData =
       "climatechange" : "science",
       "nceh airpollution" : "science",
       "nutrition" : "food",
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "health",
          "family"
@@ -37493,34 +37493,34 @@ var interestsData =
       "violenceprevention intimatepartnerviolence" : "law"
    },
    "africanancestryinsantafecemeteries.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "yglesias.thinkprogress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "namejet.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "weatherwaxgenealogyblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thetea.blogbus.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "csgacopyright.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -37533,7 +37533,7 @@ var interestsData =
       "bulls" : "sports"
    },
    "findingrandpa.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -37542,77 +37542,77 @@ var interestsData =
       "profile" : "reviews"
    },
    "findthebest.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "birmingham.bizjournals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "askthegenealogist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gsd.harvard.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "government"
       ]
    },
    "ellen.warnerbros.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "flyers.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "mathxl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "education"
       ]
    },
    "webmail.aol.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
    "swiftmend.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "video-games"
       ]
    },
    "annettekapple.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jewsofthegoldrush.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "okoblaya.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "youjizzlive.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "macrumors.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "shopping",
          "computers",
@@ -37620,28 +37620,28 @@ var interestsData =
       ]
    },
    "chinaadoptiontalk.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "family"
       ]
    },
    "libraryhistory.pbworks.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "realgm.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "redantepasados.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gettyimages.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
@@ -37653,12 +37653,12 @@ var interestsData =
       "chudler sleep html" : "health"
    },
    "designaterobertson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "small-leavedshamrock.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -37667,113 +37667,113 @@ var interestsData =
       "apa" : "home"
    },
    "beachbodycoach.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "spangleranderson.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "juno.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email",
          "business"
       ]
    },
    "hollinsfamilyhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "lizz1901.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "fashion"
       ]
    },
    "nofearentertaining.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "pitchfork.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "music"
       ],
       "reviews" : "reviews"
    },
    "southwest.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "travel"
       ]
    },
    "thevintagevignettes.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "agraveinterest.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "houston.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "fallfingerlessmitts.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "graveyardrabbitsdc.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mediapost.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing",
          "news"
       ]
    },
    "teens.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health",
          "family"
       ]
    },
    "familyhistoryfunforall.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "sedo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "maiyamayhem.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "us.fotolia.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "photography"
       ]
    },
    "webmail.roadrunner.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "email"
       ]
    },
@@ -37781,56 +37781,56 @@ var interestsData =
       "wkcr" : "music"
    },
    "thefamilyorchard.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "ausgen.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "gcov.php.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "newyork.backpage.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping"
       ]
    },
    "wanderinggenealogist.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "fifthdown.blogs.nytimes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "jazzfanatical.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "recruiting.scout.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "writingyourhistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "thedirty.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -37839,85 +37839,85 @@ var interestsData =
       "soccer" : "sports"
    },
    "inmolaraan.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "cuisine"
       ]
    },
    "genemeet.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "murmurd.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nancysfamilyhistoryblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "beaudoin-laroche.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "servicemagic.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reviews",
          "home"
       ]
    },
    "stars.nhl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "wheat-free-meat-free.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "food"
       ]
    },
    "climate.yale.edu" : {
-      "__HOST" : [
+      "__ANY" : [
          "science"
       ]
    },
    "tpmmuckraker.talkingpointsmemo.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "politics"
       ]
    },
    "amazonaws.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "casamarias.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby",
          "family"
       ]
    },
    "krentz.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "mobileaccessories.bestbuy.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "timeanddate.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
@@ -37928,34 +37928,34 @@ var interestsData =
       "rugby" : "sports"
    },
    "catholicgene.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "nebraska.rivals.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "doctor.webmd.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "digitalcemetery.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "match.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "relationship"
       ]
    },
    "ftb.ca.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "law",
          "finance"
       ]
@@ -37968,58 +37968,58 @@ var interestsData =
       ]
    },
    "sdcc.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "economist.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news",
          "finance"
       ]
    },
    "lazyloversancestry.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "climbingthebranches.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "headstonesgenealogy.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "drwhisky.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "drinks"
       ]
    },
    "mailhesfamilyhistorian.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "popwatch.ew.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "sites.garmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "nasa.gov" : {
-      "__HOST" : [
+      "__ANY" : [
          "government",
          "science"
       ],
@@ -38029,34 +38029,34 @@ var interestsData =
       "elections" : "politics"
    },
    "forensicpsychologist.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "health"
       ]
    },
    "genealogiaalvarado.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "adidas.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shoes"
       ],
       "us" : "sports"
    },
    "ksl.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ]
    },
    "gogecapital.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "finance"
       ]
    },
    "makeuseof.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "technology",
          "shopping",
          "news",
@@ -38064,12 +38064,12 @@ var interestsData =
       ]
    },
    "toronto.bluejays.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "getresponse.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "marketing"
       ]
    },
@@ -38077,33 +38077,33 @@ var interestsData =
       "profile" : "reviews"
    },
    "seattle.mariners.mlb.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "tampabay.sbnation.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "genegirl99.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "jokesbyjim.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
    "adp.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "business"
       ]
    },
    "twigsofyore.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -38112,57 +38112,57 @@ var interestsData =
       "profile" : "reviews"
    },
    "starwars.lego.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "movies"
       ]
    },
    "geneakeijzer.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "petterborggenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "xbox360.gametrailers.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "video-games"
       ]
    },
    "lgoossens.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "tangleknot.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "hobby"
       ]
    },
    "online-sweepstakes.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "discounts"
       ]
    },
    "fetchmemyaxe.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "women",
          "society"
       ]
    },
    "greenerpastureblog.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "icims.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "career",
          "business"
       ]
@@ -38171,24 +38171,24 @@ var interestsData =
       "groundswell" : "marketing"
    },
    "zenfs.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "uncategorized"
       ]
    },
    "gnc.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "health"
       ]
    },
    "genealogyjourno.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "blogger.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
@@ -38196,18 +38196,18 @@ var interestsData =
       "iree" : "science"
    },
    "northumbriagraveyardrabbit.wordpress.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "framework.zend.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "labauvegenealogy.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
@@ -38224,7 +38224,7 @@ var interestsData =
          "society"
       ],
       "thanksgiving" : "society",
-      "__HOST" : [
+      "__ANY" : [
          "news"
       ],
       "crafts kids" : [
@@ -38240,41 +38240,41 @@ var interestsData =
       "recipes chicken" : "cuisine"
    },
    "benotforgot-journal.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "spearspat.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "theanimalrescuesite.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "pets"
       ]
    },
    "suite101.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "reference"
       ]
    },
    "salithohistory.blogspot.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "history",
          "society"
       ]
    },
    "my.garmin.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "shopping",
          "consumer-electronics"
       ]
    },
    "people.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "society"
       ]
    },
@@ -38282,22 +38282,22 @@ var interestsData =
       "mail help tasks" : "business"
    },
    "blackberry.wordpress.org" : {
-      "__HOST" : [
+      "__ANY" : [
          "blogging"
       ]
    },
    "pyml.sourceforge.net" : {
-      "__HOST" : [
+      "__ANY" : [
          "computers"
       ]
    },
    "arizonawomensclubvolleyball.weebly.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "sports"
       ]
    },
    "gocomics.com" : {
-      "__HOST" : [
+      "__ANY" : [
          "arts"
       ]
    }
