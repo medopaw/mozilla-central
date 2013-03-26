@@ -62,13 +62,13 @@ function ruleClassify({host, language, tld, metaData, path, title, url}) {
   let tldKeys = (host != tld && gInterestsData[tld]) ? Object.keys(gInterestsData[tld]).length : 0;
 
   if (hostKeys || tldKeys) {
-    // process __HOST first
-    if (hostKeys && gInterestsData[host]["__HOST"]) {
-      interests = interests.concat(gInterestsData[host]["__HOST"]);
+    // process __ANY first
+    if (hostKeys && gInterestsData[host]["__ANY"]) {
+      interests = interests.concat(gInterestsData[host]["__ANY"]);
       hostKeys--;
     }
     if (tldKeys && gInterestsData[tld]) {
-      interests = interests.concat(gInterestsData[tld]["__HOST"]);
+      interests = interests.concat(gInterestsData[tld]["__ANY"]);
       tldKeys--;
     }
 
@@ -85,7 +85,7 @@ function ruleClassify({host, language, tld, metaData, path, title, url}) {
 
       let processDFRKeys = function(hostObject) {
         Object.keys(hostObject).forEach(function(key) {
-          if (key != "__HOST" && matchedAllTokens(key.split(kSplitter))) {
+          if (key != "__ANY" && matchedAllTokens(key.split(kSplitter))) {
             interests = interests.concat(hostObject[key]);
           }
         });
