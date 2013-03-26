@@ -14,7 +14,7 @@ function run_test() {
   run_next_test();
 }
 
-add_task(function test_Interest_getTopInterest()
+add_task(function test_Interests_getTopInterest()
 {
   yield PlacesInterestsStorage.addInterest("cars");
   yield PlacesInterestsStorage.addInterest("movies");
