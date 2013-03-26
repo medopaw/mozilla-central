@@ -6,6 +6,7 @@
 package org.mozilla.gecko;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -90,6 +91,8 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
 
     private static List<View> sActionItems;
 
+    private boolean mAnimatingEntry;
+
     private int mDuration;
     private TranslateAnimation mSlideUpIn;
     private TranslateAnimation mSlideUpOut;
@@ -109,7 +112,6 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
     private int mFaviconSize;
 
     private PropertyAnimator mVisibilityAnimator;
-    private TimerTask mDelayedVisibilityTask;
 
     private enum ToolbarVisibility {
         VISIBLE,
@@ -134,6 +136,8 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
         Tabs.registerOnTabsChangedListener(this);
         mAnimateSiteSecurity = true;
 
+        mAnimatingEntry = false;
+
         mVisibility = ToolbarVisibility.INCONSISTENT;
     }
 
@@ -151,6 +155,8 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
 
         mShowSiteSecurity = false;
         mShowReader = false;
+
+        mAnimatingEntry = false;
 
         mAddressBarBg = (BrowserToolbarBackground) mLayout.findViewById(R.id.address_bar_bg);
         mAddressBarView = mLayout.findViewById(R.id.addressbar);
@@ -228,6 +234,7 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
             // accessibility.
             mTabsCount.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
             mTabsCount.setAccessibilityDelegate(new View.AccessibilityDelegate() {
+                    @Override
                     public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {}
                 });
         }
@@ -495,21 +502,11 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
         return (metrics.getPageHeight() >= metrics.getHeight());
     }
 
-    private void startVisibilityAnimation() {
-        // Only start the animation if we're showing the toolbar, or it's ok
-        // to hide it.
-        if (mVisibility == ToolbarVisibility.VISIBLE ||
-            canToolbarHide()) {
-            mVisibilityAnimator.start();
-        }
-    }
-
-    public void animateVisibility(boolean show, long delay) {
+    public void animateVisibility(boolean show) {
         // Do nothing if there's a delayed animation pending that does the
         // same thing and this request also has a delay.
         if (mVisibility != ToolbarVisibility.INCONSISTENT &&
-            ((delay > 0) == (mDelayedVisibilityTask != null)) &&
-            (show == isVisible())) {
+            show == isVisible()) {
             return;
         }
 
@@ -519,16 +516,12 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
         mVisibilityAnimator = new PropertyAnimator(VISIBILITY_ANIMATION_DURATION);
         mVisibilityAnimator.attach(mLayout, PropertyAnimator.Property.SCROLL_Y,
                                    show ? 0 : mLayout.getHeight());
-        if (delay > 0) {
-            mDelayedVisibilityTask = new TimerTask() {
-                public void run() {
-                    startVisibilityAnimation();
-                    mDelayedVisibilityTask = null;
-                }
-            };
-            mLayout.postDelayed(mDelayedVisibilityTask, delay);
-        } else {
-            startVisibilityAnimation();
+
+        // Only start the animation if we're showing the toolbar, or it's ok
+        // to hide it.
+        if (mVisibility == ToolbarVisibility.VISIBLE ||
+            canToolbarHide()) {
+            mVisibilityAnimator.start();
         }
     }
 
@@ -550,16 +543,12 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
             show = (velocity > 0) ? false : true;
         }
 
-        animateVisibility(show, 0);
+        animateVisibility(show);
     }
 
     public void cancelVisibilityAnimation() {
-        mVisibility = ToolbarVisibility.INCONSISTENT;
-        if (mDelayedVisibilityTask != null) {
-            mLayout.removeCallbacks(mDelayedVisibilityTask);
-            mDelayedVisibilityTask = null;
-        }
         if (mVisibilityAnimator != null) {
+            mVisibility = ToolbarVisibility.INCONSISTENT;
             mVisibilityAnimator.stop(false);
             mVisibilityAnimator = null;
         }
@@ -622,7 +611,6 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
         barParams.rightMargin = 0;
         mAddressBarBgCurveTowards = mAddressBarBg.getCurveTowards();
         mAddressBarBg.setCurveTowards(BrowserToolbarBackground.CurveTowards.NONE);
-        mAddressBarBg.requestLayout();
 
         // If we don't have any menu_items, then we simply slide all elements on the
         // rigth side of the toolbar out of screen.
@@ -679,10 +667,13 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
             proxy.setTranslationX(translation);
             proxy = AnimatorProxy.create(mTabsCount);
             proxy.setTranslationX(translation);
-            proxy = AnimatorProxy.create(mMenu);
-            proxy.setTranslationX(translation);
             proxy = AnimatorProxy.create(mActionItemBar);
             proxy.setTranslationX(translation);
+
+            if (mHasSoftMenuButton) {
+                proxy = AnimatorProxy.create(mMenu);
+                proxy.setTranslationX(translation);
+            }
         }
 
         // Restore opacity of content elements in the toolbar immediatelly
@@ -712,12 +703,14 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
         contentAnimator.attach(mTabsCount,
                                PropertyAnimator.Property.TRANSLATION_X,
                                0);
-        contentAnimator.attach(mMenu,
-                               PropertyAnimator.Property.TRANSLATION_X,
-                               0);
         contentAnimator.attach(mActionItemBar,
                                PropertyAnimator.Property.TRANSLATION_X,
                                0);
+
+        if (mHasSoftMenuButton)
+            contentAnimator.attach(mMenu,
+                                   PropertyAnimator.Property.TRANSLATION_X,
+                                   0);
 
         contentAnimator.setPropertyAnimationListener(new PropertyAnimator.PropertyAnimationListener() {
             @Override
@@ -739,7 +732,6 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
                 MarginLayoutParams barParams = (MarginLayoutParams) mAddressBarBg.getLayoutParams();
                 barParams.rightMargin = mAddressBarBgRightMargin;
                 mAddressBarBg.setCurveTowards(mAddressBarBgCurveTowards);
-                mAddressBarBg.requestLayout();
 
                 // If there are action bar items in the toolbar, we have to restore the
                 // alignment of the entry in relation to them. mAwesomeBarParams might
@@ -763,8 +755,12 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
                                        1);
 
                 buttonsAnimator.start();
+
+                mAnimatingEntry = false;
             }
         });
+
+        mAnimatingEntry = true;
 
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -780,6 +776,9 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
             mActivity.onSearchRequested();
             return;
         }
+
+        if (mAnimatingEntry)
+            return;
 
         final PropertyAnimator contentAnimator = new PropertyAnimator(250);
         contentAnimator.setUseHardwareLayer(false);
@@ -822,12 +821,14 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
         contentAnimator.attach(mTabsCount,
                                PropertyAnimator.Property.TRANSLATION_X,
                                translation);
-        contentAnimator.attach(mMenu,
-                               PropertyAnimator.Property.TRANSLATION_X,
-                               translation);
         contentAnimator.attach(mActionItemBar,
                                PropertyAnimator.Property.TRANSLATION_X,
                                translation);
+
+        if (mHasSoftMenuButton)
+            contentAnimator.attach(mMenu,
+                                   PropertyAnimator.Property.TRANSLATION_X,
+                                   translation);
 
         contentAnimator.setPropertyAnimationListener(new PropertyAnimator.PropertyAnimationListener() {
             @Override
@@ -840,9 +841,11 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
 
                 // Once the entry is fully expanded, start awesome screen
                 mActivity.onSearchRequested();
+                mAnimatingEntry = false;
             }
         });
 
+        mAnimatingEntry = true;
         contentAnimator.start();
     }
 
@@ -981,7 +984,7 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
 
     public void adjustForTabsLayout(int width) {
         mTabsPaneWidth = width;
-        adjustTabsAnimation(false);
+        adjustTabsAnimation(true);
     }
 
     public void updateTabs(boolean areTabsShown) {
@@ -1015,8 +1018,9 @@ public class BrowserToolbar implements ViewSwitcher.ViewFactory,
     public void setIsSideBar(boolean isSideBar) {
         mTabs.setIsSideBar(isSideBar);
 
-        mTabs.setImageResource(R.drawable.tabs_level);
-        mTabs.setBackgroundResource(R.drawable.tabs_button);
+        Resources resources = mActivity.getResources();
+        mTabs.setImageDrawable(resources.getDrawable(R.drawable.tabs_level));
+        mTabs.setBackgroundDrawable(resources.getDrawable(R.drawable.tabs_button));
     }
 
     public void setProgressVisibility(boolean visible) {

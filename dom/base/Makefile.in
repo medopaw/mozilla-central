@@ -9,7 +9,6 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE		= dom
 LIBRARY_NAME	= jsdombase_s
 LIBXUL_LIBRARY	= 1
 FORCE_STATIC_LIB = 1
@@ -33,21 +32,11 @@ EXTRA_JS_MODULES += \
   ObjectWrapper.jsm \
   $(NULL)
 
-XPIDLSRCS = \
-  nsIDOMDOMError.idl \
-  nsIDOMDOMRequest.idl \
-  nsIDOMDOMCursor.idl \
-  nsIEntropyCollector.idl \
-  nsIScriptChannel.idl \
-  nsISiteSpecificUserAgent.idl \
-  $(NULL)
-
 EXPORTS = \
   nsDOMCID.h \
   nsDOMClassInfoClasses.h \
   nsDOMClassInfoID.h \
   nsDOMJSUtils.h \
-  nsDOMScriptObjectHolder.h \
   nsDOMString.h \
   nsIDOMClassInfo.h \
   nsIDOMScriptObjectFactory.h \
@@ -148,7 +137,3 @@ CXXFLAGS += $(TK_CFLAGS)
 LDFLAGS += $(TK_LIBS)
 endif
 
-XPIDL_FLAGS += \
-  -I$(topsrcdir)/dom/interfaces/base \
-  -I$(topsrcdir)/dom/interfaces/events \
-  $(NULL)

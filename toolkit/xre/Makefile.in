@@ -17,19 +17,10 @@ include $(topsrcdir)/config/makefiles/makeutils.mk
 
 milestone_txt = $(topsrcdir)/config/milestone.txt
 
-MODULE = xulapp
 LIBRARY_NAME = xulapp_s
 LIBXUL_LIBRARY = 1
 
 FORCE_STATIC_LIB = 1
-
-XPIDLSRCS = \
-  nsINativeAppSupport.idl \
-  $(NULL)
-
-ifeq ($(OS_ARCH),WINNT)
-XPIDLSRCS += nsIWinAppHelper.idl
-endif
 
 CPPSRCS = \
   nsAppRunner.cpp \

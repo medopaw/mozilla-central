@@ -235,7 +235,8 @@ JSObject::finalize(js::FreeOp *fop)
     js::Probes::finalizeObject(this);
 
 #ifdef DEBUG
-    if (!IsBackgroundFinalized(getAllocKind())) {
+    JS_ASSERT(isTenured());
+    if (!IsBackgroundFinalized(tenuredGetAllocKind())) {
         /* Assert we're on the main thread. */
         fop->runtime()->assertValidThread();
     }
@@ -759,6 +760,8 @@ JSObject::getType(JSContext *cx)
     JS_ASSERT(cx->compartment == compartment());
     if (hasLazyType()) {
         JS::RootedObject self(cx, this);
+        if (cx->compartment != compartment())
+            MOZ_CRASH();
         return makeLazyType(cx, self);
     }
     return static_cast<js::types::TypeObject*>(type_);
@@ -785,14 +788,7 @@ JSObject::setType(js::types::TypeObject *newType)
     JS_ASSERT_IF(getClass()->emulatesUndefined(),
                  newType->hasAnyFlags(js::types::OBJECT_FLAG_EMULATES_UNDEFINED));
     JS_ASSERT(!hasSingletonType());
-    JS_ASSERT(compartment() == newType->compartment());
     type_ = newType;
-}
-
-inline js::TaggedProto
-JSObject::getTaggedProto() const
-{
-    return js::TaggedProto(js::ObjectImpl::getProto());
 }
 
 inline JSObject *
@@ -807,7 +803,7 @@ JSObject::getProto(JSContext *cx, js::HandleObject obj, js::MutableHandleObject 
 {
     if (obj->getTaggedProto().isLazy()) {
         JS_ASSERT(obj->isProxy());
-        return js::Proxy::getPrototypeOf(cx, obj, protop.address());
+        return js::Proxy::getPrototypeOf(cx, obj, protop);
     } else {
         protop.set(obj->js::ObjectImpl::getProto());
         return true;
@@ -935,7 +931,6 @@ JSObject::create(JSContext *cx, js::gc::AllocKind kind, js::gc::InitialHeap heap
     JS_ASSERT(type->clasp == shape->getObjectClass());
     JS_ASSERT(type->clasp != &js::ArrayClass);
     JS_ASSERT(js::gc::GetGCKindSlots(kind, type->clasp) == shape->numFixedSlots());
-    JS_ASSERT(cx->compartment == type->compartment());
     JS_ASSERT_IF(type->clasp->flags & JSCLASS_BACKGROUND_FINALIZE, IsBackgroundFinalized(kind));
     JS_ASSERT_IF(type->clasp->finalize, heap == js::gc::TenuredHeap);
     JS_ASSERT_IF(extantSlots, dynamicSlotsCount(shape->numFixedSlots(), shape->slotSpan()));
@@ -981,7 +976,6 @@ JSObject::createArray(JSContext *cx, js::gc::AllocKind kind, js::gc::InitialHeap
     JS_ASSERT(shape && type);
     JS_ASSERT(type->clasp == shape->getObjectClass());
     JS_ASSERT(type->clasp == &js::ArrayClass);
-    JS_ASSERT(cx->compartment == type->compartment());
     JS_ASSERT_IF(type->clasp->finalize, heap == js::gc::TenuredHeap);
 
     /*
@@ -1019,8 +1013,13 @@ JSObject::finish(js::FreeOp *fop)
 {
     if (hasDynamicSlots())
         fop->free_(slots);
-    if (hasDynamicElements())
-        fop->free_(getElementsHeader());
+    if (hasDynamicElements()) {
+        js::ObjectElements *elements = getElementsHeader();
+        if (JS_UNLIKELY(elements->isAsmJSArrayBuffer()))
+            js::ArrayBufferObject::releaseAsmJSArrayBuffer(fop, this);
+        else
+            fop->free_(elements);
+    }
 }
 
 /* static */ inline bool
@@ -1076,51 +1075,6 @@ inline bool
 JSObject::hasShapeTable() const
 {
     return lastProperty()->hasTable();
-}
-
-inline size_t
-JSObject::computedSizeOfThisSlotsElements() const
-{
-    size_t n = sizeOfThis();
-
-    if (hasDynamicSlots())
-        n += numDynamicSlots() * sizeof(js::Value);
-
-    if (hasDynamicElements()) {
-        if (isArrayBuffer()) {
-            n += getElementsHeader()->initializedLength;
-        } else {
-            n += (js::ObjectElements::VALUES_PER_HEADER + getElementsHeader()->capacity) *
-                 sizeof(js::Value);
-        }
-    }
-
-    return n;
-}
-
-inline void
-JSObject::sizeOfExcludingThis(JSMallocSizeOfFun mallocSizeOf, JS::ObjectsExtraSizes *sizes)
-{
-    if (hasDynamicSlots())
-        sizes->slots = mallocSizeOf(slots);
-
-    if (hasDynamicElements())
-        sizes->elements = mallocSizeOf(getElementsHeader());
-
-    // Other things may be measured in the future if DMD indicates it is worthwhile.
-    // Note that sizes->private_ is measured elsewhere.
-    if (isArguments()) {
-        sizes->argumentsData = asArguments().sizeOfMisc(mallocSizeOf);
-    } else if (isRegExpStatics()) {
-        sizes->regExpStatics = js::SizeOfRegExpStaticsData(this, mallocSizeOf);
-    } else if (isPropertyIterator()) {
-        sizes->propertyIteratorData = asPropertyIterator().sizeOfMisc(mallocSizeOf);
-#ifdef JS_HAS_CTYPES
-    } else {
-        // This must be the last case.
-        sizes->ctypesData = js::SizeOfDataIfCDataObject(mallocSizeOf, const_cast<JSObject *>(this));
-#endif
-    }
 }
 
 /* static */ inline JSBool
@@ -1328,7 +1282,6 @@ JSObject::global() const
     JSObject *obj = const_cast<JSObject *>(this);
     while (JSObject *parent = obj->getParent())
         obj = parent;
-    JS_ASSERT(&obj->asGlobal() == compartment()->maybeGlobal());
 #endif
     return *compartment()->maybeGlobal();
 }
@@ -1701,7 +1654,7 @@ CopyInitializerObject(JSContext *cx, HandleObject baseobj, NewObjectKind newKind
 
     gc::AllocKind allocKind = gc::GetGCObjectFixedSlotsKind(baseobj->numFixedSlots());
     allocKind = gc::GetBackgroundAllocKind(allocKind);
-    JS_ASSERT(allocKind == baseobj->getAllocKind());
+    JS_ASSERT_IF(baseobj->isTenured(), allocKind == baseobj->tenuredGetAllocKind());
     RootedObject obj(cx);
     obj = NewBuiltinClassInstance(cx, &ObjectClass, allocKind, newKind);
     if (!obj)

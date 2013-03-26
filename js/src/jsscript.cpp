@@ -121,7 +121,8 @@ Bindings::initWithTemporaryStorage(JSContext *cx, InternalBindingsHandle self,
             return false;
 #endif
 
-        StackBaseShape base(&CallClass, cx->global(), BaseShape::VAROBJ | BaseShape::DELEGATE);
+        StackBaseShape base(cx->compartment, &CallClass, cx->global(),
+                            BaseShape::VAROBJ | BaseShape::DELEGATE);
 
         RawUnownedBaseShape nbase = BaseShape::getUnowned(cx, base);
         if (!nbase)
@@ -404,7 +405,8 @@ js::XDRScript(XDRState<mode> *xdr, HandleObject enclosingScope, HandleScript enc
         IsGenerator,
         IsGeneratorExp,
         OwnSource,
-        ExplicitUseStrict
+        ExplicitUseStrict,
+        SelfHosted
     };
 
     uint32_t length, lineno, nslots;
@@ -472,6 +474,8 @@ js::XDRScript(XDRState<mode> *xdr, HandleObject enclosingScope, HandleScript enc
             scriptBits |= (1 << Strict);
         if (script->explicitUseStrict)
             scriptBits |= (1 << ExplicitUseStrict);
+        if (script->selfHosted)
+            scriptBits |= (1 << SelfHosted);
         if (script->bindingsAccessedDynamically)
             scriptBits |= (1 << ContainsDynamicNameAccess);
         if (script->funHasExtensibleScope)
@@ -530,7 +534,8 @@ js::XDRScript(XDRState<mode> *xdr, HandleObject enclosingScope, HandleScript enc
         // staticLevel is set below.
         CompileOptions options(cx);
         options.setVersion(version_)
-               .setNoScriptRval(!!(scriptBits & (1 << NoScriptRval)));
+               .setNoScriptRval(!!(scriptBits & (1 << NoScriptRval)))
+               .setSelfHostingMode(!!(scriptBits & (1 << SelfHosted)));
         ScriptSource *ss;
         if (scriptBits & (1 << OwnSource)) {
             ss = cx->new_<ScriptSource>();
@@ -1183,13 +1188,15 @@ JSFlatString *
 ScriptSource::substring(JSContext *cx, uint32_t start, uint32_t stop)
 {
     const jschar *chars;
-#if USE_ZLIB
+#ifdef USE_ZLIB
     Rooted<JSStableString *> cached(cx, NULL);
+#endif
 #ifdef JS_THREADSAFE
     if (!ready()) {
         chars = cx->runtime->sourceCompressorThread.currentChars();
     } else
 #endif
+#ifdef USE_ZLIB
     if (compressed()) {
         cached = cx->runtime->sourceDataCache.lookup(this);
         if (!cached) {
@@ -1480,7 +1487,7 @@ js::SaveSharedScriptData(JSContext *cx, Handle<JSScript *> script, SharedScriptD
      * old scripts or exceptions pointing to the bytecode may no longer be
      * reachable. This is effectively a read barrier.
      */
-    if (IsIncrementalGCInProgress(rt) && rt->gcIsFull)
+    if (JS::IsIncrementalGCInProgress(rt) && rt->gcIsFull)
         ssd->marked = true;
 #endif
 
@@ -1637,6 +1644,7 @@ JSScript::Create(JSContext *cx, HandleObject enclosingScope, bool savedCallerFun
 
     script->enclosingScopeOrOriginalFunction_ = enclosingScope;
     script->savedCallerFun = savedCallerFun;
+    script->compartment_ = cx->compartment;
 
     /* Establish invariant: principals implies originPrincipals. */
     if (options.principals) {
@@ -2679,6 +2687,8 @@ JSScript::markChildren(JSTracer *trc)
         MarkObject(trc, &enclosingScopeOrOriginalFunction_, "enclosing");
 
     if (IS_GC_MARKING_TRACER(trc)) {
+        compartment()->mark();
+
         if (code)
             MarkScriptBytecode(trc->runtime, code);
     }
@@ -2820,7 +2830,7 @@ JSScript::argumentsOptimizationFailed(JSContext *cx, HandleScript script)
 
 #ifdef JS_METHODJIT
     if (script->hasMJITInfo()) {
-        mjit::ExpandInlineFrames(cx->compartment);
+        mjit::ExpandInlineFrames(cx->zone());
         mjit::Recompiler::clearStackReferences(cx->runtime->defaultFreeOp(), script);
         mjit::ReleaseScriptCode(cx->runtime->defaultFreeOp(), script);
     }

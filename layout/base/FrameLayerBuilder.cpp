@@ -24,7 +24,7 @@
 #include "nsSVGIntegrationUtils.h"
 
 #include "mozilla/Preferences.h"
-#include "sampler.h"
+#include "GeckoProfiler.h"
 #include "mozilla/gfx/Tools.h"
 
 #include "nsAnimationManager.h"
@@ -759,22 +759,11 @@ FrameLayerBuilder::Init(nsDisplayListBuilder* aBuilder, LayerManager* aManager)
 void
 FrameLayerBuilder::FlashPaint(gfxContext *aContext)
 {
-  static bool sPaintFlashingEnabled;
-  static bool sPaintFlashingPrefCached = false;
-
-  if (!sPaintFlashingPrefCached) {
-    sPaintFlashingPrefCached = true;
-    mozilla::Preferences::AddBoolVarCache(&sPaintFlashingEnabled,
-                                          "nglayout.debug.paint_flashing");
-  }
-
-  if (sPaintFlashingEnabled) {
-    float r = float(rand()) / RAND_MAX;
-    float g = float(rand()) / RAND_MAX;
-    float b = float(rand()) / RAND_MAX;
-    aContext->SetColor(gfxRGBA(r, g, b, 0.2));
-    aContext->Paint();
-  }
+  float r = float(rand()) / RAND_MAX;
+  float g = float(rand()) / RAND_MAX;
+  float b = float(rand()) / RAND_MAX;
+  aContext->SetColor(gfxRGBA(r, g, b, 0.4));
+  aContext->Paint();
 }
 
 FrameLayerBuilder::DisplayItemData*
@@ -2059,7 +2048,7 @@ ContainerState::ProcessDisplayItems(const nsDisplayList& aList,
                                     uint32_t aFlags,
                                     const nsIFrame* aForceActiveScrolledRoot)
 {
-  SAMPLE_LABEL("ContainerState", "ProcessDisplayItems");
+  PROFILER_LABEL("ContainerState", "ProcessDisplayItems");
 
   const nsIFrame* lastActiveScrolledRoot = nullptr;
   nsPoint topLeft;
@@ -2147,7 +2136,8 @@ ContainerState::ProcessDisplayItems(const nsDisplayList& aList,
       // Note that items without their own layers can't be skipped this
       // way, since their ThebesLayer may decide it wants to draw them
       // into its buffer even if they're currently covered.
-      if (itemVisibleRect.IsEmpty() && layerState != LAYER_ACTIVE_EMPTY) {
+      if (itemVisibleRect.IsEmpty() &&
+          !item->ShouldBuildLayerEvenIfInvisible(mBuilder)) {
         continue;
       }
 
@@ -2203,7 +2193,9 @@ ContainerState::ProcessDisplayItems(const nsDisplayList& aList,
         data->mDrawAboveRegion.SimplifyOutward(4);
       }
       itemVisibleRect.MoveBy(mParameters.mOffset);
-      RestrictVisibleRegionForLayer(ownLayer, itemVisibleRect);
+      if (!nsDisplayTransform::IsLayerPrerendered(ownLayer)) {
+        RestrictVisibleRegionForLayer(ownLayer, itemVisibleRect);
+      }
 
       // rounded rectangle clipping using mask layers
       // (must be done after visible rect is set on layer)
@@ -2689,14 +2681,15 @@ ContainerState::Finish(uint32_t* aTextContentFlags, LayerManagerData* aData)
   *aTextContentFlags = textContentFlags;
 }
 
-static FrameLayerBuilder::ContainerParameters
+static bool
 ChooseScaleAndSetTransform(FrameLayerBuilder* aLayerBuilder,
                            nsDisplayListBuilder* aDisplayListBuilder,
                            nsIFrame* aContainerFrame,
                            const gfx3DMatrix* aTransform,
                            const FrameLayerBuilder::ContainerParameters& aIncomingScale,
                            ContainerLayer* aLayer,
-                           LayerState aState)
+                           LayerState aState,
+                           FrameLayerBuilder::ContainerParameters& aOutgoingScale)
 {
   nsIntPoint offset;
 
@@ -2730,6 +2723,9 @@ ChooseScaleAndSetTransform(FrameLayerBuilder* aLayerBuilder,
   }
   transform = transform * gfx3DMatrix::Translation(offset.x + aIncomingScale.mOffset.x, offset.y + aIncomingScale.mOffset.y, 0);
 
+  if (transform.IsSingular()) {
+    return false;
+  }
 
   bool canDraw2D = transform.CanDraw2D(&transform2d);
   gfxSize scale;
@@ -2791,18 +2787,18 @@ ChooseScaleAndSetTransform(FrameLayerBuilder* aLayerBuilder,
   aLayer->SetInheritedScale(aIncomingScale.mXScale,
                             aIncomingScale.mYScale);
 
-  FrameLayerBuilder::ContainerParameters
-    result(scale.width, scale.height, -offset, aIncomingScale);
+  aOutgoingScale = 
+    FrameLayerBuilder::ContainerParameters(scale.width, scale.height, -offset, aIncomingScale);
   if (aTransform) {
-    result.mInTransformedSubtree = true;
+    aOutgoingScale.mInTransformedSubtree = true;
     if (aContainerFrame->AreLayersMarkedActive(nsChangeHint_UpdateTransformLayer)) {
-      result.mInActiveTransformedSubtree = true;
+      aOutgoingScale.mInActiveTransformedSubtree = true;
     }
   }
   if (isRetained && (!canDraw2D || transform2d.HasNonIntegerTranslation())) {
-    result.mDisableSubpixelAntialiasingInDescendants = true;
+    aOutgoingScale.mDisableSubpixelAntialiasingInDescendants = true;
   }
-  return result;
+  return true;
 }
 
 /* static */ PLDHashOperator
@@ -2914,9 +2910,11 @@ FrameLayerBuilder::BuildContainerLayerFor(nsDisplayListBuilder* aBuilder,
     return containerLayer.forget();
   }
 
-  ContainerParameters scaleParameters =
-    ChooseScaleAndSetTransform(this, aBuilder, aContainerFrame, aTransform, aParameters,
-                               containerLayer, state);
+  ContainerParameters scaleParameters;
+  if (!ChooseScaleAndSetTransform(this, aBuilder, aContainerFrame, aTransform, aParameters,
+                                  containerLayer, state, scaleParameters)) {
+    return nullptr;
+  }
 
   uint32_t oldGeneration = mContainerLayerGeneration;
   mContainerLayerGeneration = ++mMaxContainerLayerGeneration;
@@ -3194,7 +3192,7 @@ FrameLayerBuilder::DrawThebesLayer(ThebesLayer* aLayer,
                                    const nsIntRegion& aRegionToInvalidate,
                                    void* aCallbackData)
 {
-  SAMPLE_LABEL("gfx", "DrawThebesLayer");
+  PROFILER_LABEL("gfx", "DrawThebesLayer");
 
   nsDisplayListBuilder* builder = static_cast<nsDisplayListBuilder*>
     (aCallbackData);
@@ -3361,7 +3359,10 @@ FrameLayerBuilder::DrawThebesLayer(ThebesLayer* aLayer,
     aContext->Restore();
   }
 
-  FlashPaint(aContext);
+  if (presContext->RefreshDriver()->GetPaintFlashing()) {
+    FlashPaint(aContext);
+  }
+
   if (!aRegionToInvalidate.IsEmpty()) {
     aLayer->AddInvalidRect(aRegionToInvalidate.GetBounds());
   }

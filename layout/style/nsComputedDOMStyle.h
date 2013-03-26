@@ -17,6 +17,7 @@
 #include "nsStyleContext.h"
 #include "nsStyleStruct.h"
 #include "nsIWeakReferenceUtils.h"
+#include "nsIContent.h"
 
 namespace mozilla {
 namespace dom {
@@ -322,7 +323,7 @@ private:
   /* Display properties */
   mozilla::dom::CSSValue* DoGetBinding();
   mozilla::dom::CSSValue* DoGetClear();
-  mozilla::dom::CSSValue* DoGetCssFloat();
+  mozilla::dom::CSSValue* DoGetFloat();
   mozilla::dom::CSSValue* DoGetDisplay();
   mozilla::dom::CSSValue* DoGetPosition();
   mozilla::dom::CSSValue* DoGetClip();

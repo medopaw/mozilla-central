@@ -40,7 +40,7 @@
 #include "nsContentUtils.h"
 #include "mozilla/Preferences.h"
 #include "nsViewManager.h"
-#include "sampler.h"
+#include "GeckoProfiler.h"
 #include "nsNPAPIPluginInstance.h"
 
 using mozilla::TimeStamp;
@@ -528,6 +528,8 @@ nsRefreshDriver::nsRefreshDriver(nsPresContext* aPresContext)
   mMostRecentRefreshEpochTime = JS_Now();
   mMostRecentRefresh = TimeStamp::Now();
 
+  mPaintFlashing = Preferences::GetBool("nglayout.debug.paint_flashing");
+
   mRequests.Init();
 }
 
@@ -826,7 +828,7 @@ nsRefreshDriver::Tick(int64_t aNowEpoch, TimeStamp aNowTime)
     return;
   }
 
-  SAMPLE_LABEL("nsRefreshDriver", "Tick");
+  PROFILER_LABEL("nsRefreshDriver", "Tick");
 
   // We're either frozen or we were disconnected (likely in the middle
   // of a tick iteration).  Just do nothing here, since our

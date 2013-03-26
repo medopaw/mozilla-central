@@ -54,7 +54,7 @@
 #include "nsClientRect.h"
 #include <algorithm>
 #ifdef MOZ_MEDIA
-#include "nsHTMLVideoElement.h"
+#include "mozilla/dom/HTMLVideoElement.h"
 #endif
 #include "mozilla/dom/HTMLImageElement.h"
 #include "imgIRequest.h"
@@ -88,7 +88,7 @@
 #include "nsXULPopupManager.h"
 #endif
 
-#include "sampler.h"
+#include "GeckoProfiler.h"
 #include "nsAnimationManager.h"
 #include "nsTransitionManager.h"
 #include "nsViewportInfo.h"
@@ -621,8 +621,7 @@ nsLayoutUtils::GetChildListNameFor(nsIFrame* aChildFrame)
       return nsIFrame::kPopupList;
 #endif // MOZ_XUL
     } else {
-      NS_ASSERTION(aChildFrame->IsFloating(),
-                   "not a floated frame");
+      NS_ASSERTION(aChildFrame->IsFloating(), "not a floated frame");
       id = nsIFrame::kFloatList;
     }
 
@@ -660,6 +659,10 @@ nsLayoutUtils::GetChildListNameFor(nsIFrame* aChildFrame)
     else if (aChildFrame->IsFloating()) {
       found = parent->GetChildList(nsIFrame::kOverflowOutOfFlowList)
                 .ContainsFrame(aChildFrame);
+      if (!found) {
+        found = parent->GetChildList(nsIFrame::kPushedFloatsList)
+                  .ContainsFrame(aChildFrame);
+      }
     }
     // else it's positioned and should have been on the 'id' child list.
     NS_POSTCONDITION(found, "not in child list");
@@ -1741,7 +1744,7 @@ nsLayoutUtils::GetFrameForPoint(nsIFrame* aFrame, nsPoint aPt,
                                 bool aShouldIgnoreSuppression,
                                 bool aIgnoreRootScrollFrame)
 {
-  SAMPLE_LABEL("nsLayoutUtils", "GetFrameForPoint");
+  PROFILER_LABEL("nsLayoutUtils", "GetFrameForPoint");
   nsresult rv;
   nsAutoTArray<nsIFrame*,8> outFrames;
   rv = GetFramesForArea(aFrame, nsRect(aPt, nsSize(1, 1)), outFrames,
@@ -1756,7 +1759,7 @@ nsLayoutUtils::GetFramesForArea(nsIFrame* aFrame, const nsRect& aRect,
                                 bool aShouldIgnoreSuppression,
                                 bool aIgnoreRootScrollFrame)
 {
-  SAMPLE_LABEL("nsLayoutUtils","GetFramesForArea");
+  PROFILER_LABEL("nsLayoutUtils","GetFramesForArea");
   nsDisplayListBuilder builder(aFrame, nsDisplayListBuilder::EVENT_DELIVERY,
 		                       false);
   nsDisplayList list;
@@ -1796,7 +1799,7 @@ nsLayoutUtils::PaintFrame(nsRenderingContext* aRenderingContext, nsIFrame* aFram
                           const nsRegion& aDirtyRegion, nscolor aBackstop,
                           uint32_t aFlags)
 {
-  SAMPLE_LABEL("nsLayoutUtils","PaintFrame");
+  PROFILER_LABEL("nsLayoutUtils","PaintFrame");
   if (aFlags & PAINT_WIDGET_LAYERS) {
     nsView* view = aFrame->GetView();
     if (!(view && view->GetWidget() && GetDisplayRootFrame(aFrame) == aFrame)) {
@@ -1914,7 +1917,7 @@ nsLayoutUtils::PaintFrame(nsRenderingContext* aRenderingContext, nsIFrame* aFram
   nsRect dirtyRect = visibleRegion.GetBounds();
   builder.EnterPresShell(aFrame, dirtyRect);
   {
-    SAMPLE_LABEL("nsLayoutUtils","PaintFrame::BuildDisplayList");
+    PROFILER_LABEL("nsLayoutUtils","PaintFrame::BuildDisplayList");
     aFrame->BuildDisplayListForStackingContext(&builder, dirtyRect, &list);
   }
   const bool paintAllContinuations = aFlags & PAINT_ALL_CONTINUATIONS;
@@ -1927,7 +1930,7 @@ nsLayoutUtils::PaintFrame(nsRenderingContext* aRenderingContext, nsIFrame* aFram
   if (paintAllContinuations) {
     nsIFrame* currentFrame = aFrame;
     while ((currentFrame = currentFrame->GetNextContinuation()) != nullptr) {
-      SAMPLE_LABEL("nsLayoutUtils","PaintFrame::ContinuationsBuildDisplayList");
+      PROFILER_LABEL("nsLayoutUtils","PaintFrame::ContinuationsBuildDisplayList");
       nsRect frameDirty = dirtyRect - builder.ToReferenceFrame(currentFrame);
       currentFrame->BuildDisplayListForStackingContext(&builder,
                                                        frameDirty, &list);
@@ -2258,10 +2261,12 @@ void nsLayoutUtils::RectAccumulator::AddRect(const nsRect& aRect) {
 }
 
 nsLayoutUtils::RectListBuilder::RectListBuilder(nsClientRectList* aList)
-  : mRectList(aList), mRV(NS_OK) {}
+  : mRectList(aList)
+{
+}
 
 void nsLayoutUtils::RectListBuilder::AddRect(const nsRect& aRect) {
-  nsRefPtr<nsClientRect> rect = new nsClientRect();
+  nsRefPtr<nsClientRect> rect = new nsClientRect(mRectList);
 
   rect->SetLayoutRect(aRect);
   mRectList->Append(rect);
@@ -4158,7 +4163,7 @@ nsLayoutUtils::DrawBackgroundImage(nsRenderingContext* aRenderingContext,
                                    const nsRect&       aDirty,
                                    uint32_t            aImageFlags)
 {
-  SAMPLE_LABEL("layout", "nsLayoutUtils::DrawBackgroundImage");
+  PROFILER_LABEL("layout", "nsLayoutUtils::DrawBackgroundImage");
 
   if (UseBackgroundNearestFiltering()) {
     aGraphicsFilter = gfxPattern::FILTER_NEAREST;
@@ -4642,7 +4647,7 @@ nsLayoutUtils::SurfaceFromElement(HTMLCanvasElement* aElement,
 }
 
 nsLayoutUtils::SurfaceFromElementResult
-nsLayoutUtils::SurfaceFromElement(nsHTMLVideoElement* aElement,
+nsLayoutUtils::SurfaceFromElement(HTMLVideoElement* aElement,
                                   uint32_t aSurfaceFlags)
 {
   SurfaceFromElementResult result;
@@ -4707,8 +4712,8 @@ nsLayoutUtils::SurfaceFromElement(dom::Element* aElement,
 
 #ifdef MOZ_MEDIA
   // Maybe it's <video>?
-  if (nsHTMLVideoElement* video =
-        nsHTMLVideoElement::FromContentOrNull(aElement)) {
+  if (HTMLVideoElement* video =
+        HTMLVideoElement::FromContentOrNull(aElement)) {
     return SurfaceFromElement(video, aSurfaceFlags);
   }
 #endif
@@ -5272,7 +5277,7 @@ ShouldInflateFontsForContainer(const nsIFrame *aFrame)
          !(aFrame->GetStateBits() & NS_FRAME_IN_CONSTRAINED_HEIGHT) &&
          // We also want to disable font inflation for containers that have
          // preformatted text.
-         styleText->WhiteSpaceCanWrap();
+         styleText->WhiteSpaceCanWrap(aFrame);
 }
 
 nscoord

@@ -159,7 +159,8 @@ TopSitesView.prototype = {
       if (this._useThumbs) {
         let thumbnail = PageThumbs.getThumbnailURL(uri);
         let cssthumbnail = 'url("'+thumbnail+'")';
-        item.backgroundImage = cssthumbnail;
+        // Use setAttribute because binding properties may not be available yet.
+        item.setAttribute("customImage", cssthumbnail);
       }
     }
     rootNode.containerOpen = false;
@@ -237,7 +238,7 @@ let TopSitesStartView = {
   get _grid() { return document.getElementById("start-topsites-grid"); },
 
   init: function init() {
-    this._view = new TopSitesView(this._grid, 9, true);
+    this._view = new TopSitesView(this._grid, 8, true);
     if (this._view.isFirstRun()) {
       let topsitesVbox = document.getElementById("start-topsites");
       topsitesVbox.setAttribute("hidden", "true");
@@ -258,11 +259,11 @@ let TopSitesSnappedView = {
   get _grid() { return document.getElementById("snapped-topsite-grid"); },
 
   show: function show() {
-    this._grid.arrangeItems(1, 9);
+    this._grid.arrangeItems(1, 8);
   },
 
   init: function() {
-    this._view = new TopSitesView(this._grid, 9);
+    this._view = new TopSitesView(this._grid, 8);
     if (this._view.isFirstRun()) {
       let topsitesVbox = document.getElementById("snapped-topsites");
       topsitesVbox.setAttribute("hidden", "true");

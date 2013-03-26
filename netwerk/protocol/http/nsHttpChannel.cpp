@@ -29,7 +29,7 @@
 #include "mozilla/TimeStamp.h"
 #include "nsError.h"
 #include "nsAlgorithm.h"
-#include "sampler.h"
+#include "GeckoProfiler.h"
 #include "nsIConsoleService.h"
 #include "base/compiler_specific.h"
 #include "NullHttpTransaction.h"
@@ -4377,6 +4377,7 @@ nsHttpChannel::AsyncOpen(nsIStreamListener *listener, nsISupports *context)
     // that to complete would mean we don't include proxy resolution in the
     // timing.
     mAsyncOpenTime = TimeStamp::Now();
+    mCacheEffectExperimentAsyncOpenTime = mAsyncOpenTime;
 
     // the only time we would already know the proxy information at this
     // point would be if we were proxying a non-http protocol like ftp
@@ -4843,7 +4844,7 @@ nsHttpChannel::GetRequestMethod(nsACString& aMethod)
 NS_IMETHODIMP
 nsHttpChannel::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
 {
-    SAMPLE_LABEL("nsHttpChannel", "OnStartRequest");
+    PROFILER_LABEL("nsHttpChannel", "OnStartRequest");
     if (!(mCanceled || NS_FAILED(mStatus))) {
         // capture the request's status, so our consumers will know ASAP of any
         // connection failures, etc - bug 93581
@@ -4949,7 +4950,7 @@ nsHttpChannel::ContinueOnStartRequest3(nsresult result)
 NS_IMETHODIMP
 nsHttpChannel::OnStopRequest(nsIRequest *request, nsISupports *ctxt, nsresult status)
 {
-    SAMPLE_LABEL("network", "nsHttpChannel::OnStopRequest");
+    PROFILER_LABEL("network", "nsHttpChannel::OnStopRequest");
     LOG(("nsHttpChannel::OnStopRequest [this=%p request=%p status=%x]\n",
         this, request, status));
 
@@ -5080,7 +5081,15 @@ nsHttpChannel::OnStopRequest(nsIRequest *request, nsISupports *ctxt, nsresult st
     CleanRedirectCacheChainIfNecessary();
 
     ReleaseListeners();
-    
+
+    // If enabled, record the cache effect experiment data
+    if (NS_SUCCEEDED(status) && contentComplete && !mCanceled) {
+        Telemetry::ID telemID = gHttpHandler->mCacheEffectExperimentTelemetryID;
+        if (telemID != nsHttpHandler::kNullTelemetryID) {
+            Telemetry::AccumulateTimeDelta(telemID,
+                                           mCacheEffectExperimentAsyncOpenTime);
+        }
+    }
     return NS_OK;
 }
 
@@ -5093,7 +5102,7 @@ nsHttpChannel::OnDataAvailable(nsIRequest *request, nsISupports *ctxt,
                                nsIInputStream *input,
                                uint64_t offset, uint32_t count)
 {
-    SAMPLE_LABEL("network", "nsHttpChannel::OnDataAvailable");
+    PROFILER_LABEL("network", "nsHttpChannel::OnDataAvailable");
     LOG(("nsHttpChannel::OnDataAvailable [this=%p request=%p offset=%llu count=%u]\n",
         this, request, offset, count));
 

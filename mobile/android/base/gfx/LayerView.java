@@ -20,6 +20,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -465,21 +466,25 @@ public class LayerView extends FrameLayout {
     }
 
     private class SurfaceTextureListener implements TextureView.SurfaceTextureListener {
+        @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
             // We don't do this for surfaceCreated above because it is always followed by a surfaceChanged,
             // but that is not the case here.
             onSizeChanged(width, height);
         }
 
+        @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
             onDestroyed();
             return true; // allow Android to call release() on the SurfaceTexture, we are done drawing to it
         }
 
+        @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
             onSizeChanged(width, height);
         }
 
+        @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
         }
@@ -487,7 +492,9 @@ public class LayerView extends FrameLayout {
 
     @Override
     public void setOverScrollMode(int overscrollMode) {
-        super.setOverScrollMode(overscrollMode);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            super.setOverScrollMode(overscrollMode);
+        }
         if (mPanZoomController != null) {
             mPanZoomController.setOverScrollMode(overscrollMode);
         }
@@ -498,7 +505,11 @@ public class LayerView extends FrameLayout {
         if (mPanZoomController != null) {
             return mPanZoomController.getOverScrollMode();
         }
-        return super.getOverScrollMode();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            return super.getOverScrollMode();
+        }
+        return View.OVER_SCROLL_ALWAYS;
     }
 
     @Override

@@ -918,7 +918,8 @@ class ObjectElements
 {
   public:
     enum Flags {
-        CONVERT_DOUBLE_ELEMENTS = 0x1
+        CONVERT_DOUBLE_ELEMENTS = 0x1,
+        ASMJS_ARRAY_BUFFER = 0x2
     };
 
   private:
@@ -961,6 +962,12 @@ class ObjectElements
     void setShouldConvertDoubleElements() {
         flags |= CONVERT_DOUBLE_ELEMENTS;
     }
+    bool isAsmJSArrayBuffer() const {
+        return flags & ASMJS_ARRAY_BUFFER;
+    }
+    void setIsAsmJSArrayBuffer() {
+        flags |= ASMJS_ARRAY_BUFFER;
+    }
 
   public:
     ObjectElements(uint32_t capacity, uint32_t length)
@@ -999,6 +1006,7 @@ struct ObjectOps;
 class Shape;
 
 class NewObjectCache;
+class TaggedProto;
 
 inline Value
 ObjectValue(ObjectImpl &obj);
@@ -1087,6 +1095,7 @@ class ObjectImpl : public gc::Cell
     }
 
     JSObject * asObjectPtr() { return reinterpret_cast<JSObject *>(this); }
+    const JSObject * asObjectPtr() const { return reinterpret_cast<const JSObject *>(this); }
 
     friend inline Value ObjectValue(ObjectImpl &obj);
 
@@ -1121,6 +1130,20 @@ class ObjectImpl : public gc::Cell
 #else
     void checkShapeConsistency() { }
 #endif
+
+    Shape *
+    replaceWithNewEquivalentShape(JSContext *cx, Shape *existingShape, Shape *newShape = NULL);
+
+    enum GenerateShape {
+        GENERATE_NONE,
+        GENERATE_SHAPE
+    };
+
+    bool setFlag(JSContext *cx, /*BaseShape::Flag*/ uint32_t flag,
+                 GenerateShape generateShape = GENERATE_NONE);
+    bool clearFlag(JSContext *cx, /*BaseShape::Flag*/ uint32_t flag);
+
+    bool toDictionaryMode(JSContext *cx);
 
   private:
     /*
@@ -1199,10 +1222,18 @@ class ObjectImpl : public gc::Cell
      */
 
   public:
+    inline js::TaggedProto getTaggedProto() const;
+
     Shape * lastProperty() const {
         MOZ_ASSERT(shape_);
         return shape_;
     }
+
+    bool generateOwnShape(JSContext *cx, js::Shape *newShape = NULL) {
+        return replaceWithNewEquivalentShape(cx, lastProperty(), newShape);
+    }
+
+    inline JSCompartment *compartment() const;
 
     inline bool isNative() const;
 
@@ -1325,7 +1356,7 @@ class ObjectImpl : public gc::Cell
     static inline uint32_t dynamicSlotsCount(uint32_t nfixed, uint32_t span);
 
     /* Memory usage functions. */
-    inline size_t sizeOfThis() const;
+    inline size_t tenuredSizeOfThis() const;
 
     /* Elements accessors. */
 
@@ -1363,6 +1394,7 @@ class ObjectImpl : public gc::Cell
     }
 
     /* GC support. */
+    JS_ALWAYS_INLINE Zone *zone() const;
     static inline ThingRootKind rootKind() { return THING_ROOT_OBJECT; }
     static inline void readBarrier(ObjectImpl *obj);
     static inline void writeBarrierPre(ObjectImpl *obj);

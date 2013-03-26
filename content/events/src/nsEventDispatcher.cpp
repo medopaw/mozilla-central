@@ -18,7 +18,7 @@
 #include "nsFrameLoader.h"
 #include "nsDOMTouchEvent.h"
 #include "nsDOMStorage.h"
-#include "sampler.h"
+#include "GeckoProfiler.h"
 #include "GeneratedEvents.h"
 
 using namespace mozilla;
@@ -429,7 +429,7 @@ nsEventDispatcher::Dispatch(nsISupports* aTarget,
                             nsDispatchingCallback* aCallback,
                             nsCOMArray<nsIDOMEventTarget>* aTargets)
 {
-  SAMPLE_LABEL("nsEventDispatcher", "Dispatch");
+  PROFILER_LABEL("nsEventDispatcher", "Dispatch");
   NS_ASSERTION(aEvent, "Trying to dispatch without nsEvent!");
   NS_ENSURE_TRUE(!aEvent->mFlags.mIsBeingDispatched,
                  NS_ERROR_ILLEGAL_VALUE);
@@ -860,6 +860,8 @@ nsEventDispatcher::CreateEvent(mozilla::dom::EventTarget* aOwner,
     return NS_NewDOMCustomEvent(aDOMEvent, aOwner, aPresContext, nullptr);
   if (aEventType.LowerCaseEqualsLiteral("mozsmsevent"))
     return NS_NewDOMMozSmsEvent(aDOMEvent, aOwner, aPresContext, nullptr);
+  if (aEventType.LowerCaseEqualsLiteral("mozmmsevent"))
+    return NS_NewDOMMozMmsEvent(aDOMEvent, aOwner, aPresContext, nullptr);
   if (aEventType.LowerCaseEqualsLiteral("storageevent")) {
     return NS_NewDOMStorageEvent(aDOMEvent, aOwner, aPresContext, nullptr);
   }
