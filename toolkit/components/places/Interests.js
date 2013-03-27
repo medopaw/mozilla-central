@@ -221,13 +221,16 @@ Interests.prototype = {
   _getMetaForInterests: function I__getMetaForInterests(interestNames) {
     let deferred = Promise.defer();
     PlacesInterestsStorage.getMetaForInterests(interestNames).then(function(metaData) {
-      for(let index=0; index < metaData.length; index++) {
-        let threshold = metaData[index].threshold;
-        let duration = metaData[index].duration;
-        metaData[index].threshold = threshold ? threshold : DEFAULT_THRESHOLD;
-        metaData[index].duration = duration ? duration : DEFAULT_DURATION;
-        delete metaData[index].ignored;
-        delete metaData[index].dateUpdated;
+      for (let index=0; index < interestNames.length; index++) {
+        let interest = interestNames[index];
+        if (metaData[interest]) {
+          let threshold = metaData[interest].threshold;
+          let duration = metaData[interest].duration;
+          metaData[interest].threshold = threshold ? threshold : DEFAULT_THRESHOLD;
+          metaData[interest].duration = duration ? duration : DEFAULT_DURATION;
+          delete metaData[interest].ignored;
+          delete metaData[interest].dateUpdated;
+        }
       }
       deferred.resolve(metaData);
     },
@@ -385,11 +388,12 @@ InterestsWebAPI.prototype = {
         scoreTotal += topInterests[index].score;
       }
       gInterestsService._getMetaForInterests(interestNames).then(function(metaData){
-        for(let index=0; index < metaData.length; index++) {
+        for(let index=0; index < interestNames.length; index++) {
+          let interest = interestNames[index];
           // obtain metadata and apply thresholds
-          topInterests[index].recency.immediate = topInterests[index].recency.immediate >= metaData[index].threshold;
-          topInterests[index].recency.recent = topInterests[index].recency.recent >= metaData[index].threshold;
-          topInterests[index].recency.past = topInterests[index].recency.past >= metaData[index].threshold;
+          topInterests[index].recency.immediate = topInterests[index].recency.immediate >= metaData[interest].threshold;
+          topInterests[index].recency.recent = topInterests[index].recency.recent >= metaData[interest].threshold;
+          topInterests[index].recency.past = topInterests[index].recency.past >= metaData[interest].threshold;
           
           // normalize scores
           topInterests[index].score /= scoreTotal;

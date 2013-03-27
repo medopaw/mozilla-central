@@ -36,18 +36,6 @@ function genSQLParamList(aNumber) {
   return paramStr
 }
 
-/*
- * Generates a string for generating case/when/then clauses for use in ordering sequences
- */
-function genCaseOrdering(aFieldName, aNumber) {
-  let caseStr = "CASE ";
-  for(let index = 1; index <= aNumber; index++) {
-    caseStr += "WHEN " + aFieldName + " = ?" + (index) + " THEN " + (index-1) + " ";
-  }
-  caseStr += "END";
-  return caseStr;
-}
-
 function AsyncPromiseHandler(deferred, rowCallback) {
   this.deferred = deferred;
   this.rowCallback = rowCallback;
@@ -375,38 +363,34 @@ let PlacesInterestsStorage = {
     let query = "SELECT m.bucket_visit_count_threshold, " +
                 "       m.bucket_duration, " +
                 "       m.ignored_flag, " +
-                "       m.date_updated " +
+                "       m.date_updated, " +
+                "       i.interest " +
                 "FROM moz_up_interests_meta m " +
                 "JOIN moz_up_interests i ON m.interest_id = i.id " +
                 "WHERE i.interest IN (" + genSQLParamList(interests.length) + ") ";
 
-    // this is to emulate ORDER BY FIELD, which sqlite doesn't have
-    if (interests.length > 0) {
-      query += "ORDER BY " + genCaseOrdering("i.interest", interests.length);
-    }
-
     let stmt = this.db.createAsyncStatement(query);
+
+
     for(let i = 0; i < interests.length; i++) {
       stmt.bindByIndex(i, interests[i]);
     }
+    let results = {};
 
     let queryDeferred = Promise.defer();
     let promiseHandler = new AsyncPromiseHandler(queryDeferred,function(row) {
-      promiseHandler.addToResultSet({
+      results[row.getResultByName('interest')] = {
         threshold: row.getResultByName('bucket_visit_count_threshold'),
         duration: row.getResultByName('bucket_duration'),
         ignored: row.getResultByName('ignored_flag') ? true : false,
         dateUpdated: row.getResultByName('date_updated'),
-      });
+      }
     });
     stmt.executeAsync(promiseHandler);
     stmt.finalize();
 
-    queryDeferred.promise.then(function(resultSet){
-      if (resultSet == undefined) {
-        resultSet = [];
-      }
-      returnDeferred.resolve(resultSet);
+    queryDeferred.promise.then(function(){
+      returnDeferred.resolve(results);
     });
 
     return returnDeferred.promise;
@@ -427,11 +411,11 @@ let PlacesInterestsStorage = {
 
       let duration;
 
-      if (metaData.length == 0) {
+      if (Object.keys(metaData).length == 0) {
         // in case no metadata exists for this interests
         duration = DEFAULT_DURATION;
       } else {
-        duration = metaData[0].duration || DEFAULT_DURATION;
+        duration = metaData[interest].duration || DEFAULT_DURATION;
       }
 
       let immediateBucket = currentTs - duration * MS_PER_DAY;
