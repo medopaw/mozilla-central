@@ -220,3 +220,37 @@ add_task(function test_PlacesInterestsStorageResubmitHistory()
 
 });
 
+
+add_task(function test_PlacesInterestsStorageGetDiversity()
+{
+  yield promiseClearHistory();
+  yield PlacesInterestsStorage.clearInterestsHosts();
+  yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.mozilla.org/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
+
+  yield PlacesInterestsStorage.addInterest("cars");
+  yield PlacesInterestsStorage.addInterest("computers");
+  yield PlacesInterestsStorage.addInterest("movies");
+  yield PlacesInterestsStorage.addInterest("shopping");
+
+  yield PlacesInterestsStorage.addInterestForHost("computers","samsung.com");
+  yield PlacesInterestsStorage.addInterestForHost("computers","mozilla.org");
+  yield PlacesInterestsStorage.addInterestForHost("cars","cars.com");
+  yield PlacesInterestsStorage.addInterestForHost("movies","netflix.com");
+  yield PlacesInterestsStorage.addInterestForHost("shopping","samsung.com");
+  yield PlacesInterestsStorage.addInterestForHost("cars","samsung.com");
+
+  yield PlacesInterestsStorage.getDiversityForInterests(["cars","computers","movies","shopping"]).then(function(results) {
+    do_check_eq(results["cars"] , 50);
+    do_check_eq(results["computers"] , 50);
+    do_check_eq(results["movies"] , 25);
+    do_check_eq(results["shopping"] , 25);
+  });
+
+  yield PlacesInterestsStorage.getDiversityForInterests(["cars"]).then(function(results) {
+    do_check_eq(results["cars"] , 50);
+  });
+});
+

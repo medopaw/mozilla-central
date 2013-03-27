@@ -62,6 +62,11 @@ add_task(function test_InterestWebAPI_getTopInterest()
   let now = Date.now();
   let results;
 
+  yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.mozilla.org/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
+
   // interests set with default values for threshold and duration
   yield PlacesInterestsStorage.addInterest("cars");
   yield PlacesInterestsStorage.addInterest("movies");
@@ -89,51 +94,56 @@ add_task(function test_InterestWebAPI_getTopInterest()
 
   // add visit
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield PlacesInterestsStorage.addInterestForHost("cars", "cars.com");
 
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
-  isIdentical([{"name":"cars","score":1,"recency":{"immediate":false,"recent":false,"past":false}}], results);
+  isIdentical([{"name":"cars","score":1,"diversity":25,"recency":{"immediate":false,"recent":false,"past":false}}], results);
 
   // add another visit for the same category, same day. do not cross threshold
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield PlacesInterestsStorage.addInterestForHost("cars", "netflix.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
-  isIdentical([{"name":"cars","score":1,"recency":{"immediate":false,"recent":false,"past":false}}], results);
+  isIdentical([{"name":"cars","score":1,"diversity":50,"recency":{"immediate":false,"recent":false,"past":false}}], results);
 
   // add more visits for the same category, same day. do cross threshold
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
+  yield PlacesInterestsStorage.addInterestForHost("cars", "samsung.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
-  isIdentical([{"name":"cars","score":1,"recency":{"immediate":true,"recent":false,"past":false}}], results);
+  isIdentical([{"name":"cars","score":1,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}}], results);
 
   // set new category to be downloaded. top interests unchanged
   yield PlacesInterestsStorage.addInterest("idontexistyet");
   yield PlacesInterestsStorage.setMetaForInterest("idontexistyet", {dateUpdated: 0});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
-  isIdentical([{"name":"cars","score":1,"recency":{"immediate":true,"recent":false,"past":false}}], results);
+  isIdentical([{"name":"cars","score":1,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}}], results);
 
   // add a few visits for another category, same day, new top interest
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 9});
+  yield PlacesInterestsStorage.addInterestForHost("technology", "samsung.com");
 
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   scoreTotal = 9 + 5;
   isIdentical([
-      {"name":"technology","score":9/scoreTotal,"recency":{"immediate":false,"recent":false,"past":false}},
-      {"name":"cars","score":5/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"technology","score":9/scoreTotal,"diversity":25,"recency":{"immediate":false,"recent":false,"past":false}},
+      {"name":"cars","score":5/scoreTotal,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}},
   ], results);
 
   // add visits for another category, one day ago
 
   yield PlacesInterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
+  yield PlacesInterestsStorage.addInterestForHost("movies", "netflix.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   scoreTotal = 9 + 5 + scoreDecay(3, 1, 28);
   isIdentical([
-      {"name":"technology","score":9/scoreTotal,"recency":{"immediate":false,"recent":false,"past":false}},
-      {"name":"cars","score":5/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"movies","score": scoreDecay(3, 1, 28)/scoreTotal,"recency":{"immediate":false,"recent":false,"past":false}},
+      {"name":"technology","score":9/scoreTotal,"diversity":25,"recency":{"immediate":false,"recent":false,"past":false}},
+      {"name":"cars","score":5/scoreTotal,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"movies","score": scoreDecay(3, 1, 28)/scoreTotal,"diversity":25,"recency":{"immediate":false,"recent":false,"past":false}},
   ], results);
 
   // make interest go beyond custom threshold
@@ -142,23 +152,24 @@ add_task(function test_InterestWebAPI_getTopInterest()
   unExposeAll(results);
   scoreTotal = 10 + 5 + scoreDecay(3, 1, 28);
   isIdentical([
-      {"name":"technology","score":10/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"cars","score":5/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"movies","score": scoreDecay(3, 1, 28)/scoreTotal,"recency":{"immediate":false,"recent":false,"past":false}},
+      {"name":"technology","score":10/scoreTotal,"diversity":25,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"cars","score":5/scoreTotal,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"movies","score": scoreDecay(3, 1, 28)/scoreTotal,"diversity":25,"recency":{"immediate":false,"recent":false,"past":false}},
   ], results);
 
   // add visits to the same category over multiple days
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*0), visitCount: 15});
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*1), visitCount: 5});
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
+  yield PlacesInterestsStorage.addInterestForHost("video-games", "cars.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   scoreTotal = (15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28)) + 10 + 5 + scoreDecay(3, 1, 28);
   isIdentical([
-      {"name":"video-games","score":(15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28))/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"technology","score":10/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"cars","score":5/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"movies","score": scoreDecay(3, 1, 28)/scoreTotal,"recency":{"immediate":false,"recent":false,"past":false}},
+      {"name":"video-games","score":(15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28))/scoreTotal,"diversity":25,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"technology","score":10/scoreTotal,"diversity":25,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"cars","score":5/scoreTotal,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"movies","score": scoreDecay(3, 1, 28)/scoreTotal,"diversity":25,"recency":{"immediate":false,"recent":false,"past":false}},
   ], results);
 
   // add a couple more interest visits to get top 5. food will show, history won't show up
@@ -169,17 +180,22 @@ add_task(function test_InterestWebAPI_getTopInterest()
   unExposeAll(results);
   scoreTotal = (15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28)) + 10 + 5 + scoreDecay(3, 1, 28) + scoreDecay(5, 15, 28);
   isIdentical([
-      {"name":"video-games","score":(15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28))/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"technology","score":10/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"cars","score":5/scoreTotal,"recency":{"immediate":true,"recent":false,"past":false}},
-      {"name":"movies","score": scoreDecay(3, 1, 28)/scoreTotal,"recency":{"immediate":false,"recent":false,"past":false}},
-      {"name":"food","score": scoreDecay(5, 15, 28)/scoreTotal,"recency":{"immediate":false,"recent":true,"past":false}},
+      {"name":"video-games","score":(15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28))/scoreTotal,"diversity":25,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"technology","score":10/scoreTotal,"diversity":25,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"cars","score":5/scoreTotal,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}},
+      {"name":"movies","score": scoreDecay(3, 1, 28)/scoreTotal,"diversity":25,"recency":{"immediate":false,"recent":false,"past":false}},
+      {"name":"food","score": scoreDecay(5, 15, 28)/scoreTotal,"diversity":0,"recency":{"immediate":false,"recent":true,"past":false}},
   ], results);
 
   yield PlacesInterestsStorage.clearRecentInterests(100);
   // add visits to a category beyond test threshold, i.e. 29 days and beyond
   // the category should not show up
+  yield promiseAddVisits(NetUtil.newURI("http://www.site1.com/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.site2.com/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.site3.com/"));
   yield PlacesInterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*29), visitCount: 5});
+  yield PlacesInterestsStorage.addInterestForHost("history", "site1.com");
+  yield PlacesInterestsStorage.addInterestForHost("history", "site2.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([], results);
@@ -190,13 +206,15 @@ add_task(function test_InterestWebAPI_getTopInterest()
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([
-      {"name":"history","score":1,"recency":{"immediate":false,"recent":true,"past":true}},
+      {"name":"history","score":1,"diversity":30,"recency":{"immediate":false,"recent":true,"past":true}},
   ], results);
 
   yield PlacesInterestsStorage.clearRecentInterests(100);
   // add visits to a category beyond custom threshold, i.e. 40 days and beyond, and 10 in threshold
   // the category should not show up
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*41), visitCount: 10});
+  yield PlacesInterestsStorage.addInterestForHost("technology", "site1.com");
+  yield PlacesInterestsStorage.addInterestForHost("technology", "site2.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([], results);
@@ -207,14 +225,15 @@ add_task(function test_InterestWebAPI_getTopInterest()
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([
-      {"name":"technology","score":1,"recency":{"immediate":false,"recent":false,"past":true}},
+      {"name":"technology","score":1,"diversity":45,"recency":{"immediate":false,"recent":false,"past":true}},
   ], results);
 
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*28), visitCount: 5});
+  yield PlacesInterestsStorage.addInterestForHost("technology", "site3.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([
-      {"name":"technology","score":1,"recency":{"immediate":false,"recent":true,"past":true}},
+      {"name":"technology","score":1,"diversity":55,"recency":{"immediate":false,"recent":true,"past":true}},
   ], results);
 });
 

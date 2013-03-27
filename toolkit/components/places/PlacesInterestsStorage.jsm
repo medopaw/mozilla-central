@@ -39,15 +39,24 @@ function genSQLParamList(aNumber) {
 function AsyncPromiseHandler(deferred, rowCallback) {
   this.deferred = deferred;
   this.rowCallback = rowCallback;
-  this.resultSet = undefined;
+  this.result = undefined;
 };
 
 AsyncPromiseHandler.prototype = {
-  addToResultSet: function(value) {
-    if (!this.resultSet) {
-      this.resultSet = [];
+  initResults: function(value) {
+      this.result = value;
+  },
+  addToResultObject: function(key,value) {
+    if (!this.result) {
+      this.result = {};
     }
-    this.resultSet.push(value);
+    this.result[key] = value;
+  },
+  addToResultSet: function(value) {
+    if (!this.result) {
+      this.result = [];
+    }
+    this.result.push(value);
   },
   handleError: function (error) {
     this.deferred.reject(error);
@@ -63,7 +72,7 @@ AsyncPromiseHandler.prototype = {
   handleCompletion: function (reason) {
     switch (reason) {
       case Ci.mozIStorageStatementCallback.REASON_FINISHED:
-        this.deferred.resolve(this.resultSet);
+        this.deferred.resolve(this.result);
         break;
 
       case Ci.mozIStorageStatementCallback.REASON_CANCELLED:
@@ -397,7 +406,7 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * Increments the number of visits for an interest for a day
+   * cinoutes bickets dcata for an interest
    * @param   interest
    *          The interest name string
    * @returns Promise with the interest and counts for each bucket
@@ -454,6 +463,53 @@ let PlacesInterestsStorage = {
       queryDeferred.promise.then(function(){
         deferred.resolve(result);
       });
+    });
+
+    return deferred.promise;
+  },
+  /**
+   * computes divercity diversity values for interests
+   * @param   interests
+   *          array of interest name strings
+   * @returns Promise with an object keyed on interest name, valued with diversity
+   */
+  getDiversityForInterests: function(interests) {
+    let deferred = Promise.defer();
+
+    // test if input is correct
+    if (!Array.isArray(interests)) {
+      return deferred.reject(Error("invalid input"));
+    }
+
+    // compute total number of hosts
+    let totalHosts = 1;
+    let hostsQueryDeferred = Promise.defer();
+    let stmt = this.db.createAsyncStatement("SELECT COUNT(1) FROM moz_hosts");
+    stmt.executeAsync(new AsyncPromiseHandler(hostsQueryDeferred,function(row) {
+      totalHosts = row.getResultByIndex(0) || 1;
+    }));
+    stmt.finalize();
+
+    hostsQueryDeferred.promise.then(function() {
+      // create a list of coma separate interst names
+      let nameList = "";
+      interests.forEach(function(name) {
+        nameList +=  ((nameList == "") ? " '" : " ,'") + name + "'";
+      });
+
+      let stmt = PlacesInterestsStorage.db.createAsyncStatement(
+        "SELECT i.interest interest, ROUND(count(1) * 100.0 / :total, 2) diversity " +
+        "FROM moz_up_interests i " +
+        "JOIN moz_up_interests_hosts h ON h.interest_id = i.id " +
+        "WHERE i.interest in  ( " + nameList + ") " +
+        "GROUP BY  i.interest ");
+      stmt.params.total = totalHosts;
+      let promiseHandler = new AsyncPromiseHandler(deferred,function(row) {
+        promiseHandler.addToResultObject(row.getResultByName("interest"),row.getResultByName("diversity"));
+      });
+      promiseHandler.initResults({});
+      stmt.executeAsync(promiseHandler);
+      stmt.finalize();
     });
 
     return deferred.promise;

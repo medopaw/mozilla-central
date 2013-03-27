@@ -193,28 +193,35 @@ Interests.prototype = {
   _getTopInterests: function I__getTopInterests(aNumber) {
     let returnDeferred = Promise.defer();
     PlacesInterestsStorage.getTopInterests(aNumber).then(function(topInterests) {
-      // augment with bucket data
-      let bucketPromises = [];
-      for(let index=0; index < topInterests.length; index++) {
-        let interest = topInterests[index];
-        bucketPromises.push(PlacesInterestsStorage.getBucketsForInterest(interest.name));
-      }
-      Promise.promised(Array)(bucketPromises).then(function(buckets){
-
-        for(let index=0; index < buckets.length; index++) {
-          let bucket = buckets[index];
-          topInterests[index].recency = {
-            immediate: bucket.immediate,
-            recent: bucket.recent,
-            past: bucket.past,
-          }
+      // compute diversity first
+      PlacesInterestsStorage.getDiversityForInterests(topInterests.map(function(interest) interest.name)).then(function(diversityResults) {
+        // augment with diversity data and start buckets queries
+        let bucketPromises = [];
+        for(let index=0; index < topInterests.length; index++) {
+          let interest = topInterests[index];
+          interest.diversity = diversityResults[interest.name] || 0;
+          bucketPromises.push(PlacesInterestsStorage.getBucketsForInterest(interest.name));
         }
-        returnDeferred.resolve(topInterests);
+        // augment with bucket data
+        Promise.promised(Array)(bucketPromises).then(function(buckets){
+          for(let index=0; index < buckets.length; index++) {
+            let bucket = buckets[index];
+            topInterests[index].recency = {
+              immediate: bucket.immediate,
+              recent: bucket.recent,
+              past: bucket.past,
+            }
+          }
+          returnDeferred.resolve(topInterests);
+        },
+        function(error) {
+          returnDeferred.reject(error);
+        });  // end of bucketPromises then
       },
       function(error) {
         returnDeferred.reject(error);
-      });
-    });
+      }); // end of getDiversityForInterests then
+    }); // end of getTopInterests then
     return returnDeferred.promise;
   },
 
@@ -397,6 +404,8 @@ InterestsWebAPI.prototype = {
           
           // normalize scores
           topInterests[index].score /= scoreTotal;
+          // round up diversity to closest number divisible by 5
+          topInterests[index].diversity = 5*Math.round(topInterests[index].diversity/5);
         }
         exposeAll(topInterests);
         deferred.resolve(topInterests);
