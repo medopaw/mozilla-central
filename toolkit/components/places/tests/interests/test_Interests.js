@@ -17,22 +17,10 @@ function run_test() {
   run_next_test();
 }
 
-function itemsHave(items,data) {
-  for (let i in items) {
-    if(items[i] == data) return true;
-  }
-  return false;
-};
-
 add_task(function test_Interests() {
 
-  yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.mozilla.org/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
-
-  yield iServiceObject._addInterestsForHost("cars.com", ["cars" , "computers"]);
-  yield iServiceObject._addInterestsForHost("cars.com", ["cars" , "movies"]);
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","movies","computers"]);
+  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "cars");
 
   // check insertions
   let thePromise = PlacesInterestsStorage.getInterestsForHost("cars.com");
@@ -77,7 +65,6 @@ add_task(function test_ResubmitHistoryVisits() {
 
   // the database is clean - repopulate it
   // clean places tables and re-insert cars.com
-  const MICROS_PER_DAY = 86400000000;
   let now = Date.now();
   let microNow = now * 1000;
   yield promiseClearHistory();
