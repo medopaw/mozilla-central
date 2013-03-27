@@ -104,4 +104,25 @@ add_task(function test_PlacesInterestsStorage_getMetaForInterests()
   // multiple interests, one doesn't exist
   results = yield PlacesInterestsStorage.getMetaForInterests(["movies", "cars", "idontexist"]);
   isIdentical({"cars": {threshold: 0, duration: 0, ignored: false, dateUpdated: todayTime}, "movies": {threshold: 14, duration: 5, ignored: false, dateUpdated: todayTime}}, results);
+
+  // updateIgnoreFlag tests
+  yield PlacesInterestsStorage.updateIgnoreFlagForInterest("cars", true);
+  results = yield PlacesInterestsStorage.getMetaForInterests(["movies", "cars"]);
+  isIdentical({"cars": {threshold: 0, duration: 0, ignored: true, dateUpdated: todayTime}, "movies": {threshold: 14, duration: 5, ignored: false, dateUpdated: todayTime}}, results);
+
+  yield PlacesInterestsStorage.updateIgnoreFlagForInterest("cars", false);
+  results = yield PlacesInterestsStorage.getMetaForInterests(["movies", "cars"]);
+  isIdentical({"cars": {threshold: 0, duration: 0, ignored: false, dateUpdated: todayTime}, "movies": {threshold: 14, duration: 5, ignored: false, dateUpdated: todayTime}}, results);
+  // no flip?
+  yield PlacesInterestsStorage.updateIgnoreFlagForInterest("cars", false);
+  results = yield PlacesInterestsStorage.getMetaForInterests(["movies", "cars"]);
+  isIdentical({"cars": {threshold: 0, duration: 0, ignored: false, dateUpdated: todayTime}, "movies": {threshold: 14, duration: 5, ignored: false, dateUpdated: todayTime}}, results);
+
+  // ignore non-existent interest
+  yield PlacesInterestsStorage.updateIgnoreFlagForInterest("idontexist", true);
+  results = yield PlacesInterestsStorage.getMetaForInterests(["idontexist"]);
+  isIdentical([], results);
+  yield PlacesInterestsStorage.updateIgnoreFlagForInterest("idontexist", false);
+  results = yield PlacesInterestsStorage.getMetaForInterests(["idontexist"]);
+  isIdentical([], results);
 });
