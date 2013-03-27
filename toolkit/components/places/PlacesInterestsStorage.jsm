@@ -27,7 +27,7 @@ const DEFAULT_DURATION = 14;
  */
 function genSQLParamList(aNumber) {
   let paramStr = "";
-  for(let index = 1; index <= aNumber; index++) {
+  for (let index = 1; index <= aNumber; index++) {
     paramStr += "?" + index;
     if (index < aNumber) {
       paramStr += ",";
@@ -381,7 +381,7 @@ let PlacesInterestsStorage = {
     let stmt = this.db.createAsyncStatement(query);
 
 
-    for(let i = 0; i < interests.length; i++) {
+    for (let i = 0; i < interests.length; i++) {
       stmt.bindByIndex(i, interests[i]);
     }
     let results = {};

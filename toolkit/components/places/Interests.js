@@ -197,14 +197,14 @@ Interests.prototype = {
       PlacesInterestsStorage.getDiversityForInterests(topInterests.map(function(interest) interest.name)).then(function(diversityResults) {
         // augment with diversity data and start buckets queries
         let bucketPromises = [];
-        for(let index=0; index < topInterests.length; index++) {
+        for (let index=0; index < topInterests.length; index++) {
           let interest = topInterests[index];
           interest.diversity = diversityResults[interest.name] || 0;
           bucketPromises.push(PlacesInterestsStorage.getBucketsForInterest(interest.name));
         }
         // augment with bucket data
         Promise.promised(Array)(bucketPromises).then(function(buckets){
-          for(let index=0; index < buckets.length; index++) {
+          for (let index=0; index < buckets.length; index++) {
             let bucket = buckets[index];
             topInterests[index].recency = {
               immediate: bucket.immediate,
@@ -390,12 +390,12 @@ InterestsWebAPI.prototype = {
 
       let interestNames = [];
       let scoreTotal = 0;
-      for(let index=0; index < topInterests.length; index++) {
+      for (let index=0; index < topInterests.length; index++) {
         interestNames.push(topInterests[index].name);
         scoreTotal += topInterests[index].score;
       }
       gInterestsService._getMetaForInterests(interestNames).then(function(metaData){
-        for(let index=0; index < interestNames.length; index++) {
+        for (let index=0; index < interestNames.length; index++) {
           let interest = interestNames[index];
           // obtain metadata and apply thresholds
           topInterests[index].recency.immediate = topInterests[index].recency.immediate >= metaData[interest].threshold;
