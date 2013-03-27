@@ -406,7 +406,7 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * cinoutes bickets dcata for an interest
+   * computes buckets data for an interest
    * @param   interest
    *          The interest name string
    * @returns Promise with the interest and counts for each bucket
@@ -468,7 +468,7 @@ let PlacesInterestsStorage = {
     return deferred.promise;
   },
   /**
-   * computes divercity diversity values for interests
+   * computes divercity values for interests
    * @param   interests
    *          array of interest name strings
    * @returns Promise with an object keyed on interest name, valued with diversity
