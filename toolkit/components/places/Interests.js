@@ -40,17 +40,13 @@ function exposeAll(obj) {
     return;
 
   // Recursively expose our children.
-  Object.keys(obj).forEach(function(key) {
-    exposeAll(obj[key]);
-  });
+  Object.keys(obj).forEach(key => exposeAll(obj[key]));
 
   // If we're not an Array, generate an __exposedProps__ object for ourselves.
   if (obj instanceof Array)
     return;
   var exposed = {};
-  Object.keys(obj).forEach(function(key) {
-    exposed[key] = 'r';
-  });
+  Object.keys(obj).forEach(key => exposed[key] = "r");
   obj.__exposedProps__ = exposed;
 }
 
@@ -68,7 +64,6 @@ Interests.prototype = {
   //// Interests API
 
   resubmitRecentHistoryVisits: function I_resubmitRecentHistory(daysBack) {
-    let self = this;
     // check if history is in progress
     if (this._ResubmitRecentHistoryDeferred) {
       return this._ResubmitRecentHistoryDeferred.promise;
@@ -76,22 +71,22 @@ Interests.prototype = {
 
     this._ResubmitRecentHistoryDeferred = Promise.defer();
     // clean interest tables first
-    this._clearRecentInterests(daysBack).then(function() {
+    this._clearRecentInterests(daysBack).then(() => {
       // read moz_places data and massage it
-      PlacesInterestsStorage.reprocessRecentHistoryVisits(daysBack, function(item) {
+      PlacesInterestsStorage.reprocessRecentHistoryVisits(daysBack, item => {
         let uri = NetUtil.newURI(item.url);
         item["message"] = "getInterestsForDocument";
-        item["host"] = self._getPlacesHostForURI(uri);
+        item["host"] = this._getPlacesHostForURI(uri);
         item["path"] = uri["path"];
         item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
         item["metaData"] = {};
         item["language"] = "en";
-        self._callMatchingWorker(item);
-      }).then(function() {
+        this._callMatchingWorker(item);
+      }).then(() => {
         // we are done sending recent visits to the worker
         // hence, we can send an echo message to the worker
         // to indicate completion of the history re-processing
-        self._callMatchingWorker({
+        this._callMatchingWorker({
           message: "echoMessage",
           type: "resubmitRecentHistory"
         });
@@ -151,7 +146,6 @@ Interests.prototype = {
   },
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests, aVisitDate, aVisitCount) {
-    let self = this;
     let deferred = Promise.defer();
     let addInterestPromises = [];
 
@@ -162,39 +156,33 @@ Interests.prototype = {
       addInterestPromises.push(PlacesInterestsStorage.addInterest(interest));
     }
     // now wait for all the promisses to resolve and execute host and visit additions
-    Promise.promised(Array)(addInterestPromises).then(function(results) {
+    Promise.promised(Array)(addInterestPromises).then(results => {
       let addVisitPromises = [];
       for (let interest of aInterests) {
         // we need to wait until interest is added to the inerestes table
         addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
         addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
       }
-      Promise.promised(Array)(addVisitPromises).then(function(results) {
+      Promise.promised(Array)(addVisitPromises).then(results => {
         deferred.resolve(results);
         // test if resubmitRecentHistory echo message arrrived
         // if so, we have added all resubmitted interests and
         // need to resolve _ResubmitRecentHistoryDeferred promise
-        if (self._ResubmitRecentHistoryEchoReceived) {
-          self._ResubmitRecentHistoryDeferred.resolve();
-          self._ResubmitRecentHistoryDeferred = null;
-          self._ResubmitRecentHistoryEchoReceived = false;
+        if (this._ResubmitRecentHistoryEchoReceived) {
+          this._ResubmitRecentHistoryDeferred.resolve();
+          this._ResubmitRecentHistoryDeferred = null;
+          this._ResubmitRecentHistoryEchoReceived = false;
         }
-      },
-      function(error) {
-        deferred.reject(error);
-      });
-    },
-    function(error) {
-      deferred.reject(error);
-    });
+      }, error => deferred.reject(error))
+    }, error => deferred.reject(error));
     return deferred.promise;
   },
 
   _getTopInterests: function I__getTopInterests(aNumber) {
     let returnDeferred = Promise.defer();
-    PlacesInterestsStorage.getTopInterests(aNumber).then(function(topInterests) {
+    PlacesInterestsStorage.getTopInterests(aNumber).then(topInterests => {
       // compute diversity first
-      PlacesInterestsStorage.getDiversityForInterests(topInterests.map(function(interest) interest.name)).then(function(diversityResults) {
+      PlacesInterestsStorage.getDiversityForInterests(topInterests.map(({name}) => name)).then(diversityResults => {
         // augment with diversity data and start buckets queries
         let bucketPromises = [];
         for (let index=0; index < topInterests.length; index++) {
@@ -203,7 +191,7 @@ Interests.prototype = {
           bucketPromises.push(PlacesInterestsStorage.getBucketsForInterest(interest.name));
         }
         // augment with bucket data
-        Promise.promised(Array)(bucketPromises).then(function(buckets){
+        Promise.promised(Array)(bucketPromises).then(buckets => {
           for (let index=0; index < buckets.length; index++) {
             let bucket = buckets[index];
             topInterests[index].recency = {
@@ -213,21 +201,15 @@ Interests.prototype = {
             }
           }
           returnDeferred.resolve(topInterests);
-        },
-        function(error) {
-          returnDeferred.reject(error);
-        });  // end of bucketPromises then
-      },
-      function(error) {
-        returnDeferred.reject(error);
-      }); // end of getDiversityForInterests then
+        }, error => returnDeferred.reject(error));
+      }, error => returnDeferred.reject(error));
     }); // end of getTopInterests then
     return returnDeferred.promise;
   },
 
   _getMetaForInterests: function I__getMetaForInterests(interestNames) {
     let deferred = Promise.defer();
-    PlacesInterestsStorage.getMetaForInterests(interestNames).then(function(metaData) {
+    PlacesInterestsStorage.getMetaForInterests(interestNames).then(metaData => {
       for (let index=0; index < interestNames.length; index++) {
         let interest = interestNames[index];
         if (metaData[interest]) {
@@ -240,10 +222,7 @@ Interests.prototype = {
         }
       }
       deferred.resolve(metaData);
-    },
-    function(error) {
-      deferred.reject(error);
-    });
+    }, error => deferred.reject(error));
     return deferred.promise;
   },
 
@@ -267,14 +246,12 @@ Interests.prototype = {
     }
 
     let group = Promise.promised(Array);
-    let groupPromise = group(promiseArray).then(function(allInterestsBuckets) {
-      allInterestsBuckets.forEach(function(interestBuckets) {
+    let groupPromise = group(promiseArray).then(allInterestsBuckets => {
+      allInterestsBuckets.forEach(interestBuckets => {
         rv[interestBuckets.interest] = interestBuckets;
       });
       deferred.resolve(rv);
-    }, function(error) {
-      deferred.reject(error);
-    });
+    }, error => deferred.reject(error));
     return deferred.promise;
   },
 
@@ -356,13 +333,13 @@ InterestsWebAPI.prototype = {
 
   checkInterests: function(aInterests) {
     let deferred = Promise.defer();
-    gInterestsService._getBucketsForInterests(aInterests).then(function(results) {
+    gInterestsService._getBucketsForInterests(aInterests).then(results => {
 
       results = JSON.parse(JSON.stringify(results));
 
       results["__exposedProps__"] = {};
       // decorate results before sending it back to the caller
-      Object.keys(results).forEach(function(interest) {
+      Object.keys(results).forEach(interest => {
         if (interest == "__exposedProps__") {
           return;
         }
@@ -373,10 +350,8 @@ InterestsWebAPI.prototype = {
         results[interest]["__exposedProps__"]["past"] = "r";
       });
       deferred.resolve(results);
-    },
-    function(error) {
-      deferred.reject(error);
-    });
+    }, error => deferred.reject(error));
+
     return deferred.promise;
   },
 
@@ -384,7 +359,7 @@ InterestsWebAPI.prototype = {
     let deferred = Promise.defer();
     
     let aNumber = 5; // always 5 for now, will be subject to a whitelist
-    gInterestsService._getTopInterests(aNumber).then(function(topInterests) {
+    gInterestsService._getTopInterests(aNumber).then(topInterests => {
 
       topInterests = JSON.parse(JSON.stringify(topInterests));
 
@@ -394,7 +369,7 @@ InterestsWebAPI.prototype = {
         interestNames.push(topInterests[index].name);
         scoreTotal += topInterests[index].score;
       }
-      gInterestsService._getMetaForInterests(interestNames).then(function(metaData){
+      gInterestsService._getMetaForInterests(interestNames).then(metaData => {
         for (let index=0; index < interestNames.length; index++) {
           let interest = interestNames[index];
           // obtain metadata and apply thresholds
@@ -410,10 +385,8 @@ InterestsWebAPI.prototype = {
         exposeAll(topInterests);
         deferred.resolve(topInterests);
       });
-    },
-    function(error){
-      deferred.reject(error);
-    });
+    }, error => deferred.reject(error));
+
     return deferred.promise;
   },
 
