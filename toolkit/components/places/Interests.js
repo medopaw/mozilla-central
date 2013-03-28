@@ -269,6 +269,16 @@ Interests.prototype = {
     }
   },
 
+  _getDomainWhitelistedSet: function I__getDomainWhitelist() {
+    let whitelistedSet = new Set();
+    let userWhitelist = Services.prefs.getCharPref('interests.userDomainWhitelist').trim().split(/\s*,\s*/);
+    for (let i=0; i<userWhitelist.length; i++) {
+      whitelistedSet.add(userWhitelist[i]);
+    }
+
+    return whitelistedSet;
+  },
+
   //////////////////////////////////////////////////////////////////////////////
   //// nsIDOMEventListener
 
@@ -326,6 +336,7 @@ Interests.prototype = {
 };
 
 function InterestsWebAPI() {
+  let currentHost = "";
 }
 InterestsWebAPI.prototype = {
   //////////////////////////////////////////////////////////////////////////////
@@ -349,16 +360,28 @@ InterestsWebAPI.prototype = {
         results[interest]["__exposedProps__"]["recent"] = "r";
         results[interest]["__exposedProps__"]["past"] = "r";
       });
+      delete results.interest;
       deferred.resolve(results);
     }, error => deferred.reject(error));
 
     return deferred.promise;
   },
 
+  getTop5Interests: function() {
+    return this.getTopInterests(5);
+  },
+
   getTopInterests: function(aNumber) {
     let deferred = this._makePromise();
     
-    let aNumber = 5; // always 5 for now, will be subject to a whitelist
+    let aNumber = aNumber || 5;
+    if (aNumber > 5) {
+      let whitelistedSet = gInterestsService._getDomainWhitelistedSet();
+      if (!whitelistedSet.has(this.currentHost)) { 
+        deferred.reject("host "+this.currentHost+" does not have enough privileges to access getTopInterests("+aNumber+")");
+        return deferred.promise;
+      }
+    }
     gInterestsService._getTopInterests(aNumber).then(topInterests => {
 
       topInterests = JSON.parse(JSON.stringify(topInterests));
@@ -409,7 +432,10 @@ InterestsWebAPI.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// nsIDOMGlobalPropertyInitializer
 
-  init: function(aWindow) {},
+  init: function(aWindow) {
+    let uriObj = {host: aWindow.location.hostname || aWindow.location.href};
+    this.currentHost = gInterestsService._getPlacesHostForURI(uriObj);
+  },
 
   //////////////////////////////////////////////////////////////////////////////
   //// nsISupports
