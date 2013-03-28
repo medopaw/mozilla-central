@@ -332,7 +332,7 @@ InterestsWebAPI.prototype = {
   //// mozIInterestsWebAPI
 
   checkInterests: function(aInterests) {
-    let deferred = Promise.defer();
+    let deferred = this._makePromise();
     gInterestsService._getBucketsForInterests(aInterests).then(results => {
 
       results = JSON.parse(JSON.stringify(results));
@@ -356,7 +356,7 @@ InterestsWebAPI.prototype = {
   },
 
   getTopInterests: function(aNumber) {
-    let deferred = Promise.defer();
+    let deferred = this._makePromise();
     
     let aNumber = 5; // always 5 for now, will be subject to a whitelist
     gInterestsService._getTopInterests(aNumber).then(topInterests => {
@@ -388,6 +388,22 @@ InterestsWebAPI.prototype = {
     }, error => deferred.reject(error));
 
     return deferred.promise;
+  },
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// mozIInterestsWebAPI Helpers
+
+  /**
+   * Make a promise that exposes "then" to allow callbacks
+   *
+   * @returns Promise usable from content
+   */
+  _makePromise: function IWA__makePromise() {
+    let deferred = Promise.defer();
+    deferred.promise.__exposedProps__ = {
+      then: "r"
+    };
+    return deferred;
   },
 
   //////////////////////////////////////////////////////////////////////////////
