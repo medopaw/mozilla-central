@@ -333,8 +333,11 @@ InterestsWebAPI.prototype = {
 
   checkInterests: function(aInterests) {
     let deferred = this._makePromise();
-    gInterestsService._getBucketsForInterests(aInterests).then(results => {
 
+    // Only allow API access according to the user's permission
+    this._checkContentPermission().then(() => {
+      return gInterestsService._getBucketsForInterests(aInterests);
+    }).then(results => {
       results = JSON.parse(JSON.stringify(results));
 
       results["__exposedProps__"] = {};
@@ -358,9 +361,11 @@ InterestsWebAPI.prototype = {
   getTopInterests: function(aNumber) {
     let deferred = this._makePromise();
     
-    let aNumber = 5; // always 5 for now, will be subject to a whitelist
-    gInterestsService._getTopInterests(aNumber).then(topInterests => {
-
+    // Only allow API access according to the user's permission
+    this._checkContentPermission().then(() => {
+      aNumber = 5; // always 5 for now, will be subject to a whitelist
+      return gInterestsService._getTopInterests(aNumber);
+    }).then(topInterests => {
       topInterests = JSON.parse(JSON.stringify(topInterests));
 
       let interestNames = [];
@@ -406,10 +411,33 @@ InterestsWebAPI.prototype = {
     return deferred;
   },
 
+  /**
+   * Check if the user has allowed API access
+   *
+   * @returns Promise for when the content access is allowed or canceled
+   */
+  _checkContentPermission: function IWA__checkContentPermission() {
+    let promptPromise = Promise.defer();
+
+    let prompt = Cc["@mozilla.org/content-permission/prompt;1"].
+      createInstance(Ci.nsIContentPermissionPrompt);
+    prompt.prompt({
+      type: "interests",
+      window: this.window,
+      principal: this.window.document.nodePrincipal,
+      allow: () => promptPromise.resolve(),
+      cancel: () => promptPromise.reject(),
+    });
+
+    return promptPromise.promise;
+  },
+
   //////////////////////////////////////////////////////////////////////////////
   //// nsIDOMGlobalPropertyInitializer
 
-  init: function(aWindow) {},
+  init: function(aWindow) {
+    this.window = aWindow;
+  },
 
   //////////////////////////////////////////////////////////////////////////////
   //// nsISupports
@@ -428,8 +456,6 @@ InterestsWebAPI.prototype = {
   , Ci.mozIInterestsWebAPI
   , Ci.nsIDOMGlobalPropertyInitializer
   ]),
-
-  _xpcom_factory: XPCOMUtils.generateSingletonFactory(InterestsWebAPI),
 };
 
 let components = [Interests, InterestsWebAPI];

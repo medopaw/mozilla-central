@@ -1849,11 +1849,37 @@ ContentPermissionPrompt.prototype = {
                      "pointerLock-notification-icon", null);
   },
 
+  _promptInterests: function CPP_promptInterests(aRequest) {
+    let browserBundle = Services.strings.createBundle("chrome://browser/locale/browser.properties");
+    let message = browserBundle.GetStringFromName("interests.message");
+
+    let actions = [{
+      stringId: "interests.shareForAll",
+    }, {
+      stringId: "interests.neverForSite",
+      action: Ci.nsIPermissionManager.DENY_ACTION,
+    }];
+
+    // Only ever actively show the prompt once
+    let options = {};
+    const promptedPref = "interests.navigator.prompted";
+    if (Services.prefs.getBoolPref(promptedPref)) {
+      options.dismissed = true;
+    }
+    else {
+      Services.prefs.setBoolPref(promptedPref, true);
+    }
+
+    this._showPrompt(aRequest, message, aRequest.type, actions, aRequest.type,
+                     aRequest.type + "-notification-icon", options);
+  },
+
   prompt: function CPP_prompt(request) {
 
     const kFeatureKeys = { "geolocation" : "geo",
                            "desktop-notification" : "desktop-notification",
                            "pointerLock" : "pointerLock",
+                           "interests" : "interests",
                          };
 
     // Make sure that we support the request.
@@ -1896,6 +1922,9 @@ ContentPermissionPrompt.prototype = {
       break;
     case "pointerLock":
       this._promptPointerLock(request, autoAllow);
+      break;
+    case "interests":
+      this._promptInterests(request);
       break;
     }
   },
