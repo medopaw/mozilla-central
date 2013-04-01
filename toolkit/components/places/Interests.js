@@ -454,7 +454,7 @@ InterestsWebAPI.prototype = {
   classInfo: XPCOMUtils.generateCI({
     "classID": Components.ID("{7E7F2263-E356-4B2F-B32B-4238240CD7F9}"),
     "contractID": "@mozilla.org/InterestsWebAPI;1",
-    "interfaces": [Ci.mozIInterestsWebAPI, Ci.nsIDOMGlobalPropertyInitializer],
+    "interfaces": [Ci.mozIInterestsWebAPI],
     "flags": Ci.nsIClassInfo.DOM_OBJECT,
     "classDescription": "Interests Web API"
   }),
