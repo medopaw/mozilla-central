@@ -1850,11 +1850,29 @@ ContentPermissionPrompt.prototype = {
   },
 
   _promptInterests: function CPP_promptInterests(aRequest) {
+    // If the user has interests explicitly enabled or not, grant the permission
+    const enabledPref = "interests.navigator.enabled";
+    try {
+      if (Services.prefs.getBoolPref(enabledPref)) {
+        aRequest.allow();
+      }
+      else {
+        aRequest.cancel();
+      }
+      return;
+    }
+    // The default value is unset, so we should continue to prompt the user
+    catch(ex) {}
+
     let browserBundle = Services.strings.createBundle("chrome://browser/locale/browser.properties");
     let message = browserBundle.GetStringFromName("interests.message");
 
     let actions = [{
       stringId: "interests.shareForAll",
+      callback: () => {
+        // Remember that the user wants to share for all and stop future prompts
+        Services.prefs.setBoolPref(enabledPref, true);
+      },
     }, {
       stringId: "interests.neverForSite",
       action: Ci.nsIPermissionManager.DENY_ACTION,
