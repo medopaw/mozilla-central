@@ -419,15 +419,22 @@ InterestsWebAPI.prototype = {
   _checkContentPermission: function IWA__checkContentPermission() {
     let promptPromise = Promise.defer();
 
-    let prompt = Cc["@mozilla.org/content-permission/prompt;1"].
-      createInstance(Ci.nsIContentPermissionPrompt);
-    prompt.prompt({
-      type: "interests",
-      window: this.window,
-      principal: this.window.document.nodePrincipal,
-      allow: () => promptPromise.resolve(),
-      cancel: () => promptPromise.reject(),
-    });
+    // APIs created by tests don't have a principal, so just allow them
+    if (this.window == null) {
+      promptPromise.resolve();
+    }
+    // For content documents, check the user's permission
+    else {
+      let prompt = Cc["@mozilla.org/content-permission/prompt;1"].
+        createInstance(Ci.nsIContentPermissionPrompt);
+      prompt.prompt({
+        type: "interests",
+        window: this.window,
+        principal: this.window.document.nodePrincipal,
+        allow: () => promptPromise.resolve(),
+        cancel: () => promptPromise.reject(),
+      });
+    }
 
     return promptPromise.promise;
   },
