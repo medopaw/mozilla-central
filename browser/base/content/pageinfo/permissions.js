@@ -69,6 +69,10 @@ var gPermObj = {
   {
     return BLOCK;
   },
+  interests: function getInterestsPermissions()
+  {
+    return UNKNOWN;
+  },
 };
 
 var permissionObserver = {
