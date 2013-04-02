@@ -344,8 +344,11 @@ InterestsWebAPI.prototype = {
 
   checkInterests: function(aInterests) {
     let deferred = this._makePromise();
-    gInterestsService._getBucketsForInterests(aInterests).then(results => {
 
+    // Only allow API access according to the user's permission
+    this._checkContentPermission().then(() => {
+      return gInterestsService._getBucketsForInterests(aInterests);
+    }).then(results => {
       results = JSON.parse(JSON.stringify(results));
 
       results["__exposedProps__"] = {};
@@ -382,8 +385,10 @@ InterestsWebAPI.prototype = {
         return deferred.promise;
       }
     }
-    gInterestsService._getTopInterests(aNumber).then(topInterests => {
-
+    // Only allow API access according to the user's permission
+    this._checkContentPermission().then(() => {
+      return gInterestsService._getTopInterests(aNumber);
+    }).then(topInterests => {
       topInterests = JSON.parse(JSON.stringify(topInterests));
 
       let interestNames = [];
@@ -427,6 +432,34 @@ InterestsWebAPI.prototype = {
       then: "r"
     };
     return deferred;
+  },
+
+  /**
+   * Check if the user has allowed API access
+   *
+   * @returns Promise for when the content access is allowed or canceled
+   */
+  _checkContentPermission: function IWA__checkContentPermission() {
+    let promptPromise = Promise.defer();
+
+    // APIs created by tests don't have a principal, so just allow them
+    if (this.window == null) {
+      promptPromise.resolve();
+    }
+    // For content documents, check the user's permission
+    else {
+      let prompt = Cc["@mozilla.org/content-permission/prompt;1"].
+        createInstance(Ci.nsIContentPermissionPrompt);
+      prompt.prompt({
+        type: "interests",
+        window: this.window,
+        principal: this.window.document.nodePrincipal,
+        allow: () => promptPromise.resolve(),
+        cancel: () => promptPromise.reject(),
+      });
+    }
+
+    return promptPromise.promise;
   },
 
   //////////////////////////////////////////////////////////////////////////////
