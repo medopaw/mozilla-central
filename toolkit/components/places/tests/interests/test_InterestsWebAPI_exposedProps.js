@@ -26,7 +26,7 @@ add_task(function test_getTopInterests_exposedProps() {
   function doIt(statement) Cu.evalInSandbox(statement, sandbox);
 
   // Make sure promises accept callbacks
-  let then = doIt("then = interests.getTopInterests().then");
+  let then = doIt("then = interests.getTop5Interests().then");
   do_check_eq(typeof then, "function");
 
   // Wait for then to finish from within the sandbox

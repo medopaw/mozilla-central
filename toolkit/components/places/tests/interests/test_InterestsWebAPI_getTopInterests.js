@@ -235,5 +235,35 @@ add_task(function test_InterestWebAPI_getTopInterest()
   isIdentical([
       {"name":"technology","score":1,"diversity":55,"recency":{"immediate":false,"recent":true,"past":true}},
   ], results);
+
+  // test whitelist permissions
+  let sandbox = Cu.Sandbox("http://www.example.com");
+
+  sandbox.interests = iServiceApi;
+  function doIt(statement) Cu.evalInSandbox(statement, sandbox);
+  unwrappedAPI = XPCNativeWrapper.unwrap(iServiceApi);
+
+  /*
+  // unauthorized
+  iServiceApi.init({location: {hostname: "realtor.com"}})
+  let then = doIt("then = interests.getTopInterests(6).then");
+  try {
+    yield doIt("then(function(_ret) { ret = _ret; })");
+  } catch(e) {
+    // exception is thrown
+    do_check_true(true);
+  }
+
+  // authorized
+  iServiceApi.init({location: {hostname: "about:config"}})
+  let then = doIt("then = interests.getTopInterests(6).then");
+  yield doIt("then(function(_ret) { ret = _ret; })");
+  results = doIt("ret");
+  unExposeAll(results);
+  isIdentical([
+      {"name":"technology","score":1,"diversity":55,"recency":{"immediate":false,"recent":true,"past":true}},
+  ], results);
+  */
+
 });
 
