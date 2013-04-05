@@ -548,6 +548,18 @@ let PlacesInterestsStorage = {
   //// PlacesInterestsStorage Helpers
 
   /**
+   * Convert a date to days since epoch
+   *
+   * @param   [optional] time
+   *          Reference date/time defaulting to today
+   * @returns Number of days since epoch to beginning of today UTC
+   */
+  _convertDateToDays: function PIS__convertDateToDays(time=null) {
+    // Default to today and truncate to an integer number of days
+    return Math.floor((time || Date.now()) / MS_PER_DAY);
+  },
+
+  /**
    * Execute a SQL statement with various options
    *
    * @param   sql
