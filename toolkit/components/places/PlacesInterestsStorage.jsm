@@ -674,6 +674,18 @@ let PlacesInterestsStorage = {
 
     return deferred.promise;
   },
+
+  /**
+   * Extract the namespace from a full interest name
+   *
+   * @param   interest
+   *          Interest string in the namespace/name format
+   * @returns Namespace string or empty for no namespace
+   */
+  _extractNamespace: function PIS__extractNamespace(interest) {
+    let slashPos = interest.indexOf("/");
+    return slashPos == -1 ? "" : interest.slice(0, slashPos);
+  },
 }
 
 XPCOMUtils.defineLazyGetter(PlacesInterestsStorage, "db", function() {
