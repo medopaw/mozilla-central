@@ -30,23 +30,15 @@ add_task(function test_InterestWebAPI_getTopInterests()
   yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
 
   // interests set with default values for threshold and duration
-  yield PlacesInterestsStorage.addInterest("cars");
-  yield PlacesInterestsStorage.addInterest("movies");
-  yield PlacesInterestsStorage.addInterest("video-games");
-  yield PlacesInterestsStorage.addInterest("history");
-  yield PlacesInterestsStorage.addInterest("food");
-  yield PlacesInterestsStorage.addInterest("computers");
-
-  yield PlacesInterestsStorage.setMetaForInterest("cars");
-  yield PlacesInterestsStorage.setMetaForInterest("movies");
-  yield PlacesInterestsStorage.setMetaForInterest("video-games");
-  yield PlacesInterestsStorage.setMetaForInterest("history");
-  yield PlacesInterestsStorage.setMetaForInterest("food");
-  yield PlacesInterestsStorage.setMetaForInterest("computers");
+  yield addInterest("cars");
+  yield addInterest("movies");
+  yield addInterest("video-games");
+  yield addInterest("history");
+  yield addInterest("food");
+  yield addInterest("computers");
 
   // this interest has custom values for duration and threshold
-  yield PlacesInterestsStorage.addInterest("technology");
-  yield PlacesInterestsStorage.setMetaForInterest("technology", {duration: 20, threshold: 10});
+  yield PlacesInterestsStorage.setInterest("technology", {duration: 20, threshold: 10});
   /*
   */
 
@@ -75,13 +67,6 @@ add_task(function test_InterestWebAPI_getTopInterests()
   // add more visits for the same category, same day. do cross threshold
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
   yield PlacesInterestsStorage.addInterestForHost("cars", "samsung.com");
-  results = yield iServiceApi.getTopInterests();
-  unExposeAll(results);
-  isIdentical([{"name":"cars","score":100,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}}], results);
-
-  // set new category to be downloaded. top interests unchanged
-  yield PlacesInterestsStorage.addInterest("idontexistyet");
-  yield PlacesInterestsStorage.setMetaForInterest("idontexistyet", {dateUpdated: 0});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([{"name":"cars","score":100,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}}], results);

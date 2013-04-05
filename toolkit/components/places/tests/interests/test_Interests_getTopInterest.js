@@ -21,18 +21,12 @@ add_task(function test_Interests_getTopInterest()
   yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
   yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
 
-  yield PlacesInterestsStorage.addInterest("cars");
-  yield PlacesInterestsStorage.addInterest("computers");
-  yield PlacesInterestsStorage.addInterest("movies");
-  yield PlacesInterestsStorage.addInterest("technology");
-  yield PlacesInterestsStorage.addInterest("video-games");
-  yield PlacesInterestsStorage.addInterest("history");
-
-  yield PlacesInterestsStorage.setMetaForInterest("cars");
-  yield PlacesInterestsStorage.setMetaForInterest("movies");
-  yield PlacesInterestsStorage.setMetaForInterest("technology");
-  yield PlacesInterestsStorage.setMetaForInterest("video-games");
-  yield PlacesInterestsStorage.setMetaForInterest("history");
+  yield addInterest("cars");
+  yield addInterest("computers");
+  yield addInterest("movies");
+  yield addInterest("technology");
+  yield addInterest("video-games");
+  yield addInterest("history");
 
   yield PlacesInterestsStorage.addInterestForHost("technology", "samsung.com");
   yield PlacesInterestsStorage.addInterestForHost("cars", "cars.com");

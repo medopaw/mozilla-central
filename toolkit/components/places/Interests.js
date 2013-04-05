@@ -162,34 +162,25 @@ Interests.prototype = {
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests, aVisitDate, aVisitCount) {
     let deferred = Promise.defer();
-    let addInterestPromises = [];
 
-    // TODO - this is a hack - we do not need to keep inserting into interests table
-    // we should do it ones on startup or update
+    // execute host and visit additions
+    let addVisitPromises = [];
     for (let interest of aInterests) {
-      // add all addInterest promisses to the array 
-      addInterestPromises.push(PlacesInterestsStorage.addInterest(interest));
+      // we need to wait until interest is added to the inerestes table
+      addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
+      addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
     }
-    // now wait for all the promisses to resolve and execute host and visit additions
-    Promise.promised(Array)(addInterestPromises).then(results => {
-      let addVisitPromises = [];
-      for (let interest of aInterests) {
-        // we need to wait until interest is added to the inerestes table
-        addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
-        addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
+    Promise.promised(Array)(addVisitPromises).then(results => {
+      deferred.resolve(results);
+      // test if resubmitRecentHistory echo message arrrived
+      // if so, we have added all resubmitted interests and
+      // need to resolve _ResubmitRecentHistoryDeferred promise
+      if (this._ResubmitRecentHistoryEchoReceived) {
+        this._ResubmitRecentHistoryDeferred.resolve();
+        this._ResubmitRecentHistoryDeferred = null;
+        this._ResubmitRecentHistoryEchoReceived = false;
       }
-      Promise.promised(Array)(addVisitPromises).then(results => {
-        deferred.resolve(results);
-        // test if resubmitRecentHistory echo message arrrived
-        // if so, we have added all resubmitted interests and
-        // need to resolve _ResubmitRecentHistoryDeferred promise
-        if (this._ResubmitRecentHistoryEchoReceived) {
-          this._ResubmitRecentHistoryDeferred.resolve();
-          this._ResubmitRecentHistoryDeferred = null;
-          this._ResubmitRecentHistoryEchoReceived = false;
-        }
-      }, error => deferred.reject(error))
-    }, error => deferred.reject(error));
+    }, error => deferred.reject(error))
     return deferred.promise;
   },
 
@@ -224,7 +215,7 @@ Interests.prototype = {
 
   _getMetaForInterests: function I__getMetaForInterests(interestNames) {
     let deferred = Promise.defer();
-    PlacesInterestsStorage.getMetaForInterests(interestNames).then(metaData => {
+    PlacesInterestsStorage.getInterests(interestNames).then(metaData => {
       for (let index=0; index < interestNames.length; index++) {
         let interest = interestNames[index];
         if (metaData[interest]) {
@@ -242,11 +233,15 @@ Interests.prototype = {
   },
 
   _setIgnoredForInterest: function I__setIgnoredForInterest(interest) {
-    return PlacesInterestsStorage.updateIgnoreFlagForInterest(interest, true);
+    return PlacesInterestsStorage.setInterest(interest, {
+      sharable: false
+    });
   },
 
   _unsetIgnoredForInterest: function I__setIgnoredForInterest(interest) {
-    return PlacesInterestsStorage.updateIgnoreFlagForInterest(interest, false);
+    return PlacesInterestsStorage.setInterest(interest, {
+      sharable: true
+    });
   },
 
   _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {

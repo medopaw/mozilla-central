@@ -822,13 +822,10 @@ Database::InitSchema(bool* aDatabaseMigrated)
     rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_ITEMSANNOS_PLACEATTRIBUTE);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    // moz_up_interests.
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS);
+    // moz_interests.
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS);
     NS_ENSURE_SUCCESS(rv, rv);
-    //rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_HOSTINTEREST);
-    //NS_ENSURE_SUCCESS(rv, rv);
-
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_META);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_NAMESPACE);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_VISITS);
     NS_ENSURE_SUCCESS(rv, rv);
@@ -1926,13 +1923,13 @@ Database::MigrateV23Up()
 
   // Add a moz_interests table.
   bool tableExists = false;
-  nsresult rv = mMainConn->TableExists(NS_LITERAL_CSTRING("moz_up_interests"),
+  nsresult rv = mMainConn->TableExists(NS_LITERAL_CSTRING("moz_interests"),
                               &tableExists);
   NS_ENSURE_SUCCESS(rv, rv);
   if (!tableExists) {
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_META);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_NAMESPACE);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_VISITS);
     NS_ENSURE_SUCCESS(rv, rv);

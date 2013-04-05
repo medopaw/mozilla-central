@@ -16,8 +16,8 @@ function run_test() {
 }
 
 add_task(function test_getTopInterests_exposedProps() {
-  yield PlacesInterestsStorage.addInterest("cars");
-  yield PlacesInterestsStorage.setMetaForInterest("cars", {threshold: 1});
+  yield addInterest("cars");
+  yield PlacesInterestsStorage.setInterest("cars", {threshold: 1});
   yield PlacesInterestsStorage.addInterestVisit("cars");
 
   // Create a content sandbox and a helper to evaluate in the sandbox

@@ -33,6 +33,16 @@ Services.prefs.setBoolPref("interests.enabled", true);
 const MS_PER_DAY = 86400000;
 const MICROS_PER_DAY = 86400000000;
 
+// Wrapper around setInterest that puts in some default duration and threshold
+const DEFAULT_DURATION = 14;
+const DEFAULT_THRESHOLD = 5;
+function addInterest(interest) {
+  return PlacesInterestsStorage.setInterest(interest, {
+    duration: DEFAULT_DURATION,
+    threshold: DEFAULT_THRESHOLD,
+  });
+}
+
 function clearInterestsHosts() {
   return PlacesInterestsStorage._execute(
     "DELETE FROM moz_up_interests_hosts"
@@ -41,7 +51,7 @@ function clearInterestsHosts() {
 
 function getHostsForInterest(interest) {
   return PlacesInterestsStorage._execute(
-    "SELECT h.host AS host FROM moz_hosts h, moz_up_interests i, moz_up_interests_hosts ih " +
+    "SELECT h.host AS host FROM moz_hosts h, moz_interests i, moz_up_interests_hosts ih " +
     "WHERE i.interest = :interest AND h.id = ih.host_id AND i.id = ih.interest_id", {
     columns: ["host"],
     params: {
@@ -52,7 +62,7 @@ function getHostsForInterest(interest) {
 
 function getInterestsForHost(host) {
   return PlacesInterestsStorage._execute(
-    "SELECT interest FROM moz_up_interests i, moz_up_interests_hosts ih, moz_hosts h " +
+    "SELECT interest FROM moz_interests i, moz_up_interests_hosts ih, moz_hosts h " +
     "WHERE h.host = :host AND h.id = ih.host_id AND i.id = ih.interest_id", {
     columns: ["interest"],
     params: {
@@ -81,7 +91,7 @@ function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
     let interests = (Array.isArray(visit.interests)) ? visit.interests : [visit.interests];
 
     interests.forEach(function(interest) {
-      visitPromises.push(PlacesInterestsStorage.addInterest(interest));
+      visitPromises.push(addInterest(interest));
       visitPromises.push(PlacesInterestsStorage.addInterestVisit(interest, {visitTime: visitTime, visitCount: visitCount}));
       visitPromises.push(PlacesInterestsStorage.addInterestForHost(interest,host));
     });
@@ -102,7 +112,7 @@ function promiseAddUrlInterestsVisit(url,interests,count,daysAgo) {
 function promiseAddInterestVisits(interest,count,daysAgo) {
   let visitPromises = [];
   let now = Date.now();
-  visitPromises.push(PlacesInterestsStorage.addInterest(interest));
+  visitPromises.push(addInterest(interest));
   visitPromises.push(PlacesInterestsStorage.addInterestVisit(interest, {visitTime: now - MS_PER_DAY*(daysAgo || 0), visitCount: count || 1}));
   return Promise.promised(Array)(visitPromises).then();
 }

@@ -14,19 +14,12 @@ function run_test() {
 
 add_task(function test_PlacesInterestsStorage_getTopInterest()
 {
-  yield PlacesInterestsStorage.addInterest("cars");
-  yield PlacesInterestsStorage.addInterest("movies");
-  yield PlacesInterestsStorage.addInterest("technology");
-  yield PlacesInterestsStorage.addInterest("video-games");
-  yield PlacesInterestsStorage.addInterest("history");
-  yield PlacesInterestsStorage.addInterest("ignored-interest");
-
-  yield PlacesInterestsStorage.setMetaForInterest("cars");
-  yield PlacesInterestsStorage.setMetaForInterest("ignored-interest", {ignored:true});
-  yield PlacesInterestsStorage.setMetaForInterest("movies");
-  yield PlacesInterestsStorage.setMetaForInterest("technology");
-  yield PlacesInterestsStorage.setMetaForInterest("video-games");
-  yield PlacesInterestsStorage.setMetaForInterest("history");
+  yield addInterest("cars");
+  yield addInterest("movies");
+  yield addInterest("technology");
+  yield addInterest("video-games");
+  yield addInterest("history");
+  yield PlacesInterestsStorage.setInterest("ignored-interest", {sharable: false, duration: DEFAULT_DURATION, threshold: DEFAULT_THRESHOLD});
 
   function scoreDecay(score, numDays, daysToZero) {
     return score * (1 - numDays/(daysToZero+1));

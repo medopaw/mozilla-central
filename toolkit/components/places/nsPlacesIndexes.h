@@ -52,8 +52,14 @@
   )
 
 /**
- * moz_up_interests
+ * moz_interests
  */
+
+#define CREATE_IDX_MOZ_INTERESTS_NAMESPACE \
+  CREATE_PLACES_IDX( \
+    "namespaceindex", "moz_interests", "namespace", "" \
+  )
+
 #define CREATE_IDX_MOZ_UP_INTERESTS_VISITS_DATEADDED \
   CREATE_PLACES_IDX( \
     "dateindex", "moz_up_interests_visits", "date_added", "" \

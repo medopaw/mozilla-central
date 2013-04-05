@@ -147,20 +147,18 @@
   ")" \
 )
 
-#define CREATE_MOZ_UP_INTERESTS NS_LITERAL_CSTRING( \
-  "CREATE TABLE moz_up_interests (" \
+/**
+ * moz_interests
+ */
+
+#define CREATE_MOZ_INTERESTS NS_LITERAL_CSTRING( \
+  "CREATE TABLE moz_interests (" \
     "  id INTEGER PRIMARY KEY" \
     ", interest TEXT NOT NULL UNIQUE" \
-  ")" \
-)
-
-#define CREATE_MOZ_UP_INTERESTS_META NS_LITERAL_CSTRING( \
-  "CREATE TABLE moz_up_interests_meta (" \
-    "  interest_id INTEGER PRIMARY KEY" \
-    ", bucket_visit_count_threshold INTEGER" \
-    ", bucket_duration INTEGER" \
-    ", ignored_flag INTEGER NOT NULL DEFAULT 0" \
-    ", date_updated INTEGER NOT NULL DEFAULT 0" \
+    ", namespace TEXT NOT NULL" \
+    ", duration INTEGER NOT NULL" \
+    ", threshold INTEGER NOT NULL" \
+    ", sharable INTEGER DEFAULT 1 NOT NULL" \
   ")" \
 )
 

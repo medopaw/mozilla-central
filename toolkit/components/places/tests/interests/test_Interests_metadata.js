@@ -8,9 +8,6 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
-const DEFAULT_THRESHOLD = 5;
-const DEFAULT_DURATION = 14;
-
 let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 
 function run_test() {
@@ -19,8 +16,8 @@ function run_test() {
 
 add_task(function test_Interests_getMetaForInterests()
 {
-  yield PlacesInterestsStorage.addInterest("cars");
-  yield PlacesInterestsStorage.addInterest("movies");
+  yield addInterest("cars");
+  yield addInterest("movies");
 
   let results;
 
@@ -35,32 +32,31 @@ add_task(function test_Interests_getMetaForInterests()
   results = yield iServiceObject._getMetaForInterests(["eccentricity", "quixotic"])
   isIdentical({}, results);
 
-  // INSERT works. create meta table entry, with no data given
-  // for custom rules, this is what we will use to signal the need to download them
   results = yield iServiceObject._getMetaForInterests(["cars"])
-  isIdentical({}, results);
-  yield PlacesInterestsStorage.setMetaForInterest("cars");
-  results = yield iServiceObject._getMetaForInterests(["cars"])
-  isIdentical({"cars": {threshold: DEFAULT_THRESHOLD, duration: DEFAULT_DURATION}}, results);
+  isIdentical({"cars": {threshold: DEFAULT_THRESHOLD, duration: DEFAULT_DURATION, sharable: 1}}, results);
 
   // updates work as expected
-  yield PlacesInterestsStorage.setMetaForInterest("cars", {threshold: 5, duration: 15});
+  yield PlacesInterestsStorage.setInterest("cars", {threshold: 5, duration: 15});
   results = yield iServiceObject._getMetaForInterests(["cars"])
-  isIdentical({"cars": {threshold: 5, duration: 15}}, results);
+  isIdentical({"cars": {threshold: 5, duration: 15, sharable: 1}}, results);
 
   // INSERT cases
 
-  // calling with an interest that doesn't exist
-  yield PlacesInterestsStorage.setMetaForInterest("idontexist", {});
-  results = yield iServiceObject._getMetaForInterests(["idontexist"]);
-  isIdentical({}, results);
+  // calling with an interest that doesn't exist yet
+  yield PlacesInterestsStorage.setInterest("notexistyet", {threshold: 5, duration: 15});
+  results = yield iServiceObject._getMetaForInterests(["notexistyet"])
+  isIdentical({"notexistyet": {threshold: 5, duration: 15, sharable: 1}}, results);
 
   // > 1 interests
-  yield PlacesInterestsStorage.setMetaForInterest("movies", {threshold:14, duration: 5});
+  yield PlacesInterestsStorage.setInterest("movies", {threshold:14, duration: 5});
   results = yield iServiceObject._getMetaForInterests(["movies", "cars"]);
-  isIdentical({"cars": {threshold: 5, duration: 15}, "movies": {threshold: 14, duration: 5}}, results);
+  isIdentical({
+    "cars": {threshold: 5, duration: 15, sharable: 1},
+    "movies": {threshold: 14, duration: 5, sharable: 1}}, results);
 
   // multiple interests, one doesn't exist
   results = yield iServiceObject._getMetaForInterests(["movies", "cars", "idontexist"]);
-  isIdentical({"cars": {threshold: 5, duration: 15}, "movies": {threshold: 14, duration: 5}}, results);
+  isIdentical({
+    "cars": {threshold: 5, duration: 15, sharable: 1},
+    "movies": {threshold: 14, duration: 5, sharable: 1}}, results);
 });

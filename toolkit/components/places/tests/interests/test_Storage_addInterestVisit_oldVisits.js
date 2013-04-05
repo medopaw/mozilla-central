@@ -15,7 +15,7 @@ function run_test() {
 // Test adding interest visits going older in time
 add_task(function addGoingOlder() {
   let interest = "cars";
-  yield PlacesInterestsStorage.addInterest(interest);
+  yield addInterest(interest);
 
   // Add one visit for now and make sure there's only one
   yield PlacesInterestsStorage.addInterestVisit(interest);
@@ -52,7 +52,7 @@ add_task(function addGoingOlder() {
 // Test adding interest visits going more recent in time
 add_task(function addGoingNewer() {
   let interest = "sports";
-  yield PlacesInterestsStorage.addInterest(interest);
+  yield addInterest(interest);
 
   // Add a visit from 5 weeks ago for past
   let pastTime = Date.now() - 5 * 7 * 24 * 60 * 60 * 1000;

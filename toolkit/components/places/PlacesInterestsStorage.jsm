@@ -19,9 +19,36 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
 
 const MS_PER_DAY = 86400000;
-const DEFAULT_THRESHOLD = 5;
-const DEFAULT_DURATION = 14;
-const INTEREST_HOST_QUERY_LIMIT = 100;
+
+/**
+ * Store the SQL statements used for this file together for easy reference
+ */
+const SQL = {
+  getInterests:
+    "SELECT * " +
+    "FROM moz_interests " +
+    "WHERE interest IN (:interests)",
+
+  setInterest:
+    "REPLACE INTO moz_interests " +
+    "VALUES((SELECT id " +
+            "FROM moz_interests " +
+            "WHERE interest = :interest), " +
+           ":interest, " +
+           ":namespace, " +
+           "IFNULL(:duration, " +
+                  "(SELECT duration " +
+                   "FROM moz_interests " +
+                   "WHERE interest = :interest)), " +
+           "IFNULL(:threshold, " +
+                  "(SELECT threshold " +
+                   "FROM moz_interests " +
+                   "WHERE interest = :interest)), " +
+           "IFNULL(:sharable, " +
+                  "(SELECT sharable " +
+                   "FROM moz_interests " +
+                   "WHERE interest = :interest)))",
+};
 
 /*
  * Generates a string for use with the SQLite client for binding parameters by array indexing
@@ -106,15 +133,8 @@ let PlacesInterestsStorage = {
     return time - time % MS_PER_DAY;
   },
 
-  addInterest: function (aInterest) {
-    let returnDeferred = Promise.defer();
-    let stmt = this.db.createAsyncStatement(
-      "INSERT OR IGNORE INTO moz_up_interests (interest) VALUES(:interest)");
-    stmt.params.interest = aInterest;
-    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
-    stmt.finalize();
-    return returnDeferred.promise;
-  },
+  //////////////////////////////////////////////////////////////////////////////
+  //// PlacesInterestsStorage
 
   /**
    * Increments the number of visits for an interest for a day
@@ -135,7 +155,7 @@ let PlacesInterestsStorage = {
     let stmt = this.db.createAsyncStatement(
       "REPLACE INTO moz_up_interests_visits " +
       "SELECT i.id, IFNULL(v.date_added, :dateAdded), IFNULL(v.visit_count, 0) + :visitCount " +
-      "FROM moz_up_interests i " +
+      "FROM moz_interests i " +
       "LEFT JOIN moz_up_interests_visits v " +
         "ON v.interest_id = i.id AND v.date_added = :dateAdded " +
       "WHERE i.interest = :interest");
@@ -169,7 +189,7 @@ let PlacesInterestsStorage = {
     let returnDeferred = Promise.defer();
     let stmt = this.db.createAsyncStatement(
       "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id) " +
-      "VALUES ((SELECT id FROM moz_up_interests WHERE interest =:interest) " +
+      "VALUES((SELECT id FROM moz_interests WHERE interest = :interest) " +
       ", (SELECT id FROM " +
       "    (SELECT id,host FROM moz_hosts ORDER BY frecency DESC LIMIT 200)" +
       "   WHERE host = :host))");
@@ -180,32 +200,6 @@ let PlacesInterestsStorage = {
 
     // we must handle rejection properly, so that failure to insert is ignored
     return returnDeferred.promise.then(null,null);
-  },
-
-  /**
-   * Given a list of interest names, obtains data about those interests, ordered by score
-   * This respects the user's ignore list
-   * @param     interests
-   *            A list of interests to include in the query
-   * @return Promise with the interest data
-   */
-  getInterests: function checkIntersts(interests) {
-    let returnDeferred = Promise.defer();
-    let sql = "SELECT i.interest, v.visit_count, (:currentTs-v.date_added)/:MS_PER_DAY 'days_ago' " +
-              "FROM moz_up_interests i " +
-              "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
-              "JOIN moz_up_interests_meta m ON m.interest_id = i.id " +
-              "WHERE i.interest IN (" + genSQLParamList(interests.length) + ") " +
-              "AND m.ignored_flag = 0 " +
-              "AND m.date_updated != 0 " +
-              "ORDERY BY v.date_added DESC";
-    let stmt = this.db.createStatement(sql);
-    stmt.params.MS_PER_DAY = MS_PER_DAY;
-    stmt.params.currentTs = currentTs;
-    stmt.params.INTEREST_HOST_QUERY_LIMIT = INTEREST_HOST_QUERY_LIMIT;
-
-
-    return returnDeferred.promise;
   },
 
   /**
@@ -230,15 +224,11 @@ let PlacesInterestsStorage = {
     let cutOffDay = currentTs - 28 * MS_PER_DAY;
 
     let sql = "SELECT i.interest, v.visit_count, (:currentTs-v.date_added)/:MS_PER_DAY 'days_ago' " +
-              "FROM moz_up_interests i " +
-              "JOIN moz_up_interests_visits v ON v.interest_id = i.id ";
+              "FROM moz_interests i " +
+              "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
+              "WHERE v.date_added >= :cutOffDay ";
     if (filterIgnores) {
-      sql += "JOIN moz_up_interests_meta m ON m.interest_id = i.id " +
-             "WHERE v.date_added >= :cutOffDay " +
-             "AND m.ignored_flag = 0 " +
-             "AND m.date_updated != 0 ";
-    } else {
-      sql += "WHERE v.date_added >= :cutOffDay ";
+      sql += "AND i.sharable = 1 ";
     }
     sql += "ORDER BY v.date_added DESC";
 
@@ -285,122 +275,6 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * Updates the ignore flag for an interest
-   * @param     interest
-   *            The interest name to update
-   * @param     value
-   *            Value is either true or false
-   */
-  updateIgnoreFlagForInterest: function(interest, value) {
-    let returnDeferred = Promise.defer();
-    let query = "UPDATE moz_up_interests_meta " +
-                "SET ignored_flag = :value " +
-                "WHERE interest_id = (" +
-                "  SELECT id " +
-                "  FROM moz_up_interests " +
-                "  WHERE interest = :interest" +
-                ")";
-    let stmt = this.db.createAsyncStatement(query);
-    stmt.params.interest = interest;
-    stmt.params.value = value;
-    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
-    stmt.finalize();
-    return returnDeferred.promise;
-  },
-
-  /**
-   * Stores metadata for an interest. If the optional parameters are not passed, existing values will be preserved.
-   * @param     interestName
-   *            Interest name to store data for
-   * @param     {threshold, duration, ignored, dateUpdated}
-   *            An object with the option names as keys
-   *            threshold: The visit count threshold that counts as a positive signal in bucket computation
-   *            duration: The length of the 'immediate' and 'recent' periods in bucket computation
-   *            ignored: Whether or not to use this interest when computing interest information
-   *            dateUpdated: The timestamp in milliseconds of the day this interest was last updated. 0 means it was never updated. by default dateUpdated is today's date timestamp
-   * @returns   promise for when the data is set
-   */
-  setMetaForInterest: function(interestName, optional={}) {
-    let returnDeferred = Promise.defer();
-
-    let {threshold, duration, ignored, dateUpdated} = optional;
-
-    threshold = (typeof threshold == 'number') ? threshold : null;
-    duration = (typeof duration == 'number') ? duration : null;
-    ignored = (typeof ignored == 'boolean') ? ignored : null;
-    dateUpdated = (typeof dateUpdated == 'undefined') ? this._getRoundedTime() : dateUpdated;
-
-    let query = "REPLACE INTO moz_up_interests_meta " +
-                "SELECT i.id," +
-                "  coalesce(:threshold, m.bucket_visit_count_threshold), " +
-                "  coalesce(:duration, m.bucket_duration), " +
-                "  coalesce(:ignored, m.ignored_flag), " +
-                "  coalesce(:dateUpdated, m.date_updated) " +
-                "FROM moz_up_interests i " +
-                "LEFT JOIN moz_up_interests_meta m " +
-                "  ON m.interest_id = i.id " +
-                "WHERE i.interest = :interestName";
-    let stmt = this.db.createAsyncStatement(query);
-    stmt.params.interestName = interestName;
-    stmt.params.threshold = threshold;
-    stmt.params.duration = duration;
-    stmt.params.ignored = ignored;
-    stmt.params.dateUpdated = dateUpdated;
-    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
-    stmt.finalize();
-    return returnDeferred.promise;
-  },
-
-  /**
-   * Obtains interest metadata for a list of interests
-   * @param interests
-            An array of interest names
-   * @returns A promise with the interest metadata for each interest
-   */
-  getMetaForInterests: function(interests) {
-    let returnDeferred = Promise.defer();
-
-    if (!Array.isArray(interests)) {
-      return deferred.reject(Error("invalid input"));
-    }
-
-    let query = "SELECT m.bucket_visit_count_threshold, " +
-                "       m.bucket_duration, " +
-                "       m.ignored_flag, " +
-                "       m.date_updated, " +
-                "       i.interest " +
-                "FROM moz_up_interests_meta m " +
-                "JOIN moz_up_interests i ON m.interest_id = i.id " +
-                "WHERE i.interest IN (" + genSQLParamList(interests.length) + ") ";
-
-    let stmt = this.db.createAsyncStatement(query);
-
-
-    for (let i = 0; i < interests.length; i++) {
-      stmt.bindByIndex(i, interests[i]);
-    }
-    let results = {};
-
-    let queryDeferred = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(queryDeferred,function(row) {
-      results[row.getResultByName('interest')] = {
-        threshold: row.getResultByName('bucket_visit_count_threshold'),
-        duration: row.getResultByName('bucket_duration'),
-        ignored: row.getResultByName('ignored_flag') ? true : false,
-        dateUpdated: row.getResultByName('date_updated'),
-      }
-    });
-    stmt.executeAsync(promiseHandler);
-    stmt.finalize();
-
-    queryDeferred.promise.then(function(){
-      returnDeferred.resolve(results);
-    });
-
-    return returnDeferred.promise;
-  },
-
-  /**
    * computes buckets data for an interest
    * @param   interest
    *          The interest name string
@@ -411,17 +285,8 @@ let PlacesInterestsStorage = {
 
     // Figure out the cutoff times for each bucket
     let currentTs = this._getRoundedTime();
-    this.getMetaForInterests([interest]).then(function(metaData) {
-
-      let duration;
-
-      if (Object.keys(metaData).length == 0) {
-        // in case no metadata exists for this interests
-        duration = DEFAULT_DURATION;
-      } else {
-        duration = metaData[interest].duration || DEFAULT_DURATION;
-      }
-
+    this.getInterests([interest]).then(function(metaData) {
+      let duration = metaData[interest].duration;
       let immediateBucket = currentTs - duration * MS_PER_DAY;
       let recentBucket = currentTs - duration*2 * MS_PER_DAY;
 
@@ -431,7 +296,7 @@ let PlacesInterestsStorage = {
                     "WHEN v.date_added > :recentBucket THEN 'recent' " +
                     "ELSE 'past' END AS bucket, " +
                     "v.visit_count " +
-        "FROM moz_up_interests i " +
+        "FROM moz_interests i " +
         "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
         "WHERE i.interest = :interest");
       stmt.params.interest = interest;
@@ -476,7 +341,7 @@ let PlacesInterestsStorage = {
       "ROUND(count(1) * 100.0 / " +
       "      (SELECT COUNT(DISTINCT host_id) " +
       "       FROM moz_up_interests_hosts),2) diversity " +
-      "FROM moz_up_interests i " +
+      "FROM moz_interests i " +
       "JOIN moz_up_interests_hosts h ON h.interest_id = i.id " +
       "WHERE i.interest in  ( " + genSQLParamList(interests.length) + ") " +
       "GROUP BY  i.interest ");
@@ -513,6 +378,22 @@ let PlacesInterestsStorage = {
   },
 
   /**
+   * Obtains interest metadata for a list of interests
+   * @param   interests
+              An array of interest names
+   * @returns A promise with the interest metadata for each interest
+   */
+  getInterests: function PIS_getInterests(interests) {
+    return this._execute(SQL.getInterests, {
+      columns: ["duration", "sharable", "threshold"],
+      key: "interest",
+      listParams: {
+        interests: interests,
+      },
+    });
+  },
+
+  /**
    * returns tuples of (place_id,url,title) visisted between now and daysAgo
    * @param   daysAgo
    *          Number of days to be cleaned
@@ -542,6 +423,30 @@ let PlacesInterestsStorage = {
     stmt.executeAsync(promiseHandler);
     stmt.finalize();
     return returnDeferred.promise;
+  },
+
+  /**
+   * Set (insert or update) metadata for an interest
+   *
+   * @param   interest
+   *          Full interest name with namespace to set
+   * @param   [optional] metadata {see below}
+   *          duration: Number of days of visits to include in buckets
+   *          sharable: Boolean user preference if the interest can be shared
+   *          threshold: Number of visits in a bucket to signal recency interest
+   * @returns Promise for when the interest data is set
+   */
+  setInterest: function PIS_setInterest(interest, metadata={}) {
+    let {duration, sharable, threshold} = metadata;
+    return this._execute(SQL.setInterest, {
+      params: {
+        duration: duration,
+        interest: interest,
+        namespace: this._extractNamespace(interest),
+        sharable: sharable,
+        threshold: threshold,
+      },
+    });
   },
 
   //////////////////////////////////////////////////////////////////////////////
