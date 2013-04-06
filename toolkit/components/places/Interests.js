@@ -168,7 +168,7 @@ Interests.prototype = {
     for (let interest of aInterests) {
       // we need to wait until interest is added to the inerestes table
       addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
-      addVisitPromises.push(PlacesInterestsStorage.addInterestForHost(interest, aHost));
+      addVisitPromises.push(PlacesInterestsStorage.addInterestHost(interest, aHost));
     }
     Promise.promised(Array)(addVisitPromises).then(results => {
       deferred.resolve(results);

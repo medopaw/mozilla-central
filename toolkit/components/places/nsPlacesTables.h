@@ -162,20 +162,20 @@
   ")" \
 )
 
+#define CREATE_MOZ_INTERESTS_HOSTS NS_LITERAL_CSTRING( \
+  "CREATE TABLE moz_interests_hosts (" \
+    "  interest_id INTEGER NOT NULL" \
+    ", host_id INTEGER NOT NULL" \
+    ", PRIMARY KEY (interest_id, host_id)" \
+  ")" \
+)
+
 #define CREATE_MOZ_UP_INTERESTS_VISITS NS_LITERAL_CSTRING( \
   "CREATE TABLE moz_up_interests_visits (" \
     "  interest_id INTEGER NOT NULL DEFAULT 0" \
     ", date_added INTEGER NOT NULL DEFAULT 0" \
     ", visit_count INTEGER NOT NULL DEFAULT 0" \
     ", PRIMARY KEY (interest_id, date_added)" \
-  ")" \
-)
-
-#define CREATE_MOZ_UP_INTERESTS_HOSTS NS_LITERAL_CSTRING( \
-  "CREATE TABLE moz_up_interests_hosts (" \
-    "  interest_id INTEGER NOT NULL DEFAULT 0" \
-    ", host_id INTEGER NOT NULL DEFAULT 0" \
-    ",PRIMARY KEY (interest_id, host_id)" \
   ")" \
 )
 

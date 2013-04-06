@@ -45,13 +45,13 @@ function addInterest(interest) {
 
 function clearInterestsHosts() {
   return PlacesInterestsStorage._execute(
-    "DELETE FROM moz_up_interests_hosts"
+    "DELETE FROM moz_interests_hosts"
   );
 }
 
 function getHostsForInterest(interest) {
   return PlacesInterestsStorage._execute(
-    "SELECT h.host AS host FROM moz_hosts h, moz_interests i, moz_up_interests_hosts ih " +
+    "SELECT h.host AS host FROM moz_hosts h, moz_interests i, moz_interests_hosts ih " +
     "WHERE i.interest = :interest AND h.id = ih.host_id AND i.id = ih.interest_id", {
     columns: ["host"],
     params: {
@@ -62,7 +62,7 @@ function getHostsForInterest(interest) {
 
 function getInterestsForHost(host) {
   return PlacesInterestsStorage._execute(
-    "SELECT interest FROM moz_interests i, moz_up_interests_hosts ih, moz_hosts h " +
+    "SELECT interest FROM moz_interests i, moz_interests_hosts ih, moz_hosts h " +
     "WHERE h.host = :host AND h.id = ih.host_id AND i.id = ih.interest_id", {
     columns: ["interest"],
     params: {
@@ -93,7 +93,7 @@ function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
     interests.forEach(function(interest) {
       visitPromises.push(addInterest(interest));
       visitPromises.push(PlacesInterestsStorage.addInterestVisit(interest, {visitTime: visitTime, visitCount: visitCount}));
-      visitPromises.push(PlacesInterestsStorage.addInterestForHost(interest,host));
+      visitPromises.push(PlacesInterestsStorage.addInterestHost(interest, host));
     });
   });
 

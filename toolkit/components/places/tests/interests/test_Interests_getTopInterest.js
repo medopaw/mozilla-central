@@ -28,10 +28,10 @@ add_task(function test_Interests_getTopInterest()
   yield addInterest("video-games");
   yield addInterest("history");
 
-  yield PlacesInterestsStorage.addInterestForHost("technology", "samsung.com");
-  yield PlacesInterestsStorage.addInterestForHost("cars", "cars.com");
-  yield PlacesInterestsStorage.addInterestForHost("movies", "netflix.com");
-  yield PlacesInterestsStorage.addInterestForHost("computers", "mozilla.org");
+  yield PlacesInterestsStorage.addInterestHost("technology", "samsung.com");
+  yield PlacesInterestsStorage.addInterestHost("cars", "cars.com");
+  yield PlacesInterestsStorage.addInterestHost("movies", "netflix.com");
+  yield PlacesInterestsStorage.addInterestHost("computers", "mozilla.org");
 
   function scoreDecay(score, numDays, daysToZero) {
     return score * (1 - numDays/(daysToZero+1));
@@ -53,7 +53,7 @@ add_task(function test_Interests_getTopInterest()
 
   // add another visit for the same category, same day
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  yield PlacesInterestsStorage.addInterestForHost("technology", "mozilla.org");
+  yield PlacesInterestsStorage.addInterestHost("technology", "mozilla.org");
   results = yield iServiceObject._getTopInterests();
   isIdentical([{"name":"technology","score":2,"diversity":50,"recency":{"immediate":2,"recent":0,"past":0}}], results);
 

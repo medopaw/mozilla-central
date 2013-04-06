@@ -24,6 +24,18 @@ const MS_PER_DAY = 86400000;
  * Store the SQL statements used for this file together for easy reference
  */
 const SQL = {
+  addInterestHost:
+    "INSERT OR IGNORE INTO moz_interests_hosts (interest_id, host_id) " +
+    "VALUES((SELECT id " +
+            "FROM moz_interests " +
+            "WHERE interest = :interest), " +
+           "(SELECT id " +
+            "FROM (SELECT id, host " +
+                  "FROM moz_hosts " +
+                  "ORDER BY frecency DESC " +
+                  "LIMIT 200) " +
+            "WHERE host = :host))",
+
   getInterests:
     "SELECT * " +
     "FROM moz_interests " +
@@ -137,6 +149,24 @@ let PlacesInterestsStorage = {
   //// PlacesInterestsStorage
 
   /**
+   * Record the pair of interest and host
+   *
+   * @param   interest
+   *          The full interest string with namespace
+   * @param   host
+   *          The host string to associate with the interest
+   * @returns Promise for when the row is added
+   */
+  addInterestHost: function PIS_addInterestHost(interest, host) {
+    return this._execute(SQL.addInterestHost, {
+      params: {
+        host: host,
+        interest: interest,
+      },
+    });
+  },
+
+  /**
    * Increments the number of visits for an interest for a day
    * @param   aInterest
    *          The interest string
@@ -174,32 +204,6 @@ let PlacesInterestsStorage = {
     stmt.finalize();
 
     return deferred.promise;
-  },
-
-  /**
-   * adds interest,host tuple to the moz_up_interests_hosts
-   * only adds hosts that belong to 200 most frecent ones
-   * @param   interest
-   *          The interest string
-   * @param   host
-   *          The host string
-   * @returns Promise for when the row is added
-   */
-  addInterestForHost: function (aInterest, aHost) {
-    let returnDeferred = Promise.defer();
-    let stmt = this.db.createAsyncStatement(
-      "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id) " +
-      "VALUES((SELECT id FROM moz_interests WHERE interest = :interest) " +
-      ", (SELECT id FROM " +
-      "    (SELECT id,host FROM moz_hosts ORDER BY frecency DESC LIMIT 200)" +
-      "   WHERE host = :host))");
-    stmt.params.host = aHost;
-    stmt.params.interest = aInterest;
-    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
-    stmt.finalize();
-
-    // we must handle rejection properly, so that failure to insert is ignored
-    return returnDeferred.promise.then(null,null);
   },
 
   /**
@@ -340,9 +344,9 @@ let PlacesInterestsStorage = {
       "SELECT i.interest interest, " +
       "ROUND(count(1) * 100.0 / " +
       "      (SELECT COUNT(DISTINCT host_id) " +
-      "       FROM moz_up_interests_hosts),2) diversity " +
+      "       FROM moz_interests_hosts), 2) diversity " +
       "FROM moz_interests i " +
-      "JOIN moz_up_interests_hosts h ON h.interest_id = i.id " +
+      "JOIN moz_interests_hosts h ON h.interest_id = i.id " +
       "WHERE i.interest in  ( " + genSQLParamList(interests.length) + ") " +
       "GROUP BY  i.interest ");
 

@@ -48,10 +48,10 @@ add_task(function test_InterestWebAPI_getTopInterests()
 
   // add visit
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  yield PlacesInterestsStorage.addInterestForHost("cars", "cars.com");
-  yield PlacesInterestsStorage.addInterestForHost("movies", "netflix.com");
-  yield PlacesInterestsStorage.addInterestForHost("computers", "mozilla.org");
-  yield PlacesInterestsStorage.addInterestForHost("technology", "samsung.com");
+  yield PlacesInterestsStorage.addInterestHost("cars", "cars.com");
+  yield PlacesInterestsStorage.addInterestHost("movies", "netflix.com");
+  yield PlacesInterestsStorage.addInterestHost("computers", "mozilla.org");
+  yield PlacesInterestsStorage.addInterestHost("technology", "samsung.com");
 
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
@@ -59,14 +59,14 @@ add_task(function test_InterestWebAPI_getTopInterests()
 
   // add another visit for the same category, same day. do not cross threshold
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  yield PlacesInterestsStorage.addInterestForHost("cars", "netflix.com");
+  yield PlacesInterestsStorage.addInterestHost("cars", "netflix.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([{"name":"cars","score":100,"diversity":50,"recency":{"immediate":false,"recent":false,"past":false}}], results);
 
   // add more visits for the same category, same day. do cross threshold
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
-  yield PlacesInterestsStorage.addInterestForHost("cars", "samsung.com");
+  yield PlacesInterestsStorage.addInterestHost("cars", "samsung.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([{"name":"cars","score":100,"diversity":75,"recency":{"immediate":true,"recent":false,"past":false}}], results);
@@ -86,7 +86,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   // add visits for another category, one day ago
 
   yield PlacesInterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
-  yield PlacesInterestsStorage.addInterestForHost("movies", "netflix.com");
+  yield PlacesInterestsStorage.addInterestHost("movies", "netflix.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   scoreMax = 9;
@@ -111,7 +111,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*0), visitCount: 15});
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*1), visitCount: 5});
   yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
-  yield PlacesInterestsStorage.addInterestForHost("video-games", "cars.com");
+  yield PlacesInterestsStorage.addInterestHost("video-games", "cars.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   scoreMax = 15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28);
@@ -144,8 +144,8 @@ add_task(function test_InterestWebAPI_getTopInterests()
   yield promiseAddVisits(NetUtil.newURI("http://www.site2.com/"));
   yield promiseAddVisits(NetUtil.newURI("http://www.site3.com/"));
   yield PlacesInterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*29), visitCount: 5});
-  yield PlacesInterestsStorage.addInterestForHost("history", "site1.com");
-  yield PlacesInterestsStorage.addInterestForHost("history", "site2.com");
+  yield PlacesInterestsStorage.addInterestHost("history", "site1.com");
+  yield PlacesInterestsStorage.addInterestHost("history", "site2.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([], results);
@@ -163,8 +163,8 @@ add_task(function test_InterestWebAPI_getTopInterests()
   // add visits to a category beyond custom threshold, i.e. 40 days and beyond, and 10 in threshold
   // the category should not show up
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*41), visitCount: 10});
-  yield PlacesInterestsStorage.addInterestForHost("technology", "site1.com");
-  yield PlacesInterestsStorage.addInterestForHost("technology", "site2.com");
+  yield PlacesInterestsStorage.addInterestHost("technology", "site1.com");
+  yield PlacesInterestsStorage.addInterestHost("technology", "site2.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([], results);
@@ -179,7 +179,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   ], results);
 
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*28), visitCount: 5});
-  yield PlacesInterestsStorage.addInterestForHost("technology", "site3.com");
+  yield PlacesInterestsStorage.addInterestHost("technology", "site3.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([
