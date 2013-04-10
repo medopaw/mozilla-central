@@ -831,9 +831,7 @@ Database::InitSchema(bool* aDatabaseMigrated)
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_HOSTS);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_VISITS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_VISITS_DATEADDED);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_VISITS);
     NS_ENSURE_SUCCESS(rv, rv);
 
     // Initialize the bookmark roots in the new DB.
@@ -1933,9 +1931,7 @@ Database::MigrateV23Up()
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_HOSTS);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_UP_INTERESTS_VISITS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_UP_INTERESTS_VISITS_DATEADDED);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_VISITS);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_HOSTS_FRECENCY);
     NS_ENSURE_SUCCESS(rv, rv);

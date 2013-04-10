@@ -36,6 +36,17 @@ const SQL = {
                   "LIMIT 200) " +
             "WHERE host = :host))",
 
+  addInterestVisit:
+    "REPLACE INTO moz_interests_visits " +
+    "SELECT id, " +
+           "IFNULL(day, :day), " +
+           "IFNULL(visits, 0) + IFNULL(:visits, 1) " +
+    "FROM moz_interests " +
+    "LEFT JOIN moz_interests_visits " +
+    "ON interest_id = id AND " +
+       "day = :day " +
+    "WHERE interest = :interest",
+
   getInterests:
     "SELECT * " +
     "FROM moz_interests " +
@@ -167,43 +178,24 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * Increments the number of visits for an interest for a day
-   * @param   aInterest
-   *          The interest string
-   * @param   {visitTime, visitCount}
-   *          An object with the option names as keys
-   *          visitTime: Date/time to associate with the visit, defaulting to today
-   *          visitCount: The number of counts to add, defaulting to 1
-   * @returns Promise for when the interest's visit is added
+   * Increment or initialize the number of visits for an interest on a day
+   *
+   * @param   interest
+   *          The full interest string with namespace
+   * @param   [optional] visitData {see below}
+   *          visitCount: Number of visits to add defaulting to 1
+   *          visitTime: Date/time to associate with the visit defaulting to now
+   * @returns Promise for when the row is added/updated
    */
-  addInterestVisit: function(interest, optional={}){
-    let {visitTime, visitCount} = optional;
-    visitCount = visitCount || 1;
-
-    let deferred = Promise.defer();
-    // Increment or initialize the visit count for the interest for the date
-    let stmt = this.db.createAsyncStatement(
-      "REPLACE INTO moz_up_interests_visits " +
-      "SELECT i.id, IFNULL(v.date_added, :dateAdded), IFNULL(v.visit_count, 0) + :visitCount " +
-      "FROM moz_interests i " +
-      "LEFT JOIN moz_up_interests_visits v " +
-        "ON v.interest_id = i.id AND v.date_added = :dateAdded " +
-      "WHERE i.interest = :interest");
-    stmt.params.interest = interest;
-    stmt.params.visitCount = visitCount;
-    stmt.params.dateAdded = this._getRoundedTime(visitTime);
-    stmt.executeAsync({
-      handleResult: function (result) {},
-      handleCompletion: function (reason) {
-        deferred.resolve();
+  addInterestVisit: function PIS_addInterestVisit(interest, visitData={}) {
+    let {visitCount, visitTime} = visitData;
+    return this._execute(SQL.addInterestVisit, {
+      params: {
+        day: this._convertDateToDays(visitTime),
+        interest: interest,
+        visits: visitCount,
       },
-      handleError: function (error) {
-        deferred.reject(error);
-      }
     });
-    stmt.finalize();
-
-    return deferred.promise;
   },
 
   /**
@@ -224,21 +216,20 @@ let PlacesInterestsStorage = {
     }
 
     // Figure out the cutoff time for computation
-    let currentTs = this._getRoundedTime();
-    let cutOffDay = currentTs - 28 * MS_PER_DAY;
+    let today = this._convertDateToDays();
+    let cutOffDay = today - 28;
 
-    let sql = "SELECT i.interest, v.visit_count, (:currentTs-v.date_added)/:MS_PER_DAY 'days_ago' " +
+    let sql = "SELECT i.interest, v.visits, :today - v.day 'days_ago' " +
               "FROM moz_interests i " +
-              "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
-              "WHERE v.date_added >= :cutOffDay ";
+              "JOIN moz_interests_visits v ON v.interest_id = i.id " +
+              "WHERE v.day >= :cutOffDay ";
     if (filterIgnores) {
       sql += "AND i.sharable = 1 ";
     }
-    sql += "ORDER BY v.date_added DESC";
+    sql += "ORDER BY v.day DESC";
 
     let stmt = this.db.createStatement(sql);
-    stmt.params.MS_PER_DAY = MS_PER_DAY;
-    stmt.params.currentTs = currentTs;
+    stmt.params.today = today;
     stmt.params.cutOffDay = cutOffDay;
 
     let scores = {};
@@ -247,7 +238,7 @@ let PlacesInterestsStorage = {
 
     let promiseHandler = new AsyncPromiseHandler(queryDeferred,function(row) {
       let interest = row.getResultByName("interest");
-      let visitCount = row.getResultByName("visit_count");
+      let visitCount = row.getResultByName("visits");
       let daysAgo = row.getResultByName("days_ago");
 
       if (!scores.hasOwnProperty(interest)) {
@@ -288,20 +279,20 @@ let PlacesInterestsStorage = {
     let deferred = Promise.defer();
 
     // Figure out the cutoff times for each bucket
-    let currentTs = this._getRoundedTime();
+    let today = this._convertDateToDays();
     this.getInterests([interest]).then(function(metaData) {
       let duration = metaData[interest].duration;
-      let immediateBucket = currentTs - duration * MS_PER_DAY;
-      let recentBucket = currentTs - duration*2 * MS_PER_DAY;
+      let immediateBucket = today - duration;
+      let recentBucket = today - duration * 2;
 
       // Aggregate the visits into each bucket for the interest
       let stmt = PlacesInterestsStorage.db.createAsyncStatement(
-        "SELECT CASE WHEN v.date_added > :immediateBucket THEN 'immediate' " +
-                    "WHEN v.date_added > :recentBucket THEN 'recent' " +
+        "SELECT CASE WHEN v.day > :immediateBucket THEN 'immediate' " +
+                    "WHEN v.day > :recentBucket THEN 'recent' " +
                     "ELSE 'past' END AS bucket, " +
-                    "v.visit_count " +
+                    "v.visits " +
         "FROM moz_interests i " +
-        "JOIN moz_up_interests_visits v ON v.interest_id = i.id " +
+        "JOIN moz_interests_visits v ON v.interest_id = i.id " +
         "WHERE i.interest = :interest");
       stmt.params.interest = interest;
       stmt.params.immediateBucket = immediateBucket;
@@ -318,7 +309,7 @@ let PlacesInterestsStorage = {
       let queryDeferred = Promise.defer();
       let promiseHandler = new AsyncPromiseHandler(queryDeferred, function(row) {
         let bucket = row.getResultByName("bucket");
-        let visitCount = row.getResultByName("visit_count");
+        let visitCount = row.getResultByName("visits");
         result[bucket] += visitCount;
       });
       stmt.executeAsync(promiseHandler);
@@ -373,8 +364,8 @@ let PlacesInterestsStorage = {
    */
    clearRecentInterests: function (daysAgo) {
     let returnDeferred = Promise.defer();
-    let timeStamp = this._getRoundedTime() - (daysAgo || 300) * MS_PER_DAY;
-    let stmt = this.db.createStatement("DELETE FROM moz_up_interests_visits where date_added > :timeStamp");
+    let timeStamp = this._convertDateToDays() - daysAgo;
+    let stmt = this.db.createStatement("DELETE FROM moz_interests_visits where day > :timeStamp");
     stmt.params.timeStamp = timeStamp;
     stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
