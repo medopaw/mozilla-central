@@ -92,7 +92,7 @@ function isIdentical(expected, actual) {
   }
   else if (typeof expected == "object") {
     // Make sure all the keys match up
-    do_check_eq(Object.keys(expected) + "", Object.keys(actual));
+    do_check_eq(Object.keys(expected).sort() + "", Object.keys(actual).sort());
 
     // Recursively check each value individually
     Object.keys(expected).forEach(key => {
