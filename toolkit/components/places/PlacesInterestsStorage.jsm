@@ -126,7 +126,7 @@ let PlacesInterestsStorage = {
    *          visitCount: The number of counts to add, defaulting to 1
    * @returns Promise for when the interest's visit is added
    */
-  addInterestVisit: function(interest, optional={}){ 
+  addInterestVisit: function(interest, optional={}){
     let {visitTime, visitCount} = optional;
     visitCount = visitCount || 1;
 
@@ -157,29 +157,40 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * adds interest,host,date tuple to the moz_up_interests_hosts
+   * adds interest,host tuple to the moz_up_interests_hosts
    * @param   interest
    *          The interest string
    * @param   host
    *          The host string
-   * @param   [optional] visitTime
-   *          Date/time to associate with the visit defaulting to today
+   * @param   firstMostFrecentHosts
+   *          number of most frecent hosts (default 200)
    * @returns Promise for when the row is added
    */
-  addInterestForHost: function (aInterest, aHost) {
+  addInterestForHost: function (aInterest, aHost, aFirstMostFrecentHosts) {
     let returnDeferred = Promise.defer();
-    Cu.reportError(typeof(aInterest));
-    Cu.reportError("aInterest: " + aInterest);
-    Cu.reportError("aHost: " + aHost);
     let stmt = this.db.createAsyncStatement(
       "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id) " +
-      "VALUES((SELECT id FROM moz_up_interests WHERE interest =:interest) " +
-      ", (SELECT id FROM moz_hosts WHERE host = :host))" );
+      "VALUES " +
+      "( " +
+      "  (SELECT id FROM moz_up_interests " +
+      "    WHERE interest =:interest " +
+      "  ) " +
+      ", (SELECT id FROM " +
+      "     (SELECT id,host FROM moz_hosts " +
+      "                     ORDER BY frecency DESC " +
+      "                     LIMIT :firstMostFrecentHosts "+
+      "     ) " +
+      "   WHERE host = :host " +
+      "  ) " +
+      ")");
     stmt.params.host = aHost;
     stmt.params.interest = aInterest;
+    stmt.params.firstMostFrecentHosts = aFirstMostFrecentHosts || 200;
     stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
-    return returnDeferred.promise;
+
+    // we must handle rejection properly, so that failure to insert is ignored
+    return returnDeferred.promise.then(null,null);
   },
 
   getInterestsForHost: function(aHost) {
@@ -368,7 +379,7 @@ let PlacesInterestsStorage = {
                 "  coalesce(:duration, m.bucket_duration), " +
                 "  coalesce(:ignored, m.ignored_flag), " +
                 "  coalesce(:dateUpdated, m.date_updated) " +
-                "FROM moz_up_interests i " + 
+                "FROM moz_up_interests i " +
                 "LEFT JOIN moz_up_interests_meta m " +
                 "  ON m.interest_id = i.id " +
                 "WHERE i.interest = :interestName";

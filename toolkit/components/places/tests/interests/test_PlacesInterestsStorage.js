@@ -214,3 +214,81 @@ add_task(function test_PlacesInterestsStorageGetDiversity()
   });
 });
 
+add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
+  yield promiseClearHistory();
+  yield PlacesInterestsStorage.clearInterestsHosts();
+  yield promiseAddUrlInterestsVisit("http://www.baz.com","cars");
+
+  yield promiseAddUrlInterestsVisit("http://www.bar.com","cars");
+  yield promiseAddUrlInterestsVisit("http://www.bar.com","cars");
+
+  yield promiseAddUrlInterestsVisit("http://www.foo.com","cars");
+  yield promiseAddUrlInterestsVisit("http://www.foo.com","cars");
+  yield promiseAddUrlInterestsVisit("http://www.foo.com","cars");
+
+  yield promiseAddUrlInterestsVisit("http://www.foobar.com","cars");
+  yield promiseAddUrlInterestsVisit("http://www.foobar.com","cars");
+  yield promiseAddUrlInterestsVisit("http://www.foobar.com","cars");
+  yield promiseAddUrlInterestsVisit("http://www.foobar.com","cars");
+
+  // moz_hosts table now looks like this
+  // id|name|frecency
+  // 1|baz.com|100
+  // 2|bar.com|200
+  // 3|foo.com|300
+  // 4|foobar.com|400
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 4);
+    do_check_true(itemsHave(results,"foobar.com"));
+    do_check_true(itemsHave(results,"foo.com"));
+    do_check_true(itemsHave(results,"bar.com"));
+    do_check_true(itemsHave(results,"baz.com"));
+  });
+
+  yield PlacesInterestsStorage.clearInterestsHosts();
+
+  // now attempt to insert only those who fall into 3 most frecent
+  yield PlacesInterestsStorage.addInterestForHost("cars","foobar.com",1);
+  yield PlacesInterestsStorage.addInterestForHost("cars","foo.com",1);
+  yield PlacesInterestsStorage.addInterestForHost("cars","bar.com",1);
+  yield PlacesInterestsStorage.addInterestForHost("cars","baz.com",1);
+
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 1);
+    do_check_true(itemsHave(results,"foobar.com"));
+  });
+
+  yield PlacesInterestsStorage.addInterestForHost("cars","foobar.com",2);
+  yield PlacesInterestsStorage.addInterestForHost("cars","foo.com",2);
+  yield PlacesInterestsStorage.addInterestForHost("cars","bar.com",2);
+  yield PlacesInterestsStorage.addInterestForHost("cars","baz.com",2);
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 2);
+    do_check_true(itemsHave(results,"foobar.com"));
+    do_check_true(itemsHave(results,"foo.com"));
+  });
+
+  yield PlacesInterestsStorage.addInterestForHost("cars","foobar.com",3);
+  yield PlacesInterestsStorage.addInterestForHost("cars","foo.com",3);
+  yield PlacesInterestsStorage.addInterestForHost("cars","bar.com",3);
+  yield PlacesInterestsStorage.addInterestForHost("cars","baz.com",3);
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 3);
+    do_check_true(itemsHave(results,"foobar.com"));
+    do_check_true(itemsHave(results,"foo.com"));
+    do_check_true(itemsHave(results,"bar.com"));
+  });
+
+  yield PlacesInterestsStorage.addInterestForHost("cars","foobar.com",4);
+  yield PlacesInterestsStorage.addInterestForHost("cars","foo.com",4);
+  yield PlacesInterestsStorage.addInterestForHost("cars","bar.com",4);
+  yield PlacesInterestsStorage.addInterestForHost("cars","baz.com",4);
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length , 4);
+    do_check_true(itemsHave(results,"foobar.com"));
+    do_check_true(itemsHave(results,"foo.com"));
+    do_check_true(itemsHave(results,"bar.com"));
+    do_check_true(itemsHave(results,"baz.com"));
+  });
+
+});
