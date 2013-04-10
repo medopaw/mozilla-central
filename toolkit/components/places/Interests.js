@@ -398,18 +398,16 @@ InterestsWebAPI.prototype = {
       gInterestsService._getMetaForInterests(interestNames).then(metaData => {
         for (let index=0; index < interestNames.length; index++) {
           let interest = interestNames[index];
-          let {score} = topInterests[index];
+          let {diversity, score} = topInterests[index];
 
           // obtain metadata and apply thresholds
           topInterests[index].recency.immediate = topInterests[index].recency.immediate >= metaData[interest].threshold;
           topInterests[index].recency.recent = topInterests[index].recency.recent >= metaData[interest].threshold;
           topInterests[index].recency.past = topInterests[index].recency.past >= metaData[interest].threshold;
           
-          // Normalize scores to a percent from [0-100]
+          // Normalize score and diversity to an integer percent from [0-100]
           topInterests[index].score = Math.round(score / maxScore * 100);
-
-          // round up diversity to closest number divisible by 5
-          topInterests[index].diversity = 5*Math.round(topInterests[index].diversity/5);
+          topInterests[index].diversity = Math.round(diversity);
         }
         exposeAll(topInterests);
         deferred.resolve(topInterests);

@@ -188,7 +188,7 @@ add_task(function test_InterestWebAPI_getTopInterest()
   results = yield iServiceApi.getTop5Interests();
   unExposeAll(results);
   isIdentical([
-      {"name":"history","score":100,"diversity":30,"recency":{"immediate":false,"recent":true,"past":true}},
+      {"name":"history","score":100,"diversity":29,"recency":{"immediate":false,"recent":true,"past":true}},
   ], results);
 
   yield PlacesInterestsStorage.clearRecentInterests(100);
@@ -207,7 +207,7 @@ add_task(function test_InterestWebAPI_getTopInterest()
   results = yield iServiceApi.getTop5Interests();
   unExposeAll(results);
   isIdentical([
-      {"name":"technology","score":100,"diversity":45,"recency":{"immediate":false,"recent":false,"past":true}},
+      {"name":"technology","score":100,"diversity":43,"recency":{"immediate":false,"recent":false,"past":true}},
   ], results);
 
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*28), visitCount: 5});
@@ -215,7 +215,7 @@ add_task(function test_InterestWebAPI_getTopInterest()
   results = yield iServiceApi.getTop5Interests();
   unExposeAll(results);
   isIdentical([
-      {"name":"technology","score":100,"diversity":55,"recency":{"immediate":false,"recent":true,"past":true}},
+      {"name":"technology","score":100,"diversity":57,"recency":{"immediate":false,"recent":true,"past":true}},
   ], results);
 
   // test whitelist permissions
