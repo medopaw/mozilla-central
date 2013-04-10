@@ -137,7 +137,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
       {"name":"food","score":calcScore(scoreDecay(5, 15, 28)),"diversity":0,"recency":{"immediate":false,"recent":true,"past":false}},
   ], results);
 
-  yield PlacesInterestsStorage.clearRecentInterests(100);
+  yield PlacesInterestsStorage.clearRecentVisits(100);
   // add visits to a category beyond test threshold, i.e. 29 days and beyond
   // the category should not show up
   yield promiseAddVisits(NetUtil.newURI("http://www.site1.com/"));
@@ -159,7 +159,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
       {"name":"history","score":100,"diversity":33,"recency":{"immediate":false,"recent":true,"past":true}},
   ], results);
 
-  yield PlacesInterestsStorage.clearRecentInterests(100);
+  yield PlacesInterestsStorage.clearRecentVisits(100);
   // add visits to a category beyond custom threshold, i.e. 40 days and beyond, and 10 in threshold
   // the category should not show up
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*41), visitCount: 10});

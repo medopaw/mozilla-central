@@ -71,7 +71,7 @@ Interests.prototype = {
 
     this._ResubmitRecentHistoryDeferred = Promise.defer();
     // clean interest tables first
-    this._clearRecentInterests(daysBack).then(() => {
+    PlacesInterestsStorage.clearRecentVisits(daysBack).then(() => {
       // read moz_places data and massage it
       PlacesInterestsStorage.reprocessRecentHistoryVisits(daysBack, item => {
         let uri = NetUtil.newURI(item.url);
@@ -263,10 +263,6 @@ Interests.prototype = {
       deferred.resolve(rv);
     }, error => deferred.reject(error));
     return deferred.promise;
-  },
-
-  _clearRecentInterests: function I__clearRecentInterests(daysBack) {
-    return PlacesInterestsStorage.clearRecentInterests(daysBack);
   },
 
   _handleInterestsResults: function I__handleInterestsResults(aData) {

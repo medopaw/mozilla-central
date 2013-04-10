@@ -50,7 +50,7 @@ add_task(function test_Interests() {
 add_task(function test_ResubmitHistoryVisits() {
 
   let myDef = Promise.defer();
-  yield iServiceObject._clearRecentInterests(100).then(function(data) {
+  yield PlacesInterestsStorage.clearRecentVisits(100).then(function(data) {
     // test that interests are all empty
     iServiceObject._getBucketsForInterests(["cars" , "computers","movies"]).then(function(data) {
       myDef.resolve(data);

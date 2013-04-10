@@ -45,7 +45,7 @@ add_task(function test_PlacesInterestsStorage()
 add_task(function test_PlacesInterestsStorageClearTables()
 {
   // cleanup the tables
-  yield PlacesInterestsStorage.clearRecentInterests(100);
+  yield PlacesInterestsStorage.clearRecentVisits(100);
   yield clearInterestsHosts();
 
   // check that tables are empty
@@ -82,7 +82,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
   });
 
   // test deletions
-  yield PlacesInterestsStorage.clearRecentInterests(14);
+  yield PlacesInterestsStorage.clearRecentVisits(14);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
@@ -95,7 +95,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results[0] , "cars.com");
   });
 
-  yield PlacesInterestsStorage.clearRecentInterests(28);
+  yield PlacesInterestsStorage.clearRecentVisits(28);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
@@ -103,7 +103,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.past , 72);
   });
 
-  yield PlacesInterestsStorage.clearRecentInterests(50);
+  yield PlacesInterestsStorage.clearRecentVisits(50);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
@@ -111,7 +111,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.past , 50);
   });
 
-  yield PlacesInterestsStorage.clearRecentInterests(100);
+  yield PlacesInterestsStorage.clearRecentVisits(100);
 
   yield PlacesInterestsStorage.getBucketsForInterest("cars").then(function(results) {
     do_check_eq(results.immediate , 0);
@@ -119,7 +119,7 @@ add_task(function test_PlacesInterestsStorageClearTables()
     do_check_eq(results.past , 0);
   });
 
-  yield PlacesInterestsStorage.clearRecentInterests(100);
+  yield PlacesInterestsStorage.clearRecentVisits(100);
 
   // test visitCounts when adding visits
 

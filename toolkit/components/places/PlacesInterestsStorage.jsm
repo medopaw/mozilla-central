@@ -47,6 +47,10 @@ const SQL = {
        "day = :day " +
     "WHERE interest = :interest",
 
+  clearRecentVisits:
+    "DELETE FROM moz_interests_visits " +
+    "WHERE day > :dayCutoff",
+
   getInterests:
     "SELECT * " +
     "FROM moz_interests " +
@@ -194,6 +198,21 @@ let PlacesInterestsStorage = {
         day: this._convertDateToDays(visitTime),
         interest: interest,
         visits: visitCount,
+      },
+    });
+  },
+
+  /**
+   * Clear recent visits for all interests
+   *
+   * @param   daysAgo
+   *          Number of recent days to be cleared
+   * @returns Promise for when the visits are deleted
+   */
+  clearRecentVisits: function PIS_clearRecentVisits(daysAgo) {
+    return this._execute(SQL.clearRecentVisits, {
+      params: {
+        dayCutoff: this._convertDateToDays() - daysAgo,
       },
     });
   },
@@ -354,21 +373,6 @@ let PlacesInterestsStorage = {
     stmt.executeAsync(promiseHandler);
     stmt.finalize();
 
-    return returnDeferred.promise;
-  },
-  /**
-   * Clears interests_visits table from N last days worth of days
-   * @param   daysAgo
-   *          Number of days to be cleaned
-   * @returns Promise for when the table will be cleaned up
-   */
-   clearRecentInterests: function (daysAgo) {
-    let returnDeferred = Promise.defer();
-    let timeStamp = this._convertDateToDays() - daysAgo;
-    let stmt = this.db.createStatement("DELETE FROM moz_interests_visits where day > :timeStamp");
-    stmt.params.timeStamp = timeStamp;
-    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
-    stmt.finalize();
     return returnDeferred.promise;
   },
 
