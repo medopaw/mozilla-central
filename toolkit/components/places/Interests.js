@@ -370,14 +370,16 @@ InterestsWebAPI.prototype = {
     return deferred.promise;
   },
 
-  getTop5Interests: function() {
-    return this.getTopInterests(5);
-  },
-
-  getTopInterests: function(aNumber) {
+  /**
+   * Get the user's top interests
+   *
+   * @param   [optional] topData
+   * @returns Promise with the array of top interests
+   */
+  getTopInterests: function IWA_getTopInterests(topData) {
     let deferred = this._makePromise();
     
-    let aNumber = aNumber || 5;
+    let aNumber = topData || 5;
     if (aNumber > 5) {
       let whitelistedSet = gInterestsService._getDomainWhitelistedSet();
       if (!whitelistedSet.has(this.currentHost)) { 
