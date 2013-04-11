@@ -158,34 +158,23 @@ let PlacesInterestsStorage = {
 
   /**
    * adds interest,host tuple to the moz_up_interests_hosts
+   * only adds hosts that belong to 200 most frecent ones
    * @param   interest
    *          The interest string
    * @param   host
    *          The host string
-   * @param   firstMostFrecentHosts
-   *          number of most frecent hosts (default 200)
    * @returns Promise for when the row is added
    */
-  addInterestForHost: function (aInterest, aHost, aFirstMostFrecentHosts) {
+  addInterestForHost: function (aInterest, aHost) {
     let returnDeferred = Promise.defer();
     let stmt = this.db.createAsyncStatement(
       "INSERT OR IGNORE INTO moz_up_interests_hosts (interest_id, host_id) " +
-      "VALUES " +
-      "( " +
-      "  (SELECT id FROM moz_up_interests " +
-      "    WHERE interest =:interest " +
-      "  ) " +
+      "VALUES ((SELECT id FROM moz_up_interests WHERE interest =:interest) " +
       ", (SELECT id FROM " +
-      "     (SELECT id,host FROM moz_hosts " +
-      "                     ORDER BY frecency DESC " +
-      "                     LIMIT :firstMostFrecentHosts "+
-      "     ) " +
-      "   WHERE host = :host " +
-      "  ) " +
-      ")");
+      "    (SELECT id,host FROM moz_hosts ORDER BY frecency DESC LIMIT 200)" +
+      "   WHERE host = :host))");
     stmt.params.host = aHost;
     stmt.params.interest = aInterest;
-    stmt.params.firstMostFrecentHosts = aFirstMostFrecentHosts || 200;
     stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
 
