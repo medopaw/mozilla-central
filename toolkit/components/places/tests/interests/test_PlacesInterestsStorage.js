@@ -190,26 +190,3 @@ add_task(function test_PlacesInterestsStorageResubmitHistory()
   });
 
 });
-
-
-add_task(function test_PlacesInterestsStorageGetDiversity()
-{
-  yield promiseClearHistory();
-  yield PlacesInterestsStorage.clearInterestsHosts();
-
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","shopping"]);
-  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "computers");
-  yield promiseAddUrlInterestsVisit("http://www.mozilla.org/", ["cars","computers"]);
-  yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
-
-  yield PlacesInterestsStorage.getDiversityForInterests(["cars","computers","movies","shopping"]).then(function(results) {
-    do_check_eq(results["cars"] , 50);
-    do_check_eq(results["computers"] , 50);
-    do_check_eq(results["movies"] , 25);
-    do_check_eq(results["shopping"] , 25);
-  });
-
-  yield PlacesInterestsStorage.getDiversityForInterests(["cars"]).then(function(results) {
-    do_check_eq(results["cars"] , 50);
-  });
-});

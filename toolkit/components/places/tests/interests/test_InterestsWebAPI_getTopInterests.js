@@ -76,6 +76,9 @@ add_task(function test_InterestWebAPI_getTopInterest()
   // add visit
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
   yield PlacesInterestsStorage.addInterestForHost("cars", "cars.com");
+  yield PlacesInterestsStorage.addInterestForHost("movies", "netflix.com");
+  yield PlacesInterestsStorage.addInterestForHost("computers", "mozilla.org");
+  yield PlacesInterestsStorage.addInterestForHost("technology", "samsung.com");
 
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
@@ -104,7 +107,6 @@ add_task(function test_InterestWebAPI_getTopInterest()
 
   // add a few visits for another category, same day, new top interest
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 9});
-  yield PlacesInterestsStorage.addInterestForHost("technology", "samsung.com");
 
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
@@ -188,7 +190,7 @@ add_task(function test_InterestWebAPI_getTopInterest()
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([
-      {"name":"history","score":100,"diversity":29,"recency":{"immediate":false,"recent":true,"past":true}},
+      {"name":"history","score":100,"diversity":33,"recency":{"immediate":false,"recent":true,"past":true}},
   ], results);
 
   yield PlacesInterestsStorage.clearRecentInterests(100);
@@ -207,7 +209,7 @@ add_task(function test_InterestWebAPI_getTopInterest()
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   isIdentical([
-      {"name":"technology","score":100,"diversity":43,"recency":{"immediate":false,"recent":false,"past":true}},
+      {"name":"technology","score":100,"diversity":50,"recency":{"immediate":false,"recent":false,"past":true}},
   ], results);
 
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*28), visitCount: 5});

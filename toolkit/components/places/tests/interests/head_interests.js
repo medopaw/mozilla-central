@@ -79,6 +79,14 @@ function promiseAddInterestVisits(interest,count,daysAgo) {
   return Promise.promised(Array)(visitPromises).then();
 }
 
+function addInterestVisitsToSite(site,interest,count) {
+  let promises = [];
+  for (let i = 0; i < count; i++) {
+    promises.push(promiseAddUrlInterestsVisit(site,interest));
+  }
+  return Promise.promised(Array)(promises).then();
+}
+
 function itemsHave(items,data) {
   for (let i in items) {
     if(items[i] == data) return true;

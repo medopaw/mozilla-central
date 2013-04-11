@@ -498,48 +498,35 @@ let PlacesInterestsStorage = {
    * computes divercity values for interests
    * @param   interests
    *          array of interest name strings
-   * @returns Promise with an object keyed on interest name, valued with diversity
+   * @returns Promise with an object (interest:diversity) pairs
    */
   getDiversityForInterests: function(interests) {
-    let deferred = Promise.defer();
+    let returnDeferred = Promise.defer();
 
-    // test if input is correct
-    if (!Array.isArray(interests)) {
-      return deferred.reject(Error("invalid input"));
+    let stmt = PlacesInterestsStorage.db.createAsyncStatement(
+      "SELECT i.interest interest, " +
+      "ROUND(count(1) * 100.0 / " +
+      "      (SELECT COUNT(DISTINCT host_id) " +
+      "       FROM moz_up_interests_hosts),2) diversity " +
+      "FROM moz_up_interests i " +
+      "JOIN moz_up_interests_hosts h ON h.interest_id = i.id " +
+      "WHERE i.interest in  ( " + genSQLParamList(interests.length) + ") " +
+      "GROUP BY  i.interest ");
+
+    // bind parameters by array index
+    for (let i = 0; i < interests.length; i++) {
+      stmt.bindByIndex(i, interests[i]);
     }
 
-    // compute total number of hosts
-    let totalHosts = 1;
-    let hostsQueryDeferred = Promise.defer();
-    let stmt = this.db.createAsyncStatement("SELECT COUNT(1) FROM moz_hosts");
-    stmt.executeAsync(new AsyncPromiseHandler(hostsQueryDeferred,function(row) {
-      totalHosts = row.getResultByIndex(0) || 1;
-    }));
+    let promiseHandler = new AsyncPromiseHandler(returnDeferred,function(row) {
+      promiseHandler.addToResultObject(row.getResultByName("interest"),
+                                       row.getResultByName("diversity"));
+    });
+    promiseHandler.initResults({});
+    stmt.executeAsync(promiseHandler);
     stmt.finalize();
 
-    hostsQueryDeferred.promise.then(function() {
-      // create a list of coma separate interst names
-      let nameList = "";
-      interests.forEach(function(name) {
-        nameList +=  ((nameList == "") ? " '" : " ,'") + name + "'";
-      });
-
-      let stmt = PlacesInterestsStorage.db.createAsyncStatement(
-        "SELECT i.interest interest, ROUND(count(1) * 100.0 / :total, 2) diversity " +
-        "FROM moz_up_interests i " +
-        "JOIN moz_up_interests_hosts h ON h.interest_id = i.id " +
-        "WHERE i.interest in  ( " + nameList + ") " +
-        "GROUP BY  i.interest ");
-      stmt.params.total = totalHosts;
-      let promiseHandler = new AsyncPromiseHandler(deferred,function(row) {
-        promiseHandler.addToResultObject(row.getResultByName("interest"),row.getResultByName("diversity"));
-      });
-      promiseHandler.initResults({});
-      stmt.executeAsync(promiseHandler);
-      stmt.finalize();
-    });
-
-    return deferred.promise;
+    return returnDeferred.promise;
   },
   /**
    * Clears interests_visits table from N last days worth of days

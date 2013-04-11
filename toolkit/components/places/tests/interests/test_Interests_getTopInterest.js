@@ -22,6 +22,7 @@ add_task(function test_Interests_getTopInterest()
   yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
 
   yield PlacesInterestsStorage.addInterest("cars");
+  yield PlacesInterestsStorage.addInterest("computers");
   yield PlacesInterestsStorage.addInterest("movies");
   yield PlacesInterestsStorage.addInterest("technology");
   yield PlacesInterestsStorage.addInterest("video-games");
@@ -32,6 +33,11 @@ add_task(function test_Interests_getTopInterest()
   yield PlacesInterestsStorage.setMetaForInterest("technology");
   yield PlacesInterestsStorage.setMetaForInterest("video-games");
   yield PlacesInterestsStorage.setMetaForInterest("history");
+
+  yield PlacesInterestsStorage.addInterestForHost("technology", "samsung.com");
+  yield PlacesInterestsStorage.addInterestForHost("cars", "cars.com");
+  yield PlacesInterestsStorage.addInterestForHost("movies", "netflix.com");
+  yield PlacesInterestsStorage.addInterestForHost("computers", "mozilla.org");
 
   function scoreDecay(score, numDays, daysToZero) {
     return score * (1 - numDays/(daysToZero+1));
@@ -48,7 +54,6 @@ add_task(function test_Interests_getTopInterest()
 
   // add visit
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  yield PlacesInterestsStorage.addInterestForHost("technology", "samsung.com");
   results = yield iServiceObject._getTopInterests();
   isIdentical([{"name":"technology","score":1,"diversity":25,"recency":{"immediate":1,"recent":0,"past":0}}], results);
 
@@ -60,7 +65,6 @@ add_task(function test_Interests_getTopInterest()
 
   // add 3 visits for another category, same day, new top interest
   yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
-  yield PlacesInterestsStorage.addInterestForHost("cars", "cars.com");
   results = yield iServiceObject._getTopInterests();
   isIdentical([
       {"name":"cars","score":3,"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
@@ -69,7 +73,6 @@ add_task(function test_Interests_getTopInterest()
 
   // add visits for another category, one day ago
   yield PlacesInterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
-  yield PlacesInterestsStorage.addInterestForHost("movies", "netflix.com");
   results = yield iServiceObject._getTopInterests();
   isIdentical([
       {"name":"cars","score":3,"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},

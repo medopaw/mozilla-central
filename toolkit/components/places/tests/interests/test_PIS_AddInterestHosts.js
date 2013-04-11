@@ -13,14 +13,6 @@ function run_test() {
   run_next_test();
 }
 
-function addInterestVisitsToSite(site,interest,count) {
-  let promises = [];
-  for (let i = 0; i < count; i++) {
-    promises.push(promiseAddUrlInterestsVisit(site,interest));
-  }
-  return Promise.promised(Array)(promises).then();
-}
-
 add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
   yield promiseClearHistory();
   yield PlacesInterestsStorage.clearInterestsHosts();
