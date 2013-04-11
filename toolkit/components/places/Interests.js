@@ -184,33 +184,27 @@ Interests.prototype = {
     return deferred.promise;
   },
 
-  _getTopInterests: function I__getTopInterests(aNumber) {
-    let returnDeferred = Promise.defer();
-    PlacesInterestsStorage.getTopInterests(aNumber).then(topInterests => {
-      // compute diversity first
-      PlacesInterestsStorage.getDiversityForInterests(topInterests.map(({name}) => name)).then(diversityResults => {
-        // augment with diversity data and start buckets queries
-        let bucketPromises = [];
-        for (let index=0; index < topInterests.length; index++) {
-          let interest = topInterests[index];
-          interest.diversity = diversityResults[interest.name] || 0;
-          bucketPromises.push(PlacesInterestsStorage.getBucketsForInterest(interest.name));
-        }
-        // augment with bucket data
-        Promise.promised(Array)(bucketPromises).then(buckets => {
-          for (let index=0; index < buckets.length; index++) {
-            let bucket = buckets[index];
-            topInterests[index].recency = {
-              immediate: bucket.immediate,
-              recent: bucket.recent,
-              past: bucket.past,
-            }
-          }
-          returnDeferred.resolve(topInterests);
-        }, error => returnDeferred.reject(error));
-      }, error => returnDeferred.reject(error));
-    }); // end of getTopInterests then
-    return returnDeferred.promise;
+  _getTopInterests: function I__getTopInterests(number) {
+    // First get a list of interests sorted by scores
+    return PlacesInterestsStorage.getTopInterests(number).
+      // Pass on the top interests and add on diversity and bucket data
+      then(topInterests => {
+        let names = topInterests.map(({name}) => name);
+        return [topInterests,
+                PlacesInterestsStorage.getDiversityForInterests(names),
+                PlacesInterestsStorage.getBucketsForInterests(names)];
+      }).
+      // Wait for all the promises to finish
+      then(Promise.promised(Array)).
+      // Gather and combine the data from each promise
+      then(([topInterests, diversityData, bucketData]) => {
+        topInterests.forEach(interest => {
+          let {name} = interest;
+          interest.diversity = diversityData[name] || 0;
+          interest.recency = bucketData[name];
+        });
+        return topInterests;
+      });
   },
 
   _getMetaForInterests: function I__getMetaForInterests(interestNames) {
@@ -245,24 +239,6 @@ Interests.prototype = {
   },
 
   _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {
-  },
-
-  _getBucketsForInterests: function I__getBucketsForInterests(aInterests) {
-    let rv = {};
-    let promiseArray = [];
-    let deferred = Promise.defer();
-    for (let interest of aInterests) {
-      promiseArray.push(PlacesInterestsStorage.getBucketsForInterest(interest))
-    }
-
-    let group = Promise.promised(Array);
-    let groupPromise = group(promiseArray).then(allInterestsBuckets => {
-      allInterestsBuckets.forEach(interestBuckets => {
-        rv[interestBuckets.interest] = interestBuckets;
-      });
-      deferred.resolve(rv);
-    }, error => deferred.reject(error));
-    return deferred.promise;
   },
 
   _handleInterestsResults: function I__handleInterestsResults(aData) {
@@ -353,7 +329,7 @@ InterestsWebAPI.prototype = {
 
     // Only allow API access according to the user's permission
     this._checkContentPermission().then(() => {
-      return gInterestsService._getBucketsForInterests(aInterests);
+      return PlacesInterestsStorage.getBucketsForInterests(aInterests);
     }).then(results => {
       results = JSON.parse(JSON.stringify(results));
 

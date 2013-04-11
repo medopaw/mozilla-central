@@ -32,7 +32,7 @@ add_task(function test_Interests() {
     do_check_true(itemsHave(data,"computers"));
   });
 
-  thePromise = iServiceObject._getBucketsForInterests(["cars" , "computers"]);
+  thePromise = PlacesInterestsStorage.getBucketsForInterests(["cars" , "computers"]);
   yield thePromise.then(function(data) {
     do_check_eq(data["cars"]["immediate"], 2);
     do_check_eq(data["computers"]["immediate"], 1);
@@ -52,7 +52,7 @@ add_task(function test_ResubmitHistoryVisits() {
   let myDef = Promise.defer();
   yield PlacesInterestsStorage.clearRecentVisits(100).then(function(data) {
     // test that interests are all empty
-    iServiceObject._getBucketsForInterests(["cars" , "computers","movies"]).then(function(data) {
+    PlacesInterestsStorage.getBucketsForInterests(["cars" , "computers","movies"]).then(function(data) {
       myDef.resolve(data);
     });
   });
@@ -86,7 +86,7 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promise1;
 
   // so we have processed the history, let's make sure we get interests back
-  yield iServiceObject._getBucketsForInterests(["cars"]).then(function(data) {
+  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(data) {
         do_check_eq(data["cars"]["immediate"], 1);
         do_check_eq(data["cars"]["recent"], 2);
         do_check_eq(data["cars"]["past"], 3);

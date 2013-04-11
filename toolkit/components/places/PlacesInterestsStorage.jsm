@@ -51,6 +51,21 @@ const SQL = {
     "DELETE FROM moz_interests_visits " +
     "WHERE day > :dayCutoff",
 
+  getBucketsForInterests:
+    "SELECT interest, " +
+           "SUM(CASE WHEN day > :today - duration THEN visits " +
+                    "ELSE 0 END) immediate, " +
+           "SUM(CASE WHEN day > :today - duration * 2 AND " +
+                         "day <= :today - duration THEN visits " +
+                    "ELSE 0 END) recent, " +
+           "SUM(CASE WHEN day <= :today - duration * 2 THEN visits " +
+                    "ELSE 0 END) past " +
+    "FROM moz_interests " +
+    "LEFT JOIN moz_interests_visits " +
+    "ON interest_id = id " +
+    "WHERE interest IN (:interests) " +
+    "GROUP BY id",
+
   getInterests:
     "SELECT * " +
     "FROM moz_interests " +
@@ -218,6 +233,26 @@ let PlacesInterestsStorage = {
   },
 
   /**
+   * Generate buckets data for interests
+   *
+   * @param   interests
+   *          Array of interest strings
+   * @returns Promise with each interest as keys on an object with bucket data
+   */
+  getBucketsForInterests: function PIS_getBucketsForInterests(interests) {
+    return this._execute(SQL.getBucketsForInterests, {
+      columns: ["immediate", "recent", "past"],
+      key: "interest",
+      listParams: {
+        interests: interests,
+      },
+      params: {
+        today: this._convertDateToDays(),
+      },
+    });
+  },
+
+  /**
    * Obtains a list of interests that occured 28 days from query time, ordered by score.
    * @param   interestLimit
    *          The number of interests to limit the result by.
@@ -288,59 +323,6 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise;
   },
 
-  /**
-   * computes buckets data for an interest
-   * @param   interest
-   *          The interest name string
-   * @returns Promise with the interest and counts for each bucket
-   */
-  getBucketsForInterest: function(interest) {
-    let deferred = Promise.defer();
-
-    // Figure out the cutoff times for each bucket
-    let today = this._convertDateToDays();
-    this.getInterests([interest]).then(function(metaData) {
-      let duration = metaData[interest].duration;
-      let immediateBucket = today - duration;
-      let recentBucket = today - duration * 2;
-
-      // Aggregate the visits into each bucket for the interest
-      let stmt = PlacesInterestsStorage.db.createAsyncStatement(
-        "SELECT CASE WHEN v.day > :immediateBucket THEN 'immediate' " +
-                    "WHEN v.day > :recentBucket THEN 'recent' " +
-                    "ELSE 'past' END AS bucket, " +
-                    "v.visits " +
-        "FROM moz_interests i " +
-        "JOIN moz_interests_visits v ON v.interest_id = i.id " +
-        "WHERE i.interest = :interest");
-      stmt.params.interest = interest;
-      stmt.params.immediateBucket = immediateBucket;
-      stmt.params.recentBucket = recentBucket;
-
-      // Initialize the result to have something for each bucket
-      let result = {
-        immediate: 0,
-        interest: interest,
-        past: 0,
-        recent: 0
-      };
-
-      let queryDeferred = Promise.defer();
-      let promiseHandler = new AsyncPromiseHandler(queryDeferred, function(row) {
-        let bucket = row.getResultByName("bucket");
-        let visitCount = row.getResultByName("visits");
-        result[bucket] += visitCount;
-      });
-      stmt.executeAsync(promiseHandler);
-      stmt.finalize();
-
-      queryDeferred.promise.then(function(){
-        deferred.resolve(result);
-      });
-    });
-
-    return deferred.promise;
-  },
   /**
    * computes divercity values for interests
    * @param   interests
