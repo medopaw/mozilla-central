@@ -71,6 +71,19 @@ const SQL = {
     "FROM moz_interests " +
     "WHERE interest IN (:interests)",
 
+  getRecentHistory:
+    "SELECT title, url, visitCount, visitDate " +
+    "FROM moz_places " +
+    "JOIN (SELECT place_id, " +
+                 "COUNT(1) visitCount, " +
+                 "visit_date/1000 - visit_date/1000 % :MS_PER_DAY visitDate " +
+          "FROM moz_historyvisits " +
+          "WHERE visit_date > :dayCutoff * :MS_PER_DAY*1000 " +
+          "GROUP BY place_id, visitDate) " +
+    "ON place_id = id " +
+    "WHERE hidden = 0 AND " +
+          "visit_count > 0",
+
   setInterest:
     "REPLACE INTO moz_interests " +
     "VALUES((SELECT id " +
@@ -375,35 +388,23 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * returns tuples of (place_id,url,title) visisted between now and daysAgo
+   * Fetch recent history visits to process by page and day of visit
+   *
    * @param   daysAgo
-   *          Number of days to be cleaned
-   * @param   interestsCallback
-   *          a callback handling url,title,visit_date,count tuple
-   * @returns Promise for when the tables will be cleaned up
+   *          Number of days of recent history to fetch
+   * @param   handlePageForDay
+   *          Callback handling a day's visits for a page
+   * @returns Promise for when all the recent pages have been processed
    */
-  reprocessRecentHistoryVisits: function (daysAgo,interestsCallback) {
-    let returnDeferred = Promise.defer();
-
-    let microSecondsAgo = (this._getRoundedTime() - ((daysAgo || 0) * MS_PER_DAY)) * 1000; // move to microseconds
-    let query = "SELECT p.url url, p.title title, v.visit_day_stamp date, v.count count " +
-    "FROM (SELECT place_id, visit_date - (visit_date % :MICROS_PER_DAY) visit_day_stamp, count(1) count " +
-    "      FROM moz_historyvisits WHERE visit_date > :microSecondsAgo GROUP BY place_id,visit_day_stamp) v " +
-    "JOIN moz_places p ON p.id = v.place_id " +
-    "WHERE p.hidden = 0 AND p.visit_count > 0 ";
-    let stmt = this.db.createStatement(query);
-    stmt.params.MICROS_PER_DAY = MS_PER_DAY * 1000;  // move to microseconds
-    stmt.params.microSecondsAgo = microSecondsAgo;
-
-    let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
-        interestsCallback({visitDate: (+ row.getResultByName("date")) / 1000 ,  // this has to be in milliseconds
-                           visitCount: row.getResultByName("count"),
-                           url: row.getResultByName("url"),
-                           title: row.getResultByName("title")});
+  getRecentHistory: function PIS_getRecentHistory(daysAgo, handlePageForDay) {
+    return this._execute(SQL.getRecentHistory, {
+      columns: ["title", "url", "visitCount", "visitDate"],
+      onRow: handlePageForDay,
+      params: {
+        dayCutoff: this._convertDateToDays() - daysAgo,
+        MS_PER_DAY: MS_PER_DAY,
+      },
     });
-    stmt.executeAsync(promiseHandler);
-    stmt.finalize();
-    return returnDeferred.promise;
   },
 
   /**

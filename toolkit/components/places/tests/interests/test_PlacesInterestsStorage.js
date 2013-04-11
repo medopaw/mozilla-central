@@ -171,7 +171,7 @@ add_task(function test_PlacesInterestsStorageResubmitHistory()
 
   let results = {};
 
-  yield PlacesInterestsStorage.reprocessRecentHistoryVisits(3,function(oneRecord) {
+  yield PlacesInterestsStorage.getRecentHistory(3, function(oneRecord) {
     // make sure oneRecord looks kosher
     do_check_eq(oneRecord.url, "http://www.cars.com/");
     do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");

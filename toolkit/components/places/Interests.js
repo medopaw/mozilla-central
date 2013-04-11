@@ -73,7 +73,7 @@ Interests.prototype = {
     // clean interest tables first
     PlacesInterestsStorage.clearRecentVisits(daysBack).then(() => {
       // read moz_places data and massage it
-      PlacesInterestsStorage.reprocessRecentHistoryVisits(daysBack, item => {
+      PlacesInterestsStorage.getRecentHistory(daysBack, item => {
         let uri = NetUtil.newURI(item.url);
         item["message"] = "getInterestsForDocument";
         item["host"] = this._getPlacesHostForURI(uri);
