@@ -469,6 +469,7 @@ InterestsWebAPI.prototype = {
   init: function IWA__init(aWindow) {
     let uriObj = {host: aWindow.location.hostname || aWindow.location.href};
     this.currentHost = gInterestsService._getPlacesHostForURI(uriObj);
+    this.window = aWindow;
   },
 
   //////////////////////////////////////////////////////////////////////////////
