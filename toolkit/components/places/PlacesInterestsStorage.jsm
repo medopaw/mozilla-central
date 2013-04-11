@@ -84,6 +84,19 @@ const SQL = {
     "WHERE hidden = 0 AND " +
           "visit_count > 0",
 
+  getScoresForNamespace:
+    "SELECT interest name, " +
+           "IFNULL(SUM(visits * (1 - (:today - day) / 29.0)), 0) score " +
+    "FROM moz_interests " +
+    "LEFT JOIN moz_interests_visits " +
+    "ON interest_id = id AND " +
+       "day >= :today - 28 " +
+    "WHERE namespace = :namespace AND " +
+          "(NOT IFNULL(:onlySharable, 0) OR sharable = 1) " +
+    "GROUP BY id " +
+    "ORDER BY score DESC " +
+    "LIMIT IFNULL(:interestLimit, 5)",
+
   setInterest:
     "REPLACE INTO moz_interests " +
     "VALUES((SELECT id " +
@@ -266,77 +279,6 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * Obtains a list of interests that occured 28 days from query time, ordered by score.
-   * @param   interestLimit
-   *          The number of interests to limit the result by.
-   *          A negative value will not limit the results. Defaults to 5
-   * @param   filterIgnores [optional]
-   *          Optional parameter that sets whether to filter ignored and to-be downloaded interests. Defaults to true.
-   * @returns Promise with the interest and counts for each bucket
-   */
-  getTopInterests: function getTopInterests(interestLimit, filterIgnores=true) {
-    let returnDeferred = Promise.defer();
-    interestLimit = interestLimit || 5;
-
-    if (typeof interestLimit != 'number' || interestLimit < 1) {
-      return returnDeferred.reject("invalid input");
-    }
-
-    // Figure out the cutoff time for computation
-    let today = this._convertDateToDays();
-    let cutOffDay = today - 28;
-
-    let sql = "SELECT i.interest, v.visits, :today - v.day 'days_ago' " +
-              "FROM moz_interests i " +
-              "JOIN moz_interests_visits v ON v.interest_id = i.id " +
-              "WHERE v.day >= :cutOffDay ";
-    if (filterIgnores) {
-      sql += "AND i.sharable = 1 ";
-    }
-    sql += "ORDER BY v.day DESC";
-
-    let stmt = this.db.createStatement(sql);
-    stmt.params.today = today;
-    stmt.params.cutOffDay = cutOffDay;
-
-    let scores = {};
-    let topInterests = [];
-    let queryDeferred = Promise.defer();
-
-    let promiseHandler = new AsyncPromiseHandler(queryDeferred,function(row) {
-      let interest = row.getResultByName("interest");
-      let visitCount = row.getResultByName("visits");
-      let daysAgo = row.getResultByName("days_ago");
-
-      if (!scores.hasOwnProperty(interest)) {
-        scores[interest] = 0;
-      }
-
-      scores[interest] += visitCount * (1 - (daysAgo/29))
-    });
-    stmt.executeAsync(promiseHandler);
-    stmt.finalize();
-
-    queryDeferred.promise.then(function() {
-      // sort scores and cut off
-      let interests = Object.keys(scores);
-      for (let interestIndex=0; interestIndex < interests.length; interestIndex++) {
-        let interest = interests[interestIndex];
-        topInterests.push({name: interest, score: scores[interest]});
-      }
-      scores = null;
-
-      topInterests.sort(function(x, y){return y.score - x.score});
-      if (interestLimit > -1) {
-        topInterests = topInterests.slice(0, interestLimit);
-      }
-      returnDeferred.resolve(topInterests);
-    });
-
-    return returnDeferred.promise;
-  },
-
-  /**
    * computes divercity values for interests
    * @param   interests
    *          array of interest name strings
@@ -403,6 +345,29 @@ let PlacesInterestsStorage = {
       params: {
         dayCutoff: this._convertDateToDays() - daysAgo,
         MS_PER_DAY: MS_PER_DAY,
+      },
+    });
+  },
+
+  /**
+   * Get a sorted array of top interests for a namespace by score
+   *
+   * @param   namespace
+   *          Namespace string of interests in the namespace to select
+   * @param   [optional] options {interestLimit, onlySharable}
+   *          interestLimit: Number of top interests to select defaulting to 5
+   *          onlySharable: Boolean for only sharable interests defaulting false
+   * @returns Promise with the interest and counts for each bucket
+   */
+  getScoresForNamespace: function PIS_getScoresForNamespace(namespace, options={}) {
+    let {interestLimit, onlySharable} = options;
+    return this._execute(SQL.getScoresForNamespace, {
+      columns: ["name", "score"],
+      params: {
+        interestLimit: interestLimit,
+        namespace: namespace,
+        onlySharable: onlySharable,
+        today: this._convertDateToDays(),
       },
     });
   },

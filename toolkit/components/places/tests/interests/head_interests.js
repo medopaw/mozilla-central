@@ -151,6 +151,18 @@ function isIdentical(expected, actual) {
   }
 }
 
+function checkScores(expected, expectedZeros, interests) {
+  let withScores = interests.slice(0, expected.length);
+  isIdentical(expected, withScores);
+
+  let zeroScores = interests.slice(expected.length);
+  zeroScores.forEach(({name, score}) => {
+    LOG("Checking 0 score for " + name);
+    do_check_eq(score, 0);
+  });
+  do_check_eq(zeroScores.length, expectedZeros);
+}
+
 function unExposeAll(obj) {
   // Filter for Objects and Arrays.
   if (typeof obj !== "object" || !obj)

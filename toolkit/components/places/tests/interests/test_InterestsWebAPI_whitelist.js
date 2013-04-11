@@ -24,14 +24,13 @@ add_task(function test_InterestWebAPI_whitelist()
   let results;
 
   // data setup
-  yield PlacesInterestsStorage.addInterest("technology");
-  yield PlacesInterestsStorage.setMetaForInterest("technology");
+  yield addInterest("technology");
   yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*10), visitCount: 10});
   results = yield apiInstance.getTopInterests();
   unExposeAll(results);
-  isIdentical([
+  checkScores([
       {"name":"technology","score":100,"diversity":0,"recency":{"immediate":true,"recent":false,"past":false}},
-  ], results);
+  ], 0, results);
 
   // whitelist permission setup
   let sandbox = Cu.Sandbox("http://www.example.com");
@@ -65,9 +64,8 @@ add_task(function test_InterestWebAPI_whitelist()
   yield doIt("then(function(_ret) { ret = _ret; })");
   results = doIt("ret");
   unExposeAll(results);
-  isIdentical([
+  checkScores([
       {"name":"technology","score":100,"diversity":0,"recency":{"immediate":true,"recent":false,"past":false}},
-  ], results);
-
+  ], 0, results);
 });
 

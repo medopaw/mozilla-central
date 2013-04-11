@@ -186,7 +186,10 @@ Interests.prototype = {
 
   _getTopInterests: function I__getTopInterests(number) {
     // First get a list of interests sorted by scores
-    return PlacesInterestsStorage.getTopInterests(number).
+    return PlacesInterestsStorage.getScoresForNamespace("", {
+        interestLimit: number,
+        onlySharable: true,
+      }).
       // Pass on the top interests and add on diversity and bucket data
       then(topInterests => {
         let names = topInterests.map(({name}) => name);
@@ -390,7 +393,9 @@ InterestsWebAPI.prototype = {
           topInterests[index].recency.past = topInterests[index].recency.past >= metaData[interest].threshold;
           
           // Normalize score and diversity to an integer percent from [0-100]
-          topInterests[index].score = Math.round(score / maxScore * 100);
+          if (score != 0) {
+            topInterests[index].score = Math.round(score / maxScore * 100);
+          }
           topInterests[index].diversity = Math.round(diversity);
         }
         exposeAll(topInterests);
