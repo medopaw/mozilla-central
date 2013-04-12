@@ -23,7 +23,7 @@ add_task(function checkSequentialIds() {
   yield addInterest("shopping");
 
   // Explicitly query for the id because it's not exposed through APIs
-  let stmt = PlacesInterestsStorage.db.createStatement(
+  let stmt = PlacesInterestsStorage._db.createStatement(
     "SELECT id, interest FROM moz_interests ORDER BY id ASC");
 
   try {

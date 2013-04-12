@@ -6,13 +6,10 @@
 "use strict";
 
 this.EXPORTED_SYMBOLS = [
-  "PlacesInterestsStorage"
-]
+  "PlacesInterestsStorage",
+];
 
-const Ci = Components.interfaces;
-const Cc = Components.classes;
-const Cr = Components.results;
-const Cu = Components.utils;
+const {classes: Cc, interfaces: Ci, results: Cr, utils: Cu} = Components;
 
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
@@ -129,89 +126,7 @@ const SQL = {
                    "WHERE interest = :interest)))",
 };
 
-/*
- * Generates a string for use with the SQLite client for binding parameters by array indexing
- */
-function genSQLParamList(aNumber) {
-  let paramStr = "";
-  for (let index = 1; index <= aNumber; index++) {
-    paramStr += "?" + index;
-    if (index < aNumber) {
-      paramStr += ",";
-    }
-  }
-  return paramStr
-}
-
-function AsyncPromiseHandler(deferred, rowCallback) {
-  this.deferred = deferred;
-  this.rowCallback = rowCallback;
-  this.result = undefined;
-};
-
-AsyncPromiseHandler.prototype = {
-  initResults: function(value) {
-      this.result = value;
-  },
-  addToResultObject: function(key,value) {
-    if (!this.result) {
-      this.result = {};
-    }
-    this.result[key] = value;
-  },
-  addToResultSet: function(value) {
-    if (!this.result) {
-      this.result = [];
-    }
-    this.result.push(value);
-  },
-  handleError: function (error) {
-    this.deferred.reject(error);
-  },
-  handleResult: function (result) {
-    if (this.rowCallback) {
-      let row = undefined;
-      while (row = result.getNextRow()) {
-        this.rowCallback(row);
-      }
-    }
-  },
-  handleCompletion: function (reason) {
-    switch (reason) {
-      case Ci.mozIStorageStatementCallback.REASON_FINISHED:
-        this.deferred.resolve(this.result);
-        break;
-
-      case Ci.mozIStorageStatementCallback.REASON_CANCELLED:
-        this.deferred.reject(new Error("statement cancelled"));
-        break;
-
-      case Ci.mozIStorageStatementCallback.REASON_ERROR:
-        this.deferred.reject(new Error("execution errors"));
-        break;
-
-      default:
-        this.deferred.reject(new Error("unknown completion reason"));
-        break;
-    }
-  }
-};
-
 let PlacesInterestsStorage = {
-  /**
-   * Convert a date to the UTC midnight for the date
-   *
-   * @param   [optional] time
-   *          Reference date/time to round defaulting to today
-   * @returns Numeric value corresponding to the date's UTC 00:00:00.000
-   */
-  _getRoundedTime: function(time) {
-    // Default to now if no time is provided
-    time = time || Date.now();
-    // Round to the closest day
-    return time - time % MS_PER_DAY;
-  },
-
   //////////////////////////////////////////////////////////////////////////////
   //// PlacesInterestsStorage
 
@@ -532,10 +447,6 @@ let PlacesInterestsStorage = {
     return slashPos == -1 ? "" : interest.slice(0, slashPos);
   },
 }
-
-XPCOMUtils.defineLazyGetter(PlacesInterestsStorage, "db", function() {
-  return PlacesUtils.history.QueryInterface(Ci.nsPIPlacesDatabase).DBConnection;
-});
 
 XPCOMUtils.defineLazyGetter(PlacesInterestsStorage, "_db", function() {
   return PlacesUtils.history.QueryInterface(Ci.nsPIPlacesDatabase).DBConnection;
