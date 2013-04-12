@@ -66,6 +66,17 @@ const SQL = {
     "WHERE interest IN (:interests) " +
     "GROUP BY id",
 
+  getDiversityForInterests:
+    "SELECT interest, " +
+           "COUNT(1) * 100.0 / " +
+             "(SELECT COUNT(DISTINCT host_id) " +
+              "FROM moz_interests_hosts) diversity " +
+    "FROM moz_interests " +
+    "JOIN moz_interests_hosts " +
+    "ON interest_id = id " +
+    "WHERE interest IN (:interests) " +
+    "GROUP BY id",
+
   getInterests:
     "SELECT * " +
     "FROM moz_interests " +
@@ -279,38 +290,20 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * computes divercity values for interests
+   * Compute diversity values for interests
+   *
    * @param   interests
-   *          array of interest name strings
-   * @returns Promise with an object (interest:diversity) pairs
+   *          Array of interest strings
+   * @returns Promise with each interest as keys on an object with diversity
    */
-  getDiversityForInterests: function(interests) {
-    let returnDeferred = Promise.defer();
-
-    let stmt = PlacesInterestsStorage.db.createAsyncStatement(
-      "SELECT i.interest interest, " +
-      "ROUND(count(1) * 100.0 / " +
-      "      (SELECT COUNT(DISTINCT host_id) " +
-      "       FROM moz_interests_hosts), 2) diversity " +
-      "FROM moz_interests i " +
-      "JOIN moz_interests_hosts h ON h.interest_id = i.id " +
-      "WHERE i.interest in  ( " + genSQLParamList(interests.length) + ") " +
-      "GROUP BY  i.interest ");
-
-    // bind parameters by array index
-    for (let i = 0; i < interests.length; i++) {
-      stmt.bindByIndex(i, interests[i]);
-    }
-
-    let promiseHandler = new AsyncPromiseHandler(returnDeferred,function(row) {
-      promiseHandler.addToResultObject(row.getResultByName("interest"),
-                                       row.getResultByName("diversity"));
+  getDiversityForInterests: function PIS_getDiversityForInterests(interests) {
+    return this._execute(SQL.getDiversityForInterests, {
+      columns: ["diversity"],
+      key: "interest",
+      listParams: {
+        interests: interests,
+      },
     });
-    promiseHandler.initResults({});
-    stmt.executeAsync(promiseHandler);
-    stmt.finalize();
-
-    return returnDeferred.promise;
   },
 
   /**
