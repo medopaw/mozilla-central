@@ -129,4 +129,14 @@
     "guid_uniqueindex", "moz_favicons", "guid", "UNIQUE" \
   )
 
+/**
+ * moz_hosts
+ */
+
+#define CREATE_IDX_MOZ_HOSTS_FRECENCY \
+  CREATE_PLACES_IDX( \
+    "frecency_index", "moz_hosts", "frecency", "" \
+  )
+
+
 #endif // nsPlacesIndexes_h__
