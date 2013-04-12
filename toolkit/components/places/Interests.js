@@ -123,7 +123,11 @@ Interests.prototype = {
   },
 
   _handleNewDocument: function I__handleNewDocument(aDocument) {
+    // Only compute interests on documents with a host
     let host = this._getPlacesHostForURI(aDocument.documentURIObject);
+    if (host == "") {
+      return;
+    }
 
     this._callMatchingWorker({
       message: "getInterestsForDocument",
@@ -141,8 +145,19 @@ Interests.prototype = {
     this._worker.postMessage(callObject);
   },
 
-  _getPlacesHostForURI: function(aURI) {
-    return aURI.host.replace(/^www\./, "");
+  /**
+   * Extract the host from the URI in the format Places expects
+   *
+   * @param   uri
+   *          nsIURI to get the host
+   * @returns Host string or empty if no host
+   */
+  _getPlacesHostForURI: function I__getPlacesHostForURI(uri) {
+    try {
+      return uri.host.replace(/^www\./, "");
+    }
+    catch(ex) {}
+    return "";
   },
 
   _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests, aVisitDate, aVisitCount) {
