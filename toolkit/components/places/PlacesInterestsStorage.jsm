@@ -182,38 +182,6 @@ let PlacesInterestsStorage = {
     return returnDeferred.promise.then(null,null);
   },
 
-  getInterestsForHost: function(aHost) {
-    let returnDeferred = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
-      let interest = row.getResultByName("interest");
-      promiseHandler.addToResultSet(interest);
-    });
-
-    let stmt = this.db.createAsyncStatement(
-      "SELECT interest FROM moz_up_interests i, moz_up_interests_hosts ih, moz_hosts h " +
-      "WHERE h.host = :host AND h.id = ih.host_id AND i.id = ih.interest_id");
-    stmt.params.host = aHost;
-    stmt.executeAsync(promiseHandler);
-    stmt.finalize();
-    return returnDeferred.promise;
-  },
-
-  getHostsForInterest: function (aInterest) {
-    let returnDeferred = Promise.defer();
-    let promiseHandler = new AsyncPromiseHandler(returnDeferred, function(row) {
-      let host = row.getResultByName("host");
-      promiseHandler.addToResultSet(host);
-    });
-
-    let stmt = this.db.createStatement(
-      "SELECT h.host AS host FROM moz_hosts h , moz_up_interests i, moz_up_interests_hosts ih " +
-      "WHERE i.interest = :interest AND h.id = ih.host_id AND i.id = ih.interest_id");
-    stmt.params.interest = aInterest;
-    stmt.executeAsync(promiseHandler);
-    stmt.finalize();
-    return returnDeferred.promise;
-  },
-
   /**
    * Given a list of interest names, obtains data about those interests, ordered by score
    * This respects the user's ignore list
@@ -539,17 +507,6 @@ let PlacesInterestsStorage = {
     let timeStamp = this._getRoundedTime() - (daysAgo || 300) * MS_PER_DAY;
     let stmt = this.db.createStatement("DELETE FROM moz_up_interests_visits where date_added > :timeStamp");
     stmt.params.timeStamp = timeStamp;
-    stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
-    stmt.finalize();
-    return returnDeferred.promise;
-  },
-  /**
-   * Clears interests_hosts table
-   * @returns Promise for when the table will be cleaned up
-   */
-   clearInterestsHosts: function () {
-    let returnDeferred = Promise.defer();
-    let stmt = this.db.createStatement("DELETE FROM moz_up_interests_hosts");
     stmt.executeAsync(new AsyncPromiseHandler(returnDeferred));
     stmt.finalize();
     return returnDeferred.promise;

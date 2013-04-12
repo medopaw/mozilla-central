@@ -61,7 +61,7 @@ add_task(function test_AddInterestForHost() {
 
 add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
   yield promiseClearHistory();
-  yield PlacesInterestsStorage.clearInterestsHosts();
+  yield clearInterestsHosts();
 
   for (let i = 1; i <= 210; i++) {
     let site = "http://" + i + ".site.com";
@@ -78,7 +78,7 @@ add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
   // 201|201.site.com|100
   // ...
   // 210|210.site.com|100
-  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+  yield getHostsForInterest("cars").then(function(results) {
     do_check_eq(results.length , 200);
     for (let i = 1; i <= 200; i++ ) {
       do_check_true(itemsHave(results, i + ".site.com"));

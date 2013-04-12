@@ -23,7 +23,7 @@ add_task(function test_Interests() {
   yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "cars");
 
   // check insertions
-  let thePromise = PlacesInterestsStorage.getInterestsForHost("cars.com");
+  let thePromise = getInterestsForHost("cars.com");
   yield thePromise.then(function(data) {
     // recheck the items
     do_check_eq(data.length , 3);

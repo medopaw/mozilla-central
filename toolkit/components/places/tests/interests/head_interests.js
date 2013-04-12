@@ -33,6 +33,34 @@ Services.prefs.setBoolPref("interests.enabled", true);
 const MS_PER_DAY = 86400000;
 const MICROS_PER_DAY = 86400000000;
 
+function clearInterestsHosts() {
+  return PlacesInterestsStorage._execute(
+    "DELETE FROM moz_up_interests_hosts"
+  );
+}
+
+function getHostsForInterest(interest) {
+  return PlacesInterestsStorage._execute(
+    "SELECT h.host AS host FROM moz_hosts h, moz_up_interests i, moz_up_interests_hosts ih " +
+    "WHERE i.interest = :interest AND h.id = ih.host_id AND i.id = ih.interest_id", {
+    columns: ["host"],
+    params: {
+      interest: interest,
+    },
+  });
+}
+
+function getInterestsForHost(host) {
+  return PlacesInterestsStorage._execute(
+    "SELECT interest FROM moz_up_interests i, moz_up_interests_hosts ih, moz_hosts h " +
+    "WHERE h.host = :host AND h.id = ih.host_id AND i.id = ih.interest_id", {
+    columns: ["interest"],
+    params: {
+      host: host,
+    },
+  });
+}
+
 function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
   let visits = [];
   if (Array.isArray(aVisitInfo)) {

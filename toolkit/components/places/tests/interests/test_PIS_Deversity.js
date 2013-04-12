@@ -15,7 +15,7 @@ function run_test() {
 add_task(function test_PlacesInterestsStorageGetDiversity()
 {
   yield promiseClearHistory();
-  yield PlacesInterestsStorage.clearInterestsHosts();
+  yield clearInterestsHosts();
 
   yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","shopping"]);
   yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "computers");
@@ -37,7 +37,7 @@ add_task(function test_PlacesInterestsStorageGetDiversity()
 add_task(function test_PlacesInterestsStorageGetDiversityForManyHosts()
 {
   yield promiseClearHistory();
-  yield PlacesInterestsStorage.clearInterestsHosts();
+  yield clearInterestsHosts();
 
   for (let i = 1; i <= 210; i++) {
     let site = "http://" + i + ".site.com";
