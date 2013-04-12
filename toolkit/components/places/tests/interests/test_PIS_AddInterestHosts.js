@@ -13,6 +13,52 @@ function run_test() {
   run_next_test();
 }
 
+
+add_task(function test_AddInterestForHost() {
+  yield promiseClearHistory();
+  yield PlacesInterestsStorage.clearInterestsHosts();
+  yield PlacesInterestsStorage.clearInterestsHosts();
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/", "cars");
+  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "computers");
+  yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
+
+  yield PlacesInterestsStorage.getHostsForInterest("cars").then(function(results) {
+    do_check_eq(results.length, 1);
+    do_check_eq(results[0], "cars.com");
+  });
+
+  yield PlacesInterestsStorage.getHostsForInterest("computers").then(function(results) {
+    do_check_eq(results.length, 1);
+    do_check_eq(results[0], "samsung.com");
+  });
+
+  yield PlacesInterestsStorage.getHostsForInterest("movies").then(function(results) {
+    do_check_eq(results.length, 1);
+    do_check_eq(results[0], "netflix.com");
+  });
+
+  // attmept to add non-existent site
+  yield PlacesInterestsStorage.addInterestForHost("cars","nosuchsite.com").then(function(results) {
+    // we should do not have any results
+    do_check_true(results == null);
+  },
+  function(error) {
+    // we should do not come here
+    do_check_false("sql statement should have failed without promise rejection");
+  });
+
+  // attmept to add non-existent interest
+  yield PlacesInterestsStorage.addInterestForHost("foobar","cars.com").then(function(results) {
+    // we should do not have any results
+    do_check_true(results == null);
+  },
+  function(error) {
+    // we should do not come here
+    do_check_false("sql statement should have failed without promise rejection");
+  });
+
+});
+
 add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
   yield promiseClearHistory();
   yield PlacesInterestsStorage.clearInterestsHosts();
@@ -38,4 +84,35 @@ add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
       do_check_true(itemsHave(results, i + ".site.com"));
     }
   });
+
+  // attempt to directly add a host that is IN 200 most frrecent
+  yield PlacesInterestsStorage.addInterestForHost("cars","1.site.com").then(function(results) {
+    // we should do not have any results
+    do_check_true(results == null);
+  },
+  function(error) {
+    // we should do not come here
+    do_check_false("sql statement should have succeeded rejection");
+  });
+
+  yield PlacesInterestsStorage.getInterestsForHost("1.site.com").then(results => {
+    do_check_eq(results.length, 1);
+    do_check_eq(results[0], "cars");
+  });
+
+  // attempt to directly add a host that is NOT IN 200 most frrecent
+  yield PlacesInterestsStorage.addInterestForHost("cars","209.site.com").then(function(results) {
+    // we should do not have any results
+    do_check_true(results == null);
+  },
+  function(error) {
+    // we should do not come here
+    do_check_false("sql statement should have failed without promise rejection");
+  });
+
+  yield PlacesInterestsStorage.getInterestsForHost("209.site.com").then(results => {
+    // we should do not have any results
+    do_check_true(results == null);
+  });
+
 });
