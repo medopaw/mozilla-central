@@ -67,7 +67,7 @@ function ruleClassify({host, language, tld, metaData, path, title, url}) {
       interests = interests.concat(gInterestsData[host]["__ANY"]);
       hostKeys--;
     }
-    if (tldKeys && gInterestsData[tld]) {
+    if (tldKeys && gInterestsData[tld]["__ANY"]) {
       interests = interests.concat(gInterestsData[tld]["__ANY"]);
       tldKeys--;
     }
