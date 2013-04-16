@@ -112,3 +112,22 @@ function isIdentical(expected, actual) {
     do_check_eq(expected, actual);
   }
 }
+
+function unExposeAll(obj) {
+  // Filter for Objects and Arrays.
+  if (typeof obj !== "object" || !obj)
+    return;
+
+  // Recursively unexpose our children.
+  Object.keys(obj).forEach(function(key) {
+    unExposeAll(obj[key]);
+  });
+
+  if (obj instanceof Array)
+    return;
+  delete obj.__exposedProps__;
+}
+
+function scoreDecay(score, numDays, daysToZero) {
+  return score * (1 - numDays/(daysToZero+1));
+}

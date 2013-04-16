@@ -13,31 +13,12 @@ let dbConn = PlacesInterestsStorage.db;
 let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
 
-function unExposeAll(obj) {
-  // Filter for Objects and Arrays.
-  if (typeof obj !== "object" || !obj)
-    return;
-
-  // Recursively unexpose our children.
-  Object.keys(obj).forEach(function(key) {
-    unExposeAll(obj[key]);
-  });
-
-  if (obj instanceof Array)
-    return;
-  delete obj.__exposedProps__;
-}
-
 function run_test() {
   run_next_test();
 }
 
-add_task(function test_InterestWebAPI_getTopInterest()
+add_task(function test_InterestWebAPI_getTopInterests()
 {
-  function scoreDecay(score, numDays, daysToZero) {
-    return score * (1 - numDays/(daysToZero+1));
-  }
-
   // make a bunch of insertions for a number of days
   const MS_PER_DAY = 86400000;
   let now = Date.now();
@@ -220,34 +201,4 @@ add_task(function test_InterestWebAPI_getTopInterest()
       {"name":"technology","score":100,"diversity":57,"recency":{"immediate":false,"recent":true,"past":true}},
   ], results);
 
-  // test whitelist permissions
-  let sandbox = Cu.Sandbox("http://www.example.com");
-
-  sandbox.interests = iServiceApi;
-  function doIt(statement) Cu.evalInSandbox(statement, sandbox);
-  unwrappedAPI = XPCNativeWrapper.unwrap(iServiceApi);
-
-  /*
-  // unauthorized
-  iServiceApi.init({location: {hostname: "realtor.com"}})
-  let then = doIt("then = interests.getTopInterests(6).then");
-  try {
-    yield doIt("then(function(_ret) { ret = _ret; })");
-  } catch(e) {
-    // exception is thrown
-    do_check_true(true);
-  }
-
-  // authorized
-  iServiceApi.init({location: {hostname: "about:config"}})
-  let then = doIt("then = interests.getTopInterests(6).then");
-  yield doIt("then(function(_ret) { ret = _ret; })");
-  results = doIt("ret");
-  unExposeAll(results);
-  isIdentical([
-      {"name":"technology","score":100,"diversity":55,"recency":{"immediate":false,"recent":true,"past":true}},
-  ], results);
-  */
-
 });
-

@@ -459,7 +459,7 @@ InterestsWebAPI.prototype = {
     let promptPromise = Promise.defer();
 
     // APIs created by tests don't have a principal, so just allow them
-    if (this.window == null) {
+    if (this.window == null || this.window.document == null) {
       promptPromise.resolve();
     }
     // For content documents, check the user's permission
