@@ -12,6 +12,7 @@ let dbConn = PlacesInterestsStorage.db;
 
 let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 let apiInstance = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
+apiInstance.QueryInterface(Ci.nsIDOMGlobalPropertyInitializer);
 
 function run_test() {
   run_next_test();
@@ -37,17 +38,11 @@ add_task(function test_InterestWebAPI_whitelist()
   sandbox.interests = apiInstance;
   function doIt(statement) Cu.evalInSandbox(statement, sandbox);
 
-  function reInit(object) {
-    apiInstance.QueryInterface(Ci.nsIDOMGlobalPropertyInitializer);
-    apiInstance.init(object);
-    apiInstance.QueryInterface(Ci.mozIInterestsWebAPI);
-  }
-
   // getTopInterests with param < 5 is authorized for every interest
   // about:config is in the default whitelist
 
   // test: unauthorized
-  reInit({location: {hostname: "realtor.com"}});
+  apiInstance.init({location: {hostname: "realtor.com"}});
 
   doIt("then = interests.getTopInterests(6).then");
   try {
@@ -58,7 +53,7 @@ add_task(function test_InterestWebAPI_whitelist()
   }
 
   // test: authorized
-  reInit({location: {hostname: "about:config"}});
+  apiInstance.init({location: {hostname: "about:config"}});
 
   doIt("then = interests.getTopInterests(6).then");
   yield doIt("then(function(_ret) { ret = _ret; })");
