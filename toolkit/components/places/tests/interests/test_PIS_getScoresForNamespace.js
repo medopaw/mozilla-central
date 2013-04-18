@@ -105,6 +105,6 @@ add_task(function test_PlacesInterestsStorage_getTopInterest()
   results = yield PlacesInterestsStorage.getScoresForNamespace("");
   checkScores([{"name":"ignored-interest","score":1}], 4, results);
 
-  results = yield PlacesInterestsStorage.getScoresForNamespace("", {onlySharable: true});
+  results = yield PlacesInterestsStorage.getScoresForNamespace("", {checkSharable: true});
   checkScores([], 5, results);
 });

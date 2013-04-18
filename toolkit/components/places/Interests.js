@@ -196,15 +196,19 @@ Interests.prototype = {
   _getTopInterests: function I__getTopInterests(number) {
     // First get a list of interests sorted by scores
     return PlacesInterestsStorage.getScoresForNamespace("", {
+        checkSharable: true,
         interestLimit: number,
-        onlySharable: true,
       }).
       // Pass on the top interests and add on diversity and bucket data
       then(topInterests => {
         let names = topInterests.map(({name}) => name);
         return [topInterests,
-                PlacesInterestsStorage.getDiversityForInterests(names),
-                PlacesInterestsStorage.getBucketsForInterests(names)];
+                PlacesInterestsStorage.getDiversityForInterests(names, {
+                  checkSharable: true,
+                }),
+                PlacesInterestsStorage.getBucketsForInterests(names, {
+                  checkSharable: true,
+                })];
       }).
       // Wait for all the promises to finish
       then(Promise.promised(Array)).

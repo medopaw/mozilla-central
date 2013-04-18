@@ -12,6 +12,53 @@ function run_test() {
   run_next_test();
 }
 
+add_task(function test_checkSharable()
+{
+  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "computers");
+  yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
+
+  // Sanity check that diversity is computed for both
+  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"]).then(function(results) {
+    do_check_eq(results["computers"] , 50);
+    do_check_eq(results["movies"] , 50);
+  });
+  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"], {
+    checkSharable: true,
+  }).then(function(results) {
+    do_check_eq(results["computers"] , 50);
+    do_check_eq(results["movies"] , 50);
+  });
+  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"], {
+    checkSharable: false,
+  }).then(function(results) {
+    do_check_eq(results["computers"] , 50);
+    do_check_eq(results["movies"] , 50);
+  });
+
+  // Unshare one interest with no change
+  yield PlacesInterestsStorage.setInterest("movies", {sharable: false});
+  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"]).then(function(results) {
+    do_check_eq(results["computers"] , 50);
+    do_check_eq(results["movies"] , 50);
+  });
+
+  // Explicitly factor in the sharability
+  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"], {
+    checkSharable: true,
+  }).then(function(results) {
+    do_check_eq(results["computers"] , 50);
+    do_check_eq(results["movies"] , 0);
+  });
+
+  // Sanity check with explicit false check
+  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"], {
+    checkSharable: false,
+  }).then(function(results) {
+    do_check_eq(results["computers"] , 50);
+    do_check_eq(results["movies"] , 50);
+  });
+});
+
 add_task(function test_PlacesInterestsStorageGetDiversity()
 {
   yield promiseClearHistory();
