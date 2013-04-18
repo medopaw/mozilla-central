@@ -19,11 +19,12 @@ Cu.import("resource://gre/modules/NetUtil.jsm");
 const DEFAULT_THRESHOLD = 5;
 const DEFAULT_DURATION = 14;
 
+const secMan = Cc["@mozilla.org/scriptsecuritymanager;1"].getService(Ci.nsIScriptSecurityManager);
 let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
 
 // Add a pref observer for the enabled state
-function prefObserver(subject, topic, data) {
+function prefEnabledObserver(subject, topic, data) {
   let enable = Services.prefs.getBoolPref("interests.enabled");
   if (enable && !gServiceEnabled) {
     gServiceEnabled = true;
@@ -31,6 +32,13 @@ function prefObserver(subject, topic, data) {
   else if (!enable && gServiceEnabled) {
     delete gInterestsService.__worker;
     gServiceEnabled = false;
+  }
+}
+
+// pref observer for user-defined whitelist
+function resetWhitelistObserver(subject, topic, data) {
+  if(gInterestsService && gInterestsService.__whitelistedSet) {
+    delete gInterestsService.__whitelistedSet;
   }
 }
 
@@ -50,10 +58,11 @@ function exposeAll(obj) {
   obj.__exposedProps__ = exposed;
 }
 
-Services.prefs.addObserver("interests.enabled", prefObserver, false);
+Services.prefs.addObserver("interests.enabled", prefEnabledObserver, false);
+Services.prefs.addObserver("interests.userDomainWhitelist", resetWhitelistObserver, false);
 Services.obs.addObserver(function xpcomShutdown() {
   Services.obs.removeObserver(xpcomShutdown, "xpcom-shutdown");
-  Services.prefs.removeObserver("interests.enabled", prefObserver);
+  Services.prefs.removeObserver("interests.enabled", prefEnabledObserver);
 }, "xpcom-shutdown", false);
 
 function Interests() {
@@ -255,13 +264,20 @@ Interests.prototype = {
   },
 
   _getDomainWhitelistedSet: function I__getDomainWhitelist() {
-    let whitelistedSet = new Set();
-    let userWhitelist = Services.prefs.getCharPref('interests.userDomainWhitelist').trim().split(/\s*,\s*/);
-    for (let i=0; i<userWhitelist.length; i++) {
-      whitelistedSet.add(userWhitelist[i]);
+    if (!("__whitelistedSet" in this)) {
+      // init with default values
+      this.__whitelistedSet = new Set(["mozilla.org", "mozilla.com", "about:profile"]);
+
+      // load from user prefs
+      let userWhitelist = Services.prefs.getCharPref('interests.userDomainWhitelist').trim().split(/\s*,\s*/);
+      for (let i=0; i<userWhitelist.length; i++) {
+        this.__whitelistedSet.add(userWhitelist[i]);
+      }
+
+      //TODO: load from file in profile dir
     }
 
-    return whitelistedSet;
+    return this.__whitelistedSet;
   },
 
   //////////////////////////////////////////////////////////////////////////////
@@ -367,7 +383,7 @@ InterestsWebAPI.prototype = {
     let aNumber = topData || 5;
     if (aNumber > 5) {
       let whitelistedSet = gInterestsService._getDomainWhitelistedSet();
-      if (!whitelistedSet.has(this.currentHost)) { 
+      if (!whitelistedSet.has(this.currentHost) && !secMan.isSystemPrincipal(this.window.document.nodePrincipal)) { 
         deferred.reject("host "+this.currentHost+" does not have enough privileges to access getTopInterests("+aNumber+")");
         return deferred.promise;
       }
@@ -431,7 +447,8 @@ InterestsWebAPI.prototype = {
     let promptPromise = Promise.defer();
 
     // APIs created by tests don't have a principal, so just allow them
-    if (this.window == null || this.window.document == null) {
+    // Also allow higher privileged pages.
+    if (this.window == null || this.window.document == null || this.window.document.nodePrincipal == null) {
       promptPromise.resolve();
     }
     // For content documents, check the user's permission

@@ -37,12 +37,13 @@ add_task(function test_InterestWebAPI_whitelist()
   let sandbox = Cu.Sandbox("http://www.example.com");
   sandbox.interests = apiInstance;
   function doIt(statement) Cu.evalInSandbox(statement, sandbox);
+  let systemPrincipal = Components.classes["@mozilla.org/systemprincipal;1"].createInstance(Components.interfaces.nsIPrincipal);
 
   // getTopInterests with param < 5 is authorized for every interest
   // about:config is in the default whitelist
 
   // test: unauthorized
-  apiInstance.init({location: {hostname: "realtor.com"}});
+  apiInstance.init({location: {hostname: "realtor.com"}, document: {nodePrincipal: null}});
 
   doIt("then = interests.getTopInterests(6).then");
   try {
@@ -53,7 +54,9 @@ add_task(function test_InterestWebAPI_whitelist()
   }
 
   // test: authorized
-  apiInstance.init({location: {hostname: "about:config"}});
+
+  // site in defaults
+  apiInstance.init({location: {hostname: "mozilla.com"}, document: {nodePrincipal: null}});
 
   doIt("then = interests.getTopInterests(6).then");
   yield doIt("then(function(_ret) { ret = _ret; })");
@@ -62,5 +65,18 @@ add_task(function test_InterestWebAPI_whitelist()
   checkScores([
       {"name":"technology","score":100,"diversity":0,"recency":{"immediate":true,"recent":false,"past":false}},
   ], 0, results);
+
+  // site added to user-defined whitelist in prefs
+  Services.prefs.setCharPref("interests.userDomainWhitelist", "testsite.com");
+  apiInstance.init({location: {hostname: "testsite.com"}, document: {nodePrincipal: null}});
+  doIt("then = interests.getTopInterests(6).then");
+  yield doIt("then(function(_ret) { ret = _ret; })");
+  results = doIt("ret");
+  unExposeAll(results);
+  checkScores([
+      {"name":"technology","score":100,"diversity":0,"recency":{"immediate":true,"recent":false,"past":false}},
+  ], 0, results);
+
+  //NOTE: test for privileged location in mochitest
 });
 
