@@ -33,12 +33,7 @@ add_task(function test_Interests_getTopInterest()
   yield PlacesInterestsStorage.addInterestHost("movies", "netflix.com");
   yield PlacesInterestsStorage.addInterestHost("computers", "mozilla.org");
 
-  function scoreDecay(score, numDays, daysToZero) {
-    return score * (1 - numDays/(daysToZero+1));
-  }
-
   // make a bunch of insertions for a number of days
-  const MS_PER_DAY = 86400000;
   let now = Date.now();
   let results;
 

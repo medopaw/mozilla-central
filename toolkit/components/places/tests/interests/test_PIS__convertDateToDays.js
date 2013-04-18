@@ -9,8 +9,6 @@
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
 function run_test() {
-  const MS_PER_DAY = 86400000;
-
   // Make sure the current time is rounded
   let nowDays = PlacesInterestsStorage._convertDateToDays();
   let roundedDate = new Date(nowDays * MS_PER_DAY);

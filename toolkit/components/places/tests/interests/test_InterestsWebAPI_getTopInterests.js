@@ -20,7 +20,6 @@ function run_test() {
 add_task(function test_InterestWebAPI_getTopInterests()
 {
   // make a bunch of insertions for a number of days
-  const MS_PER_DAY = 86400000;
   let now = Date.now();
   let results;
 

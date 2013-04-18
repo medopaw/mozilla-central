@@ -23,12 +23,7 @@ add_task(function test_PlacesInterestsStorage_getTopInterest()
   yield addInterest("history");
   yield PlacesInterestsStorage.setInterest("ignored-interest", {sharable: false, duration: DEFAULT_DURATION, threshold: DEFAULT_THRESHOLD});
 
-  function scoreDecay(score, numDays, daysToZero) {
-    return score * (1 - numDays/(daysToZero+1));
-  }
-
   // make a bunch of insertions for a number of days
-  const MS_PER_DAY = 86400000;
   let now = Date.now();
   let results;
 
