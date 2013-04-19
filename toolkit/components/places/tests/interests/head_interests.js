@@ -143,7 +143,7 @@ function isIdentical(expected, actual) {
     // Recursively check each value individually
     Object.keys(expected).forEach(key => {
       dump("Checking key " + key);
-      isIdentical(expected[key], actual[key]);
+      isIdentical(actual[key], expected[key]);
     });
   }
   else {
