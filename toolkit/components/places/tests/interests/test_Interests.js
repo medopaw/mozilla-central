@@ -38,13 +38,6 @@ add_task(function test_Interests() {
     do_check_eq(data["computers"]["immediate"], 1);
   });
 
-  // try the API
-  thePromise = iServiceApi.checkInterests(["cars" , "computers"]);
-  yield thePromise.then(function(data) {
-    do_check_eq(data["cars"]["immediate"], 2);
-    do_check_eq(data["computers"]["immediate"], 1);
-  });
-
 });
 
 add_task(function test_ResubmitHistoryVisits() {

@@ -9,12 +9,17 @@
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
 function check(interest, expected) {
-  let namespace = PlacesInterestsStorage._extractNamespace(interest);
-  do_check_eq(namespace, expected);
+  let namespace = PlacesInterestsStorage._splitInterestName(interest);
+  do_check_eq(JSON.stringify(namespace), JSON.stringify(expected));
 }
 
 function run_test() {
-  check("foo", "");
-  check("foo/bar", "foo");
-  check("foo/bar/baz", "foo");
+  check("foo", ["", "foo"]);
+  check(":bar", ["", "bar"]);
+  check("foo:", ["foo", ""]);
+  check("foo:bar", ["foo", "bar"]);
+  check("foo:bar/baz", ["foo", "bar/baz"]);
+
+  // not valid input, but checking for expected behavior
+  check("foo:bar:baz", ["foo", "bar"]);
 }

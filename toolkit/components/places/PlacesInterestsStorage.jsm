@@ -297,7 +297,7 @@ let PlacesInterestsStorage = {
       params: {
         duration: duration,
         interest: interest,
-        namespace: this._extractNamespace(interest),
+        namespace: this._splitInterestName(interest)[0],
         sharable: sharable,
         threshold: threshold,
       },
@@ -436,15 +436,20 @@ let PlacesInterestsStorage = {
   },
 
   /**
-   * Extract the namespace from a full interest name
+   * Extract the namespace from a fully-qualified interest name
    *
    * @param   interest
    *          Interest string in the namespace/name format
-   * @returns Namespace string or empty for no namespace
+   * @returns [Namespace or empty string, interest name]
    */
-  _extractNamespace: function PIS__extractNamespace(interest) {
-    let slashPos = interest.indexOf("/");
-    return slashPos == -1 ? "" : interest.slice(0, slashPos);
+  _splitInterestName: function PIS__splitInterestName(interest) {
+    let tokens = interest.split(':', 2);
+    
+    if(tokens.length < 2) {
+      tokens.unshift("");
+    }
+
+    return tokens;
   },
 }
 
