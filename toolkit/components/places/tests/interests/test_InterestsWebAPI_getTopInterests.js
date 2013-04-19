@@ -191,3 +191,44 @@ add_task(function test_InterestWebAPI_getTopInterests()
       {"name":"technology","score":100,"diversity":57,"recency":{"immediate":false,"recent":true,"past":true}},
   ], 4, results);
 });
+
+add_task(function test_sharable() {
+  let results;
+
+  // Clear out previous test state
+  yield promiseClearHistory();
+  yield clearInterestsHosts();
+  yield PlacesInterestsStorage.clearRecentVisits(30);
+
+  // Add some hosts
+  yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.mozilla.org/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
+  yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
+
+  // interests set with default values for threshold and duration
+  yield addInterest("cars");
+  yield addInterest("movies");
+  yield addInterest("video-games");
+  yield addInterest("history");
+  yield addInterest("food");
+  yield addInterest("computers");
+
+  // Add some test visits and hosts
+  yield PlacesInterestsStorage.addInterestVisit("cars");
+  yield PlacesInterestsStorage.addInterestHost("cars", "cars.com");
+  yield PlacesInterestsStorage.addInterestHost("movies", "netflix.com");
+  yield PlacesInterestsStorage.addInterestHost("computers", "mozilla.org");
+  yield PlacesInterestsStorage.addInterestHost("technology", "samsung.com");
+
+  results = yield iServiceApi.getTopInterests();
+  unExposeAll(results);
+  checkScores([
+    {"name":"cars","score":100,"diversity":25,"recency":{"immediate":false,"recent":false,"past":false}},
+  ], 4, results);
+
+  LOG("Unshare the one interest with non-zero score and everything should be 0");
+  yield PlacesInterestsStorage.setInterest("cars", {sharable: false});
+  results = yield iServiceApi.getTopInterests();
+  checkScores([], 5, results);
+});

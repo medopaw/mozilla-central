@@ -51,12 +51,15 @@ const SQL = {
   getBucketsForInterests:
     "SELECT interest, " +
            "SUM(CASE WHEN day > :today - duration THEN visits " +
-                    "ELSE 0 END) immediate, " +
+                    "ELSE 0 END) * " +
+             "(NOT IFNULL(:checkSharable, 0) OR sharable) immediate, " +
            "SUM(CASE WHEN day > :today - duration * 2 AND " +
                          "day <= :today - duration THEN visits " +
-                    "ELSE 0 END) recent, " +
+                    "ELSE 0 END) * " +
+             "(NOT IFNULL(:checkSharable, 0) OR sharable) recent, " +
            "SUM(CASE WHEN day <= :today - duration * 2 THEN visits " +
-                    "ELSE 0 END) past " +
+                    "ELSE 0 END) * " +
+             "(NOT IFNULL(:checkSharable, 0) OR sharable) past " +
     "FROM moz_interests " +
     "LEFT JOIN moz_interests_visits " +
     "ON interest_id = id " +
@@ -67,7 +70,8 @@ const SQL = {
     "SELECT interest, " +
            "COUNT(1) * 100.0 / " +
              "(SELECT COUNT(DISTINCT host_id) " +
-              "FROM moz_interests_hosts) diversity " +
+              "FROM moz_interests_hosts) * " +
+             "(NOT IFNULL(:checkSharable, 0) OR sharable) diversity " +
     "FROM moz_interests " +
     "JOIN moz_interests_hosts " +
     "ON interest_id = id " +
@@ -94,13 +98,13 @@ const SQL = {
 
   getScoresForNamespace:
     "SELECT interest name, " +
-           "IFNULL(SUM(visits * (1 - (:today - day) / 29.0)), 0) score " +
+           "IFNULL(SUM(visits * (1 - (:today - day) / 29.0)), 0) * " +
+             "(NOT IFNULL(:checkSharable, 0) OR sharable) score " +
     "FROM moz_interests " +
     "LEFT JOIN moz_interests_visits " +
     "ON interest_id = id AND " +
        "day >= :today - 28 " +
-    "WHERE namespace = :namespace AND " +
-          "(NOT IFNULL(:onlySharable, 0) OR sharable = 1) " +
+    "WHERE namespace = :namespace " +
     "GROUP BY id " +
     "ORDER BY score DESC " +
     "LIMIT IFNULL(:interestLimit, 5)",
@@ -189,9 +193,12 @@ let PlacesInterestsStorage = {
    *
    * @param   interests
    *          Array of interest strings
+   * @param   [optional] options {see below}
+   *          checkSharable: Boolean for 0-buckets for unshared defaulting false
    * @returns Promise with each interest as keys on an object with bucket data
    */
-  getBucketsForInterests: function PIS_getBucketsForInterests(interests) {
+  getBucketsForInterests: function PIS_getBucketsForInterests(interests, options={}) {
+    let {checkSharable} = options;
     return this._execute(SQL.getBucketsForInterests, {
       columns: ["immediate", "recent", "past"],
       key: "interest",
@@ -199,6 +206,7 @@ let PlacesInterestsStorage = {
         interests: interests,
       },
       params: {
+        checkSharable: checkSharable,
         today: this._convertDateToDays(),
       },
     });
@@ -209,14 +217,20 @@ let PlacesInterestsStorage = {
    *
    * @param   interests
    *          Array of interest strings
+   * @param   [optional] options {see below}
+   *          checkSharable: Boolean for 0-diversity for unshared defaulting false
    * @returns Promise with each interest as keys on an object with diversity
    */
-  getDiversityForInterests: function PIS_getDiversityForInterests(interests) {
+  getDiversityForInterests: function PIS_getDiversityForInterests(interests, options={}) {
+    let {checkSharable} = options;
     return this._execute(SQL.getDiversityForInterests, {
       columns: ["diversity"],
       key: "interest",
       listParams: {
         interests: interests,
+      },
+      params: {
+        checkSharable: checkSharable,
       },
     });
   },
@@ -262,19 +276,19 @@ let PlacesInterestsStorage = {
    *
    * @param   namespace
    *          Namespace string of interests in the namespace to select
-   * @param   [optional] options {interestLimit, onlySharable}
+   * @param   [optional] options {see below}
+   *          checkSharable: Boolean for 0-score for unshared defaulting false
    *          interestLimit: Number of top interests to select defaulting to 5
-   *          onlySharable: Boolean for only sharable interests defaulting false
-   * @returns Promise with the interest and counts for each bucket
+   * @returns Promise with the array of interest names and scores
    */
   getScoresForNamespace: function PIS_getScoresForNamespace(namespace, options={}) {
-    let {interestLimit, onlySharable} = options;
+    let {checkSharable, interestLimit} = options;
     return this._execute(SQL.getScoresForNamespace, {
       columns: ["name", "score"],
       params: {
+        checkSharable: checkSharable,
         interestLimit: interestLimit,
         namespace: namespace,
-        onlySharable: onlySharable,
         today: this._convertDateToDays(),
       },
     });
