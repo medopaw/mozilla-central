@@ -457,9 +457,10 @@ let PlacesInterestsStorage = {
    * @returns [Namespace or empty string, interest name]
    */
   _splitInterestName: function PIS__splitInterestName(interest) {
-    let tokens = interest.split(':', 2);
-    
-    if(tokens.length < 2) {
+    let tokens = interest.split(":", 2);
+
+    // Add an empty namespace if there was no ":"
+    if (tokens.length < 2) {
       tokens.unshift("");
     }
 
