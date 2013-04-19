@@ -500,7 +500,7 @@ InterestsWebAPI.prototype = {
       promptPromise.resolve();
     }
     // For private browsing window - always reject
-    else if(PrivateBrowsingUtils.isWindowPrivate(this.window)) {
+    else if (PrivateBrowsingUtils.isWindowPrivate(this.window)) {
       promptPromise.reject("Interests Unavailable in Private Browsing mode");
     }
     // For content documents, check the user's permission
