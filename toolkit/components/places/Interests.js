@@ -15,6 +15,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 Cu.import("resource://gre/modules/NetUtil.jsm");
+Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 
 const DEFAULT_THRESHOLD = 5;
 const DEFAULT_DURATION = 14;
@@ -138,6 +139,11 @@ Interests.prototype = {
       return;
     }
 
+    // disallow saving of interests for PB windows
+    if (PrivateBrowsingUtils.isWindowPrivate(aDocument.defaultView)) {
+      return;
+    }
+
     this._callMatchingWorker({
       message: "getInterestsForDocument",
       url: aDocument.documentURI,
@@ -258,7 +264,18 @@ Interests.prototype = {
   },
 
   _handleInterestsResults: function I__handleInterestsResults(aData) {
-    this._addInterestsForHost(aData.host, aData.interests, aData.visitDate, aData.visitCount);
+    this._addInterestsForHost(aData.host,
+                              aData.interests,
+                              aData.visitDate,
+                              aData.visitCount).then(results => {
+      // generate "interest-visit-saved" event
+      let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+      timer.init(function(timer) {
+        Services.obs.notifyObservers({wrappedJSObject: aData},
+                                     "interest-visit-saved",
+                                     null);
+      }, 0, Ci.nsITimer.TYPE_ONE_SHOT);
+    });
   },
 
   _handleEchoMessage: function I__handleInterestsResults(aData) {
@@ -454,6 +471,10 @@ InterestsWebAPI.prototype = {
     // Also allow higher privileged pages.
     if (this.window == null || this.window.document == null || this.window.document.nodePrincipal == null) {
       promptPromise.resolve();
+    }
+    // For private browsing window - always reject
+    else if(PrivateBrowsingUtils.isWindowPrivate(this.window)) {
+      promptPromise.reject("Interests Unavailable in Private Browsing mode");
     }
     // For content documents, check the user's permission
     else {

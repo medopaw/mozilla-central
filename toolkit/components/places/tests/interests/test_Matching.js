@@ -49,6 +49,12 @@ let matchTests = [
   url:  "https://mail.google.com/mail/u/0/?ui=2&shva=1#inbox?compose=13e0005db4a0d0d4",
   title: "",
   expectedInterests: {}
+},
+{
+  info: "Match Test 6 (Text): cars",
+  url:  "https://nosuchsite.com/",
+  title: "truck car automobile cars auto sedan",
+  expectedInterests: {"cars": 1}
 }
 ];
  
