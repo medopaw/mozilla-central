@@ -68,12 +68,12 @@ const SQL = {
 
   getDiversityForInterests:
     "SELECT interest, " +
-           "COUNT(1) * 100.0 / " +
+           "COUNT(interest_id) * 100.0 / " +
              "(SELECT COUNT(DISTINCT host_id) " +
               "FROM moz_interests_hosts) * " +
              "(NOT IFNULL(:checkSharable, 0) OR sharable) diversity " +
     "FROM moz_interests " +
-    "JOIN moz_interests_hosts " +
+    "LEFT JOIN moz_interests_hosts " +
     "ON interest_id = id " +
     "WHERE interest IN (:interests) " +
     "GROUP BY id",

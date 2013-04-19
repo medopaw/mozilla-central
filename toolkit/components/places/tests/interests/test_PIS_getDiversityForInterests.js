@@ -98,9 +98,11 @@ add_task(function test_PlacesInterestsStorageGetDiversityForManyHosts()
   // 200 previous sites.  Diversity for cars must be = diversity for movies = 50
   // shopping diversity must be 0
   yield PlacesInterestsStorage.getDiversityForInterests(["cars","computers","movies","shopping"]).then(function(results) {
-    do_check_eq(Object.keys(results).length, 2);
+    do_check_eq(Object.keys(results).length, 4);
     do_check_eq(results["cars"] , 50);
     do_check_eq(results["movies"] , 50);
+    do_check_eq(results["computers"], 0);
+    do_check_eq(results["shopping"], 0);
   });
 
 });
