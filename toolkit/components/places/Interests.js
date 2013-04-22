@@ -417,6 +417,12 @@ InterestsWebAPI.prototype = {
   getInterests: function IWA_getInterests(interests, interestsData) {
     let deferred = this._makePromise();
 
+    let whitelistedSet = gInterestsService._getDomainWhitelistedSet();
+    if (!whitelistedSet.has(this.currentHost) && !secMan.isSystemPrincipal(this.window.document.nodePrincipal)) { 
+      deferred.reject("host "+this.currentHost+" does not have enough privileges to access getInterests");
+      return deferred.promise;
+    }
+
     // Only allow API access according to the user's permission
     this._checkContentPermission().then(() => {
       return gInterestsService.getInterestsByNames(interests, {

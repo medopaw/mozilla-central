@@ -38,43 +38,55 @@ add_task(function test_InterestWebAPI_whitelist()
   function doIt(statement) Cu.evalInSandbox(statement, sandbox);
   let systemPrincipal = Components.classes["@mozilla.org/systemprincipal;1"].createInstance(Components.interfaces.nsIPrincipal);
 
+  function checkFails(command) {
+    doIt("then = " + command + ".then");
+    try {
+      yield doIt("then(function(_ret) { ret = _ret; })");
+    } catch(e) {
+      // exception is thrown
+      do_check_true(true);
+    }
+  }
+
+  function checkSucceeds(command, expected, numZero) {
+    doIt("then = " + command + ".then");
+    yield doIt("then(function(_ret) { ret = _ret; })");
+    results = doIt("ret");
+    unExposeAll(results);
+    checkScores(expected, numZero, results);
+  }
+
   // getTopInterests with param < 5 is authorized for every interest
   // about:config is in the default whitelist
 
   // test: unauthorized
   apiInstance.init({location: {hostname: "realtor.com"}, document: {nodePrincipal: null}});
 
-  doIt("then = interests.getTopInterests(6).then");
-  try {
-    yield doIt("then(function(_ret) { ret = _ret; })");
-  } catch(e) {
-    // exception is thrown
-    do_check_true(true);
-  }
+  checkFails("interests.getTopInterests(6)");
+  checkFails("interests.getInterests(['technology'])");
 
   // test: authorized
 
   // site in defaults
   apiInstance.init({location: {hostname: "mozilla.com"}, document: {nodePrincipal: null}});
 
-  doIt("then = interests.getTopInterests(6).then");
-  yield doIt("then(function(_ret) { ret = _ret; })");
-  results = doIt("ret");
-  unExposeAll(results);
-  checkScores([
+  checkSucceeds("interests.getTopInterests(6)", [
       {"name":"technology","score":100,"diversity":0,"recency":{"immediate":true,"recent":false,"past":false}},
-  ], 0, results);
+  ], 0);
+  checkSucceeds("interests.getInterests(['technology'])", [
+      {"name":"technology","score":100,"diversity":0,"recency":{"immediate":true,"recent":false,"past":false}},
+  ], 0);
 
   // site added to user-defined whitelist in prefs
   Services.prefs.setCharPref("interests.userDomainWhitelist", "testsite.com");
   apiInstance.init({location: {hostname: "testsite.com"}, document: {nodePrincipal: null}});
-  doIt("then = interests.getTopInterests(6).then");
-  yield doIt("then(function(_ret) { ret = _ret; })");
-  results = doIt("ret");
-  unExposeAll(results);
-  checkScores([
+
+  checkSucceeds("interests.getTopInterests(6)", [
       {"name":"technology","score":100,"diversity":0,"recency":{"immediate":true,"recent":false,"past":false}},
-  ], 0, results);
+  ], 0);
+  checkSucceeds("interests.getInterests(['technology'])", [
+      {"name":"technology","score":100,"diversity":0,"recency":{"immediate":true,"recent":false,"past":false}},
+  ], 0);
 
   //NOTE: test for privileged location in mochitest
 });
