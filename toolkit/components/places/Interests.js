@@ -17,10 +17,9 @@ Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 
-const DEFAULT_THRESHOLD = 5;
-const DEFAULT_DURATION = 14;
-
+const gatherPromises = Promise.promised(Array);
 const secMan = Cc["@mozilla.org/scriptsecuritymanager;1"].getService(Ci.nsIScriptSecurityManager);
+
 let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
 
@@ -72,6 +71,30 @@ function Interests() {
 Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Interests API
+
+  /**
+   * Package up interest data by names
+   *
+   * @param   names
+   *          Array of interest string names
+   * @returns Promise with interests sorted by score
+   */
+  getInterestsByNames: function I_getInterestsByNames(names, options={}) {
+    return this._packageInterests(PlacesInterestsStorage.
+      getScoresForInterests(names, options), options);
+  },
+
+  /**
+   * Package up top interest data by namespace
+   *
+   * @param   namespace
+   *          Namespace of the interests to fetch
+   * @returns Promise with interests sorted by score
+   */
+  getInterestsByNamespace: function I_getInterestsByNamespace(namespace, options={}) {
+    return this._packageInterests(PlacesInterestsStorage.
+      getScoresForNamespace(namespace, options), options);
+  },
 
   resubmitRecentHistoryVisits: function I_resubmitRecentHistory(daysBack) {
     // check if history is in progress
@@ -199,53 +222,72 @@ Interests.prototype = {
     return deferred.promise;
   },
 
-  _getTopInterests: function I__getTopInterests(number) {
-    // First get a list of interests sorted by scores
-    return PlacesInterestsStorage.getScoresForNamespace("", {
-        checkSharable: true,
-        interestLimit: number,
-      }).
-      // Pass on the top interests and add on diversity and bucket data
-      then(topInterests => {
-        let names = topInterests.map(({name}) => name);
-        return [topInterests,
-                PlacesInterestsStorage.getDiversityForInterests(names, {
-                  checkSharable: true,
-                }),
-                PlacesInterestsStorage.getBucketsForInterests(names, {
-                  checkSharable: true,
-                })];
-      }).
-      // Wait for all the promises to finish
-      then(Promise.promised(Array)).
-      // Gather and combine the data from each promise
-      then(([topInterests, diversityData, bucketData]) => {
-        topInterests.forEach(interest => {
-          let {name} = interest;
-          interest.diversity = diversityData[name] || 0;
-          interest.recency = bucketData[name];
-        });
-        return topInterests;
-      });
-  },
+  /**
+   * Add extra data to a sorted array of interests
+   *
+   * @param   scoresPromise
+   *          Promise with an array of interests with name and score
+   * @param   [optional] options {see below}
+   *          excludeMeta: Boolean true to not include metadata
+   *          roundDiversity: Boolean true to round to the closest int
+   *          roundScore: Boolean true to normalize scores to the first score
+   *          roundRecency: Boolean true to round to the interest's threshold
+   * @returns Promise with an array of interests with added data
+   */
+  _packageInterests: function I__packageInterests(scoresPromise, options={}) {
+    // Wait for the scores to come back with interest names
+    return scoresPromise.then(sortedInterests => {
+      let names = sortedInterests.map(({name}) => name);
+      // Pass on the scores and add on interest, diversity and bucket data
+      return [
+        sortedInterests,
+        PlacesInterestsStorage.getInterests(names),
+        PlacesInterestsStorage.getDiversityForInterests(names, options),
+        PlacesInterestsStorage.getBucketsForInterests(names, options),
+      ];
+    // Wait for all the promises to finish then combine the data
+    }).then(gatherPromises).then(([interests, meta, diversity, buckets]) => {
+      let {excludeMeta, roundDiversity, roundRecency, roundScore} = options;
 
-  _getMetaForInterests: function I__getMetaForInterests(interestNames) {
-    let deferred = Promise.defer();
-    PlacesInterestsStorage.getInterests(interestNames).then(metaData => {
-      for (let index=0; index < interestNames.length; index++) {
-        let interest = interestNames[index];
-        if (metaData[interest]) {
-          let threshold = metaData[interest].threshold;
-          let duration = metaData[interest].duration;
-          metaData[interest].threshold = threshold ? threshold : DEFAULT_THRESHOLD;
-          metaData[interest].duration = duration ? duration : DEFAULT_DURATION;
-          delete metaData[interest].ignored;
-          delete metaData[interest].dateUpdated;
-        }
+      // Take the first result's score to be the max
+      let maxScore = 0;
+      if (interests.length > 0) {
+        maxScore = interests[0].score;
       }
-      deferred.resolve(metaData);
-    }, error => deferred.reject(error));
-    return deferred.promise;
+
+      // Package up pieces according to options
+      interests.forEach(interest => {
+        let {name} = interest;
+
+        // Include diversity and round to a percent [0-100] if requested
+        interest.diversity = diversity[name];
+        if (roundDiversity) {
+          interest.diversity = Math.round(interest.diversity);
+        }
+
+        // Include meta only if not explictly excluded
+        if (!excludeMeta) {
+          interest.meta = meta[name];
+        }
+
+        // Include recency and round to thresholds if requested
+        interest.recency = buckets[name];
+        if (roundRecency) {
+          // Round each recency bucket to the interest's threshold
+          let {recency} = interest;
+          Object.keys(recency).forEach(bucket => {
+            recency[bucket] = recency[bucket] >= meta[name].threshold;
+          });
+        }
+
+        // Round the already-included score to a percent [0-100] if requested
+        if (roundScore && maxScore != 0) {
+          interest.score = Math.round(interest.score / maxScore * 100);
+        }
+      });
+
+      return interests;
+    });
   },
 
   _setIgnoredForInterest: function I__setIgnoredForInterest(interest) {
@@ -364,29 +406,29 @@ InterestsWebAPI.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// mozIInterestsWebAPI
 
-  checkInterests: function(aInterests) {
+  /**
+   * Get information about specific interests sorted by score
+   *
+   * @param   interests
+   *          An array of interest name strings
+   * @param   [optional] interestsData
+   * @returns Promise with the sorted array of top interests
+   */
+  getInterests: function IWA_getInterests(interests, interestsData) {
     let deferred = this._makePromise();
 
     // Only allow API access according to the user's permission
     this._checkContentPermission().then(() => {
-      return PlacesInterestsStorage.getBucketsForInterests(aInterests);
-    }).then(results => {
-      results = JSON.parse(JSON.stringify(results));
-
-      results["__exposedProps__"] = {};
-      // decorate results before sending it back to the caller
-      Object.keys(results).forEach(interest => {
-        if (interest == "__exposedProps__") {
-          return;
-        }
-        results["__exposedProps__"][interest] = "r";
-        results[interest]["__exposedProps__"] = {};
-        results[interest]["__exposedProps__"]["immediate"] = "r";
-        results[interest]["__exposedProps__"]["recent"] = "r";
-        results[interest]["__exposedProps__"]["past"] = "r";
+      return gInterestsService.getInterestsByNames(interests, {
+        checkSharable: true,
+        excludeMeta: true,
+        roundDiversity: true,
+        roundRecency: true,
+        roundScore: true,
       });
-      delete results.interest;
-      deferred.resolve(results);
+    }).then(sortedInterests => {
+      exposeAll(sortedInterests);
+      deferred.resolve(sortedInterests);
     }, error => deferred.reject(error));
 
     return deferred.promise;
@@ -409,35 +451,20 @@ InterestsWebAPI.prototype = {
         return deferred.promise;
       }
     }
+
     // Only allow API access according to the user's permission
     this._checkContentPermission().then(() => {
-      return gInterestsService._getTopInterests(aNumber);
-    }).then(topInterests => {
-      topInterests = JSON.parse(JSON.stringify(topInterests));
-
-      // Compute the max score reference to normalize scores
-      let maxScore = Math.max.apply(Math, topInterests.map(({score}) => score));
-
-      let interestNames = topInterests.map(({name}) => name);
-      gInterestsService._getMetaForInterests(interestNames).then(metaData => {
-        for (let index=0; index < interestNames.length; index++) {
-          let interest = interestNames[index];
-          let {diversity, score} = topInterests[index];
-
-          // obtain metadata and apply thresholds
-          topInterests[index].recency.immediate = topInterests[index].recency.immediate >= metaData[interest].threshold;
-          topInterests[index].recency.recent = topInterests[index].recency.recent >= metaData[interest].threshold;
-          topInterests[index].recency.past = topInterests[index].recency.past >= metaData[interest].threshold;
-          
-          // Normalize score and diversity to an integer percent from [0-100]
-          if (score != 0) {
-            topInterests[index].score = Math.round(score / maxScore * 100);
-          }
-          topInterests[index].diversity = Math.round(diversity);
-        }
-        exposeAll(topInterests);
-        deferred.resolve(topInterests);
+      return gInterestsService.getInterestsByNamespace("", {
+        checkSharable: true,
+        excludeMeta: true,
+        interestLimit: aNumber,
+        roundDiversity: true,
+        roundRecency: true,
+        roundScore: true,
       });
+    }).then(topInterests => {
+      exposeAll(topInterests);
+      deferred.resolve(topInterests);
     }, error => deferred.reject(error));
 
     return deferred.promise;

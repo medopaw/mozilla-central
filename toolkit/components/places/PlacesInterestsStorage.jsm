@@ -96,6 +96,18 @@ const SQL = {
     "WHERE hidden = 0 AND " +
           "visit_count > 0",
 
+  getScoresForInterests:
+    "SELECT interest name, " +
+           "IFNULL(SUM(visits * (1 - (:today - day) / 29.0)), 0) * " +
+             "(NOT IFNULL(:checkSharable, 0) OR sharable) score " +
+    "FROM moz_interests " +
+    "LEFT JOIN moz_interests_visits " +
+    "ON interest_id = id AND " +
+       "day >= :today - 28 " +
+    "WHERE interest IN (:interests) " +
+    "GROUP BY id " +
+    "ORDER BY score DESC",
+
   getScoresForNamespace:
     "SELECT interest name, " +
            "IFNULL(SUM(visits * (1 - (:today - day) / 29.0)), 0) * " +
@@ -267,6 +279,29 @@ let PlacesInterestsStorage = {
       params: {
         dayCutoff: this._convertDateToDays() - daysAgo,
         MS_PER_DAY: MS_PER_DAY,
+      },
+    });
+  },
+
+  /**
+   * Get a sorted array of interests by score
+   *
+   * @param   interests
+   *          Array of interest strings to select
+   * @param   [optional] options {see below}
+   *          checkSharable: Boolean for 0-score for unshared defaulting false
+   * @returns Promise with the array of interest names and scores
+   */
+  getScoresForInterests: function PIS_getScoresForInterests(interests, options={}) {
+    let {checkSharable} = options;
+    return this._execute(SQL.getScoresForInterests, {
+      columns: ["name", "score"],
+      listParams: {
+        interests: interests,
+      },
+      params: {
+        checkSharable: checkSharable,
+        today: this._convertDateToDays(),
       },
     });
   },
