@@ -329,15 +329,13 @@ Interests.prototype = {
   _getDomainWhitelistedSet: function I__getDomainWhitelist() {
     if (!("__whitelistedSet" in this)) {
       // init with default values
-      this.__whitelistedSet = new Set(["mozilla.org", "mozilla.com", "about:profile"]);
+      this.__whitelistedSet = new Set(["mozilla.org", "mozilla.com"]);
 
       // load from user prefs
       let userWhitelist = Services.prefs.getCharPref('interests.userDomainWhitelist').trim().split(/\s*,\s*/);
       for (let i=0; i<userWhitelist.length; i++) {
         this.__whitelistedSet.add(userWhitelist[i]);
       }
-
-      //TODO: load from file in profile dir
     }
 
     return this.__whitelistedSet;
