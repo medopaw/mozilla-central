@@ -33,6 +33,7 @@ MOCHITEST_BROWSER_FILES = \
 	colorAnalyzer/localeGeneric.png \
 	browser_getinterest_privatebrowsing_perwindowpb.js \
 	browser_addinterest_privatebrowsing_perwindowpb.js \
+	browser_interests_whitelist.js \
 	$(NULL)
 
 # These are files that need to be loaded via the HTTP proxy server
