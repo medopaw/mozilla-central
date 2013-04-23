@@ -16,8 +16,8 @@ function PlaceTokenizer(aUrlStopwordSet) {
 
 PlaceTokenizer.prototype = {
   tokenize: function(aUrl, aTitle) {
-    let aUrl = aUrl.toLowerCase().replace(kNotWordPattern, " ");
-    let aTitle = (aTitle) ? aTitle.toLowerCase().replace(kNotWordPattern, " ") : "";
+    aUrl = aUrl.toLowerCase().replace(kNotWordPattern, " ");
+    aTitle = (aTitle) ? aTitle.toLowerCase().replace(kNotWordPattern, " ") : "";
 
     let tokens = [];
 
