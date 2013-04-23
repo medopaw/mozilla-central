@@ -18,7 +18,6 @@ Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 
 const gatherPromises = Promise.promised(Array);
-const secMan = Cc["@mozilla.org/scriptsecuritymanager;1"].getService(Ci.nsIScriptSecurityManager);
 
 let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
@@ -416,7 +415,7 @@ InterestsWebAPI.prototype = {
     let deferred = this._makePromise();
 
     let whitelistedSet = gInterestsService._getDomainWhitelistedSet();
-    if (!whitelistedSet.has(this.currentHost) && !secMan.isSystemPrincipal(this.window.document.nodePrincipal)) { 
+    if (!whitelistedSet.has(this.currentHost)) {
       deferred.reject("host "+this.currentHost+" does not have enough privileges to access getInterests");
       return deferred.promise;
     }
@@ -450,7 +449,7 @@ InterestsWebAPI.prototype = {
     let aNumber = topData || 5;
     if (aNumber > 5) {
       let whitelistedSet = gInterestsService._getDomainWhitelistedSet();
-      if (!whitelistedSet.has(this.currentHost) && !secMan.isSystemPrincipal(this.window.document.nodePrincipal)) { 
+      if (!whitelistedSet.has(this.currentHost)) {
         deferred.reject("host "+this.currentHost+" does not have enough privileges to access getTopInterests("+aNumber+")");
         return deferred.promise;
       }
@@ -500,7 +499,7 @@ InterestsWebAPI.prototype = {
 
     // APIs created by tests don't have a principal, so just allow them
     // Also allow higher privileged pages.
-    if (this.window == null || this.window.document == null || this.window.document.nodePrincipal == null) {
+    if (this.window == null || this.window.document == null) {
       promptPromise.resolve();
     }
     // For private browsing window - always reject
