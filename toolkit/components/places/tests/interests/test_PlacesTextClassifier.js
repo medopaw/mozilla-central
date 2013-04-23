@@ -106,8 +106,8 @@ add_task(function test_default_model_match() {
 let riggedMatchTests = [
   {
     interestsClassifierModel: {
-      priors: [0.5, 0.5],
-      likelihoods: {
+      logPriors: [0.5, 0.5],
+      logLikelihoods: {
 
         foo: [0.8, 0.2],
         qux: [0.8, 0.2],
