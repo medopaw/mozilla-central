@@ -40,52 +40,6 @@ add_task(function test_Interests() {
 
 });
 
-add_task(function test_ResubmitHistoryVisits() {
-
-  let myDef = Promise.defer();
-  yield PlacesInterestsStorage.clearRecentVisits(100).then(function(data) {
-    // test that interests are all empty
-    PlacesInterestsStorage.getBucketsForInterests(["cars" , "computers","movies"]).then(function(data) {
-      myDef.resolve(data);
-    });
-  });
-
-  yield myDef.promise.then(function(data) {
-    do_check_eq(data["cars"]["immediate"], 0);
-    do_check_eq(data["computers"]["immediate"], 0);
-    do_check_eq(data["movies"]["immediate"], 0);
-  });
-
-  // the database is clean - repopulate it
-  // clean places tables and re-insert cars.com
-  let now = Date.now();
-  let microNow = now * 1000;
-  yield promiseClearHistory();
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-
-  let promise1 = iServiceObject.resubmitRecentHistoryVisits(60);
-  let promise2 = iServiceObject.resubmitRecentHistoryVisits(60);
-  let promise3 = iServiceObject.resubmitRecentHistoryVisits(60);
-
-  // all of the promisses above should be the same promise
-  do_check_true(promise1 == promise2);
-  do_check_true(promise1 == promise3);
-
-  yield promise1;
-
-  // so we have processed the history, let's make sure we get interests back
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(data) {
-        do_check_eq(data["cars"]["immediate"], 1);
-        do_check_eq(data["cars"]["recent"], 2);
-        do_check_eq(data["cars"]["past"], 3);
-  });
-});
-
 add_task(function test_Interests_Service() {
   // verify that worker is removed when the feature is disabled
   Services.prefs.setBoolPref("interests.enabled", false);

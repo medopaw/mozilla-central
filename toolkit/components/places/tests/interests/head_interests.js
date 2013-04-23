@@ -71,6 +71,15 @@ function getInterestsForHost(host) {
   });
 }
 
+function promiseClearHistoryAndVisits() {
+  let promises = [];
+  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests"));
+  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests_hosts"));
+  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests_visits"));
+  promises.push(promiseClearHistory());
+  return Promise.promised(Array)(promises).then();
+}
+
 function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
   let visits = [];
   if (Array.isArray(aVisitInfo)) {

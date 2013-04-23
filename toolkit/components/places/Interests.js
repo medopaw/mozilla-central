@@ -81,14 +81,17 @@ Interests.prototype = {
     PlacesInterestsStorage.clearRecentVisits(daysBack).then(() => {
       // read moz_places data and massage it
       PlacesInterestsStorage.getRecentHistory(daysBack, item => {
-        let uri = NetUtil.newURI(item.url);
-        item["message"] = "getInterestsForDocument";
-        item["host"] = this._getPlacesHostForURI(uri);
-        item["path"] = uri["path"];
-        item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
-        item["metaData"] = {};
-        item["language"] = "en";
-        this._callMatchingWorker(item);
+        try {
+          let uri = NetUtil.newURI(item.url);
+          item["message"] = "getInterestsForDocument";
+          item["host"] = this._getPlacesHostForURI(uri);
+          item["path"] = uri["path"];
+          item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
+          item["metaData"] = {};
+          item["language"] = "en";
+          this._callMatchingWorker(item);
+        }
+        catch(ex) {}
       }).then(() => {
         // we are done sending recent visits to the worker
         // hence, we can send an echo message to the worker
