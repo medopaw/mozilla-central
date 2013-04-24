@@ -130,7 +130,9 @@ function getInterestsForDocument(aMessageData) {
       interests = Object.keys(theHash);
     }
   }
-  catch (ex) {}
+  catch (ex) {
+    Components.utils.reportError(ex);
+  }
 
   // Respond with the interests for the document
   self.postMessage({
