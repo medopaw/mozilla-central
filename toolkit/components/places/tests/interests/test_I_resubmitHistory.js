@@ -86,6 +86,15 @@ add_task(function test_ResubmitLocalHostFailure() {
   });
 });
 
+add_task(function test_ResubmitEmptyHistoryFailure() {
+    yield promiseClearHistoryAndVisits();
+    // resubmit history
+    yield iServiceObject.resubmitRecentHistoryVisits(110).then(() => {
+      // we should see promise resolved
+      do_check_true(true);
+    });
+});
+
 add_task(function test_ResubmitPrematurePromiseResolvedFailure() {
 
   yield promiseClearHistoryAndVisits();

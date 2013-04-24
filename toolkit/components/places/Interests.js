@@ -95,6 +95,12 @@ Interests.prototype = {
           this._ResubmitRecentHistoryUrlCount++;
         }
         catch(ex) {}
+      }).then(() => {
+        // check if _ResubmitRecentHistoryDeferred exists and url count == 0
+        // then the history is empty and we should resolve the promise
+        if (this._ResubmitRecentHistoryDeferred && this._ResubmitRecentHistoryUrlCount == 0) {
+          this._resolveResubmitHistoryPromise();
+        }
       }); // end of getRecentHistory
     }); // end of clearRecentVisits
     return this._ResubmitRecentHistoryDeferred.promise;
