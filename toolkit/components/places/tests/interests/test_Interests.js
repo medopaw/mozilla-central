@@ -11,7 +11,7 @@ Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
 let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
-let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
+let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 
 function run_test() {
   run_next_test();
@@ -91,6 +91,6 @@ add_task(function test_Interests_Service() {
   Services.prefs.setBoolPref("interests.enabled", false);
   do_check_true(iServiceObject.__worker == undefined)
   Services.prefs.setBoolPref("interests.enabled", true);
-  let worker = iServiceObject._worker;
-  do_check_eq(iServiceObject.__worker, worker)
+  iServiceObject._worker;
+  do_check_true(iServiceObject.__worker != undefined)
 });

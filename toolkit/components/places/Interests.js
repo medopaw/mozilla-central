@@ -22,25 +22,6 @@ const gatherPromises = Promise.promised(Array);
 let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
 let gInterestsService = null;
 
-// Add a pref observer for the enabled state
-function prefEnabledObserver(subject, topic, data) {
-  let enable = Services.prefs.getBoolPref("interests.enabled");
-  if (enable && !gServiceEnabled) {
-    gServiceEnabled = true;
-  }
-  else if (!enable && gServiceEnabled) {
-    delete gInterestsService.__worker;
-    gServiceEnabled = false;
-  }
-}
-
-// pref observer for user-defined whitelist
-function resetWhitelistObserver(subject, topic, data) {
-  if(gInterestsService && gInterestsService.__whitelistedSet) {
-    delete gInterestsService.__whitelistedSet;
-  }
-}
-
 function exposeAll(obj) {
   // Filter for Objects and Arrays.
   if (typeof obj !== "object" || !obj)
@@ -57,15 +38,14 @@ function exposeAll(obj) {
   obj.__exposedProps__ = exposed;
 }
 
-Services.prefs.addObserver("interests.enabled", prefEnabledObserver, false);
-Services.prefs.addObserver("interests.userDomainWhitelist", resetWhitelistObserver, false);
-Services.obs.addObserver(function xpcomShutdown() {
-  Services.obs.removeObserver(xpcomShutdown, "xpcom-shutdown");
-  Services.prefs.removeObserver("interests.enabled", prefEnabledObserver);
-}, "xpcom-shutdown", false);
-
 function Interests() {
   gInterestsService = this;
+  Services.prefs.addObserver("interests.enabled", this._prefEnabledObserver, false);
+  Services.prefs.addObserver("interests.userDomainWhitelist", this._resetWhitelistObserver, false);
+  Services.obs.addObserver(function xpcomShutdown() {
+    Services.obs.removeObserver(xpcomShutdown, "xpcom-shutdown");
+    Services.prefs.removeObserver("interests.enabled", this._prefEnabledObserver);
+  }, "xpcom-shutdown", false);
 }
 Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
@@ -378,6 +358,28 @@ Interests.prototype = {
     else if (aTopic == "toplevel-window-ready") {
       // Top level window is the browser window, not the content window(s).
       aSubject.addEventListener("DOMContentLoaded", this, true);
+    }
+  },
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// Preference observers
+
+  // Add a pref observer for the enabled state
+  _prefEnabledObserver: function I_prefEnabledObserver(subject, topic, data) {
+    let enable = Services.prefs.getBoolPref("interests.enabled");
+    if (enable && !gServiceEnabled) {
+      gServiceEnabled = true;
+    }
+    else if (!enable && gServiceEnabled) {
+      delete gInterestsService.__worker;
+      gServiceEnabled = false;
+    }
+  },
+
+  // pref observer for user-defined whitelist
+  _resetWhitelistObserver: function I_resetWhitelistObserver(subject, topic, data) {
+    if(gInterestsService && gInterestsService.__whitelistedSet) {
+      delete gInterestsService.__whitelistedSet;
     }
   },
 
