@@ -40,12 +40,7 @@ function exposeAll(obj) {
 
 function Interests() {
   gInterestsService = this;
-  Services.prefs.addObserver("interests.enabled", this._prefEnabledObserver, false);
-  Services.prefs.addObserver("interests.userDomainWhitelist", this._resetWhitelistObserver, false);
-  Services.obs.addObserver(function xpcomShutdown() {
-    Services.obs.removeObserver(xpcomShutdown, "xpcom-shutdown");
-    Services.prefs.removeObserver("interests.enabled", this._prefEnabledObserver);
-  }, "xpcom-shutdown", false);
+  Services.prefs.addObserver("interests.", this, false);
 }
 Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
@@ -359,27 +354,40 @@ Interests.prototype = {
       // Top level window is the browser window, not the content window(s).
       aSubject.addEventListener("DOMContentLoaded", this, true);
     }
+    else if(aTopic == "nsPref:changed") {
+      if (aData == "interests.enabled") {
+        this._prefEnabledHandler();
+      }
+      else if (aData == "interests.userDomainWhitelist") {
+        this._resetWhitelistHandler();
+      } else {
+        Cu.reportError("unhandled pref option: " + aData);
+      }
+    }
+    else {
+      Cu.reportError("unhandled event: "+aTopic);
+    }
   },
 
   //////////////////////////////////////////////////////////////////////////////
   //// Preference observers
 
   // Add a pref observer for the enabled state
-  _prefEnabledObserver: function I_prefEnabledObserver(subject, topic, data) {
+  _prefEnabledHandler: function I_prefEnabledHandler() {
     let enable = Services.prefs.getBoolPref("interests.enabled");
     if (enable && !gServiceEnabled) {
       gServiceEnabled = true;
     }
     else if (!enable && gServiceEnabled) {
-      delete gInterestsService.__worker;
+      delete this.__worker;
       gServiceEnabled = false;
     }
   },
 
   // pref observer for user-defined whitelist
-  _resetWhitelistObserver: function I_resetWhitelistObserver(subject, topic, data) {
-    if(gInterestsService && gInterestsService.__whitelistedSet) {
-      delete gInterestsService.__whitelistedSet;
+  _resetWhitelistHandler: function I_resetWhitelistHandler() {
+    if(gInterestsService && this.__whitelistedSet) {
+      delete this.__whitelistedSet;
     }
   },
 
