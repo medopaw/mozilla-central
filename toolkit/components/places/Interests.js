@@ -290,7 +290,7 @@ Interests.prototype = {
         // and check if this is the last interest in the resubmit bunch
         if (aData.messageId == "resubmit") {
           // decerement url count and check if we have seen them all
-          this._ResubmitRecentHistoryUrlCount --;
+          this._ResubmitRecentHistoryUrlCount--;
           if (this._ResubmitRecentHistoryUrlCount == 0) {
             this._resolveResubmitHistoryPromise();
           }
