@@ -89,10 +89,12 @@ add_task(function test_ResubmitLocalHostFailure() {
 add_task(function test_ResubmitEmptyHistoryFailure() {
     yield promiseClearHistoryAndVisits();
     // resubmit history
+    let isDone = false;
     yield iServiceObject.resubmitRecentHistoryVisits(110).then(() => {
       // we should see promise resolved
-      do_check_true(true);
+      isDone = true;
     });
+    do_check_true(isDone);
 });
 
 add_task(function test_ResubmitPrematurePromiseResolvedFailure() {
