@@ -10,6 +10,7 @@ Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
 let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
+let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 
 function run_test() {
   run_next_test();
@@ -82,6 +83,35 @@ add_task(function test_ResubmitLocalHostFailure() {
         do_check_eq(data["cars"]["immediate"], 2);
         do_check_eq(data["cars"]["recent"], 2);
         do_check_eq(data["cars"]["past"], 3);
+  });
+});
+
+add_task(function test_ResubmitPrematurePromiseResolvedFailure() {
+
+  yield promiseClearHistoryAndVisits();
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars"]);
+
+  let microNow = Date.now() * 1000;
+  for (let i=0; i<30; i++) {
+    yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - i*MICROS_PER_DAY});
+  }
+
+  // setup observer
+  let urlSaved = 0;
+  let observer = {
+    observe: function(subject, topic, data) {
+      if (topic == "interest-visit-saved") {
+        urlSaved++;
+      }
+    }
+  };
+  obsereverService.addObserver(observer, "interest-visit-saved", false);
+
+  // resubmit history
+  yield iServiceObject.resubmitRecentHistoryVisits(110).then(() => {
+    // we must see 101 urls being saved
+    do_check_eq(urlSaved,30);
+    Services.obs.removeObserver(observer, "interest-visit-saved");
   });
 });
 

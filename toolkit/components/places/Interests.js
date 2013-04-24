@@ -77,6 +77,7 @@ Interests.prototype = {
     }
 
     this._ResubmitRecentHistoryDeferred = Promise.defer();
+    this._ResubmitRecentHistoryUrlCount = 0;
     // clean interest tables first
     PlacesInterestsStorage.clearRecentVisits(daysBack).then(() => {
       // read moz_places data and massage it
@@ -89,19 +90,13 @@ Interests.prototype = {
           item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
           item["metaData"] = {};
           item["language"] = "en";
+          item["messageId"] = "resubmit";
           this._callMatchingWorker(item);
+          this._ResubmitRecentHistoryUrlCount++;
         }
         catch(ex) {}
-      }).then(() => {
-        // we are done sending recent visits to the worker
-        // hence, we can send an echo message to the worker
-        // to indicate completion of the history re-processing
-        this._callMatchingWorker({
-          message: "echoMessage",
-          type: "resubmitRecentHistory"
-        });
-      });
-    });
+      }); // end of getRecentHistory
+    }); // end of clearRecentVisits
     return this._ResubmitRecentHistoryDeferred.promise;
   },
 
@@ -187,14 +182,6 @@ Interests.prototype = {
     }
     Promise.promised(Array)(addVisitPromises).then(results => {
       deferred.resolve(results);
-      // test if resubmitRecentHistory echo message arrrived
-      // if so, we have added all resubmitted interests and
-      // need to resolve _ResubmitRecentHistoryDeferred promise
-      if (this._ResubmitRecentHistoryEchoReceived) {
-        this._ResubmitRecentHistoryDeferred.resolve();
-        this._ResubmitRecentHistoryDeferred = null;
-        this._ResubmitRecentHistoryEchoReceived = false;
-      }
     }, error => deferred.reject(error))
     return deferred.promise;
   },
@@ -289,17 +276,28 @@ Interests.prototype = {
                               aData.visitCount).then(results => {
       // generate "interest-visit-saved" event
       let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-      timer.init(function(timer) {
+      timer.init(timer => {
+        // tell the world we have added this interest
         Services.obs.notifyObservers({wrappedJSObject: aData},
                                      "interest-visit-saved",
                                      null);
+        // and check if this is the last interest in the resubmit bunch
+        if (aData.messageId == "resubmit") {
+          // decerement url count and check if we have seen them all
+          this._ResubmitRecentHistoryUrlCount --;
+          if (this._ResubmitRecentHistoryUrlCount == 0) {
+            this._resolveResubmitHistoryPromise();
+          }
+        }
       }, 0, Ci.nsITimer.TYPE_ONE_SHOT);
     });
   },
 
-  _handleEchoMessage: function I__handleInterestsResults(aData) {
-    if (aData.type == "resubmitRecentHistory") {
-      this._ResubmitRecentHistoryEchoReceived = true;
+  _resolveResubmitHistoryPromise: function I__resolveResubmitHistoryPromise() {
+    if (this._ResubmitRecentHistoryDeferred != null) {
+      this._ResubmitRecentHistoryDeferred.resolve();
+      this._ResubmitRecentHistoryDeferred = null;
+      this._ResubmitRecentHistoryUrlCount = 0;
     }
   },
 
@@ -335,9 +333,6 @@ Interests.prototype = {
       let msgData = aEvent.data;
       if (msgData.message == "InterestsForDocument") {
         this._handleInterestsResults(msgData);
-      }
-      else if (msgData.message == "echoMessage") {
-        this._handleEchoMessage(msgData);
       }
     }
     else if (eventType == "error") {
