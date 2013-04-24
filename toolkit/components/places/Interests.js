@@ -19,7 +19,18 @@ Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 
 const gatherPromises = Promise.promised(Array);
 
-let gServiceEnabled = Services.prefs.getBoolPref("interests.enabled");
+// observer event topics
+const kStartup = "app-startup";
+const kDOMLoaded = "DOMContentLoaded";
+const kShutdown = "xpcom-shutdown";
+const kPrefChanged = "nsPref:changed";
+const kWindowReady = "toplevel-window-ready";
+
+// prefs
+const kPrefEnabled = "interests.enabled";
+const kPrefWhitelist = "interests.userDomainWhitelist";
+
+let gServiceEnabled = Services.prefs.getBoolPref(kPrefEnabled);
 let gInterestsService = null;
 
 function exposeAll(obj) {
@@ -313,7 +324,7 @@ Interests.prototype = {
       this.__whitelistedSet = new Set(["mozilla.org", "mozilla.com"]);
 
       // load from user prefs
-      let userWhitelist = Services.prefs.getCharPref('interests.userDomainWhitelist').trim().split(/\s*,\s*/);
+      let userWhitelist = Services.prefs.getCharPref(kPrefWhitelist).trim().split(/\s*,\s*/);
       for (let i=0; i<userWhitelist.length; i++) {
         this.__whitelistedSet.add(userWhitelist[i]);
       }
@@ -351,20 +362,26 @@ Interests.prototype = {
   //// nsIObserver
 
   observe: function I_observe(aSubject, aTopic, aData) {
-    if (aTopic == "app-startup") {
-      Services.obs.addObserver(this, "toplevel-window-ready", false);
+    if (aTopic == kStartup) {
+      Services.obs.addObserver(this, kWindowReady, false);
+      Services.obs.addObserver(this, kShutDown, false);
     }
-    else if (aTopic == "toplevel-window-ready") {
+    else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
-      aSubject.addEventListener("DOMContentLoaded", this, true);
+      aSubject.addEventListener(kDOMLoaded, this, true);
     }
-    else if(aTopic == "nsPref:changed") {
-      if (aData == "interests.enabled") {
+    else if (aTopic == kPrefChanged) {
+      if (aData == kPrefEnabled) {
         this._prefEnabledHandler();
       }
-      else if (aData == "interests.userDomainWhitelist") {
+      else if (aData == kPrefWhitelist) {
         this._resetWhitelistHandler();
       }
+    }
+    else if (aTopic == kShutdown) {
+      Services.obs.removeObserver(this, kStartup);
+      Services.obs.removeObserver(this, kShutdown);
+      Servies.prefs.removeObserver("interests.", this);
     }
     else {
       Cu.reportError("unhandled event: "+aTopic);
@@ -375,8 +392,8 @@ Interests.prototype = {
   //// Preference observers
 
   // Add a pref observer for the enabled state
-  _prefEnabledHandler: function I_prefEnabledHandler() {
-    let enable = Services.prefs.getBoolPref("interests.enabled");
+  _prefEnabledHandler: function I__prefEnabledHandler() {
+    let enable = Services.prefs.getBoolPref(kPrefEnabled);
     if (enable && !gServiceEnabled) {
       gServiceEnabled = true;
     }
@@ -387,8 +404,8 @@ Interests.prototype = {
   },
 
   // pref observer for user-defined whitelist
-  _resetWhitelistHandler: function I_resetWhitelistHandler() {
-    if(gInterestsService && this.__whitelistedSet) {
+  _resetWhitelistHandler: function I__resetWhitelistHandler() {
+    if (gInterestsService && this.__whitelistedSet) {
       delete this.__whitelistedSet;
     }
   },
