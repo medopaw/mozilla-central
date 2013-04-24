@@ -360,8 +360,6 @@ Interests.prototype = {
       }
       else if (aData == "interests.userDomainWhitelist") {
         this._resetWhitelistHandler();
-      } else {
-        Cu.reportError("unhandled pref option: " + aData);
       }
     }
     else {
