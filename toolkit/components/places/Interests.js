@@ -333,6 +333,23 @@ Interests.prototype = {
     return this.__whitelistedSet;
   },
 
+  _initInterestMeta: function I__initInterestMeta() {
+    const interests = ["arts", "banking", "blogging", "business", "career",
+    "cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",
+    "discounts", "drinks", "education", "email", "entertainment", "family",
+    "fashion", "finance", "food", "games", "government", "health", "history",
+    "hobby", "home", "image-sharing", "law", "maps", "marketing", "men",
+    "motorcycles", "movies", "music", "news", "outdoors", "pets", "photography",
+    "politics", "radio", "reading", "real-estate", "reference", "relationship",
+    "religion", "reviews", "science", "shoes", "shopping", "society", "sports",
+    "technology", "travel", "tv", "video-games", "weather", "women", "writing"];
+
+    interests.forEach(item => PlacesInterestsStorage.setInterest(item, {
+      duration: 14,
+      threshold: 100,
+    }));
+  },
+
   //////////////////////////////////////////////////////////////////////////////
   //// nsIDOMEventListener
 
@@ -396,6 +413,13 @@ Interests.prototype = {
     let enable = Services.prefs.getBoolPref(kPrefEnabled);
     if (enable && !gServiceEnabled) {
       gServiceEnabled = true;
+
+      // initialize interest metadata if need be
+      PlacesInterestsStorage.getInterests(["arts"]).then(results => {
+        if (Object.keys(results).length == 0) {
+          this._initInterestMeta();
+        }
+      });
     }
     else if (!enable && gServiceEnabled) {
       delete this.__worker;
