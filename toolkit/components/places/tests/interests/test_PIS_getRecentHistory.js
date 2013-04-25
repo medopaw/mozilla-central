@@ -9,5 +9,42 @@
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
 function run_test() {
-  // test_PlacesInterestsStorage.js
+  run_next_test();
 }
+
+add_task(function test_GetRecentHistory()
+{
+  const MICROS_PER_DAY = 86400000000;
+  let now = Date.now();
+  let today = PlacesInterestsStorage._convertDateToDays(now);
+  let microNow = now * 1000;
+  yield promiseClearHistory();
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 2*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 2*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 2*MICROS_PER_DAY});
+
+  let results = {};
+
+  yield PlacesInterestsStorage.getRecentHistory(3, function(oneRecord) {
+    // make sure oneRecord looks kosher
+    do_check_eq(oneRecord.url, "http://www.cars.com/");
+    do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");
+    do_check_true(oneRecord.visitDate != null);
+    do_check_true(oneRecord.visitCount != null);
+    let day = PlacesInterestsStorage._convertDateToDays(oneRecord.visitDate);
+    results[day] = oneRecord.visitCount;
+  }).then(function() {
+    // make sure we have:
+    // 3 visits for 2 days ago
+    // 2 visits for 1 day ago
+    // 1 visit for today
+    do_check_eq(Object.keys(results).length, 3);
+    do_check_eq(results[today], 1);
+    do_check_eq(results[today - 1], 2);
+    do_check_eq(results[today - 2], 3);
+  });
+
+});
