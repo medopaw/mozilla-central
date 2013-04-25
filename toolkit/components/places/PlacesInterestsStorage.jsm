@@ -90,7 +90,7 @@ const SQL = {
                  "COUNT(1) visitCount, " +
                  "visit_date/1000 - visit_date/1000 % :MS_PER_DAY visitDate " +
           "FROM moz_historyvisits " +
-          "WHERE visit_date > :dayCutoff * :MS_PER_DAY*1000 " +
+          "WHERE visit_date >= (:dayCutoff+1) * :MS_PER_DAY*1000 " +
           "GROUP BY place_id, visitDate) " +
     "ON place_id = id " +
     "WHERE hidden = 0 AND " +
