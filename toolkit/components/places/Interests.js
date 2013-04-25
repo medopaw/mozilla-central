@@ -364,7 +364,7 @@ Interests.prototype = {
   observe: function I_observe(aSubject, aTopic, aData) {
     if (aTopic == kStartup) {
       Services.obs.addObserver(this, kWindowReady, false);
-      Services.obs.addObserver(this, kShutDown, false);
+      Services.obs.addObserver(this, kShutdown, false);
     }
     else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
