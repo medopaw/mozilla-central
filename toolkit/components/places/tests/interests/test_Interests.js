@@ -47,4 +47,27 @@ add_task(function test_Interests_Service() {
   Services.prefs.setBoolPref("interests.enabled", true);
   iServiceObject._worker;
   do_check_true(iServiceObject.__worker != undefined)
+
+  // test auto population of metadata
+  const interests = ["arts", "banking", "blogging", "business", "career",
+  "cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",
+  "discounts", "drinks", "education", "email", "entertainment", "family",
+  "fashion", "finance", "food", "games", "government", "health", "history",
+  "hobby", "home", "image-sharing", "law", "maps", "marketing", "men",
+  "motorcycles", "movies", "music", "news", "outdoors", "pets", "photography",
+  "politics", "radio", "reading", "real-estate", "reference", "relationship",
+  "religion", "reviews", "science", "shoes", "shopping", "society", "sports",
+  "technology", "travel", "tv", "video-games", "weather", "women", "writing"];
+
+  Services.prefs.setBoolPref("interests.enabled", false);
+  promiseClearHistoryAndVisits();
+  yield PlacesInterestsStorage.getInterests(interests).then(result => {
+    do_check_eq(0, Object.keys(result).length);
+  });
+
+  Services.prefs.setBoolPref("interests.enabled", true);
+  yield PlacesInterestsStorage.getInterests(interests).then(result => {
+    do_check_eq(interests.length, Object.keys(result).length);
+  });
+
 });
