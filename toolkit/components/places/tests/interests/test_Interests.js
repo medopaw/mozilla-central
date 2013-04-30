@@ -47,6 +47,30 @@ add_task(function test_Interests_Service() {
   Services.prefs.setBoolPref("interests.enabled", true);
   iServiceObject._worker;
   do_check_true(iServiceObject.__worker != undefined)
+});
+
+add_task(function test_Interests_Service_metadata() {
+
+  // setup observer
+  let observeCount = 0;
+  let deferred = Promise.defer();
+  let observer = {
+    observe: function(subject, topic, data) {
+      if (topic == "interest-metadata-initialized") {
+        observeCount += 1;
+        /*
+         * The observer will be triggered twice:
+         * 1. One for turning the system on, in head_interests.js
+         * 2. For our test.
+         * We need to catch the second time.
+         */
+        if(observeCount == 2) {
+          deferred.resolve(data);
+        }
+      }
+    }
+  };
+  observerService.addObserver(observer, "interest-metadata-initialized", false);
 
   // test auto population of metadata
   const interests = ["arts", "banking", "blogging", "business", "career",
@@ -60,14 +84,23 @@ add_task(function test_Interests_Service() {
   "technology", "travel", "tv", "video-games", "weather", "women", "writing"];
 
   Services.prefs.setBoolPref("interests.enabled", false);
+
   promiseClearHistoryAndVisits();
   yield PlacesInterestsStorage.getInterests(interests).then(result => {
     do_check_eq(0, Object.keys(result).length);
   });
 
   Services.prefs.setBoolPref("interests.enabled", true);
-  yield PlacesInterestsStorage.getInterests(interests).then(result => {
-    do_check_eq(interests.length, Object.keys(result).length);
+
+  yield deferred.promise.then(numAdded => {
+    do_check_eq(interests.length, numAdded);
+  },
+  e => {
+    // fails due to an error. should not happen
+    do_check_true(false);
   });
 
+  yield PlacesInterestsStorage.getInterests(interests).then(result => {
+      do_check_eq(interests.length, Object.keys(result).length);
+  });
 });

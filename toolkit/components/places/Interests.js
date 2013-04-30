@@ -334,6 +334,8 @@ Interests.prototype = {
   },
 
   _initInterestMeta: function I__initInterestMeta() {
+    let promises = [];
+
     const interests = ["arts", "banking", "blogging", "business", "career",
     "cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",
     "discounts", "drinks", "education", "email", "entertainment", "family",
@@ -344,10 +346,22 @@ Interests.prototype = {
     "religion", "reviews", "science", "shoes", "shopping", "society", "sports",
     "technology", "travel", "tv", "video-games", "weather", "women", "writing"];
 
-    interests.forEach(item => PlacesInterestsStorage.setInterest(item, {
-      duration: 14,
-      threshold: 100,
-    }));
+    interests.forEach(item => {
+      promises.push(PlacesInterestsStorage.setInterest(item, {
+        duration: 14,
+        threshold: 100,
+      }));
+    });
+
+    return gatherPromises(promises).then(results => {
+      let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+      timer.init(timer => {
+        // notify observers all interests have been aded
+        Services.obs.notifyObservers(null,
+                                     "interest-metadata-initialized",
+                                     results.length);
+      }, 0, Ci.nsITimer.TYPE_ONE_SHOT);
+    });
   },
 
   //////////////////////////////////////////////////////////////////////////////
