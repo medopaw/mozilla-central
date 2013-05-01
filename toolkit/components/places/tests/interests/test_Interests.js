@@ -50,23 +50,14 @@ add_task(function test_Interests_Service() {
 });
 
 add_task(function test_Interests_Service_metadata() {
+  yield promiseWaitForMetadataInit();
 
   // setup observer
-  let observeCount = 0;
   let deferred = Promise.defer();
   let observer = {
     observe: function(subject, topic, data) {
       if (topic == "interest-metadata-initialized") {
-        observeCount += 1;
-        /*
-         * The observer will be triggered twice:
-         * 1. One for turning the system on, in head_interests.js
-         * 2. For our test.
-         * We need to catch the second time.
-         */
-        if(observeCount == 2) {
-          deferred.resolve(data);
-        }
+        deferred.resolve(data);
       }
     }
   };
