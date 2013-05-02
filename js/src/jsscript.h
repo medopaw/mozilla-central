@@ -1,15 +1,15 @@
 /* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- * vim: set ts=4 sw=4 et tw=79 ft=cpp:
- *
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/* JS script descriptor. */
+
 #ifndef jsscript_h___
 #define jsscript_h___
-/*
- * JS script descriptor.
- */
+
+#include "mozilla/PodOperations.h"
 
 #include "jsdbgapi.h"
 #include "jsinfer.h"
@@ -19,17 +19,18 @@
 #include "js/RootingAPI.h"
 #include "vm/Shape.h"
 
-ForwardDeclareJS(Script);
-
 namespace js {
 
 namespace ion {
     struct IonScript;
+    struct BaselineScript;
     struct IonScriptCounts;
 }
 
 # define ION_DISABLED_SCRIPT ((js::ion::IonScript *)0x1)
 # define ION_COMPILING_SCRIPT ((js::ion::IonScript *)0x2)
+
+# define BASELINE_DISABLED_SCRIPT ((js::ion::BaselineScript *)0x1)
 
 class Shape;
 
@@ -192,7 +193,7 @@ class Bindings
     unsigned count() const { return numArgs() + numVars(); }
 
     /* Return the initial shape of call objects created for this scope. */
-    RawShape callObjShape() const { return callObjShape_; }
+    Shape *callObjShape() const { return callObjShape_; }
 
     /* Convenience method to get the var index of 'arguments'. */
     static unsigned argumentsVarIndex(JSContext *cx, InternalBindingsHandle);
@@ -211,7 +212,7 @@ struct RootMethods<Bindings> {
     static Bindings initial();
     static ThingRootKind kind() { return THING_ROOT_BINDINGS; }
     static bool poisoned(const Bindings &bindings) {
-        return IsPoisonedPtr(static_cast<RawShape>(bindings.callObjShape()));
+        return IsPoisonedPtr(static_cast<Shape *>(bindings.callObjShape()));
     }
 };
 
@@ -241,9 +242,9 @@ class ScriptCounts
     }
 };
 
-typedef HashMap<RawScript,
+typedef HashMap<JSScript *,
                 ScriptCounts,
-                DefaultHasher<RawScript>,
+                DefaultHasher<JSScript *>,
                 SystemAllocPolicy> ScriptCountsMap;
 
 class DebugScript
@@ -269,9 +270,9 @@ class DebugScript
     BreakpointSite  *breakpoints[1];
 };
 
-typedef HashMap<RawScript,
+typedef HashMap<JSScript *,
                 DebugScript *,
-                DefaultHasher<RawScript>,
+                DefaultHasher<JSScript *>,
                 SystemAllocPolicy> DebugScriptMap;
 
 struct ScriptSource;
@@ -501,8 +502,10 @@ class JSScript : public js::gc::Cell
 #endif
 #ifdef JS_ION
     bool            failedShapeGuard:1; /* script has had hoisted shape guard fail */
+    bool            hadFrequentBailouts:1;
 #else
     bool            failedShapeGuardPad:1;
+    bool            hadFrequentBailoutsPad:1;
 #endif
     bool            invalidatedIdempotentCache:1; /* idempotent cache has triggered invalidation */
     bool            isGenerator:1;    /* is a generator */
@@ -526,7 +529,7 @@ class JSScript : public js::gc::Cell
     //
 
   public:
-    static js::RawScript Create(JSContext *cx, js::HandleObject enclosingScope, bool savedCallerFun,
+    static JSScript *Create(JSContext *cx, js::HandleObject enclosingScope, bool savedCallerFun,
                                 const JS::CompileOptions &options, unsigned staticLevel,
                                 js::ScriptSource *ss, uint32_t sourceStart, uint32_t sourceEnd);
 
@@ -584,13 +587,24 @@ class JSScript : public js::gc::Cell
         return hasIonScript() || hasParallelIonScript();
     }
 
-    /* Information attached by Ion: script for sequential mode execution */
+  private:
+    /* Information attached by Baseline/Ion for sequential mode execution. */
     js::ion::IonScript *ion;
+    js::ion::BaselineScript *baseline;
 
+    /* Information attached by Ion for parallel mode execution */
+    js::ion::IonScript *parallelIon;
+
+    /*
+     * Pointer to either baseline->method()->raw() or ion->method()->raw(), or NULL
+     * if there's no Baseline or Ion script.
+     */
+    uint8_t *baselineOrIonRaw;
+
+  public:
     bool hasIonScript() const {
         return ion && ion != ION_DISABLED_SCRIPT && ion != ION_COMPILING_SCRIPT;
     }
-
     bool canIonCompile() const {
         return ion != ION_DISABLED_SCRIPT;
     }
@@ -603,9 +617,33 @@ class JSScript : public js::gc::Cell
         JS_ASSERT(hasIonScript());
         return ion;
     }
+    js::ion::IonScript *maybeIonScript() const {
+        return ion;
+    }
+    js::ion::IonScript *const *addressOfIonScript() const {
+        return &ion;
+    }
+    void setIonScript(js::ion::IonScript *ionScript) {
+        ion = ionScript;
+        updateBaselineOrIonRaw();
+    }
 
-    /* Information attached by Ion: script for parallel mode execution */
-    js::ion::IonScript *parallelIon;
+    bool hasBaselineScript() const {
+        return baseline && baseline != BASELINE_DISABLED_SCRIPT;
+    }
+    bool canBaselineCompile() const {
+        return baseline != BASELINE_DISABLED_SCRIPT;
+    }
+    js::ion::BaselineScript *baselineScript() const {
+        JS_ASSERT(hasBaselineScript());
+        return baseline;
+    }
+    void setBaselineScript(js::ion::BaselineScript *baselineScript) {
+        baseline = baselineScript;
+        updateBaselineOrIonRaw();
+    }
+
+    void updateBaselineOrIonRaw();
 
     bool hasParallelIonScript() const {
         return parallelIon && parallelIon != ION_DISABLED_SCRIPT && parallelIon != ION_COMPILING_SCRIPT;
@@ -622,6 +660,25 @@ class JSScript : public js::gc::Cell
     js::ion::IonScript *parallelIonScript() const {
         JS_ASSERT(hasParallelIonScript());
         return parallelIon;
+    }
+    js::ion::IonScript *maybeParallelIonScript() const {
+        return parallelIon;
+    }
+    void setParallelIonScript(js::ion::IonScript *ionScript) {
+        parallelIon = ionScript;
+    }
+
+    static size_t offsetOfBaselineScript() {
+        return offsetof(JSScript, baseline);
+    }
+    static size_t offsetOfIonScript() {
+        return offsetof(JSScript, ion);
+    }
+    static size_t offsetOfParallelIonScript() {
+        return offsetof(JSScript, parallelIon);
+    }
+    static size_t offsetOfBaselineOrIonRaw() {
+        return offsetof(JSScript, baselineOrIonRaw);
     }
 
     /*
@@ -742,6 +799,7 @@ class JSScript : public js::gc::Cell
     uint32_t getUseCount() const  { return useCount; }
     uint32_t incUseCount(uint32_t amount = 1) { return useCount += amount; }
     uint32_t *addressOfUseCount() { return &useCount; }
+    static size_t offsetOfUseCount() { return offsetof(JSScript, useCount); }
     void resetUseCount() { useCount = 0; }
 
     void resetLoopCount() {
@@ -795,7 +853,7 @@ class JSScript : public js::gc::Cell
 
     bool hasArray(ArrayKind kind)           { return (hasArrayBits & (1 << kind)); }
     void setHasArray(ArrayKind kind)        { hasArrayBits |= (1 << kind); }
-    void cloneHasArray(js::RawScript script) { hasArrayBits = script->hasArrayBits; }
+    void cloneHasArray(JSScript *script) { hasArrayBits = script->hasArrayBits; }
 
     bool hasConsts()        { return hasArray(CONSTS);      }
     bool hasObjects()       { return hasArray(OBJECTS);     }
@@ -915,7 +973,7 @@ class JSScript : public js::gc::Cell
 
     void destroyBreakpointSite(js::FreeOp *fop, jsbytecode *pc);
 
-    void clearBreakpointsIn(js::FreeOp *fop, js::Debugger *dbg, js::RawObject handler);
+    void clearBreakpointsIn(js::FreeOp *fop, js::Debugger *dbg, JSObject *handler);
     void clearTraps(js::FreeOp *fop);
 
     void markTrapClosures(JSTracer *trc);
@@ -946,8 +1004,8 @@ class JSScript : public js::gc::Cell
 
     JS::Zone *zone() const { return tenuredZone(); }
 
-    static inline void writeBarrierPre(js::RawScript script);
-    static inline void writeBarrierPost(js::RawScript script, void *addr);
+    static inline void writeBarrierPre(JSScript *script);
+    static inline void writeBarrierPost(JSScript *script, void *addr);
 
     static inline js::ThingRootKind rootKind() { return js::THING_ROOT_SCRIPT; }
 
@@ -1023,7 +1081,7 @@ class AliasedFormalIter
     }
 
   public:
-    explicit inline AliasedFormalIter(js::RawScript script);
+    explicit inline AliasedFormalIter(JSScript *script);
 
     bool done() const { return p_ == end_; }
     operator bool() const { return !done(); }
@@ -1103,7 +1161,7 @@ struct ScriptSource
         JS_ASSERT(hasSourceData());
         return argumentsNotIncluded_;
     }
-    JSFlatString *substring(JSContext *cx, uint32_t start, uint32_t stop);
+    JSStableString *substring(JSContext *cx, uint32_t start, uint32_t stop);
     size_t sizeOfIncludingThis(JSMallocSizeOfFun mallocSizeOf);
 
     // XDR handling
@@ -1236,7 +1294,7 @@ extern void
 CallNewScriptHook(JSContext *cx, JS::HandleScript script, JS::HandleFunction fun);
 
 extern void
-CallDestroyScriptHook(FreeOp *fop, js::RawScript script);
+CallDestroyScriptHook(FreeOp *fop, JSScript *script);
 
 struct SharedScriptData
 {
@@ -1280,7 +1338,7 @@ struct ScriptBytecodeHasher
     static bool match(SharedScriptData *entry, const Lookup &lookup) {
         if (entry->length != lookup.length)
             return false;
-        return PodEqual<jsbytecode>(entry->data, lookup.code, lookup.length);
+        return mozilla::PodEqual<jsbytecode>(entry->data, lookup.code, lookup.length);
     }
 };
 
@@ -1300,7 +1358,7 @@ FreeScriptData(JSRuntime *rt);
 struct ScriptAndCounts
 {
     /* This structure is stored and marked from the JSRuntime. */
-    js::RawScript script;
+    JSScript *script;
     ScriptCounts scriptCounts;
 
     PCCounts &getPCCounts(jsbytecode *pc) const {
@@ -1316,18 +1374,18 @@ struct ScriptAndCounts
 } /* namespace js */
 
 extern jssrcnote *
-js_GetSrcNote(JSContext *cx, js::RawScript script, jsbytecode *pc);
+js_GetSrcNote(JSContext *cx, JSScript *script, jsbytecode *pc);
 
 extern jsbytecode *
-js_LineNumberToPC(js::RawScript script, unsigned lineno);
+js_LineNumberToPC(JSScript *script, unsigned lineno);
 
 extern JS_FRIEND_API(unsigned)
-js_GetScriptLineExtent(js::RawScript script);
+js_GetScriptLineExtent(JSScript *script);
 
 namespace js {
 
 extern unsigned
-PCToLineNumber(js::RawScript script, jsbytecode *pc, unsigned *columnp = NULL);
+PCToLineNumber(JSScript *script, jsbytecode *pc, unsigned *columnp = NULL);
 
 extern unsigned
 PCToLineNumber(unsigned startLine, jssrcnote *notes, jsbytecode *code, jsbytecode *pc,
@@ -1353,7 +1411,7 @@ enum LineOption {
 inline void
 CurrentScriptFileLineOrigin(JSContext *cx, unsigned *linenop, LineOption = NOT_CALLED_FROM_JSOP_EVAL);
 
-extern RawScript
+extern JSScript *
 CloneScript(JSContext *cx, HandleObject enclosingScope, HandleFunction fun, HandleScript script);
 
 bool

@@ -185,6 +185,9 @@ public:
   void SetDomain(const nsAString& aDomain, mozilla::ErrorResult& rv);
   void GetCookie(nsAString& aCookie, mozilla::ErrorResult& rv);
   void SetCookie(const nsAString& aCookie, mozilla::ErrorResult& rv);
+  JSObject* NamedGetter(JSContext* cx, const nsAString& aName, bool& aFound,
+                        mozilla::ErrorResult& rv);
+  void GetSupportedNames(nsTArray<nsString>& aNames);
   nsGenericHTMLElement *GetBody();
   void SetBody(nsGenericHTMLElement* aBody, mozilla::ErrorResult& rv);
   mozilla::dom::HTMLSharedElement *GetHead() {
@@ -251,6 +254,8 @@ public:
   already_AddRefed<nsIDOMLocation> GetLocation() const {
     return nsIDocument::GetLocation();
   }
+
+  virtual nsHTMLDocument* AsHTMLDocument() { return this; }
 
 protected:
   nsresult GetBodySize(int32_t* aWidth,

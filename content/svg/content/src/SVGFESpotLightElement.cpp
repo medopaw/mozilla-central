@@ -12,7 +12,7 @@ namespace mozilla {
 namespace dom {
 
 JSObject*
-SVGFESpotLightElement::WrapNode(JSContext* aCx, JSObject* aScope)
+SVGFESpotLightElement::WrapNode(JSContext* aCx, JS::Handle<JSObject*> aScope)
 {
   return SVGFESpotLightElementBinding::Wrap(aCx, aScope, this);
 }
@@ -28,17 +28,6 @@ nsSVGElement::NumberInfo SVGFESpotLightElement::sNumberInfo[8] =
   { &nsGkAtoms::specularExponent, 1, false },
   { &nsGkAtoms::limitingConeAngle, 0, false }
 };
-
-//----------------------------------------------------------------------
-// nsISupports methods
-
-NS_IMPL_ADDREF_INHERITED(SVGFESpotLightElement,SVGFESpotLightElementBase)
-NS_IMPL_RELEASE_INHERITED(SVGFESpotLightElement,SVGFESpotLightElementBase)
-
-NS_INTERFACE_TABLE_HEAD(SVGFESpotLightElement)
-  NS_NODE_INTERFACE_TABLE3(SVGFESpotLightElement, nsIDOMNode,
-                           nsIDOMElement, nsIDOMSVGElement)
-NS_INTERFACE_MAP_END_INHERITING(SVGFESpotLightElementBase)
 
 //----------------------------------------------------------------------
 // nsIDOMNode methods

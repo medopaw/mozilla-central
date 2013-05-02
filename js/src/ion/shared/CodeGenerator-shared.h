@@ -1,6 +1,5 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- * vim: set ts=4 sw=4 et tw=99:
- *
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -173,6 +172,7 @@ class CodeGeneratorShared : public LInstructionVisitor
         return index;
     }
 
+  public:
     // This is needed by addCache to update the cache with the jump
     // informations provided by the out-of-line path.
     IonCache *getCache(size_t index) {
@@ -341,13 +341,6 @@ class CodeGeneratorShared : public LInstructionVisitor
     bool ensureOutOfLineParallelAbort(Label **result);
 };
 
-// Wrapper around Label, on the heap, to avoid a bogus assert with OOM.
-struct HeapLabel
-  : public TempObject,
-    public Label
-{
-};
-
 // An out-of-line path is generated at the end of the function.
 class OutOfLineCode : public TempObject
 {
@@ -381,14 +374,14 @@ class OutOfLineCode : public TempObject
     uint32_t framePushed() const {
         return framePushed_;
     }
-    void setSource(RawScript script, jsbytecode *pc) {
+    void setSource(JSScript *script, jsbytecode *pc) {
         script_ = script;
         pc_ = pc;
     }
     jsbytecode *pc() {
         return pc_;
     }
-    RawScript script() {
+    JSScript *script() {
         return script_;
     }
 };

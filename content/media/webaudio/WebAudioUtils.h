@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include "AudioParamTimeline.h"
+#include "MediaSegment.h"
 
 namespace mozilla {
 
@@ -29,6 +30,15 @@ struct WebAudioUtils {
   }
 
   /**
+   * Computes an exponential smoothing rate for a time based variable
+   * over aDuration seconds.
+   */
+  static double ComputeSmoothingRate(double aDuration, double aSampleRate)
+  {
+    return 1.0 - std::exp(-1.0 / (aDuration * aSampleRate));
+  }
+
+  /**
    * Converts AudioParamTimeline floating point time values to tick values
    * with respect to a source and a destination AudioNodeStream.
    *
@@ -40,6 +50,51 @@ struct WebAudioUtils {
   static void ConvertAudioParamToTicks(AudioParamTimeline& aParam,
                                        AudioNodeStream* aSource,
                                        AudioNodeStream* aDest);
+
+  /**
+   * Converts a linear value to decibels.  Returns aMinDecibels if the linear
+   * value is 0.
+   */
+  static float ConvertLinearToDecibels(float aLinearValue, float aMinDecibels)
+  {
+    return aLinearValue ? 20.0f * std::log10(aLinearValue) : aMinDecibels;
+  }
+
+  /**
+   * Converts a decibel value to a linear value.
+   */
+  static float ConvertDecibelsToLinear(float aDecibels)
+  {
+    return std::pow(10.0f, 0.05f * aDecibels);
+  }
+
+  /**
+   * Converts a decibel to a linear value.
+   */
+  static float ConvertDecibelToLinear(float aDecibel)
+  {
+    return std::pow(10.0f, 0.05f * aDecibel);
+  }
+
+  static void FixNaN(double& aDouble)
+  {
+    if (MOZ_DOUBLE_IS_NaN(aDouble) || MOZ_DOUBLE_IS_INFINITE(aDouble)) {
+      aDouble = 0.0;
+    }
+  }
+
+  static double DiscreteTimeConstantForSampleRate(double timeConstant, double sampleRate)
+  {
+    return 1.0 - std::exp(-1.0 / (sampleRate * timeConstant));
+  }
+
+  /**
+   * Convert a stream position into the time coordinate of the destination
+   * stream.
+   */
+  static double StreamPositionToDestinationTime(TrackTicks aSourcePosition,
+                                                AudioNodeStream* aSource,
+                                                AudioNodeStream* aDestination);
 };
 
 }

@@ -43,10 +43,7 @@
 # include "android-signal-defs.h"
 #endif
 
-#if defined(SPS_OS_darwin)
-# include <mach-o/dyld.h>
-#endif
-
+#include "shared-libraries.h"
 
 /* Verbosity of this module, for debugging:
      0  silent
@@ -71,6 +68,10 @@
 // so just provide no-op stubs for now.
 
 void uwt__init()
+{
+}
+
+void uwt__stop()
 {
 }
 
@@ -121,6 +122,9 @@ static int       unwind_thr_exit_now = 0; // RACED ON
 // registered thread.
 static void thread_register_for_profiling ( void* stackTop );
 
+// Frees some memory when the unwinder thread is shut down.
+static void do_breakpad_unwind_Buffer_free_singletons();
+
 // RUNS IN SIGHANDLER CONTEXT
 // Acquire an empty buffer and mark it as FILLING
 static UnwinderThreadBuffer* acquire_empty_buffer();
@@ -153,13 +157,18 @@ void uwt__init()
   MOZ_ALWAYS_TRUE(r==0);
 }
 
-void uwt__deinit()
+void uwt__stop()
 {
   // Shut down the unwinder thread.
   MOZ_ASSERT(unwind_thr_exit_now == 0);
   unwind_thr_exit_now = 1;
   do_MBAR();
   int r = pthread_join(unwind_thr, NULL); MOZ_ALWAYS_TRUE(r==0);
+}
+
+void uwt__deinit()
+{
+  do_breakpad_unwind_Buffer_free_singletons();
 }
 
 void uwt__register_thread_for_profiling(void* stackTop)
@@ -816,6 +825,9 @@ static void* unwind_thr_fn(void* exit_nowV)
     MOZ_ASSERT(buffers);
     int i;
     for (i = 0; i < N_UNW_THR_BUFFERS; i++) {
+      /* These calloc-ations are shared between the sampler and the unwinder.
+       * They must be free after both threads have terminated.
+       */
       buffers[i] = (UnwinderThreadBuffer*)
                    calloc(sizeof(UnwinderThreadBuffer), 1);
       MOZ_ASSERT(buffers[i]);
@@ -857,9 +869,16 @@ static void* unwind_thr_fn(void* exit_nowV)
   */
   int* exit_now = (int*)exit_nowV;
   int ms_to_sleep_if_empty = 1;
+
+  const int longest_sleep_ms = 1000;
+  bool show_sleep_message = true;
+
   while (1) {
 
-    if (*exit_now != 0) break;
+    if (*exit_now != 0) {
+      *exit_now = 0;
+      break;
+    }
 
     spinLock_acquire(&g_spinLock);
 
@@ -880,15 +899,21 @@ static void* unwind_thr_fn(void* exit_nowV)
       MOZ_ASSERT(oldest_seqNo == ~0ULL);
       spinLock_release(&g_spinLock);
       if (ms_to_sleep_if_empty > 100 && LOGLEVEL >= 2) {
-        LOGF("BPUnw: unwinder: sleep for %d ms", ms_to_sleep_if_empty);
+        if (show_sleep_message)
+          LOGF("BPUnw: unwinder: sleep for %d ms", ms_to_sleep_if_empty);
+        /* If we've already shown the message for the longest sleep,
+           don't show it again, until the next round of sleeping
+           starts. */
+        if (ms_to_sleep_if_empty == longest_sleep_ms)
+          show_sleep_message = false;
       }
       sleep_ms(ms_to_sleep_if_empty);
       if (ms_to_sleep_if_empty < 20) {
         ms_to_sleep_if_empty += 2;
       } else {
         ms_to_sleep_if_empty = (15 * ms_to_sleep_if_empty) / 10;
-        if (ms_to_sleep_if_empty > 1000)
-          ms_to_sleep_if_empty = 1000;
+        if (ms_to_sleep_if_empty > longest_sleep_ms)
+          ms_to_sleep_if_empty = longest_sleep_ms;
       }
       continue;
     }
@@ -1002,6 +1027,11 @@ static void* unwind_thr_fn(void* exit_nowV)
           do_breakpad_unwind_Buffer(&pairs, &nPairs, buff, oldest_ix);
           buff->aProfile->addTag( ProfileEntry('s', "(root)") );
           for (unsigned int i = 0; i < nPairs; i++) {
+            /* Skip any outermost frames that
+               do_breakpad_unwind_Buffer didn't give us.  See comments
+               on that function for details. */
+            if (pairs[i].pc == 0 && pairs[i].sp == 0)
+              continue;
             buff->aProfile
                 ->addTag( ProfileEntry('l', reinterpret_cast<void*>(pairs[i].pc)) );
           }
@@ -1073,6 +1103,12 @@ static void* unwind_thr_fn(void* exit_nowV)
       if (0) LOGF("at mergeloop: n_pairs %llu ix_last_hQ %llu",
                   (unsigned long long int)n_pairs,
                   (unsigned long long int)ix_last_hQ);
+      /* Skip any outermost frames that do_breakpad_unwind_Buffer
+         didn't give us.  See comments on that function for
+         details. */
+      while (next_N < n_pairs && pairs[next_N].pc == 0 && pairs[next_N].sp == 0)
+        next_N++;
+
       while (true) {
         if (next_P <= ix_last_hQ) {
           // Assert that next_P points at the start of an P entry
@@ -1226,6 +1262,7 @@ static void* unwind_thr_fn(void* exit_nowV)
     buff->state = S_EMPTY;
     spinLock_release(&g_spinLock);
     ms_to_sleep_if_empty = 1;
+    show_sleep_message = true;
   }
   return NULL;
 }
@@ -1258,7 +1295,6 @@ static void* unwind_thr_fn(void* exit_nowV)
 #include "processor/stackwalker_amd64.h"
 #include "processor/stackwalker_arm.h"
 #include "processor/stackwalker_x86.h"
-#include "processor/logging.h"
 #include "common/linux/dump_symbols.h"
 
 #include "google_breakpad/processor/memory_region.h"
@@ -1378,7 +1414,6 @@ public:
 
  private:
   // record info for a file backed executable mapping
-  // snarfed from /proc/self/maps
   u_int64_t x_start_;
   u_int64_t x_len_;    // may not be zero
   string    filename_; // of the mapped file
@@ -1391,107 +1426,20 @@ public:
 static void read_procmaps(std::vector<MyCodeModule*>& mods_)
 {
   MOZ_ASSERT(mods_.size() == 0);
-
-#if defined(SPS_OS_linux) || defined(SPS_OS_android)
-  // read /proc/self/maps and create a vector of CodeModule*
-  FILE* f = fopen("/proc/self/maps", "r");
-  MOZ_ASSERT(f);
-  while (!feof(f)) {
-    unsigned long long int start = 0;
-    unsigned long long int end   = 0;
-    char rr = ' ', ww = ' ', xx = ' ', pp = ' ';
-    unsigned long long int offset = 0, inode = 0;
-    unsigned int devMaj = 0, devMin = 0;
-    int nItems = fscanf(f, "%llx-%llx %c%c%c%c %llx %x:%x %llu",
-                        &start, &end, &rr, &ww, &xx, &pp,
-                        &offset, &devMaj, &devMin, &inode);
-    if (nItems == EOF && feof(f)) break;
-    MOZ_ASSERT(nItems == 10);
-    MOZ_ASSERT(start < end);
-    // read the associated file name, if it is present
-    int ch;
-    // find '/' or EOL
-    while (1) {
-      ch = fgetc(f);
-      MOZ_ASSERT(ch != EOF);
-      if (ch == '\n' || ch == '/') break;
-    }
-    string fname("");
-    if (ch == '/') {
-      fname += (char)ch;
-      while (1) {
-        ch = fgetc(f);
-        MOZ_ASSERT(ch != EOF);
-        if (ch == '\n') break;
-        fname += (char)ch;
-      }
-    }
-    MOZ_ASSERT(ch == '\n');
-    if (0) LOGF("SEG %llx %llx %c %c %c %c %s",
-                start, end, rr, ww, xx, pp, fname.c_str() );
-    if (xx == 'x' && fname != "") {
-      MyCodeModule* cm = new MyCodeModule( start, end-start, fname );
-      mods_.push_back(cm);
-    }
+#if defined(SPS_OS_linux) || defined(SPS_OS_android) || defined(SPS_OS_darwin)
+  SharedLibraryInfo info = SharedLibraryInfo::GetInfoForSelf();
+  for (size_t i = 0; i < info.GetSize(); i++) {
+    const SharedLibrary& lib = info.GetEntry(i);
+    // On Linux, this pulls out two mappings with no names: the VDSO
+    // (understandable but harmless), and the main executable (bad).
+    MyCodeModule* cm 
+      = new MyCodeModule( lib.GetStart(), lib.GetEnd()-lib.GetStart(),
+                          lib.GetName() );
+    mods_.push_back(cm);
   }
-  fclose(f);
-
-#elif defined(SPS_OS_darwin)
-
-# if defined(SPS_PLAT_amd64_darwin)
-  typedef mach_header_64 breakpad_mach_header;
-  typedef segment_command_64 breakpad_mach_segment_command;
-  const int LC_SEGMENT_XX = LC_SEGMENT_64;
-# else // SPS_PLAT_x86_darwin
-  typedef mach_header breakpad_mach_header;
-  typedef segment_command breakpad_mach_segment_command;
-  const int LC_SEGMENT_XX = LC_SEGMENT;
-# endif
-
-  uint32_t n_images = _dyld_image_count();
-  for (uint32_t ix = 0; ix < n_images; ix++) {
-
-    MyCodeModule* cm = NULL;
-    unsigned long slide = _dyld_get_image_vmaddr_slide(ix);
-    const char* name = _dyld_get_image_name(ix);
-    const breakpad_mach_header* header
-      = (breakpad_mach_header*)_dyld_get_image_header(ix);
-    if (!header)
-      continue;
-
-    const struct load_command *cmd =
-      reinterpret_cast<const struct load_command *>(header + 1);
-
-    /* Look through the MachO headers to find out the module's stated
-       VMA, so we can add it to the slide to find its actual VMA.
-       Copied from MinidumpGenerator::WriteModuleStream
-       src/client/mac/handler/minidump_generator.cc. */
-    for (unsigned int i = 0; cmd && (i < header->ncmds); i++) {
-      if (cmd->cmd == LC_SEGMENT_XX) {
-
-        const breakpad_mach_segment_command *seg =
-          reinterpret_cast<const breakpad_mach_segment_command *>(cmd);
-
-        if (!strcmp(seg->segname, "__TEXT")) {
-          cm = new MyCodeModule( seg->vmaddr + slide,
-                                 seg->vmsize, string(name) );
-          break;
-        }
-      }
-      cmd = reinterpret_cast<struct load_command*>((char *)cmd + cmd->cmdsize);
-    }
-    if (cm) {
-      mods_.push_back(cm);
-      if (0) LOGF("SEG %llx %llx %s",
-                  cm->base_address(), cm->base_address() + cm->size(),
-                  cm->code_file().c_str());
-    }
-  }
-
 #else
 # error "Unknown platform"
 #endif
-
   if (0) LOGF("got %d mappings\n", (int)mods_.size());
 }
 
@@ -1564,12 +1512,72 @@ class MyCodeModules : public google_breakpad::CodeModules
    responsible for deallocating it.
 
    The first pair is for the outermost frame, the last for the
-   innermost frame.
+   innermost frame.  There may be some leading section of the array
+   containing (zero, zero) values, in the case where the stack got
+   truncated because breakpad started stack-scanning, or for whatever
+   reason.  Users of this function need to be aware of that.
 */
 
 MyCodeModules* sModules = NULL;
 google_breakpad::LocalDebugInfoSymbolizer* sSymbolizer = NULL;
 
+// Free up the above two singletons when the unwinder thread is shut
+// down.
+static
+void do_breakpad_unwind_Buffer_free_singletons()
+{
+  if (sSymbolizer) {
+    delete sSymbolizer;
+    sSymbolizer = NULL;
+  }
+  if (sModules) {
+    delete sModules;
+    sModules = NULL;
+  }
+
+  g_stackLimitsUsed = 0;
+  g_seqNo = 0;
+  free(g_buffers);
+  g_buffers = NULL;
+}
+
+static void stats_notify_frame(google_breakpad::StackFrame::FrameTrust tr)
+{
+  // Gather stats in intervals.
+  static int nf_NONE     = 0;
+  static int nf_SCAN     = 0;
+  static int nf_CFI_SCAN = 0;
+  static int nf_FP       = 0;
+  static int nf_CFI      = 0;
+  static int nf_CONTEXT  = 0;
+  static int nf_total    = 0; // total frames since last printout
+
+  nf_total++;
+  switch (tr) {
+    case google_breakpad::StackFrame::FRAME_TRUST_NONE: nf_NONE++; break;
+    case google_breakpad::StackFrame::FRAME_TRUST_SCAN: nf_SCAN++; break;
+    case google_breakpad::StackFrame::FRAME_TRUST_CFI_SCAN:
+      nf_CFI_SCAN++; break;
+    case google_breakpad::StackFrame::FRAME_TRUST_FP: nf_FP++; break;
+    case google_breakpad::StackFrame::FRAME_TRUST_CFI: nf_CFI++; break;
+    case google_breakpad::StackFrame::FRAME_TRUST_CONTEXT: nf_CONTEXT++; break;
+    default: break;
+  }
+  if (nf_total >= 5000) {
+    LOGF("BPUnw frame stats: TOTAL %5u"
+         "    CTX %4u    CFI %4u    FP %4u    SCAN %4u    NONE %4u",
+         nf_total, nf_CONTEXT, nf_CFI, nf_FP, nf_CFI_SCAN+nf_SCAN, nf_NONE);
+    nf_NONE     = 0;
+    nf_SCAN     = 0;
+    nf_CFI_SCAN = 0;
+    nf_FP       = 0;
+    nf_CFI      = 0;
+    nf_CONTEXT  = 0;
+    nf_total    = 0;
+  }
+}
+
+static
 void do_breakpad_unwind_Buffer(/*OUT*/PCandSP** pairs,
                                /*OUT*/unsigned int* nPairs,
                                UnwinderThreadBuffer* buff,
@@ -1674,14 +1682,21 @@ void do_breakpad_unwind_Buffer(/*OUT*/PCandSP** pairs,
 
   std::vector<const google_breakpad::CodeModule*>* modules_without_symbols
     = new std::vector<const google_breakpad::CodeModule*>();
+
+  // Set the max number of frames to a reasonably low level.  By
+  // default Breakpad's limit is 1024, which means it can wind up
+  // spending a lot of time looping on corrupted stacks.
+  sw->set_max_frames(256);
+
   bool b = sw->Walk(stack, modules_without_symbols);
   (void)b;
   delete modules_without_symbols;
 
   unsigned int n_frames = stack->frames()->size();
   unsigned int n_frames_good = 0;
+  unsigned int n_frames_dubious = 0;
 
-  *pairs  = (PCandSP*)malloc(n_frames * sizeof(PCandSP));
+  *pairs  = (PCandSP*)calloc(n_frames, sizeof(PCandSP));
   *nPairs = n_frames;
   if (*pairs == NULL) {
     *nPairs = 0;
@@ -1693,10 +1708,28 @@ void do_breakpad_unwind_Buffer(/*OUT*/PCandSP** pairs,
          frame_index < n_frames; ++frame_index) {
       google_breakpad::StackFrame *frame = stack->frames()->at(frame_index);
 
-      if (frame->trust == google_breakpad::StackFrame::FRAME_TRUST_CFI
-          || frame->trust == google_breakpad::StackFrame::FRAME_TRUST_CONTEXT) {
+      bool dubious
+        = frame->trust == google_breakpad::StackFrame::FRAME_TRUST_SCAN
+          || frame->trust == google_breakpad::StackFrame::FRAME_TRUST_CFI_SCAN
+          || frame->trust == google_breakpad::StackFrame::FRAME_TRUST_NONE;
+
+      if (dubious) {
+        n_frames_dubious++;
+      } else {
         n_frames_good++;
       }
+
+      /* Once we've seen more than some threshhold number of dubious
+         frames, give up.  Doing that gives better results than
+         polluting the profiling results with junk frames.  Because
+         the entries are put into the pairs array starting at the end,
+         this will leave some initial section of pairs containing
+         (0,0) values, which correspond to the skipped frames. */
+      if (n_frames_dubious > (unsigned int)sUnwindStackScan)
+        break;
+
+      if (LOGLEVEL >= 2)
+        stats_notify_frame(frame->trust);
 
 #     if defined(SPS_ARCH_amd64)
       google_breakpad::StackFrameAMD64* frame_amd64

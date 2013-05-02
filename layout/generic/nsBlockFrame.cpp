@@ -11,6 +11,7 @@
 
 #include "mozilla/DebugOnly.h"
 #include "mozilla/Likely.h"
+#include "mozilla/Util.h"
 
 #include "nsCOMPtr.h"
 #include "nsBlockFrame.h"
@@ -75,6 +76,7 @@ static const PRUnichar kSquareCharacter = 0x25aa;
 
 using namespace mozilla;
 using namespace mozilla::css;
+using namespace mozilla::layout;
 
 #ifdef DEBUG
 #include "nsBlockDebugFlags.h"
@@ -248,12 +250,9 @@ DestroyOverflowLines(void* aPropertyValue)
 }
 
 NS_DECLARE_FRAME_PROPERTY(OverflowLinesProperty, DestroyOverflowLines)
-NS_DECLARE_FRAME_PROPERTY(OverflowOutOfFlowsProperty,
-                          nsContainerFrame::DestroyFrameList)
-NS_DECLARE_FRAME_PROPERTY(PushedFloatProperty,
-                          nsContainerFrame::DestroyFrameList)
-NS_DECLARE_FRAME_PROPERTY(OutsideBulletProperty,
-                          nsContainerFrame::DestroyFrameList)
+NS_DECLARE_FRAME_PROPERTY_FRAMELIST(OverflowOutOfFlowsProperty)
+NS_DECLARE_FRAME_PROPERTY_FRAMELIST(PushedFloatProperty)
+NS_DECLARE_FRAME_PROPERTY_FRAMELIST(OutsideBulletProperty)
 NS_DECLARE_FRAME_PROPERTY(InsideBulletProperty, nullptr)
 
 //----------------------------------------------------------------------
@@ -279,12 +278,16 @@ nsBlockFrame::DestroyFrom(nsIFrame* aDestructRoot)
   DestroyAbsoluteFrames(aDestructRoot);
   mFloats.DestroyFramesFrom(aDestructRoot);
   nsPresContext* presContext = PresContext();
+  nsIPresShell* shell = presContext->PresShell();
   nsLineBox::DeleteLineList(presContext, mLines, aDestructRoot,
                             &mFrames);
 
-  nsFrameList* pushedFloats = RemovePushedFloats();
-  if (pushedFloats) {
-    pushedFloats->DestroyFrom(aDestructRoot);
+  FramePropertyTable* props = presContext->PropertyTable();
+
+  if (HasPushedFloats()) {
+    SafelyDestroyFrameListProp(aDestructRoot, shell, props,
+                               PushedFloatProperty());
+    RemoveStateBits(NS_BLOCK_HAS_PUSHED_FLOATS);
   }
 
   // destroy overflow lines now
@@ -295,10 +298,16 @@ nsBlockFrame::DestroyFrom(nsIFrame* aDestructRoot)
     delete overflowLines;
   }
 
-  {
-    nsAutoOOFFrameList oofs(this);
-    oofs.mList.DestroyFramesFrom(aDestructRoot);
-    // oofs is now empty and will remove the frame list property
+  if (GetStateBits() & NS_BLOCK_HAS_OVERFLOW_OUT_OF_FLOWS) {
+    SafelyDestroyFrameListProp(aDestructRoot, shell, props,
+                               OverflowOutOfFlowsProperty());
+    RemoveStateBits(NS_BLOCK_HAS_OVERFLOW_OUT_OF_FLOWS);
+  }
+
+  if (HasOutsideBullet()) {
+    SafelyDestroyFrameListProp(aDestructRoot, shell, props,
+                               OutsideBulletProperty());
+    RemoveStateBits(NS_BLOCK_FRAME_HAS_OUTSIDE_BULLET);
   }
 
   nsBlockFrameSuper::DestroyFrom(aDestructRoot);
@@ -331,88 +340,11 @@ nsBlockFrame::GetSplittableType() const
 }
 
 #ifdef DEBUG
-NS_METHOD
+void
 nsBlockFrame::List(FILE* out, int32_t aIndent, uint32_t aFlags) const
 {
-  IndentBy(out, aIndent);
-  ListTag(out);
-#ifdef DEBUG_waterson
-  fprintf(out, " [parent=%p]", mParent);
-#endif
-  if (HasView()) {
-    fprintf(out, " [view=%p]", static_cast<void*>(GetView()));
-  }
-  if (GetNextSibling()) {
-    fprintf(out, " next=%p", static_cast<void*>(GetNextSibling()));
-  }
+  ListGeneric(out, aIndent, aFlags);
 
-  // Output the flow linkage
-  if (nullptr != GetPrevInFlow()) {
-    fprintf(out, " prev-in-flow=%p", static_cast<void*>(GetPrevInFlow()));
-  }
-  if (nullptr != GetNextInFlow()) {
-    fprintf(out, " next-in-flow=%p", static_cast<void*>(GetNextInFlow()));
-  }
-
-  void* IBsibling = Properties().Get(IBSplitSpecialSibling());
-  if (IBsibling) {
-    fprintf(out, " IBSplitSpecialSibling=%p", IBsibling);
-  }
-  void* IBprevsibling = Properties().Get(IBSplitSpecialPrevSibling());
-  if (IBprevsibling) {
-    fprintf(out, " IBSplitSpecialPrevSibling=%p", IBprevsibling);
-  }
-
-  if (nullptr != mContent) {
-    fprintf(out, " [content=%p]", static_cast<void*>(mContent));
-  }
-
-  // Output the rect and state
-  fprintf(out, " {%d,%d,%d,%d}", mRect.x, mRect.y, mRect.width, mRect.height);
-  if (0 != mState) {
-    fprintf(out, " [state=%016llx]", (unsigned long long)mState);
-  }
-  nsBlockFrame* f = const_cast<nsBlockFrame*>(this);
-  if (f->HasOverflowAreas()) {
-    nsRect overflowArea = f->GetVisualOverflowRect();
-    fprintf(out, " [vis-overflow=%d,%d,%d,%d]", overflowArea.x, overflowArea.y,
-            overflowArea.width, overflowArea.height);
-    overflowArea = f->GetScrollableOverflowRect();
-    fprintf(out, " [scr-overflow=%d,%d,%d,%d]", overflowArea.x, overflowArea.y,
-            overflowArea.width, overflowArea.height);
-  }
-  int32_t numInlineLines = 0;
-  int32_t numBlockLines = 0;
-  if (!mLines.empty()) {
-    const_line_iterator line = begin_lines(), line_end = end_lines();
-    for ( ; line != line_end; ++line) {
-      if (line->IsBlock())
-        numBlockLines++;
-      else
-        numInlineLines++;
-    }
-  }
-  fprintf(out, " sc=%p(i=%d,b=%d)",
-          static_cast<void*>(mStyleContext), numInlineLines, numBlockLines);
-  nsIAtom* pseudoTag = mStyleContext->GetPseudo();
-  if (pseudoTag) {
-    nsAutoString atomString;
-    pseudoTag->ToString(atomString);
-    fprintf(out, " pst=%s",
-            NS_LossyConvertUTF16toASCII(atomString).get());
-  }
-  if (IsTransformed()) {
-    fprintf(out, " transformed");
-  }
-  if (ChildrenHavePerspective()) {
-    fprintf(out, " perspective");
-  }
-  if (Preserves3DChildren()) {
-    fprintf(out, " preserves-3d-children");
-  }
-  if (Preserves3D()) {
-    fprintf(out, " preserves-3d");
-  }
   fputs("<\n", out);
 
   aIndent++;
@@ -429,7 +361,7 @@ nsBlockFrame::List(FILE* out, int32_t aIndent, uint32_t aFlags) const
   const FrameLines* overflowLines = GetOverflowLines();
   if (overflowLines && !overflowLines->mLines.empty()) {
     IndentBy(out, aIndent);
-    fputs("Overflow-lines<\n", out);
+    fprintf(out, "Overflow-lines %p/%p <\n", overflowLines, &overflowLines->mFrames);
     const_line_iterator line = overflowLines->mLines.begin(),
                         line_end = overflowLines->mLines.end();
     for ( ; line != line_end; ++line) {
@@ -448,7 +380,8 @@ nsBlockFrame::List(FILE* out, int32_t aIndent, uint32_t aFlags) const
       continue;
     }
     IndentBy(out, aIndent);
-    fprintf(out, "%s<\n", mozilla::layout::ChildListName(lists.CurrentID()));
+    fprintf(out, "%s %p <\n", mozilla::layout::ChildListName(lists.CurrentID()),
+            &GetChildList(lists.CurrentID()));
     nsFrameList::Enumerator childFrames(lists.CurrentList());
     for (; !childFrames.AtEnd(); childFrames.Next()) {
       nsIFrame* kid = childFrames.get();
@@ -461,8 +394,6 @@ nsBlockFrame::List(FILE* out, int32_t aIndent, uint32_t aFlags) const
   aIndent--;
   IndentBy(out, aIndent);
   fputs(">\n", out);
-
-  return NS_OK;
 }
 
 NS_IMETHODIMP_(nsFrameState)
@@ -966,12 +897,12 @@ nsBlockFrame::Reflow(nsPresContext*           aPresContext,
 #endif
 
   const nsHTMLReflowState *reflowState = &aReflowState;
-  nsAutoPtr<nsHTMLReflowState> mutableReflowState;
+  Maybe<nsHTMLReflowState> mutableReflowState;
   // If we have non-auto height, we're clipping our kids and we fit,
   // make sure our kids fit too.
   if (aReflowState.availableHeight != NS_UNCONSTRAINEDSIZE &&
       aReflowState.ComputedHeight() != NS_AUTOHEIGHT &&
-      ApplyOverflowClipping(this, aReflowState.mStyleDisplay)) {
+      ShouldApplyOverflowClipping(this, aReflowState.mStyleDisplay)) {
     nsMargin heightExtras = aReflowState.mComputedBorderPadding;
     if (GetSkipSides() & NS_SIDE_TOP) {
       heightExtras.top = 0;
@@ -983,9 +914,9 @@ nsBlockFrame::Reflow(nsPresContext*           aPresContext,
 
     if (GetEffectiveComputedHeight(aReflowState) + heightExtras.TopBottom() <=
         aReflowState.availableHeight) {
-      mutableReflowState = new nsHTMLReflowState(aReflowState);
-      mutableReflowState->availableHeight = NS_UNCONSTRAINEDSIZE;
-      reflowState = mutableReflowState;
+      mutableReflowState.construct(aReflowState);
+      mutableReflowState.ref().availableHeight = NS_UNCONSTRAINEDSIZE;
+      reflowState = mutableReflowState.addr();
     }
   }
 
@@ -1221,10 +1152,10 @@ nsBlockFrame::Reflow(nsPresContext*           aPresContext,
         !(isRoot && NS_UNCONSTRAINEDSIZE == reflowState->ComputedHeight()) &&
         aMetrics.height != oldSize.height;
 
+      nsRect containingBlock(nsPoint(0, 0), containingBlockSize);
       absoluteContainer->Reflow(this, aPresContext, *reflowState,
                                 state.mReflowStatus,
-                                containingBlockSize.width,
-                                containingBlockSize.height, true,
+                                containingBlock, true,
                                 cbWidthChanged, cbHeightChanged,
                                 &aMetrics.mOverflowAreas);
 
@@ -1494,7 +1425,7 @@ nsBlockFrame::ComputeOverflowAreas(const nsRect&         aBounds,
   // XXX_perf: This can be done incrementally.  It is currently one of
   // the things that makes incremental reflow O(N^2).
   nsOverflowAreas areas(aBounds, aBounds);
-  if (!ApplyOverflowClipping(this, aDisplay)) {
+  if (!ShouldApplyOverflowClipping(this, aDisplay)) {
     for (line_iterator line = begin_lines(), line_end = end_lines();
          line != line_end;
          ++line) {
@@ -1984,7 +1915,8 @@ nsBlockFrame::ReflowDirtyLines(nsBlockReflowState& aState)
     // push lines?  Why does that work?
     if (!line->IsDirty() &&
         aState.mReflowState.availableHeight != NS_UNCONSTRAINEDSIZE &&
-        (deltaY != 0 || aState.mReflowState.mFlags.mVResize) &&
+        (deltaY != 0 || aState.mReflowState.mFlags.mVResize ||
+         aState.mReflowState.mFlags.mMustReflowPlaceholders) &&
         (line->IsBlock() || line->HasFloats() || line->HadFloatPushed())) {
       line->MarkDirty();
     }
@@ -4473,7 +4405,8 @@ nsBlockFrame::DrainPushedFloats(nsBlockReflowState& aState)
   // rather than this block?  Might we need to pull it back so we don't
   // report ourselves complete?
   // FIXME: Maybe we should just pull all of them back?
-  nsFrameList *ourPushedFloats = GetPushedFloats();
+  nsPresContext* presContext = PresContext();
+  nsFrameList* ourPushedFloats = GetPushedFloats();
   if (ourPushedFloats) {
     // When we pull back floats, we want to put them with the pushed
     // floats, which must live at the start of our float list, but we
@@ -4486,7 +4419,6 @@ nsBlockFrame::DrainPushedFloats(nsBlockReflowState& aState)
       insertionPrevSibling = f;
     }
 
-    nsPresContext *presContext = PresContext();
     for (nsIFrame *f = ourPushedFloats->LastChild(), *next; f; f = next) {
       next = f->GetPrevSibling();
 
@@ -4509,7 +4441,7 @@ nsBlockFrame::DrainPushedFloats(nsBlockReflowState& aState)
     }
 
     if (ourPushedFloats->IsEmpty()) {
-      delete RemovePushedFloats();
+      RemovePushedFloats()->Delete(presContext->PresShell());
     }
   }
 
@@ -4517,12 +4449,9 @@ nsBlockFrame::DrainPushedFloats(nsBlockReflowState& aState)
   // floats list, containing floats that we need to own.  Take these.
   nsBlockFrame* prevBlock = static_cast<nsBlockFrame*>(GetPrevInFlow());
   if (prevBlock) {
-    nsFrameList *list = prevBlock->RemovePushedFloats();
-    if (list) {
-      if (list->NotEmpty()) {
-        mFloats.InsertFrames(this, nullptr, *list);
-      }
-      delete list;
+    AutoFrameListPtr list(presContext, prevBlock->RemovePushedFloats());
+    if (list && list->NotEmpty()) {
+      mFloats.InsertFrames(this, nullptr, *list);
     }
   }
 }
@@ -4614,11 +4543,11 @@ nsBlockFrame::SetOverflowOutOfFlows(const nsFrameList& aList,
     if (!(GetStateBits() & NS_BLOCK_HAS_OVERFLOW_OUT_OF_FLOWS)) {
       return;
     }
-    nsFrameList* list =
-      RemovePropTableFrames(PresContext(),
-                            OverflowOutOfFlowsProperty());
+    nsPresContext* pc = PresContext();
+    nsFrameList* list = RemovePropTableFrames(pc, OverflowOutOfFlowsProperty());
     NS_ASSERTION(aPropValue == list, "prop value mismatch");
-    delete list;
+    list->Clear();
+    list->Delete(pc->PresShell());
     RemoveStateBits(NS_BLOCK_HAS_OVERFLOW_OUT_OF_FLOWS);
   }
   else if (GetStateBits() & NS_BLOCK_HAS_OVERFLOW_OUT_OF_FLOWS) {
@@ -4628,7 +4557,8 @@ nsBlockFrame::SetOverflowOutOfFlows(const nsFrameList& aList,
     *aPropValue = aList;
   }
   else {
-    SetPropTableFrames(PresContext(), new nsFrameList(aList),
+    nsPresContext* pc = PresContext();
+    SetPropTableFrames(pc, new (pc->PresShell()) nsFrameList(aList),
                        OverflowOutOfFlowsProperty());
     AddStateBits(NS_BLOCK_HAS_OVERFLOW_OUT_OF_FLOWS);
   }
@@ -4690,7 +4620,7 @@ nsBlockFrame::EnsurePushedFloats()
   if (result)
     return result;
 
-  result = new nsFrameList;
+  result = new (PresContext()->PresShell()) nsFrameList;
   Properties().Set(PushedFloatProperty(), result);
   AddStateBits(NS_BLOCK_HAS_PUSHED_FLOATS);
 
@@ -6586,7 +6516,7 @@ nsBlockFrame::SetInitialChildList(ChildListID     aListID,
         Properties().Set(InsideBulletProperty(), bullet);
         AddStateBits(NS_BLOCK_FRAME_HAS_INSIDE_BULLET);
       } else {
-        nsFrameList* bulletList = new nsFrameList(bullet, bullet);
+        nsFrameList* bulletList = new (shell) nsFrameList(bullet, bullet);
         Properties().Set(OutsideBulletProperty(), bulletList);
         AddStateBits(NS_BLOCK_FRAME_HAS_OUTSIDE_BULLET);
       }

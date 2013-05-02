@@ -13,21 +13,10 @@ namespace mozilla {
 namespace dom {
 
 JSObject*
-SVGFEDiffuseLightingElement::WrapNode(JSContext* aCx, JSObject* aScope)
+SVGFEDiffuseLightingElement::WrapNode(JSContext* aCx, JS::Handle<JSObject*> aScope)
 {
   return SVGFEDiffuseLightingElementBinding::Wrap(aCx, aScope, this);
 }
-
-//----------------------------------------------------------------------
-// nsISupports methods
-
-NS_IMPL_ADDREF_INHERITED(SVGFEDiffuseLightingElement,SVGFEDiffuseLightingElementBase)
-NS_IMPL_RELEASE_INHERITED(SVGFEDiffuseLightingElement,SVGFEDiffuseLightingElementBase)
-
-NS_INTERFACE_TABLE_HEAD(SVGFEDiffuseLightingElement)
-  NS_NODE_INTERFACE_TABLE3(SVGFEDiffuseLightingElement, nsIDOMNode,
-                           nsIDOMElement, nsIDOMSVGElement)
-NS_INTERFACE_MAP_END_INHERITING(SVGFEDiffuseLightingElementBase)
 
 //----------------------------------------------------------------------
 // nsIDOMNode methods

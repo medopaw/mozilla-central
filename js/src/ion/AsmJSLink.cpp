@@ -1,6 +1,5 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- * vim: set ts=4 sw=4 et tw=99:
- *
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -13,6 +12,8 @@
 #include "AsmJS.h"
 #include "AsmJSModule.h"
 #include "frontend/BytecodeCompiler.h"
+
+#include "Ion.h"
 
 using namespace js;
 using namespace js::ion;
@@ -29,7 +30,7 @@ LinkFail(JSContext *cx, const char *str)
 }
 
 static bool
-ValidateGlobalVariable(JSContext *cx, const AsmJSModule &module, AsmJSModule::Global global,
+ValidateGlobalVariable(JSContext *cx, const AsmJSModule &module, AsmJSModule::Global &global,
                        HandleValue importVal)
 {
     JS_ASSERT(global.which() == AsmJSModule::Global::Variable);
@@ -69,7 +70,7 @@ ValidateGlobalVariable(JSContext *cx, const AsmJSModule &module, AsmJSModule::Gl
 }
 
 static bool
-ValidateFFI(JSContext *cx, AsmJSModule::Global global, HandleValue importVal,
+ValidateFFI(JSContext *cx, AsmJSModule::Global &global, HandleValue importVal,
             AutoObjectVector *ffis)
 {
     RootedPropertyName field(cx, global.ffiField());
@@ -85,7 +86,7 @@ ValidateFFI(JSContext *cx, AsmJSModule::Global global, HandleValue importVal,
 }
 
 static bool
-ValidateArrayView(JSContext *cx, AsmJSModule::Global global, HandleValue globalVal,
+ValidateArrayView(JSContext *cx, AsmJSModule::Global &global, HandleValue globalVal,
                   HandleValue bufferVal)
 {
     RootedPropertyName field(cx, global.viewName());
@@ -100,7 +101,7 @@ ValidateArrayView(JSContext *cx, AsmJSModule::Global global, HandleValue globalV
 }
 
 static bool
-ValidateMathBuiltin(JSContext *cx, AsmJSModule::Global global, HandleValue globalVal)
+ValidateMathBuiltin(JSContext *cx, AsmJSModule::Global &global, HandleValue globalVal)
 {
     RootedValue v(cx);
     if (!GetProperty(cx, globalVal, cx->names().Math, &v))
@@ -135,7 +136,7 @@ ValidateMathBuiltin(JSContext *cx, AsmJSModule::Global global, HandleValue globa
 }
 
 static bool
-ValidateGlobalConstant(JSContext *cx, AsmJSModule::Global global, HandleValue globalVal)
+ValidateGlobalConstant(JSContext *cx, AsmJSModule::Global &global, HandleValue globalVal)
 {
     RootedPropertyName field(cx, global.constantName());
     RootedValue v(cx);
@@ -200,6 +201,12 @@ DynamicallyLinkModule(JSContext *cx, CallArgs args, AsmJSModule &module)
             JSC::X86Assembler::setPointer(access.patchLengthAt(code), heapLength);
             JSC::X86Assembler::setPointer(access.patchOffsetAt(code), heapOffset);
         }
+#elif defined(JS_CPU_ARM)
+        // Now the length of the array is know, patch all of the bounds check sites
+        // with the new length.
+        ion::IonContext ic(cx, NULL);
+        module.patchBoundsChecks(heap->byteLength());
+
 #endif
     }
 
@@ -208,7 +215,7 @@ DynamicallyLinkModule(JSContext *cx, CallArgs args, AsmJSModule &module)
         return false;
 
     for (unsigned i = 0; i < module.numGlobals(); i++) {
-        AsmJSModule::Global global = module.global(i);
+        AsmJSModule::Global &global = module.global(i);
         switch (global.which()) {
           case AsmJSModule::Global::Variable:
             if (!ValidateGlobalVariable(cx, module, global, importVal))
@@ -240,23 +247,21 @@ DynamicallyLinkModule(JSContext *cx, CallArgs args, AsmJSModule &module)
     return true;
 }
 
-AsmJSActivation::AsmJSActivation(JSContext *cx, const AsmJSModule &module, unsigned entryIndex)
+AsmJSActivation::AsmJSActivation(JSContext *cx, const AsmJSModule &module)
   : cx_(cx),
     module_(module),
-    entryIndex_(entryIndex),
     errorRejoinSP_(NULL),
     profiler_(NULL),
     resumePC_(NULL)
 {
     if (cx->runtime->spsProfiler.enabled()) {
         profiler_ = &cx->runtime->spsProfiler;
-        JSFunction *fun = module_.exportedFunction(entryIndex_).unclonedFunObj();
-        profiler_->enter(cx_, fun->nonLazyScript(), fun);
+        profiler_->enterNative("asm.js code", this);
     }
 
     prev_ = cx_->runtime->mainThread.asmJSActivationStack_;
 
-    PerThreadData::AsmJSActivationStackLock lock(cx_->runtime->mainThread);
+    JSRuntime::AutoLockForOperationCallback lock(cx_->runtime);
     cx_->runtime->mainThread.asmJSActivationStack_ = this;
 
     (void) errorRejoinSP_;  // squelch GCC warning
@@ -264,14 +269,12 @@ AsmJSActivation::AsmJSActivation(JSContext *cx, const AsmJSModule &module, unsig
 
 AsmJSActivation::~AsmJSActivation()
 {
-    if (profiler_) {
-        JSFunction *fun = module_.exportedFunction(entryIndex_).unclonedFunObj();
-        profiler_->exit(cx_, fun->nonLazyScript(), fun);
-    }
+    if (profiler_)
+        profiler_->exitNative();
 
     JS_ASSERT(cx_->runtime->mainThread.asmJSActivationStack_ == this);
 
-    PerThreadData::AsmJSActivationStackLock lock(cx_->runtime->mainThread);
+    JSRuntime::AutoLockForOperationCallback lock(cx_->runtime);
     cx_->runtime->mainThread.asmJSActivationStack_ = prev_;
 }
 
@@ -324,11 +327,16 @@ CallAsmJS(JSContext *cx, unsigned argc, Value *vp)
     }
 
     {
-        AsmJSActivation activation(cx, module, exportIndex);
+        AsmJSActivation activation(cx, module);
 
         // Call into generated code.
+#ifdef JS_CPU_ARM
+        if (!func.code()(coercedArgs.begin(), module.globalData()))
+            return false;
+#else
         if (!func.code()(coercedArgs.begin()))
             return false;
+#endif
     }
 
     switch (func.returnType()) {
@@ -371,8 +379,10 @@ HandleDynamicLinkFailure(JSContext *cx, CallArgs args, AsmJSModule &module, Hand
     const AsmJSModule::PostLinkFailureInfo &info = module.postLinkFailureInfo();
 
     uint32_t length = info.bufEnd_ - info.bufStart_;
-    Rooted<JSFlatString*> src(cx, info.scriptSource_->substring(cx, info.bufStart_, info.bufEnd_));
-    const jschar *chars = src->chars();
+    Rooted<JSStableString*> src(cx, info.scriptSource_->substring(cx, info.bufStart_, info.bufEnd_));
+    if (!src)
+        return false;
+    const jschar *chars = src->chars().get();
 
     RootedFunction fun(cx, NewFunction(cx, NullPtr(), NULL, 0, JSFunction::INTERPRETED,
                                        cx->global(), name));
@@ -395,20 +405,15 @@ HandleDynamicLinkFailure(JSContext *cx, CallArgs args, AsmJSModule &module, Hand
     // Call the function we just recompiled.
 
     unsigned argc = args.length();
-    JS_ASSERT(argc <= 3);
 
     InvokeArgsGuard args2;
-    if (!cx->stack.pushInvokeArgs(cx, args.length(), &args2))
+    if (!cx->stack.pushInvokeArgs(cx, argc, &args2))
         return false;
 
     args2.setCallee(ObjectValue(*fun));
     args2.setThis(args.thisv());
-    if (argc > 0)
-        args2[0] = args[0];
-    if (argc > 1)
-        args2[1] = args[1];
-    if (argc > 2)
-        args2[2] = args[2];
+    for (unsigned i = 0; i < argc; i++)
+        args2[i] = args[i];
 
     if (!Invoke(cx, args2))
         return false;

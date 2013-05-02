@@ -1,6 +1,5 @@
 /* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- * vim: set ts=8 sw=4 et tw=78:
- *
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -9,30 +8,28 @@
  * JS script operations.
  */
 
+#include "jsscript.h"
+
 #include <string.h>
+
+#include "mozilla/PodOperations.h"
+
 #include "jstypes.h"
 #include "jsutil.h"
-#include "jscrashreport.h"
-#include "jsprf.h"
 #include "jsapi.h"
 #include "jsatom.h"
 #include "jscntxt.h"
-#include "jsversion.h"
 #include "jsdbgapi.h"
 #include "jsfun.h"
 #include "jsgc.h"
 #include "jsinterp.h"
-#include "jslock.h"
-#include "jsnum.h"
 #include "jsopcode.h"
-#include "jsscript.h"
 
 #include "gc/Marking.h"
 #include "frontend/BytecodeEmitter.h"
-#include "frontend/Parser.h"
-#include "js/MemoryMetrics.h"
 #include "methodjit/MethodJIT.h"
 #include "ion/IonCode.h"
+#include "ion/BaselineJIT.h"
 #include "methodjit/Retcon.h"
 #include "vm/Debugger.h"
 #include "vm/Shape.h"
@@ -43,12 +40,14 @@
 #include "jsobjinlines.h"
 #include "jsscriptinlines.h"
 
-#include "frontend/SharedContext-inl.h"
 #include "vm/RegExpObject-inl.h"
 
 using namespace js;
 using namespace js::gc;
 using namespace js::frontend;
+
+using mozilla::PodCopy;
+using mozilla::PodZero;
 
 typedef Rooted<GlobalObject *> RootedGlobalObject;
 
@@ -124,7 +123,7 @@ Bindings::initWithTemporaryStorage(JSContext *cx, InternalBindingsHandle self,
         StackBaseShape base(cx->compartment, &CallClass, cx->global(),
                             BaseShape::VAROBJ | BaseShape::DELEGATE);
 
-        RawUnownedBaseShape nbase = BaseShape::getUnowned(cx, base);
+        UnownedBaseShape *nbase = BaseShape::getUnowned(cx, base);
         if (!nbase)
             return false;
 
@@ -134,7 +133,7 @@ Bindings::initWithTemporaryStorage(JSContext *cx, InternalBindingsHandle self,
         unsigned frameIndex = bi.frameIndex();
         StackShape child(nbase, id, slot++, 0, attrs, Shape::HAS_SHORTID, frameIndex);
 
-        RawShape shape = self->callObjShape_->getChildBinding(cx, child);
+        Shape *shape = self->callObjShape_->getChildBinding(cx, child);
         if (!shape)
             return false;
 
@@ -372,7 +371,7 @@ XDRScriptConst(XDRState<mode> *xdr, HeapValue *vp)
 }
 
 static inline uint32_t
-FindBlockIndex(RawScript script, StaticBlockObject &block)
+FindBlockIndex(JSScript *script, StaticBlockObject &block)
 {
     ObjectArray *objects = script->objects();
     HeapPtrObject *vector = objects->vector;
@@ -657,7 +656,7 @@ js::XDRScript(XDRState<mode> *xdr, HandleObject enclosingScope, HandleScript enc
         HeapPtr<JSObject> *objp = &script->objects()->vector[i];
         uint32_t isBlock;
         if (mode == XDR_ENCODE) {
-            RawObject obj = *objp;
+            JSObject *obj = *objp;
             JS_ASSERT(obj->isFunction() || obj->isStaticBlock());
             isBlock = obj->isBlock() ? 1 : 0;
         }
@@ -845,7 +844,7 @@ JSScript::initScriptCounts(JSContext *cx)
     return true;
 }
 
-static inline ScriptCountsMap::Ptr GetScriptCountsMapEntry(RawScript script)
+static inline ScriptCountsMap::Ptr GetScriptCountsMapEntry(JSScript *script)
 {
     JS_ASSERT(script->hasScriptCounts);
     ScriptCountsMap *map = script->compartment()->scriptCountsMap;
@@ -1184,7 +1183,7 @@ SourceDataCache::purge()
     map_ = NULL;
 }
 
-JSFlatString *
+JSStableString *
 ScriptSource::substring(JSContext *cx, uint32_t start, uint32_t stop)
 {
     const jschar *chars;
@@ -1226,7 +1225,10 @@ ScriptSource::substring(JSContext *cx, uint32_t start, uint32_t stop)
 #else
     chars = data.source;
 #endif
-    return js_NewStringCopyN<CanGC>(cx, chars + start, stop - start);
+    JSFlatString *flatStr = js_NewStringCopyN<CanGC>(cx, chars + start, stop - start);
+    if (!flatStr)
+        return NULL;
+    return flatStr->ensureStable(cx);
 }
 
 bool
@@ -1630,7 +1632,7 @@ ScriptDataSize(uint32_t nbindings, uint32_t nobjects, uint32_t nregexps,
     return size;
 }
 
-RawScript
+JSScript *
 JSScript::Create(JSContext *cx, HandleObject enclosingScope, bool savedCallerFun,
                  const CompileOptions &options, unsigned staticLevel,
                  ScriptSource *ss, uint32_t bufStart, uint32_t bufEnd)
@@ -1931,10 +1933,10 @@ JSScript::enclosingScriptsCompiledSuccessfully() const
      * compiles. Thus, we can detect failed compilation by looking for
      * JSFunctions in the enclosingScope chain without scripts.
      */
-    RawObject enclosing = enclosingStaticScope();
+    JSObject *enclosing = enclosingStaticScope();
     while (enclosing) {
         if (enclosing->isFunction()) {
-            RawFunction fun = enclosing->toFunction();
+            JSFunction *fun = enclosing->toFunction();
             if (!fun->hasScript())
                 return false;
             enclosing = fun->nonLazyScript()->enclosingStaticScope();
@@ -1960,7 +1962,7 @@ js::CallNewScriptHook(JSContext *cx, HandleScript script, HandleFunction fun)
 }
 
 void
-js::CallDestroyScriptHook(FreeOp *fop, RawScript script)
+js::CallDestroyScriptHook(FreeOp *fop, JSScript *script)
 {
     if (script->selfHosted)
         return;
@@ -2017,10 +2019,10 @@ GSNCache::purge()
 }
 
 jssrcnote *
-js_GetSrcNote(JSContext *cx, RawScript script, jsbytecode *pc)
+js_GetSrcNote(JSContext *cx, JSScript *script, jsbytecode *pc)
 {
     GSNCache *cache = &cx->runtime->gsnCache;
-    cx = NULL;  // nulling |cx| ensures GC can't be triggered, so |RawScript script| is safe
+    cx = NULL;  // nulling |cx| ensures GC can't be triggered, so |JSScript *script| is safe
 
     size_t target = pc - script->code;
     if (target >= size_t(script->length))
@@ -2120,7 +2122,7 @@ js::PCToLineNumber(unsigned startLine, jssrcnote *notes, jsbytecode *code, jsbyt
 }
 
 unsigned
-js::PCToLineNumber(RawScript script, jsbytecode *pc, unsigned *columnp)
+js::PCToLineNumber(JSScript *script, jsbytecode *pc, unsigned *columnp)
 {
     /* Cope with StackFrame.pc value prior to entering js_Interpret. */
     if (!pc)
@@ -2133,7 +2135,7 @@ js::PCToLineNumber(RawScript script, jsbytecode *pc, unsigned *columnp)
 #define SN_LINE_LIMIT   (SN_3BYTE_OFFSET_FLAG << 16)
 
 jsbytecode *
-js_LineNumberToPC(RawScript script, unsigned target)
+js_LineNumberToPC(JSScript *script, unsigned target)
 {
     ptrdiff_t offset = 0;
     ptrdiff_t best = -1;
@@ -2168,7 +2170,7 @@ out:
 }
 
 JS_FRIEND_API(unsigned)
-js_GetScriptLineExtent(RawScript script)
+js_GetScriptLineExtent(JSScript *script)
 {
     unsigned lineno = script->lineno;
     unsigned maxLineNo = 0;
@@ -2215,7 +2217,7 @@ js::CurrentScriptFileLineOriginSlow(JSContext *cx, const char **file, unsigned *
         return;
     }
 
-    RawScript script = iter.script();
+    JSScript *script = iter.script();
     *file = script->filename();
     *linenop = PCToLineNumber(iter.script(), iter.pc());
     *origin = script->originPrincipals;
@@ -2223,13 +2225,13 @@ js::CurrentScriptFileLineOriginSlow(JSContext *cx, const char **file, unsigned *
 
 template <class T>
 static inline T *
-Rebase(RawScript dst, RawScript src, T *srcp)
+Rebase(JSScript *dst, JSScript *src, T *srcp)
 {
     size_t off = reinterpret_cast<uint8_t *>(srcp) - src->data;
     return reinterpret_cast<T *>(dst->data + off);
 }
 
-RawScript
+JSScript *
 js::CloneScript(JSContext *cx, HandleObject enclosingScope, HandleFunction fun, HandleScript src)
 {
     /* NB: Keep this in sync with XDRScript. */
@@ -2303,7 +2305,7 @@ js::CloneScript(JSContext *cx, HandleObject enclosingScope, HandleFunction fun, 
     for (unsigned i = 0; i < nregexps; i++) {
         HeapPtrObject *vector = src->regexps()->vector;
         for (unsigned i = 0; i < nregexps; i++) {
-            RawObject clone = CloneScriptRegExpObject(cx, vector[i]->asRegExp());
+            JSObject *clone = CloneScriptRegExpObject(cx, vector[i]->asRegExp());
             if (!clone || !regexps.append(clone))
                 return NULL;
         }
@@ -2410,7 +2412,7 @@ js::CloneFunctionScript(JSContext *cx, HandleFunction original, HandleFunction c
 
     clone->mutableScript().init(NULL);
 
-    RawScript cscript = CloneScript(cx, scope, clone, script);
+    JSScript *cscript = CloneScript(cx, scope, clone, script);
     if (!cscript)
         return false;
 
@@ -2518,6 +2520,11 @@ JSScript::recompileForStepMode(FreeOp *fop)
         mjit::ReleaseScriptCode(fop, this);
     }
 #endif
+
+#ifdef JS_ION
+    if (hasBaselineScript())
+        baseline->toggleDebugTraps(this, NULL);
+#endif
 }
 
 bool
@@ -2607,7 +2614,7 @@ JSScript::destroyBreakpointSite(FreeOp *fop, jsbytecode *pc)
 }
 
 void
-JSScript::clearBreakpointsIn(FreeOp *fop, js::Debugger *dbg, RawObject handler)
+JSScript::clearBreakpointsIn(FreeOp *fop, js::Debugger *dbg, JSObject *handler)
 {
     if (!hasAnyBreakpointsOrStepMode())
         return;
@@ -2786,6 +2793,16 @@ JSScript::argumentsOptimizationFailed(JSContext *cx, HandleScript script)
 
     script->needsArgsObj_ = true;
 
+#ifdef JS_ION
+    /*
+     * Since we can't invalidate baseline scripts, set a flag that's checked from
+     * JIT code to indicate the arguments optimization failed and JSOP_ARGUMENTS
+     * should create an arguments object next time.
+     */
+    if (script->hasBaselineScript())
+        script->baselineScript()->setNeedsArgsObj();
+#endif
+
     /*
      * By design, the arguments optimization is only made when there are no
      * outstanding cases of MagicValue(JS_OPTIMIZED_ARGUMENTS) at any points
@@ -2809,7 +2826,7 @@ JSScript::argumentsOptimizationFailed(JSContext *cx, HandleScript script)
          * safe since the engine avoids any observation of a StackFrame when it
          * beginsIonActivation (see StackIter::interpFrame comment).
          */
-        if (i.isIon())
+        if (i.isIonOptimizedJS())
             continue;
         AbstractFramePtr frame = i.abstractFramePtr();
         if (frame.isFunctionFrame() && frame.script() == script) {
@@ -2862,3 +2879,15 @@ JSScript::formalLivesInArgumentsObject(unsigned argSlot)
     return argsObjAliasesFormals() && !formalIsAliased(argSlot);
 }
 
+void
+JSScript::updateBaselineOrIonRaw()
+{
+#ifdef JS_ION
+    if (hasIonScript())
+        baselineOrIonRaw = ion->method()->raw();
+    else if (hasBaselineScript())
+        baselineOrIonRaw = baseline->method()->raw();
+    else
+        baselineOrIonRaw = NULL;
+#endif
+}

@@ -19,7 +19,6 @@
 #include "nsNetUtil.h"
 #include "nsScriptLoader.h"
 #include "nsFrameLoader.h"
-#include "nsIJSContextStack.h"
 #include "nsIXULRuntime.h"
 #include "nsIScriptError.h"
 #include "nsIConsoleService.h"
@@ -380,7 +379,7 @@ nsFrameMessageManager::SendSyncMessage(const nsAString& aMessageName,
   if (mCallback->DoSendSyncMessage(aMessageName, data, &retval)) {
     JSAutoRequest ar(aCx);
     uint32_t len = retval.Length();
-    JSObject* dataArray = JS_NewArrayObject(aCx, len, NULL);
+    JSObject* dataArray = JS_NewArrayObject(aCx, len, nullptr);
     NS_ENSURE_TRUE(dataArray, NS_ERROR_OUT_OF_MEMORY);
 
     for (uint32_t i = 0; i < len; ++i) {
@@ -630,10 +629,10 @@ nsFrameMessageManager::ReceiveMessage(nsISupports* aTarget,
                                       InfallibleTArray<nsString>* aJSONRetVal,
                                       JSContext* aContext)
 {
-  JSContext* ctx = mContext ? mContext : aContext;
-  if (!ctx) {
-    ctx = nsContentUtils::ThreadJSContextStack()->GetSafeJSContext();
-  }
+  JSContext *cxToUse = mContext ? mContext
+                                : (aContext ? aContext
+                                            : nsContentUtils::GetSafeJSContext());
+  AutoPushJSContext ctx(cxToUse);
   if (mListeners.Length()) {
     nsCOMPtr<nsIAtom> name = do_GetAtom(aMessage);
     MMListenerRemover lr(this);
@@ -657,7 +656,7 @@ nsFrameMessageManager::ReceiveMessage(nsISupports* aTarget,
         JSAutoCompartment ac(ctx, object);
 
         // The parameter for the listener function.
-        JSObject* param = JS_NewObject(ctx, NULL, NULL, NULL);
+        JSObject* param = JS_NewObject(ctx, nullptr, nullptr, nullptr);
         NS_ENSURE_TRUE(param, NS_ERROR_OUT_OF_MEMORY);
 
         JS::Value targetv;
@@ -670,15 +669,14 @@ nsFrameMessageManager::ReceiveMessage(nsISupports* aTarget,
         if (!aObjectsArray) {
           // Because we want JS messages to have always the same properties,
           // create array even if len == 0.
-          aObjectsArray = JS_NewArrayObject(ctx, 0, NULL);
+          aObjectsArray = JS_NewArrayObject(ctx, 0, nullptr);
           if (!aObjectsArray) {
             return NS_ERROR_OUT_OF_MEMORY;
           }
         }
 
-        JS::AutoValueRooter objectsv(ctx);
-        objectsv.set(OBJECT_TO_JSVAL(aObjectsArray));
-        if (!JS_WrapValue(ctx, objectsv.jsval_addr()))
+        JS::Rooted<JS::Value> objectsv(ctx, JS::ObjectValue(*aObjectsArray));
+        if (!JS_WrapValue(ctx, objectsv.address()))
             return NS_ERROR_UNEXPECTED;
 
         JS::Value json = JSVAL_NULL;
@@ -692,14 +690,14 @@ nsFrameMessageManager::ReceiveMessage(nsISupports* aTarget,
                               static_cast<const jschar*>(aMessage.BeginReading()),
                               aMessage.Length());
         NS_ENSURE_TRUE(jsMessage, NS_ERROR_OUT_OF_MEMORY);
-        JS_DefineProperty(ctx, param, "target", targetv, NULL, NULL, JSPROP_ENUMERATE);
+        JS_DefineProperty(ctx, param, "target", targetv, nullptr, nullptr, JSPROP_ENUMERATE);
         JS_DefineProperty(ctx, param, "name",
-                          STRING_TO_JSVAL(jsMessage), NULL, NULL, JSPROP_ENUMERATE);
+                          STRING_TO_JSVAL(jsMessage), nullptr, nullptr, JSPROP_ENUMERATE);
         JS_DefineProperty(ctx, param, "sync",
-                          BOOLEAN_TO_JSVAL(aSync), NULL, NULL, JSPROP_ENUMERATE);
-        JS_DefineProperty(ctx, param, "json", json, NULL, NULL, JSPROP_ENUMERATE); // deprecated
-        JS_DefineProperty(ctx, param, "data", json, NULL, NULL, JSPROP_ENUMERATE);
-        JS_DefineProperty(ctx, param, "objects", objectsv.jsval_value(), NULL, NULL, JSPROP_ENUMERATE);
+                          BOOLEAN_TO_JSVAL(aSync), nullptr, nullptr, JSPROP_ENUMERATE);
+        JS_DefineProperty(ctx, param, "json", json, nullptr, nullptr, JSPROP_ENUMERATE); // deprecated
+        JS_DefineProperty(ctx, param, "data", json, nullptr, nullptr, JSPROP_ENUMERATE);
+        JS_DefineProperty(ctx, param, "objects", objectsv, nullptr, nullptr, JSPROP_ENUMERATE);
 
         JS::Value thisValue = JSVAL_VOID;
 
@@ -730,23 +728,21 @@ nsFrameMessageManager::ReceiveMessage(nsISupports* aTarget,
           thisValue.setObject(*object);
         }
 
-        JS::Value rval = JSVAL_VOID;
-
-        JS::AutoValueRooter argv(ctx);
-        argv.set(OBJECT_TO_JSVAL(param));
+        JS::Rooted<JS::Value> rval(ctx, JSVAL_VOID);
+        JS::Rooted<JS::Value> argv(ctx, JS::ObjectValue(*param));
 
         {
           JSObject* thisObject = JSVAL_TO_OBJECT(thisValue);
 
           JSAutoCompartment tac(ctx, thisObject);
-          if (!JS_WrapValue(ctx, argv.jsval_addr()))
+          if (!JS_WrapValue(ctx, argv.address()))
             return NS_ERROR_UNEXPECTED;
 
           JS_CallFunctionValue(ctx, thisObject,
-                               funval, 1, argv.jsval_addr(), &rval);
+                               funval, 1, argv.address(), rval.address());
           if (aJSONRetVal) {
             nsString json;
-            if (JS_Stringify(ctx, &rval, nullptr, JSVAL_NULL,
+            if (JS_Stringify(ctx, rval.address(), nullptr, JSVAL_NULL,
                              JSONCreator, &json)) {
               aJSONRetVal->AppendElement(json);
             }
@@ -976,17 +972,10 @@ void
 nsFrameScriptExecutor::Shutdown()
 {
   if (sCachedScripts) {
-    JSContext* cx = nsContentUtils::ThreadJSContextStack()->GetSafeJSContext();
-    if (cx) {
-#ifdef DEBUG_smaug
-      printf("Will clear cached frame manager scripts!\n");
-#endif
-      JSAutoRequest ar(cx);
-      NS_ASSERTION(sCachedScripts != nullptr, "Need cached scripts");
-      sCachedScripts->Enumerate(CachedScriptUnrooter, cx);
-    } else {
-      NS_WARNING("No context available. Leaking cached scripts!\n");
-    }
+    SafeAutoJSContext cx;
+    JSAutoRequest ar(cx);
+    NS_ASSERTION(sCachedScripts != nullptr, "Need cached scripts");
+    sCachedScripts->Enumerate(CachedScriptUnrooter, cx);
 
     delete sCachedScripts;
     sCachedScripts = nullptr;
@@ -1010,7 +999,8 @@ nsFrameScriptExecutor::LoadFrameScriptInternal(const nsAString& aURL)
   }
 
   if (holder) {
-    nsContentUtils::ThreadJSContextStack()->Push(mCx);
+    nsCxPusher pusher;
+    pusher.Push(mCx);
     {
       // Need to scope JSAutoRequest to happen after Push but before Pop,
       // at least for now. See bug 584673.
@@ -1021,9 +1011,6 @@ nsFrameScriptExecutor::LoadFrameScriptInternal(const nsAString& aURL)
         (void) JS_ExecuteScript(mCx, global, holder->mScript, nullptr);
       }
     }
-    JSContext* unused;
-    nsContentUtils::ThreadJSContextStack()->Pop(&unused);
-    return;
   }
 }
 
@@ -1071,7 +1058,8 @@ nsFrameScriptExecutor::TryCacheLoadAndCompileScript(const nsAString& aURL,
   }
 
   if (!dataString.IsEmpty()) {
-    nsContentUtils::ThreadJSContextStack()->Push(mCx);
+    nsCxPusher pusher;
+    pusher.Push(mCx);
     {
       // Need to scope JSAutoRequest to happen after Push but before Pop,
       // at least for now. See bug 584673.
@@ -1084,7 +1072,7 @@ nsFrameScriptExecutor::TryCacheLoadAndCompileScript(const nsAString& aURL,
         options.setNoScriptRval(true)
                .setFileAndLine(url.get(), 1)
                .setPrincipals(nsJSPrincipals::get(mPrincipal));
-        JS::RootedObject empty(mCx, NULL);
+        JS::RootedObject empty(mCx, nullptr);
         JSScript* script = JS::Compile(mCx, empty, options,
                                        dataString.get(), dataString.Length());
 
@@ -1104,9 +1092,7 @@ nsFrameScriptExecutor::TryCacheLoadAndCompileScript(const nsAString& aURL,
           }
         }
       }
-    } 
-    JSContext* unused;
-    nsContentUtils::ThreadJSContextStack()->Pop(&unused);
+    }
   }
 }
 

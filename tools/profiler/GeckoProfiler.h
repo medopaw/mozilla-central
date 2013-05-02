@@ -104,13 +104,13 @@ static inline void profiler_stop() {}
 static inline bool profiler_is_active() { return false; }
 
 // Internal-only. Used by the event tracer.
-static inline void profiler_responsinveness(const TimeStamp& aTime) {}
+static inline void profiler_responsiveness(const mozilla::TimeStamp& aTime) {}
 
 // Internal-only. Used by the event tracer.
 static inline double* profiler_get_responsiveness() { return nullptr; }
 
 // Internal-only.
-static inline void profile_set_frame_number(int frameNumber) {}
+static inline void profiler_set_frame_number(int frameNumber) {}
 
 // Get the profile encoded as a JSON string.
 static inline char* profiler_get_profile() { return nullptr; }
@@ -135,10 +135,29 @@ static inline void profiler_lock() {}
 // Re-enable the profiler and notify 'profiler-unlocked'.
 static inline void profiler_unlock() {}
 
+static inline void profiler_register_thread(const char* name) {}
+static inline void profiler_unregister_thread() {}
+
+// Call by the JSRuntime's operation callback. This is used to enable
+// profiling on auxilerary threads.
+static inline void profiler_js_operation_callback() {}
+
+static inline double profiler_time() { return 0; }
+
 #else
 
 #include "GeckoProfilerImpl.h"
 
 #endif
+
+class GeckoProfilerInitRAII {
+public:
+  GeckoProfilerInitRAII() {
+    profiler_init();
+  }
+  ~GeckoProfilerInitRAII() {
+    profiler_shutdown();
+  }
+};
 
 #endif // ifndef SAMPLER_H

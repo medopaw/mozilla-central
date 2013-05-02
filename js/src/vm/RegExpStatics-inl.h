@@ -1,6 +1,5 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- * vim: set ts=4 sw=4 et tw=99 ft=cpp:
- *
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -150,20 +149,32 @@ class RegExpStatics
 
     /* PreserveRegExpStatics helpers. */
 
-    class AutoRooter : private AutoGCRooter
+    class AutoRooter : private JS::CustomAutoRooter
     {
       public:
         explicit AutoRooter(JSContext *cx, RegExpStatics *statics_
                             MOZ_GUARD_OBJECT_NOTIFIER_PARAM)
-          : AutoGCRooter(cx, REGEXPSTATICS), statics(statics_), skip(cx, statics_)
+          : CustomAutoRooter(cx), statics(statics_), skip(cx, statics_)
         {
             MOZ_GUARD_OBJECT_NOTIFIER_INIT;
         }
 
-        friend void AutoGCRooter::trace(JSTracer *trc);
-        void trace(JSTracer *trc);
-
       private:
+        virtual void trace(JSTracer *trc) {
+            if (statics->matchesInput) {
+                traceString(trc, reinterpret_cast<JSString**>(&statics->matchesInput),
+                               "RegExpStatics::AutoRooter matchesInput");
+            }
+            if (statics->lazySource) {
+                traceString(trc, reinterpret_cast<JSString**>(&statics->lazySource),
+                               "RegExpStatics::AutoRooter lazySource");
+            }
+            if (statics->pendingInput) {
+                traceString(trc, reinterpret_cast<JSString**>(&statics->pendingInput),
+                               "RegExpStatics::AutoRooter pendingInput");
+            }
+        }
+
         RegExpStatics *statics;
         SkipRoot skip;
         MOZ_DECL_USE_GUARD_OBJECT_NOTIFIER
@@ -211,7 +222,7 @@ RegExpStatics::createDependent(JSContext *cx, size_t start, size_t end, MutableH
 
     JS_ASSERT(start <= end);
     JS_ASSERT(end <= matchesInput->length());
-    RawString str = js_NewDependentString(cx, matchesInput, start, end - start);
+    JSString *str = js_NewDependentString(cx, matchesInput, start, end - start);
     if (!str)
         return false;
     out.setString(str);

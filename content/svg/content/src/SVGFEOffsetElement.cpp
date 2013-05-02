@@ -13,7 +13,7 @@ namespace mozilla {
 namespace dom {
 
 JSObject*
-SVGFEOffsetElement::WrapNode(JSContext* aCx, JSObject* aScope)
+SVGFEOffsetElement::WrapNode(JSContext* aCx, JS::Handle<JSObject*> aScope)
 {
   return SVGFEOffsetElementBinding::Wrap(aCx, aScope, this);
 }
@@ -29,17 +29,6 @@ nsSVGElement::StringInfo SVGFEOffsetElement::sStringInfo[2] =
   { &nsGkAtoms::result, kNameSpaceID_None, true },
   { &nsGkAtoms::in, kNameSpaceID_None, true }
 };
-
-//----------------------------------------------------------------------
-// nsISupports methods
-
-NS_IMPL_ADDREF_INHERITED(SVGFEOffsetElement,SVGFEOffsetElementBase)
-NS_IMPL_RELEASE_INHERITED(SVGFEOffsetElement,SVGFEOffsetElementBase)
-
-NS_INTERFACE_TABLE_HEAD(SVGFEOffsetElement)
-  NS_NODE_INTERFACE_TABLE3(SVGFEOffsetElement, nsIDOMNode, nsIDOMElement,
-                           nsIDOMSVGElement)
-NS_INTERFACE_MAP_END_INHERITING(SVGFEOffsetElementBase)
 
 //----------------------------------------------------------------------
 // nsIDOMNode methods

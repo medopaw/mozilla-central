@@ -34,9 +34,7 @@ public:
 
   AudioParam(AudioNode* aNode,
              CallbackType aCallback,
-             float aDefaultValue,
-             float aMinValue,
-             float aMaxValue);
+             float aDefaultValue);
   virtual ~AudioParam();
 
   NS_INLINE_DECL_CYCLE_COLLECTING_NATIVE_REFCOUNTING(AudioParam)
@@ -47,7 +45,8 @@ public:
     return mNode->Context();
   }
 
-  virtual JSObject* WrapObject(JSContext* aCx, JSObject* aScope) MOZ_OVERRIDE;
+  virtual JSObject* WrapObject(JSContext* aCx,
+                               JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
 
   // We override SetValueCurveAtTime to convert the Float32Array to the wrapper
   // object.
@@ -90,20 +89,14 @@ public:
     AudioParamTimeline::SetTargetAtTime(aTarget, aStartTime, aTimeConstant, aRv);
     mCallback(mNode);
   }
+  void SetTargetValueAtTime(float aTarget, double aStartTime, double aTimeConstant, ErrorResult& aRv)
+  {
+    SetTargetAtTime(aTarget, aStartTime, aTimeConstant, aRv);
+  }
   void CancelScheduledValues(double aStartTime)
   {
     AudioParamTimeline::CancelScheduledValues(aStartTime);
     mCallback(mNode);
-  }
-
-  float MinValue() const
-  {
-    return mMinValue;
-  }
-
-  float MaxValue() const
-  {
-    return mMaxValue;
   }
 
   float DefaultValue() const
@@ -115,8 +108,6 @@ private:
   nsRefPtr<AudioNode> mNode;
   CallbackType mCallback;
   const float mDefaultValue;
-  const float mMinValue;
-  const float mMaxValue;
 };
 
 }

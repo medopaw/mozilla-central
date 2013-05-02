@@ -52,6 +52,7 @@ MetroApp::CreateView(ABI::Windows::ApplicationModel::Core::IFrameworkView **aVie
 
   LogFunction();
 
+  sFrameworkView.Get()->AddRef();
   *aViewProvider = sFrameworkView.Get();
   return !sFrameworkView ? E_FAIL : S_OK;
 }
@@ -69,11 +70,11 @@ MetroApp::Initialize()
   static bool xpcomInit;
   if (!xpcomInit) {
     xpcomInit = true;
-    Log(L"XPCOM startup initialization began");
+    Log("XPCOM startup initialization began");
     nsresult rv = XRE_metroStartup(true);
-    Log(L"XPCOM startup initialization complete");
+    Log("XPCOM startup initialization complete");
     if (NS_FAILED(rv)) {
-      Log(L"XPCOM startup initialization failed, bailing. rv=%X", rv);
+      Log("XPCOM startup initialization failed, bailing. rv=%X", rv);
       CoreExit();
       return;
     }
@@ -101,10 +102,14 @@ MetroApp::ShutdownXPCOM()
 
   mozilla::widget::StopAudioSession();
 
-  sCoreApp->remove_Suspending(mSuspendEvent);
-  sCoreApp->remove_Resuming(mResumeEvent);
+  if (sCoreApp) {
+    sCoreApp->remove_Suspending(mSuspendEvent);
+    sCoreApp->remove_Resuming(mResumeEvent);
+  }
 
-  MetroApp::GetView()->ShutdownXPCOM();
+  if (sFrameworkView) {
+    sFrameworkView->ShutdownXPCOM();
+  }
 
   // Shut down xpcom
   XRE_metroShutdown();
@@ -122,14 +127,6 @@ MetroApp::CoreExit()
   if (SUCCEEDED(hr)) {
     coreExit->Exit();
   }
-}
-
-// static
-FrameworkView*
-MetroApp::GetView()
-{
-  NS_ASSERTION(sFrameworkView, "view has not been created.");
-  return sFrameworkView.Get();
 }
 
 ////////////////////////////////////////////////////
@@ -155,7 +152,7 @@ HRESULT
 MetroApp::OnAsyncTileCreated(ABI::Windows::Foundation::IAsyncOperation<bool>* aOperation,
                              AsyncStatus aStatus)
 {
-  Log(L"Async operation status: %d", aStatus);
+  Log("Async operation status: %d", aStatus);
   return S_OK;
 }
 
@@ -164,7 +161,10 @@ void
 MetroApp::SetBaseWidget(MetroWidget* aPtr)
 {
   LogThread();
+
   NS_ASSERTION(aPtr, "setting null base widget?");
+
+  // Both of these calls AddRef the ptr we pass in
   aPtr->SetView(sFrameworkView.Get());
   sFrameworkView->SetWidget(aPtr);
 }
@@ -231,8 +231,6 @@ XRE_MetroCoreApplicationRun()
     return false;
   }
 
-  sFrameworkView = Make<FrameworkView>(sMetroApp.Get());
-
   // Perform any cleanup for unclean shutdowns here, such as when the background session
   // is closed via the appbar on the left when outside of Metro.  Windows restarts the
   // process solely for cleanup reasons.
@@ -253,11 +251,12 @@ XRE_MetroCoreApplicationRun()
     return false;
   }
 
+  sFrameworkView = Make<FrameworkView>(sMetroApp.Get());
   hr = sCoreApp->Run(sMetroApp.Get());
-
-  Log(L"Exiting CoreApplication::Run");
-
   sFrameworkView = nullptr;
+
+  Log("Exiting CoreApplication::Run");
+
   sCoreApp = nullptr;
   sMetroApp = nullptr;
 

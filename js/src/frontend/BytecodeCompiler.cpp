@@ -1,6 +1,5 @@
 /* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- * vim: set ts=8 sw=4 et tw=99:
- *
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -39,7 +38,7 @@ CheckLength(JSContext *cx, size_t length)
 }
 
 static bool
-SetSourceMap(JSContext *cx, TokenStream &tokenStream, ScriptSource *ss, RawScript script)
+SetSourceMap(JSContext *cx, TokenStream &tokenStream, ScriptSource *ss, JSScript *script)
 {
     if (tokenStream.hasSourceMap()) {
         if (!ss->setSourceMap(cx, tokenStream.releaseSourceMap(), script->filename()))
@@ -75,7 +74,7 @@ CheckArgumentsWithinEval(JSContext *cx, Parser<FullParseHandler> &parser, Handle
     return true;
 }
 
-RawScript
+JSScript *
 frontend::CompileScript(JSContext *cx, HandleObject scopeChain,
                         HandleScript evalCaller,
                         const CompileOptions &options,
@@ -123,7 +122,7 @@ frontend::CompileScript(JSContext *cx, HandleObject scopeChain,
 
     GlobalSharedContext globalsc(cx, scopeChain, StrictModeFromContext(cx));
 
-    ParseContext<FullParseHandler> pc(&parser, &globalsc, staticLevel, /* bodyid = */ 0);
+    ParseContext<FullParseHandler> pc(&parser, NULL, &globalsc, staticLevel, /* bodyid = */ 0);
     if (!pc.init())
         return NULL;
 
@@ -284,7 +283,7 @@ frontend::ParseScript(JSContext *cx, HandleObject scopeChain,
 
     GlobalSharedContext globalsc(cx, scopeChain, StrictModeFromContext(cx));
 
-    ParseContext<SyntaxParseHandler> pc(&parser, &globalsc, 0, /* bodyid = */ 0);
+    ParseContext<SyntaxParseHandler> pc(&parser, NULL, &globalsc, 0, /* bodyid = */ 0);
     if (!pc.init()) {
         cx->clearPendingException();
         return false;
@@ -366,7 +365,7 @@ frontend::CompileFunctionBody(JSContext *cx, MutableHandleFunction fun, CompileO
     // If the context is strict, immediately parse the body in strict
     // mode. Otherwise, we parse it normally. If we see a "use strict"
     // directive, we backup and reparse it as strict.
-    TokenStream::Position start;
+    TokenStream::Position start(parser.keepAtoms);
     parser.tokenStream.tell(&start);
     bool initiallyStrict = StrictModeFromContext(cx);
     bool becameStrict;

@@ -47,6 +47,16 @@ struct SetListBaseInformation
 
 SetListBaseInformation gSetListBaseInformation;
 
+// static
+JSObject*
+DOMProxyHandler::GetAndClearExpandoObject(JSObject* obj)
+{
+  JSObject* expando = GetExpandoObject(obj);
+  XPCWrappedNativeScope* scope = xpc::GetObjectScope(obj);
+  scope->RemoveDOMExpandoObject(obj);
+  js::SetProxyExtra(obj, JSPROXYSLOT_EXPANDO, UndefinedValue());
+  return expando;
+}
 
 // static
 JSObject*
@@ -73,6 +83,20 @@ DOMProxyHandler::EnsureExpandoObject(JSContext* cx, JSObject* obj)
     js::SetProxyExtra(obj, JSPROXYSLOT_EXPANDO, ObjectValue(*expando));
   }
   return expando;
+}
+
+bool
+DOMProxyHandler::isExtensible(JSObject *proxy)
+{
+  return true; // always extensible per WebIDL
+}
+
+bool
+DOMProxyHandler::preventExtensions(JSContext *cx, JS::Handle<JSObject*> proxy)
+{
+  // Throw a TypeError, per WebIDL.
+  JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL, JSMSG_CANT_CHANGE_EXTENSIBILITY);
+  return false;
 }
 
 bool
@@ -119,8 +143,8 @@ DOMProxyHandler::defineProperty(JSContext* cx, JS::Handle<JSObject*> proxy, JS::
     return false;
   }
 
-  return JS_DefinePropertyById(cx, expando, id, desc->value, desc->getter, desc->setter,
-                               desc->attrs);
+  JSBool dummy;
+  return js_DefineOwnProperty(cx, expando, id, *desc, &dummy);
 }
 
 bool
@@ -181,34 +205,6 @@ DOMProxyHandler::has(JSContext* cx, JS::Handle<JSObject*> proxy, JS::Handle<jsid
   return ok;
 }
 
-// static
-JSString*
-DOMProxyHandler::obj_toString(JSContext* cx, const char* className)
-{
-  size_t nchars = sizeof("[object ]") - 1 + strlen(className);
-  jschar* chars = static_cast<jschar*>(JS_malloc(cx, (nchars + 1) * sizeof(jschar)));
-  if (!chars) {
-    return NULL;
-  }
-
-  const char* prefix = "[object ";
-  nchars = 0;
-  while ((chars[nchars] = (jschar)*prefix) != 0) {
-    nchars++, prefix++;
-  }
-  while ((chars[nchars] = (jschar)*className) != 0) {
-    nchars++, className++;
-  }
-  chars[nchars++] = ']';
-  chars[nchars] = 0;
-
-  JSString* str = JS_NewUCString(cx, chars, nchars);
-  if (!str) {
-    JS_free(cx, chars);
-  }
-  return str;
-}
-
 bool
 DOMProxyHandler::AppendNamedPropertyIds(JSContext* cx, JSObject* proxy,
                                         nsTArray<nsString>& names,
@@ -240,7 +236,7 @@ IdToInt32(JSContext* cx, jsid id)
 {
   JSAutoRequest ar(cx);
 
-  jsval idval;
+  JS::Value idval;
   double array_index;
   int32_t i;
   if (!::JS_IdToValue(cx, id, &idval) ||

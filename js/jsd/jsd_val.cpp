@@ -1,5 +1,6 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-/* This Source Code Form is subject to the terms of the Mozilla Public
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
+ * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
@@ -10,6 +11,7 @@
 #include "jsd.h"
 #include "jsapi.h"
 #include "jsfriendapi.h"
+#include "jswrapper.h"
 
 #ifdef DEBUG
 void JSD_ASSERT_VALID_VALUE(JSDValue* jsdval)
@@ -604,7 +606,7 @@ jsd_GetValueFunction(JSDContext* jsdc, JSDValue* jsdval)
     if (JSVAL_IS_PRIMITIVE(jsdval->val))
         return NULL;
 
-    obj = JS_UnwrapObject(JSVAL_TO_OBJECT(jsdval->val));
+    obj = js::UncheckedUnwrap(JSVAL_TO_OBJECT(jsdval->val));
     oldCompartment = JS_EnterCompartment(jsdc->dumbContext, obj);
     fun = JS_ValueToFunction(jsdc->dumbContext, OBJECT_TO_JSVAL(obj));
     JS_LeaveCompartment(jsdc->dumbContext, oldCompartment);

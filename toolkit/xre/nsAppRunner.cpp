@@ -292,7 +292,7 @@ static already_AddRefed<nsIFile>
 GetFileFromEnv(const char *name)
 {
   nsresult rv;
-  nsIFile *file = nullptr;
+  nsCOMPtr<nsIFile> file;
 
 #ifdef XP_WIN
   WCHAR path[_MAX_PATH];
@@ -300,21 +300,22 @@ GetFileFromEnv(const char *name)
                                path, _MAX_PATH))
     return nullptr;
 
-  rv = NS_NewLocalFile(nsDependentString(path), true, &file);
+  rv = NS_NewLocalFile(nsDependentString(path), true, getter_AddRefs(file));
   if (NS_FAILED(rv))
     return nullptr;
 
-  return file;
+  return file.forget();
 #else
   const char *arg = PR_GetEnv(name);
   if (!arg || !*arg)
     return nullptr;
 
-  rv = NS_NewNativeLocalFile(nsDependentCString(arg), true, &file);
+  rv = NS_NewNativeLocalFile(nsDependentCString(arg), true,
+                             getter_AddRefs(file));
   if (NS_FAILED(rv))
     return nullptr;
 
-  return file;
+  return file.forget();
 #endif
 }
 
@@ -424,8 +425,9 @@ static void RemoveArg(char **argv)
  * @param aArg the parameter to check. Must be lowercase.
  * @param aCheckOSInt if true returns ARG_BAD if the osint argument is present
  *        when aArg is also present.
- * @param if non-null, the -arg <data> will be stored in this pointer. This is *not*
- *        allocated, but rather a pointer to the argv data.
+ * @param aParam if non-null, the -arg <data> will be stored in this pointer.
+ *        This is *not* allocated, but rather a pointer to the argv data.
+ * @param aRemArg if true, the argument is removed from the gArgv array.
  */
 static ArgResult
 CheckArg(const char* aArg, bool aCheckOSInt = false, const char **aParam = nullptr, bool aRemArg = true)
@@ -617,7 +619,6 @@ NS_IMETHODIMP
 nsXULAppInfo::GetVendor(nsACString& aResult)
 {
   if (XRE_GetProcessType() == GeckoProcessType_Content) {
-    NS_WARNING("Attempt to get unavailable information in content process.");
     return NS_ERROR_NOT_AVAILABLE;
   }
   aResult.Assign(gAppData->vendor);
@@ -629,7 +630,6 @@ NS_IMETHODIMP
 nsXULAppInfo::GetName(nsACString& aResult)
 {
   if (XRE_GetProcessType() == GeckoProcessType_Content) {
-    NS_WARNING("Attempt to get unavailable information in content process.");
     return NS_ERROR_NOT_AVAILABLE;
   }
   aResult.Assign(gAppData->name);
@@ -641,7 +641,6 @@ NS_IMETHODIMP
 nsXULAppInfo::GetID(nsACString& aResult)
 {
   if (XRE_GetProcessType() == GeckoProcessType_Content) {
-    NS_WARNING("Attempt to get unavailable information in content process.");
     return NS_ERROR_NOT_AVAILABLE;
   }
   aResult.Assign(gAppData->ID);
@@ -695,7 +694,6 @@ NS_IMETHODIMP
 nsXULAppInfo::GetUAName(nsACString& aResult)
 {
   if (XRE_GetProcessType() == GeckoProcessType_Content) {
-    NS_WARNING("Attempt to get unavailable information in content process.");
     return NS_ERROR_NOT_AVAILABLE;
   }
   aResult.Assign(gAppData->UAName);
@@ -780,7 +778,7 @@ nsXULAppInfo::EnsureContentProcess()
   if (XRE_GetProcessType() != GeckoProcessType_Default)
     return NS_ERROR_NOT_AVAILABLE;
 
-  unused << ContentParent::GetNewOrUsed();
+  nsRefPtr<ContentParent> unused = ContentParent::GetNewOrUsed();
   return NS_OK;
 }
 
@@ -2788,7 +2786,7 @@ public:
   }
 
   int XRE_main(int argc, char* argv[], const nsXREAppData* aAppData);
-  int XRE_mainInit(const nsXREAppData* aAppData, bool* aExitFlag);
+  int XRE_mainInit(bool* aExitFlag);
   int XRE_mainStartup(bool* aExitFlag);
   nsresult XRE_mainRun();
   
@@ -2824,7 +2822,7 @@ public:
  * true.
  */
 int
-XREMain::XRE_mainInit(const nsXREAppData* aAppData, bool* aExitFlag)
+XREMain::XRE_mainInit(bool* aExitFlag)
 {
   if (!aExitFlag)
     return 1;
@@ -2929,8 +2927,7 @@ XREMain::XRE_mainInit(const nsXREAppData* aAppData, bool* aExitFlag)
       return 1;
     }
 
-    nsXREAppData* overrideAppData = const_cast<nsXREAppData*>(aAppData);
-    rv = XRE_ParseAppData(overrideLF, overrideAppData);
+    rv = XRE_ParseAppData(overrideLF, mAppData);
     if (NS_FAILED(rv)) {
       Output(true, "Couldn't read override.ini");
       return 1;
@@ -3400,7 +3397,8 @@ XREMain::XRE_mainStartup(bool* aExitFlag)
   // An environment variable is used instead of a pref on X11 platforms because we start having 
   // access to prefs long after the first call to XOpenDisplay which is hard to change due to 
   // interdependencies in the initialization.
-  if (PR_GetEnv("MOZ_USE_OMTC")) {
+  if (PR_GetEnv("MOZ_USE_OMTC") ||
+      PR_GetEnv("MOZ_OMTC_ENABLED")) {
     XInitThreads();
   }
 #endif
@@ -3872,7 +3870,8 @@ XREMain::XRE_mainRun()
 
 #ifdef MOZ_INSTRUMENT_EVENT_LOOP
   if (PR_GetEnv("MOZ_INSTRUMENT_EVENT_LOOP") || profiler_is_active()) {
-    mozilla::InitEventTracing();
+    bool logToConsole = !!PR_GetEnv("MOZ_INSTRUMENT_EVENT_LOOP");
+    mozilla::InitEventTracing(logToConsole);
   }
 #endif /* MOZ_INSTRUMENT_EVENT_LOOP */
 
@@ -3893,7 +3892,7 @@ XREMain::XRE_mainRun()
 int
 XREMain::XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
 {
-  profiler_init();
+  GeckoProfilerInitRAII profilerGuard;
   PROFILER_LABEL("Startup", "XRE_Main");
 
   nsresult rv = NS_OK;
@@ -3924,7 +3923,7 @@ XREMain::XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
 
   // init
   bool exit = false;
-  int result = XRE_mainInit(aAppData, &exit);
+  int result = XRE_mainInit(&exit);
   if (result != 0 || exit)
     return result;
 
@@ -3994,7 +3993,6 @@ XREMain::XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
     MOZ_gdk_display_close(mGdkDisplay);
 #endif
 
-    profiler_shutdown();
     rv = LaunchChild(mNativeApp, true);
 
 #ifdef MOZ_CRASHREPORTER
@@ -4016,8 +4014,6 @@ XREMain::XRE_main(int argc, char* argv[], const nsXREAppData* aAppData)
 #endif
 
   XRE_DeinitCommandLine();
-
-  profiler_shutdown();
 
   return NS_FAILED(rv) ? 1 : 0;
 }
@@ -4091,7 +4087,7 @@ public:
 int
 XRE_mainMetro(int argc, char* argv[], const nsXREAppData* aAppData)
 {
-  profiler_init();
+  GeckoProfilerInitRAII profilerGuard;
   PROFILER_LABEL("Startup", "XRE_Main");
 
   nsresult rv = NS_OK;
@@ -4119,7 +4115,7 @@ XRE_mainMetro(int argc, char* argv[], const nsXREAppData* aAppData)
 
   // init
   bool exit = false;
-  if (xreMainPtr->XRE_mainInit(aAppData, &exit) != 0 || exit)
+  if (xreMainPtr->XRE_mainInit(&exit) != 0 || exit)
     return 1;
 
   // Located in widget, will call back into XRE_metroStartup and
@@ -4132,7 +4128,6 @@ XRE_mainMetro(int argc, char* argv[], const nsXREAppData* aAppData)
   // thread that called XRE_metroStartup.
   NS_ASSERTION(!xreMainPtr->mScopedXPCom,
                "XPCOM Shutdown hasn't occured, and we are exiting.");
-  profiler_shutdown();
   return 0;
 }
 

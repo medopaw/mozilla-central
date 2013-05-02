@@ -1,23 +1,26 @@
-/* -*- Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: nil -*- */
-/* vim: set ts=4 sw=4 et tw=99: */
-/* This Source Code Form is subject to the terms of the Mozilla Public
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
+ * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "mozilla/DebugOnly.h"
-
 #include "jsanalyze.h"
+
+#include "mozilla/DebugOnly.h"
+#include "mozilla/PodOperations.h"
+
 #include "jsautooplen.h"
 #include "jscompartment.h"
 #include "jscntxt.h"
 
 #include "jsinferinlines.h"
-#include "jsobjinlines.h"
 
 using namespace js;
 using namespace js::analyze;
 
 using mozilla::DebugOnly;
+using mozilla::PodCopy;
+using mozilla::PodZero;
 
 /////////////////////////////////////////////////////////////////////
 // Bytecode
@@ -1955,7 +1958,7 @@ CrossScriptSSA::foldValue(const CrossSSAValue &cv)
     const Frame &frame = getFrame(cv.frame);
     const SSAValue &v = cv.v;
 
-    RawScript parentScript = NULL;
+    JSScript *parentScript = NULL;
     ScriptAnalysis *parentAnalysis = NULL;
     if (frame.parent != INVALID_FRAME) {
         parentScript = getFrame(frame.parent).script;
@@ -1988,7 +1991,7 @@ CrossScriptSSA::foldValue(const CrossSSAValue &cv)
              * If there is a single inline callee with a single return site,
              * propagate back to that.
              */
-            RawScript callee = NULL;
+            JSScript *callee = NULL;
             uint32_t calleeFrame = INVALID_FRAME;
             for (unsigned i = 0; i < numFrames(); i++) {
                 if (iterFrame(i).parent == cv.frame && iterFrame(i).parentpc == pc) {
