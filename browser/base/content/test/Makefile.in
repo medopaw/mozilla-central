@@ -328,6 +328,8 @@ _BROWSER_FILES = \
                  browser_blob-channelname.js \
                  browser_aboutHealthReport.js \
                  healthreport_testRemoteCommands.html \
+                 browser_aboutProfile.js \
+                 profile_testRemoteCommands.html \
                  $(NULL)
 
 # Disable test on Windows due to frequent failures (bug 841341)

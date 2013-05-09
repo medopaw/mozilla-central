@@ -52,6 +52,9 @@ browser.jar:
         content/browser/abouthealthreport/abouthealth.js      (content/abouthealthreport/abouthealth.js)
         content/browser/abouthealthreport/abouthealth.css     (content/abouthealthreport/abouthealth.css)
 #endif
+        content/browser/aboutprofile/aboutprofile.xhtml   (content/aboutprofile/aboutprofile.xhtml)
+        content/browser/aboutprofile/aboutprofile.js      (content/aboutprofile/aboutprofile.js)
+        content/browser/aboutprofile/aboutprofile.css     (content/aboutprofile/aboutprofile.css)
         content/browser/aboutRobots-icon.png          (content/aboutRobots-icon.png)
         content/browser/aboutRobots-widget-left.png   (content/aboutRobots-widget-left.png)
         content/browser/aboutSocialError.xhtml        (content/aboutSocialError.xhtml)

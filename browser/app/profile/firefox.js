@@ -1227,6 +1227,7 @@ pref("dom.identity.enabled", false);
 pref("interests.enabled", false);
 pref("interests.userDomainWhitelist", "");
 pref("interests.navigator.prompted", false);
+pref("interests.about.dashboardUrl", "");
 
 // Block insecure active content on https pages
 pref("security.mixed_content.block_active_content", true);

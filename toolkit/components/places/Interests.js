@@ -30,6 +30,16 @@ const kWindowReady = "toplevel-window-ready";
 const kPrefEnabled = "interests.enabled";
 const kPrefWhitelist = "interests.userDomainWhitelist";
 
+const kInterests = ["arts", "banking", "blogging", "business", "career",
+"cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",
+"discounts", "drinks", "education", "email", "entertainment", "family",
+"fashion", "finance", "food", "games", "government", "health", "history",
+"hobby", "home", "image-sharing", "law", "maps", "marketing", "men",
+"motorcycles", "movies", "music", "news", "outdoors", "pets", "photography",
+"politics", "radio", "reading", "real-estate", "reference", "relationship",
+"religion", "reviews", "science", "shoes", "shopping", "society", "sports",
+"technology", "travel", "tv", "video-games", "weather", "women", "writing"];
+
 let gServiceEnabled = Services.prefs.getBoolPref(kPrefEnabled);
 let gInterestsService = null;
 
@@ -336,17 +346,7 @@ Interests.prototype = {
   _initInterestMeta: function I__initInterestMeta() {
     let promises = [];
 
-    const interests = ["arts", "banking", "blogging", "business", "career",
-    "cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",
-    "discounts", "drinks", "education", "email", "entertainment", "family",
-    "fashion", "finance", "food", "games", "government", "health", "history",
-    "hobby", "home", "image-sharing", "law", "maps", "marketing", "men",
-    "motorcycles", "movies", "music", "news", "outdoors", "pets", "photography",
-    "politics", "radio", "reading", "real-estate", "reference", "relationship",
-    "religion", "reviews", "science", "shoes", "shopping", "society", "sports",
-    "technology", "travel", "tv", "video-games", "weather", "women", "writing"];
-
-    interests.forEach(item => {
+    kInterests.forEach(item => {
       promises.push(PlacesInterestsStorage.setInterest(item, {
         duration: 14,
         threshold: 100,
@@ -446,6 +446,17 @@ Interests.prototype = {
     if (gInterestsService && this.__whitelistedSet) {
       delete this.__whitelistedSet;
     }
+  },
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// Dashboard data payload
+
+  getJSONPayload: function I__getJSONPayload() {
+    let deferred = Promise.defer();
+    PlacesInterestsStorage.getInterests(kInterests).then(results => {
+      deferred.resolve(JSON.stringify(results));
+    }, error => deferred.reject(error));
+    return deferred.promise;
   },
 
   //////////////////////////////////////////////////////////////////////////////
