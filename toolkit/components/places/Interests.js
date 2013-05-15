@@ -451,12 +451,23 @@ Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Dashboard data payload
 
-  getJSONPayload: function I__getJSONPayload() {
-    let deferred = Promise.defer();
-    PlacesInterestsStorage.getInterests(kInterests).then(results => {
-      deferred.resolve(JSON.stringify(results));
-    }, error => deferred.reject(error));
-    return deferred.promise;
+  getJSONPayload: function I__getJSONPayload(aNumber) {
+    let promises = [];
+
+    aNumber = aNumber || kInterests.length;
+
+    promises.push(this.getInterestsByNamespace("", {
+      checkSharable: false,
+      excludeMeta: true,
+      interestLimit: aNumber,
+      roundDiversity: true,
+      roundRecency: true,
+      roundScore: true,
+    }));
+
+    return gatherPromises(promises).then(results => {
+      return JSON.stringify(results);
+    });
   },
 
   //////////////////////////////////////////////////////////////////////////////

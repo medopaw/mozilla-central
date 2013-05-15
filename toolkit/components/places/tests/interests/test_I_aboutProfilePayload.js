@@ -30,7 +30,16 @@ add_task(function test_getJSONPayload() {
   Services.prefs.setBoolPref("interests.enabled", false);
   Services.prefs.setBoolPref("interests.enabled", true);
   yield promiseWaitForMetadataInit();
-  let expected = yield PlacesInterestsStorage.getInterests(kInterests);
+  let expected = yield iServiceObject.getInterestsByNamespace("", {
+    checkSharable: false,
+    excludeMeta: true,
+    interestLimit: kInterests.length,
+    roundDiversity: true,
+    roundRecency: true,
+    roundScore: true,
+  });
+  let expected = [expected];
+  dump("MSG: " + JSON.stringify(expected) + "\n");
   let results = yield iServiceObject.getJSONPayload();
   isIdentical(expected, JSON.parse(results));
 });
