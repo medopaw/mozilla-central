@@ -39,7 +39,6 @@ add_task(function test_getJSONPayload() {
     roundScore: true,
   });
   let expected = [expected];
-  dump("MSG: " + JSON.stringify(expected) + "\n");
   let results = yield iServiceObject.getJSONPayload();
   isIdentical(expected, JSON.parse(results));
 });
