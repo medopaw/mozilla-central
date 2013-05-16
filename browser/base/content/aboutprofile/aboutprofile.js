@@ -23,11 +23,11 @@ let userProfileWrapper = {
     iframe.addEventListener("load", userProfileWrapper.initRemotePage, false);
     let dashboard = this._getReportURI();
     iframe.src = dashboard.spec;
-    prefs.observe("uploadEnabled", this.updatePrefState, userProfileWrapper);
+    prefs.observe("enabled", this.updatePrefState, userProfileWrapper);
   },
 
   uninit: function () {
-    prefs.ignore("uploadEnabled", this.updatePrefState, userProfileWrapper);
+    prefs.ignore("enabled", this.updatePrefState, userProfileWrapper);
   },
 
   _getReportURI: function () {
