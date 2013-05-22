@@ -140,6 +140,33 @@ const SQL = {
                   "(SELECT sharable " +
                    "FROM moz_interests " +
                    "WHERE interest = :interest)))",
+
+  setSharedInterest:
+    "REPLACE INTO moz_interests_shared " +
+    "VALUES((SELECT id " +
+            "FROM moz_interests " +
+            "WHERE interest = :interest), " +
+           ":domain, " +
+           ":day) ",
+
+  getDomainsForSharedInterests:
+    "SELECT interest, domain, day " +
+    "FROM moz_interests " +
+    "LEFT JOIN moz_interests_shared " +
+    "ON interest_id = id " +
+    "WHERE interest IN (:interests) AND " +
+          "domain NOT NULL " +
+    "ORDER BY interest, day DESC ",
+
+  getPersonalizedDomains:
+    "SELECT interest, domain, day " +
+    "FROM moz_interests_shared " +
+    "LEFT JOIN moz_interests " +
+    "ON interest_id = id " +
+    "WHERE day >= :dayCutoff AND " +
+          "domain NOT NULL " +
+    "ORDER BY day DESC, domain ",
+
 };
 
 let PlacesInterestsStorage = {
@@ -349,6 +376,59 @@ let PlacesInterestsStorage = {
         namespace: this._splitInterestName(interest)[0],
         sharable: sharable,
         threshold: threshold,
+      },
+    });
+  },
+
+  /**
+   * Set (insert or update) an interest being shared with a domain
+   *
+   * @param   interest
+   *          Full interest name with namespace to set
+   * @param   domain
+   *          domain of the site an interest was shared with
+   * @param   [optional] visitTime
+   *          time when an interest was shared with the site
+   * @returns Promise for when the interest,domain pair is set
+   */
+  setSharedInterest: function PIS_setSharedInterest(interest, domain, visitTime) {
+    return this._execute(SQL.setSharedInterest, {
+      params: {
+        interest: interest,
+        domain: domain,
+        day: this._convertDateToDays(visitTime),
+      },
+    });
+  },
+
+  /**
+   * Get a sorted array of 'shared-with' domains by day of the visit for each interest
+   *
+   * @param   interests
+   *          interests that were shared
+   * @returns Promise with an array of {intrest,domains,day} objects
+   */
+  getDomainsForSharedInterests: function PIS_getDomainsForSharedInterests(interests) {
+    return this._execute(SQL.getDomainsForSharedInterests, {
+      columns: ["interest","domain", "day"],
+      listParams: {
+        interests: interests,
+      },
+    });
+  },
+
+  /**
+   * Get a sorted array of 'shared-with' domains,interests by day of the visit
+   *
+   * @param   daysAgo
+   *          Number of days of history to fetch
+   * @returns Promise with an array of {intrest,domains,day} objects
+   */
+  getPersonalizedDomains: function PIS_getPersonalizedDomains(daysAgo) {
+    return this._execute(SQL.getPersonalizedDomains, {
+      columns: ["interest","domain", "day"],
+      params: {
+        dayCutoff: this._convertDateToDays() - (daysAgo || 180),
       },
     });
   },

@@ -139,5 +139,18 @@
     "frecency_index", "moz_hosts", "frecency", "" \
   )
 
+/**
+ * moz_interests_shared
+ */
+
+#define CREATE_IDX_MOZ_INTERESTS_SHARED_INTEREST \
+  CREATE_PLACES_IDX( \
+    "shared_interest_id_index", "moz_interests_shared", "interest_id", "" \
+  )
+
+#define CREATE_IDX_MOZ_INTERESTS_SHARED_DOMAIN \
+  CREATE_PLACES_IDX( \
+    "shared_domain_index", "moz_interests_shared", "domain", "" \
+  )
 
 #endif // nsPlacesIndexes_h__
