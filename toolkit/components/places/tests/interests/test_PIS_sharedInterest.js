@@ -21,6 +21,7 @@ add_task(function test_PlacesInterestsStorage_sharedInterests()
   yield addInterest("technology");
 
   let now = Date.now();
+  let today = PlacesInterestsStorage._convertDateToDays(now);
   let results;
 
   // nothig was shared - results are empty
@@ -42,23 +43,23 @@ add_task(function test_PlacesInterestsStorage_sharedInterests()
 
   yield PlacesInterestsStorage.getDomainsForSharedInterests(["cars","movies"]).then(results => {
     isIdentical(results,[
-                          {"interest":"cars","domain":"foo.com","day":15847},
-                          {"interest":"cars","domain":"bar.com","day":15846},
-                          {"interest":"cars","domain":"baz.com","day":15845},
-                          {"interest":"movies","domain":"foo.com","day":15847},
-                          {"interest":"movies","domain":"bar.com","day":15846},
-                          {"interest":"movies","domain":"baz.com","day":15845},
+                          {"interest":"cars","domain":"foo.com","day":today},
+                          {"interest":"cars","domain":"bar.com","day":today-1},
+                          {"interest":"cars","domain":"baz.com","day":today-2},
+                          {"interest":"movies","domain":"foo.com","day":today},
+                          {"interest":"movies","domain":"bar.com","day":today-1},
+                          {"interest":"movies","domain":"baz.com","day":today-2},
                         ]);
   });
 
   yield PlacesInterestsStorage.getPersonalizedDomains().then(results => {
     isIdentical(results,[
-                          {"interest":"movies","domain":"foo.com","day":15847},
-                          {"interest":"cars","domain":"foo.com","day":15847},
-                          {"interest":"movies","domain":"bar.com","day":15846},
-                          {"interest":"cars","domain":"bar.com","day":15846},
-                          {"interest":"movies","domain":"baz.com","day":15845},
-                          {"interest":"cars","domain":"baz.com","day":15845},
+                          {"interest":"movies","domain":"foo.com","day":today},
+                          {"interest":"cars","domain":"foo.com","day":today},
+                          {"interest":"movies","domain":"bar.com","day":today-1},
+                          {"interest":"cars","domain":"bar.com","day":today-1},
+                          {"interest":"movies","domain":"baz.com","day":today-2},
+                          {"interest":"cars","domain":"baz.com","day":today-2},
                         ]);
   });
 
