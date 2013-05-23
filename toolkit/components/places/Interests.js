@@ -127,6 +127,29 @@ Interests.prototype = {
     return this._ResubmitRecentHistoryDeferred.promise;
   },
 
+  /**
+   * Package up shared interests by domains
+   *
+   * @param   [optional] daysBack
+   *          retrieve domains that accessed interests between daysBack and now
+   *          if omitted all domains will be returned
+   * @returns Promise with domains + corresponding interests
+   */
+  getRequestingDomains: function I_getRequestingDomains(daysBack) {
+    return PlacesInterestsStorage.getPersonalizedDomains(daysBack).then(results => {
+      let domainsData = {};
+      results.forEach(data => {
+        let {interest, domain} = data;
+        if (!domainsData[domain]) {
+          domainsData[domain] = [];
+        }
+        // push corresponding domain & the interest,date of visit
+        domainsData[domain].push(interest);
+      });
+      return domainsData;
+    });
+  },
+
   //////////////////////////////////////////////////////////////////////////////
   //// Interests Helpers
 
