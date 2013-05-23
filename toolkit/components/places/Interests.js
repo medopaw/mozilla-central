@@ -278,6 +278,23 @@ Interests.prototype = {
       });
 
       return interests;
+    }).then(interests => {
+      let {requestingHost} = options;
+
+      // if requestingHost is null, return interests right away
+      if (!requestingHost) return interests;
+
+      // otherwise we have to store what we share with this host
+      // call setSharedInterest for each interest being returned to caller
+      let promises = [];
+      interests.forEach(interest => {
+        promises.push(PlacesInterestsStorage.setSharedInterest(interest.name,requestingHost));
+      });
+
+      // return promise to wait until insertions complete, and resolve it to the interests
+      return gatherPromises(promises).then(() => {
+        return interests;
+      });
     });
   },
 
