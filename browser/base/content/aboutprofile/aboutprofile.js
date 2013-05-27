@@ -17,7 +17,7 @@ const kPrefEnabled = "interests.enabled";
 
 let userProfileWrapper = {
   init: function () {
-    userProfileWrapper.refreshPayload();
+    userProfileWrapper.refreshPagePayload();
 
     let iframe = document.getElementById("remote-dashboard");
     iframe.addEventListener("load", userProfileWrapper.initRemotePage, false);
@@ -56,8 +56,9 @@ let userProfileWrapper = {
     }
   },
 
-  refreshPayload: function () {
-    interestService.getJSONPayload().then(userProfileWrapper.updatePayload,
+  refreshPagePayload: function (numInterestsProfile) {
+    numInterestsProfile = numInterestsProfile || 5;
+    interestService.getPagePayload(numInterestsProfile).then(userProfileWrapper.updatePayload,
                                                 userProfileWrapper.handlePayloadFailure);
   },
 
@@ -92,8 +93,8 @@ let userProfileWrapper = {
       case "RequestCurrentPrefs":
         this.updatePrefState();
         break;
-      case "RequestCurrentPayload":
-        this.refreshPayload();
+      case "RequestCurrentPagePayload":
+        this.refreshPagePayload(evt.detail.data);
         break;
       default:
         Cu.reportError("Unexpected remote command received: " + evt.detail.command + ". Ignoring command.");

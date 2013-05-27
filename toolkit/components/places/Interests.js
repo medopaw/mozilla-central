@@ -489,24 +489,52 @@ Interests.prototype = {
   },
 
   //////////////////////////////////////////////////////////////////////////////
-  //// Dashboard data payload
+  //// Dashboard utility functions
 
-  getJSONPayload: function I__getJSONPayload(aNumber) {
+  // Return data to fully populate a dashboard page
+  getPagePayload: function I_getPagePayload(aInterestProfileLimit) {
     let promises = [];
 
-    aNumber = aNumber || kInterests.length;
+    aInterestProfileLimit = aInterestProfileLimit || kInterests.length;
 
-    promises.push(this.getInterestsByNamespace("", {
+    // obtain interests ordered by score
+    let interestPromise = this.getInterestsByNamespace("", {
       checkSharable: false,
       excludeMeta: true,
-      interestLimit: aNumber,
+      interestLimit: aInterestProfileLimit,
       roundDiversity: true,
       roundRecency: true,
       roundScore: true,
-    }));
+    });
 
+    // obtain host info for selected interests
+    let interestHostPromise = interestPromise.then(interests => {
+      let interestList = [];
+      for(let i=0; i < interests.length; i++) {
+        interestList.push(interests[i].name);
+      }
+
+      return PlacesInterestsStorage.getRecentHostsForInterests(interestList, 14);
+    });
+
+    // gather and package the data promises
+    promises.push(interestPromise);
+    promises.push(interestHostPromise);
     return gatherPromises(promises).then(results => {
-      return JSON.stringify(results);
+      let output = {};
+      output.interestsProfile = results[0];
+
+      let hostData = results[1];
+      output.interestsHosts = {};
+      for(let i=0; i < hostData.length; i++) {
+        let item = hostData[i];
+        if(!output.interestsHosts.hasOwnProperty(item.interest)) {
+          output.interestsHosts[item.interest] = [];
+        }
+        output.interestsHosts[item.interest].push({host: item.host, frecency: item.frecency});
+      }
+
+      return JSON.stringify(output);
     });
   },
 

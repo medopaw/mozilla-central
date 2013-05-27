@@ -96,6 +96,20 @@ const SQL = {
     "WHERE hidden = 0 AND " +
           "visit_count > 0",
 
+  getRecentHostsForInterests:
+    "SELECT i.interest, h.host, h.frecency " +
+    "FROM moz_interests i " +
+      ", moz_hosts h " +
+      ", moz_interests_hosts ih " +
+      ", moz_interests_visits iv " +
+    "WHERE i.interest IN (:interests) " +
+      "AND ih.host_id = h.id " +
+      "AND ih.interest_id = i.id " +
+      "AND iv.interest_id = i.id " +
+      "AND iv.day > :dayCutoff " +
+    "GROUP BY i.interest, h.host " +
+    "ORDER BY h.frecency DESC",
+
   getScoresForInterests:
     "SELECT interest name, " +
            "IFNULL(SUM(visits * (1 - (:today - day) / 29.0)), 0) * " +
@@ -306,6 +320,27 @@ let PlacesInterestsStorage = {
       params: {
         dayCutoff: this._convertDateToDays() - daysAgo,
         MS_PER_DAY: MS_PER_DAY,
+      },
+    });
+  },
+
+  /**
+   * Fetch recently visited hosts for interests, ranked by frecency
+   *
+   * @param   interests
+   *          Array of interest strings to select
+   * @param   daysAgo
+   *          Number of days of recent history to fetch
+   * @returns Promise with hostname/last day visited as results
+   */
+  getRecentHostsForInterests: function PIS_getRecentHostsForInterests(interests, daysAgo) {
+    return this._execute(SQL.getRecentHostsForInterests, {
+      columns: ["interest", "host", "frecency"],
+      listParams: {
+        interests: interests,
+      },
+      params: {
+        dayCutoff: this._convertDateToDays() - daysAgo,
       },
     });
   },

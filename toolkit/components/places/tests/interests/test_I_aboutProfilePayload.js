@@ -26,10 +26,15 @@ function run_test() {
   run_next_test();
 }
 
-add_task(function test_getJSONPayload() {
+add_task(function test_getPagePayload() {
   Services.prefs.setBoolPref("interests.enabled", false);
   Services.prefs.setBoolPref("interests.enabled", true);
   yield promiseWaitForMetadataInit();
+
+  yield promiseAddUrlInterestsVisit("http://techmeme.com", ["computers"], 1, 1);
+  yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 2, 13);
+  yield promiseAsyncUpdates();
+
   let expected = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: false,
     excludeMeta: true,
@@ -38,7 +43,13 @@ add_task(function test_getJSONPayload() {
     roundRecency: true,
     roundScore: true,
   });
-  let expected = [expected];
-  let results = yield iServiceObject.getJSONPayload();
-  isIdentical(expected, JSON.parse(results));
+
+  let results = JSON.parse(yield iServiceObject.getPagePayload());
+  isIdentical(expected, results.interestsProfile);
+  isIdentical({"computers":[{"host":"techmeme.com","frecency":100}],"real-estate":[{"host":"realtor.com","frecency":100}]}, results.interestsHosts);
+
+  // limiting interests
+  let results = JSON.parse(yield iServiceObject.getPagePayload(1));
+  isIdentical(expected.slice(0,1), results.interestsProfile);
+  isIdentical({"real-estate":[{"host":"realtor.com","frecency":100}]}, results.interestsHosts);
 });
