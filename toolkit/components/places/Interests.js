@@ -134,7 +134,7 @@ Interests.prototype = {
    * @param   site
    * @returns true if site is blocked, false otherwise
    */
-  isSiteBlocked: function I_getRequestingDomains(domain) {
+  isSiteBlocked: function I_isSiteBlocked(domain) {
     return Services.perms.testExactPermission(NetUtil.newURI("http://" + domain),"interests") ==
            Services.perms.DENY_ACTION;
   },
