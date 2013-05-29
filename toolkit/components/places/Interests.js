@@ -521,7 +521,7 @@ Interests.prototype = {
     // obtain interests ordered by score
     let interestPromise = this.getInterestsByNamespace("", {
       checkSharable: false,
-      excludeMeta: true,
+      excludeMeta: false,
       interestLimit: aInterestProfileLimit,
       roundDiversity: true,
       roundRecency: true,
@@ -557,8 +557,14 @@ Interests.prototype = {
         output.interestsHosts[item.interest].push({host: item.host, frecency: item.frecency});
       }
 
-      return JSON.stringify(output);
+      return output;
     });
+  },
+
+  // Set Interest Sharability metadata
+  setInterestSharable: function I_setInterestSharable(interest, value) {
+    value = value ? 1 : 0;
+    return PlacesInterestsStorage.setInterest(interest, {sharable: value});
   },
 
   //////////////////////////////////////////////////////////////////////////////

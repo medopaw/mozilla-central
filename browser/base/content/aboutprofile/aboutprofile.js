@@ -77,12 +77,22 @@ let userProfileWrapper = {
 
   refreshPagePayload: function (numInterestsProfile) {
     numInterestsProfile = numInterestsProfile || 5;
-    interestService.getPagePayload(numInterestsProfile).then(userProfileWrapper.updatePayload,
-                                                userProfileWrapper.handlePayloadFailure);
+    interestService.getPagePayload(numInterestsProfile).then(data => {
+      userProfileWrapper.updatePayload("pageload", data);
+    },
+      userProfileWrapper.handlePayloadFailure);
   },
 
-  updatePayload: function (data) {
-    userProfileWrapper.injectData("payload", data);
+  /*
+   * Update Interest sharable metadata
+   * @param
+   */
+  setInterestSharable: function AP_setInterestSharable(data) {
+    let [interest, value] = data;
+    interestService.setInterestSharable(interest, value).then(
+        x => {},
+        e => {this.reportFailure(this.ERROR_METADATA_FAILED)}
+    );
   },
 
   enableSite: function (site) {
@@ -93,7 +103,30 @@ let userProfileWrapper = {
     Services.perms.add(NetUtil.newURI("http://" + site),"interests",Services.perms.DENY_ACTION);
   },
 
-  injectData: function (type, content) {
+  /*
+   * Prepares and sends the data payload to the remote application
+   *
+   * @param     subtype
+   *            Payload subtype for the application to handle appropriately
+   * @param     data
+   *            Data to be serialized and sent to the application
+   */
+  updatePayload: function AP_updatePayload(subtype, data) {
+    let payload = {};
+    payload.type = subtype;
+    payload.content = data;
+    userProfileWrapper.injectData("payload", JSON.stringify(payload));
+  },
+
+  /*
+   * Injects data inside the remote application
+   *
+   * @param     type
+   *            The type of message to send, e.g. "prefs" or "payload"
+   * @param     content
+   *            String data to be sent to the browser
+   */
+  injectData: function AP_injectData(type, content) {
     let report = this._getReportURI();
 
     // file URIs can't be used for targetOrigin, so we use "*" for this special case
@@ -109,7 +142,7 @@ let userProfileWrapper = {
     iframe.contentWindow.postMessage(data, reportUrl);
   },
 
-  handleRemoteCommand: function (evt) {
+  handleRemoteCommand: function handleRemoteCommand(evt) {
     switch (evt.detail.command) {
       case "DisableUP":
         this.onOptOut();
@@ -129,9 +162,8 @@ let userProfileWrapper = {
       case "DisableSite":
         this.disableSite(evt.detail.data);
         break;
-      case "RequestCurrentPayload":
-        this.refreshPayload();
-        break;
+      case "SetInterestSharable":
+        this.setInterestSharable(evt.detail.data);
       default:
         Cu.reportError("Unexpected remote command received: " + evt.detail.command + ". Ignoring command.");
         break;
@@ -147,9 +179,10 @@ let userProfileWrapper = {
   },
 
   // error handling
-  ERROR_INIT_FAILED:    1,
+  ERROR_INIT_FAILED: 1,
   ERROR_PAYLOAD_FAILED: 2,
-  ERROR_PREFS_FAILED:   3,
+  ERROR_PREFS_FAILED: 3,
+  ERROR_METADATA_FAILED: 4,
 
   reportFailure: function (error) {
     let details = {

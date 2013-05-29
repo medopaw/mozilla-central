@@ -37,7 +37,7 @@ add_task(function test_getPagePayload() {
 
   let expected = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: false,
-    excludeMeta: true,
+    excludeMeta: false,
     interestLimit: kInterests.length,
     roundDiversity: true,
     roundRecency: true,
@@ -45,16 +45,46 @@ add_task(function test_getPagePayload() {
     requestingHost: "www.foo.com",
   });
 
-  let results = JSON.parse(yield iServiceObject.getPagePayload());
+  let results = yield iServiceObject.getPagePayload();
   isIdentical(expected, results.interestsProfile);
   isIdentical({"computers":[{"host":"techmeme.com","frecency":100}],"real-estate":[{"host":"realtor.com","frecency":100}]}, results.interestsHosts);
 
   // limiting interests
-  let results = JSON.parse(yield iServiceObject.getPagePayload(1));
+  let results = yield iServiceObject.getPagePayload(1);
   isIdentical(expected.slice(0,1), results.interestsProfile);
   isIdentical({"real-estate":[{"host":"realtor.com","frecency":100}]}, results.interestsHosts);
 
   // chek requesting sites
   do_check_eq(results.requestingSites[0].name,"www.foo.com");
   do_check_eq(results.requestingSites[0].isBlocked,false);
+});
+
+add_task(function test_setInterestSharable() {
+  let expected = yield iServiceObject.getInterestsByNamespace("", {
+    checkSharable: false,
+    excludeMeta: false,
+    interestLimit: kInterests.length,
+    roundDiversity: true,
+    roundRecency: true,
+    roundScore: true,
+  });
+  expected = expected.slice(0,1);
+
+  // verify that the interest is sharable
+  let results = yield iServiceObject.getPagePayload(1);
+  do_check_true(expected[0].meta.sharable == 1);
+  isIdentical(expected, results.interestsProfile);
+
+  // set sharable to false
+  dump("set sharable to false\n");
+  yield iServiceObject.setInterestSharable(expected[0].name, false);
+  expected[0].meta.sharable = 0;
+  let results = yield iServiceObject.getPagePayload(1);
+  isIdentical(expected, results.interestsProfile);
+
+  // set sharable to true again
+  yield iServiceObject.setInterestSharable(expected[0].name, true);
+  expected[0].meta.sharable = 1;
+  let results = yield iServiceObject.getPagePayload(1);
+  isIdentical(expected, results.interestsProfile);
 });

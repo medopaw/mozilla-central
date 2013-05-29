@@ -34,7 +34,7 @@ var tests = [
 },
 {
   info: "Verifying we can get a payload while UP is disabled",
-  event: "RequestCurrentPayload",
+  event: "RequestCurrentPagePayload",
   payloadType: "payload",
   validateResponse: function(payload) {
     return validatePayload(payload);
@@ -58,7 +58,7 @@ var tests = [
 },
 {
   info: "Verifying we can get a payload after enabling",
-  event: "RequestCurrentPayload",
+  event: "RequestCurrentPagePayload",
   payloadType: "payload",
   validateResponse: function(payload) {
     return validatePayload(payload);
@@ -89,6 +89,9 @@ function doTest(evt) {
       return; // not yet testing
 
     var test = tests[currentTest];
+    if (test == undefined) {
+        return; // skip extra events
+    }
     if (evt.data.type != test.payloadType)
       return; // skip unrequested events
 
