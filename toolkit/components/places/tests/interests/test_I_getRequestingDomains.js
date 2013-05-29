@@ -56,11 +56,11 @@ add_task(function test_I_getRequestingDomains()
   });
 
   yield iServiceObject.getRequestingDomains().then(results => {
-    isIdentical(results,
-                 {"bar.com":["cars","movies","technology"],
-                  "foo.com":["cars","movies"]
-                 }
-               );
+    //dump(JSON.stringify(results));
+    isIdentical(results,[
+      {"name":"bar.com","interests":["cars","movies","technology"],"isBlocked":false},
+      {"name":"foo.com","interests":["cars","movies"],"isBlocked":false}
+    ]);
   });
 });
 

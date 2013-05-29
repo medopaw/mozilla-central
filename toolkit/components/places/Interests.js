@@ -63,6 +63,7 @@ function Interests() {
   gInterestsService = this;
   Services.prefs.addObserver("interests.", this, false);
 }
+
 Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Interests API
@@ -128,6 +129,17 @@ Interests.prototype = {
   },
 
   /**
+   * tests if a particular site is blocked
+   *
+   * @param   site
+   * @returns true if site is blocked, false otherwise
+   */
+  isSiteBlocked: function I_getRequestingDomains(domain) {
+    return Services.perms.testExactPermission(NetUtil.newURI("http://" + domain),"interests") ==
+           Services.perms.DENY_ACTION;
+  },
+
+  /**
    * Package up shared interests by domains
    *
    * @param   [optional] daysBack
@@ -138,15 +150,24 @@ Interests.prototype = {
   getRequestingDomains: function I_getRequestingDomains(daysBack) {
     return PlacesInterestsStorage.getPersonalizedDomains(daysBack).then(results => {
       let domainsData = {};
+      let domainsList = [];
+      // domains come in order
       results.forEach(data => {
         let {interest, domain} = data;
         if (!domainsData[domain]) {
-          domainsData[domain] = [];
+          // create a domain object
+          let domainObject = {
+            name: domain,
+            interests: [],
+            isBlocked: this.isSiteBlocked(domain),
+          };
+          domainsData[domain] = domainObject;
+          domainsList.push(domainObject);
         }
         // push corresponding domain & the interest,date of visit
-        domainsData[domain].push(interest);
+        domainsData[domain].interests.push(interest);
       });
-      return domainsData;
+      return domainsList;
     });
   },
 
@@ -520,9 +541,11 @@ Interests.prototype = {
     // gather and package the data promises
     promises.push(interestPromise);
     promises.push(interestHostPromise);
+    promises.push(this.getRequestingDomains());
     return gatherPromises(promises).then(results => {
       let output = {};
       output.interestsProfile = results[0];
+      output.requestingSites = results[2];
 
       let hostData = results[1];
       output.interestsHosts = {};
@@ -585,6 +608,7 @@ InterestsWebAPI.prototype = {
         roundDiversity: true,
         roundRecency: true,
         roundScore: true,
+        requestingHost: this.realHost,
       });
     }).then(sortedInterests => {
       exposeAll(sortedInterests);
@@ -602,7 +626,7 @@ InterestsWebAPI.prototype = {
    */
   getTopInterests: function IWA_getTopInterests(topData) {
     let deferred = this._makePromise();
-    
+
     let aNumber = topData || 5;
     if (aNumber > 5) {
       let whitelistedSet = gInterestsService._getDomainWhitelistedSet();
@@ -621,6 +645,7 @@ InterestsWebAPI.prototype = {
         roundDiversity: true,
         roundRecency: true,
         roundScore: true,
+        requestingHost: this.realHost,
       });
     }).then(topInterests => {
       exposeAll(topInterests);
@@ -685,6 +710,7 @@ InterestsWebAPI.prototype = {
   init: function IWA__init(aWindow) {
     let uriObj = {host: aWindow.location.hostname || aWindow.location.href};
     this.currentHost = gInterestsService._getPlacesHostForURI(uriObj);
+    this.realHost = uriObj.host;
     this.window = aWindow;
   },
 

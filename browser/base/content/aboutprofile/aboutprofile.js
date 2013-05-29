@@ -9,11 +9,13 @@ const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/Preferences.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
-
+Cu.import("resource://gre/modules/NetUtil.jsm");
 
 const interestService = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 const prefs = new Preferences("interests.");
 const kPrefEnabled = "interests.enabled";
+const kPermChanged = "perm-changed";
+const kPermInterestType = "interests";
 
 let userProfileWrapper = {
   init: function () {
@@ -24,10 +26,27 @@ let userProfileWrapper = {
     let dashboard = this._getReportURI();
     iframe.src = dashboard.spec;
     prefs.observe("enabled", this.updatePrefState, userProfileWrapper);
+    Services.obs.addObserver(this,kPermChanged,false);
   },
 
   uninit: function () {
     prefs.ignore("enabled", this.updatePrefState, userProfileWrapper);
+    Services.obs.removeObserver(this, kPermChanged);
+  },
+
+  observe: function I_observe(aSubject, aTopic, aData) {
+    if (aTopic == kPermChanged) {
+      let permission = aSubject.QueryInterface(Ci.nsIPermission)
+      if (permission.type == kPermInterestType) {
+        this.injectData("sitePref",
+          {
+            site: permission.host,
+            isBlocked: interestService.isSiteBlocked(permission.host),
+          }
+        );
+      }
+    }
+
   },
 
   _getReportURI: function () {
@@ -66,6 +85,14 @@ let userProfileWrapper = {
     userProfileWrapper.injectData("payload", data);
   },
 
+  enableSite: function (site) {
+    Services.perms.remove(site,"interests");
+  },
+
+  disableSite: function (site) {
+    Services.perms.add(NetUtil.newURI("http://" + site),"interests",Services.perms.DENY_ACTION);
+  },
+
   injectData: function (type, content) {
     let report = this._getReportURI();
 
@@ -95,6 +122,15 @@ let userProfileWrapper = {
         break;
       case "RequestCurrentPagePayload":
         this.refreshPagePayload(evt.detail.data);
+        break;
+      case "EnableSite":
+        this.enableSite(evt.detail.data);
+        break;
+      case "DisableSite":
+        this.disableSite(evt.detail.data);
+        break;
+      case "RequestCurrentPayload":
+        this.refreshPayload();
         break;
       default:
         Cu.reportError("Unexpected remote command received: " + evt.detail.command + ". Ignoring command.");

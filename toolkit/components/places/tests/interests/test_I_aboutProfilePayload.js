@@ -42,6 +42,7 @@ add_task(function test_getPagePayload() {
     roundDiversity: true,
     roundRecency: true,
     roundScore: true,
+    requestingHost: "www.foo.com",
   });
 
   let results = JSON.parse(yield iServiceObject.getPagePayload());
@@ -52,4 +53,8 @@ add_task(function test_getPagePayload() {
   let results = JSON.parse(yield iServiceObject.getPagePayload(1));
   isIdentical(expected.slice(0,1), results.interestsProfile);
   isIdentical({"real-estate":[{"host":"realtor.com","frecency":100}]}, results.interestsHosts);
+
+  // chek requesting sites
+  do_check_eq(results.requestingSites[0].name,"www.foo.com");
+  do_check_eq(results.requestingSites[0].isBlocked,false);
 });
