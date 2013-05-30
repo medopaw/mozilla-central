@@ -58,8 +58,8 @@ add_task(function test_I_getRequestingDomains()
   yield iServiceObject.getRequestingDomains().then(results => {
     //dump(JSON.stringify(results));
     isIdentical(results,[
-      {"name":"bar.com","interests":["cars","movies","technology"],"isBlocked":false},
-      {"name":"foo.com","interests":["cars","movies"],"isBlocked":false}
+      {"name":"bar.com","interests":["cars","movies","technology"],"isBlocked":false,"isPrivileged":false},
+      {"name":"foo.com","interests":["cars","movies"],"isBlocked":false,"isPrivileged":false}
     ]);
   });
 });

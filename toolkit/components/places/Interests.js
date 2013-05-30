@@ -160,6 +160,8 @@ Interests.prototype = {
             name: domain,
             interests: [],
             isBlocked: this.isSiteBlocked(domain),
+            isPrivileged: this._getDomainWhitelistedSet().
+                            has(this._normalizeHostName(domain)),
           };
           domainsData[domain] = domainObject;
           domainsList.push(domainObject);
@@ -227,6 +229,16 @@ Interests.prototype = {
   },
 
   /**
+   * Normalize host name
+   *
+   * @param   host
+   * @returns normalized Host string
+   */
+  _normalizeHostName: function I__normalizeHostName(host) {
+     return host.replace(/^www\./, "");
+  },
+
+  /**
    * Extract the host from the URI in the format Places expects
    *
    * @param   uri
@@ -235,7 +247,7 @@ Interests.prototype = {
    */
   _getPlacesHostForURI: function I__getPlacesHostForURI(uri) {
     try {
-      return uri.host.replace(/^www\./, "");
+      return this._normalizeHostName(uri.host);
     }
     catch(ex) {}
     return "";
