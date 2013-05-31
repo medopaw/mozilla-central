@@ -76,7 +76,6 @@ let userProfileWrapper = {
   },
 
   refreshPagePayload: function (numInterestsProfile) {
-    numInterestsProfile = numInterestsProfile || 5;
     interestService.getPagePayload(numInterestsProfile).then(data => {
       userProfileWrapper.updatePayload("pageload", data);
     },
