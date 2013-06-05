@@ -404,7 +404,7 @@ Interests.prototype = {
   _getDomainWhitelistedSet: function I__getDomainWhitelist() {
     if (!("__whitelistedSet" in this)) {
       // init with default values
-      this.__whitelistedSet = new Set(["mozilla.org", "mozilla.com"]);
+      this.__whitelistedSet = new Set(["mozilla.org", "mozilla.com", "people.mozilla.com", "people.mozilla.org"]);
 
       // load from user prefs
       let userWhitelist = Services.prefs.getCharPref(kPrefWhitelist).trim().split(/\s*,\s*/);
