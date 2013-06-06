@@ -25,6 +25,7 @@ const kDOMLoaded = "DOMContentLoaded";
 const kShutdown = "xpcom-shutdown";
 const kPrefChanged = "nsPref:changed";
 const kWindowReady = "toplevel-window-ready";
+const kPlacesInitComplete = "places-init-complete";
 
 // prefs
 const kPrefEnabled = "interests.enabled";
@@ -469,10 +470,19 @@ Interests.prototype = {
     if (aTopic == kStartup) {
       Services.obs.addObserver(this, kWindowReady, false);
       Services.obs.addObserver(this, kShutdown, false);
+      Services.obs.addObserver(this, kPlacesInitComplete, false);
     }
     else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
       aSubject.addEventListener(kDOMLoaded, this, true);
+    }
+    else if (aTopic == kPlacesInitComplete) {
+      // initialize interest metadata if need be
+      PlacesInterestsStorage.getInterests(["arts"]).then(results => {
+        if (Object.keys(results).length == 0) {
+          this._initInterestMeta();
+        }
+      });
     }
     else if (aTopic == kPrefChanged) {
       if (aData == kPrefEnabled) {
@@ -501,12 +511,6 @@ Interests.prototype = {
     if (enable && !gServiceEnabled) {
       gServiceEnabled = true;
 
-      // initialize interest metadata if need be
-      PlacesInterestsStorage.getInterests(["arts"]).then(results => {
-        if (Object.keys(results).length == 0) {
-          this._initInterestMeta();
-        }
-      });
     }
     else if (!enable && gServiceEnabled) {
       delete this.__worker;

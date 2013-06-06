@@ -27,9 +27,8 @@ function run_test() {
 }
 
 add_task(function test_getPagePayload() {
-  Services.prefs.setBoolPref("interests.enabled", false);
-  Services.prefs.setBoolPref("interests.enabled", true);
-  yield promiseWaitForMetadataInit();
+  yield addInterest("computers");
+  yield addInterest("real-estate");
 
   yield promiseAddUrlInterestsVisit("http://techmeme.com", ["computers"], 1, 1);
   yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 2, 13);

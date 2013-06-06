@@ -55,10 +55,10 @@ function test() {
         ok(error != null, "correctly see error when accessing getInterests from an unprivileged page");
       });
       aWindow.content.navigator.interests.getTopInterests(5).then(ints => {
-        // we should see two interest - "cars" and "video-games"
-        is(ints.length,2,"array of ints must be 2 ints");
-        ok(ints[0].name == "cars" ||  ints[0].name == "video_games", "first interest must be cars or video-games please");
-        ok(ints[1].name == "cars" ||  ints[1].name == "video_games", "second interest must be cars or video-games please");
+        // we should see two interest - "cars" and "technology"
+        is(ints.length,5,"array of ints must be 2 ints");
+        ok(ints[0].name == "cars" ||  ints[0].name == "technology", "first interest must be cars or technology please");
+        ok(ints[1].name == "cars" ||  ints[1].name == "technology", "second interest must be cars or technology please");
         promiseClearHistoryAndInterests().then(finish);
       },
       error => {
@@ -86,10 +86,10 @@ function test() {
         of(false, "interests must be accessible in whitelisted page");
       });
       aWindow.content.navigator.interests.getTopInterests(6).then(ints => {
-        // we should see two interest - "video-games" and "cars"
-        is(ints.length,2,"array of ints must be 2 ints");
-        ok(ints[0].name == "cars" || ints[0].name == "video_games", "first interest must be cars or video-games please");
-        ok(ints[1].name == "cars" ||  ints[1].name == "video_games", "second interest must be cars or video-games please");
+        // we should see two interest - "technology" and "cars"
+        is(ints.length,6,"array of ints must be 2 ints");
+        ok(ints[0].name == "cars" || ints[0].name == "technology", "first interest must be cars or technology please");
+        ok(ints[1].name == "cars" ||  ints[1].name == "technology", "second interest must be cars or technology please");
         promiseClearHistoryAndInterests().then(finish);
       },
       error => {

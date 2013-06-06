@@ -190,22 +190,4 @@ function scoreDecay(score, numDays, daysToZero) {
   return score * (1 - numDays/(daysToZero+1));
 }
 
-// Wait until interest metadata is populated
-function promiseWaitForMetadataInit() {
-  let finishedPopulating = Promise.defer();
-
-  let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-  let observer = {
-    observe: function(subject, topic, data) {
-      if (topic == "interest-metadata-initialized") {
-        finishedPopulating.resolve();
-        observerService.removeObserver(this, "interest-metadata-initialized");
-      }
-    }
-  };
-  observerService.addObserver(observer, "interest-metadata-initialized", false);
-
-  return finishedPopulating.promise;
-}
-
 Services.prefs.setBoolPref("interests.enabled", true);
