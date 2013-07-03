@@ -127,6 +127,12 @@ SHARED_LIBRARY_LIBS	+= \
   $(NULL)
 endif #}
 
+ifdef MOZ_SDCARD #{
+SHARED_LIBRARY_LIBS	+= \
+	$(DEPTH)/dom/sdcard/$(LIB_PREFIX)dom_sdcard_s.$(LIB_SUFFIX) \
+  $(NULL)
+endif #}
+
 ifdef MOZ_B2G_BT #{
 SHARED_LIBRARY_LIBS += $(DEPTH)/dom/bluetooth/$(LIB_PREFIX)dombluetooth_s.$(LIB_SUFFIX)
 endif #}
@@ -328,6 +334,10 @@ endif #}
 
 ifdef MOZ_B2G_FM #{
 LOCAL_INCLUDES	+= -I$(topsrcdir)/dom/fm
+endif #}
+
+ifdef MOZ_SDCARD #{
+LOCAL_INCLUDES	+= -I$(topsrcdir)/dom/sdcard
 endif #}
 
 ifdef MOZ_B2G_BT #{

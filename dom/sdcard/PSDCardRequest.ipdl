@@ -1,0 +1,57 @@
+/* -*- Mode: c++; c-basic-offset: 2; indent-tabs-mode: nil; tab-width: 40 -*- */
+/* vim: set ts=2 et sw=2 tw=80: */
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+include protocol PContent;
+
+namespace mozilla {
+namespace dom {
+namespace sdcard {
+
+struct ErrorResponse
+{
+  nsString error;
+};
+
+struct VoidResponse
+{
+};
+
+struct PathResponse
+{
+  nsString path;
+};
+
+struct PathsResponse
+{
+  nsString[] paths;
+};
+
+struct MetadataResponse
+{
+  int64_t modificationTime;
+  uint64_t size;
+};
+
+union SDCardResponseValue
+{
+  ErrorResponse;
+  VoidResponse;
+  PathResponse;
+  PathsResponse;
+  MetadataResponse;
+};
+
+sync protocol PSDCardRequest
+{
+  manager PContent;
+
+child:
+  __delete__(SDCardResponseValue response);
+};
+
+} // namespace sdcard
+} // namespace dom
+} // namespace mozilla

@@ -197,6 +197,10 @@
 #include "TimeManager.h"
 #endif
 
+#ifdef MOZ_SDCARD
+#include "FileSystem.h"
+#endif
+
 using namespace mozilla;
 using namespace mozilla::dom;
 using mozilla::dom::workers::ResolveWorkerClasses;
@@ -1114,6 +1118,10 @@ nsDOMClassInfo::Init()
   DOM_CLASSINFO_MAP_BEGIN(Location, nsIDOMLocation)
     DOM_CLASSINFO_MAP_ENTRY(nsIDOMLocation)
   DOM_CLASSINFO_MAP_END
+
+#ifdef MOZ_SDCARD
+    DOM_CLASSINFO_MAP_ENTRY(nsIDOMNavigatorSDCard)
+#endif
 
   DOM_CLASSINFO_MAP_BEGIN_NO_CLASS_IF(DOMPrototype, nsIDOMDOMConstructor)
     DOM_CLASSINFO_MAP_ENTRY(nsIDOMDOMConstructor)

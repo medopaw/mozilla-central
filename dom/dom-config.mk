@@ -60,4 +60,8 @@ ifdef MOZ_WEBSPEECH
 DOM_SRCDIRS += content/media/webspeech
 endif
 
+ifdef MOZ_SDCARD
+DOM_SRCDIRS += dom/sdcard
+endif
+
 LOCAL_INCLUDES += $(DOM_SRCDIRS:%=-I$(topsrcdir)/%)

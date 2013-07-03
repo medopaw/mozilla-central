@@ -4212,6 +4212,7 @@ MOZ_WEBSMS_BACKEND=
 MOZ_ANDROID_BEAM=
 ACCESSIBILITY=1
 MOZ_TIME_MANAGER=
+MOZ_SDCARD=
 MOZ_PAY=
 MOZ_AUDIO_CHANNEL_MANAGER=
 NSS_NO_LIBPKIX=
@@ -7679,6 +7680,14 @@ if test -n "$MOZ_TIME_MANAGER"; then
     AC_DEFINE(MOZ_TIME_MANAGER)
 fi
 AC_SUBST(MOZ_TIME_MANAGER)
+
+dnl ========================================================
+dnl = Enable Support for SDCard API
+dnl ========================================================
+if test -n "$MOZ_SDCARD"; then
+    AC_DEFINE(MOZ_SDCARD)
+fi
+AC_SUBST(MOZ_SDCARD)
 
 dnl ========================================================
 dnl = Enable Camera Interface for B2G (Gonk usually)

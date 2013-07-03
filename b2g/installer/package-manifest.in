@@ -216,6 +216,9 @@
 @BINPATH@/components/dom_xpath.xpt
 @BINPATH@/components/dom_xul.xpt
 @BINPATH@/components/dom_time.xpt
+#ifdef MOZ_SDCARD
+@BINPATH@/components/dom_sdcard.xpt
+#endif
 @BINPATH@/components/downloads.xpt
 @BINPATH@/components/editor.xpt
 @BINPATH@/components/embed_base.xpt

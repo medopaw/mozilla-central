@@ -49,6 +49,9 @@
 #include "TimeManager.h"
 #include "DeviceStorage.h"
 #include "nsIDOMNavigatorSystemMessages.h"
+#ifdef MOZ_SDCARD
+#include "FileSystem.h"
+#endif
 
 #ifdef MOZ_MEDIA_NAVIGATOR
 #include "MediaManager.h"
@@ -89,6 +92,7 @@ static uint32_t sMaxVibrateListLen = 0;
 void
 Navigator::Init()
 {
+  printf("\n\n\nIn Navigator::Init()!!!!\n\n\n");
   Preferences::AddBoolVarCache(&sDoNotTrackEnabled,
                                "privacy.donottrackheader.enabled",
                                false);
@@ -263,6 +267,12 @@ Navigator::Invalidate()
   if (mTimeManager) {
     mTimeManager = nullptr;
   }
+
+#ifdef MOZ_SDCARD
+  if (mSDCard) {
+    mSDCard = nullptr;
+  }
+#endif
 }
 
 //*****************************************************************************
@@ -1343,6 +1353,36 @@ Navigator::GetMozTime(ErrorResult& aRv)
   }
 
   return mTimeManager;
+}
+#endif
+
+//*****************************************************************************
+//    Navigator::nsIDOMNavigatorSDCard
+//*****************************************************************************
+#ifdef MOZ_SDCARD
+NS_IMETHODIMP
+Navigator::GetMozSDCard(nsISupports** aSDCard)
+{
+  *aSDCard = nullptr;
+
+  if (!mSDCard) {
+    // Only need to check permission on creation of mSDCard
+    if (CheckPermission("sdcard-filesystem")) {
+      nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(mWindow);
+      mSDCard = new sdcard::FileSystem(window, NS_LITERAL_STRING("SD Card"), NS_LITERAL_STRING("/sdcard"));
+    }
+    NS_ENSURE_TRUE(mSDCard, NS_OK);
+  }
+
+  if (mSDCard) {
+    if (!mSDCard->IsValid()) {
+      mSDCard = nullptr;
+    }
+  }
+
+  NS_ADDREF(*aSDCard = mSDCard);
+
+  return NS_OK;
 }
 #endif
 

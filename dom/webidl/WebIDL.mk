@@ -404,6 +404,12 @@ webidl_files += \
   $(NULL)
 endif
 
+ifdef MOZ_SDCARD
+webidl_files += \
+  FileSystem.webidl \
+  $(NULL)
+endif
+
 ifdef MOZ_WEBGL
 webidl_files += \
   WebGLRenderingContext.webidl \

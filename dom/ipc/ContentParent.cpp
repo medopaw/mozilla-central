@@ -33,6 +33,9 @@
 #include "mozilla/dom/DOMStorageIPC.h"
 #include "mozilla/dom/bluetooth/PBluetoothParent.h"
 #include "mozilla/dom/devicestorage/DeviceStorageRequestParent.h"
+#ifdef MOZ_SDCARD
+#include "mozilla/dom/sdcard/SDCardRequestParent.h"
+#endif
 #include "SmsParent.h"
 #include "mozilla/Hal.h"
 #include "mozilla/hal_sandbox/PHalParent.h"
@@ -135,6 +138,7 @@ static const char* sClipboardTextFlavors[] = { kUnicodeMime };
 using base::ChildPrivileges;
 using base::KillProcess;
 using namespace mozilla::dom::bluetooth;
+using namespace mozilla::dom::sdcard;
 using namespace mozilla::dom::devicestorage;
 using namespace mozilla::dom::indexedDB;
 using namespace mozilla::dom::power;
@@ -1829,6 +1833,32 @@ ContentParent::DeallocPDeviceStorageRequestParent(PDeviceStorageRequestParent* d
   DeviceStorageRequestParent *parent = static_cast<DeviceStorageRequestParent*>(doomed);
   NS_RELEASE(parent);
   return true;
+}
+
+PSDCardRequestParent*
+ContentParent::AllocPSDCardRequest(const SDCardParams& aParams)
+{
+#ifdef MOZ_SDCARD
+  nsRefPtr<SDCardRequestParent> result = new SDCardRequestParent(aParams);
+  result->Dispatch();
+  return result.forget().get();
+#else
+    MOZ_NOT_REACHED("No support for sdcard filesystem on this platform!");
+    return nullptr;
+#endif
+}
+
+bool
+ContentParent::DeallocPSDCardRequest(PSDCardRequestParent* doomed)
+{
+#ifdef MOZ_SDCARD
+  SDCardRequestParent *parent = static_cast<SDCardRequestParent*>(doomed);
+  NS_RELEASE(parent);
+  return true;
+#else
+    MOZ_NOT_REACHED("No support for sdcard filesystem on this platform!");
+    return false;
+#endif
 }
 
 PBlobParent*

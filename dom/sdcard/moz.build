@@ -1,0 +1,63 @@
+# vim: set filetype=python:
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+XPIDL_SOURCES += [
+    'nsIDOMNavigatorSDCard.idl',
+]
+
+XPIDL_MODULE = 'dom_sdcard'
+
+MODULE = 'dom'
+
+XPIDL_FLAGS += [
+     '-I$(topsrcdir)/dom/interfaces/base/'
+]
+
+CPP_SOURCES += [
+    'Caller.cpp',
+    'CopyAndMoveToWorker.cpp',
+    'DirectoryEntry.cpp',
+    'DirectoryReader.cpp',
+    'Entry.cpp',
+    'Error.cpp',
+    'FileEntry.cpp',
+    'FileSystem.cpp', 
+    'FileUtils.cpp',
+    'GetEntryWorker.cpp',
+    'GetMetadataWorker.cpp',
+    'GetParentWorker.cpp',
+    'IPCCopyAndMoveToEvent.cpp',
+    'IPCEvent.cpp',
+    'IPCGetEntryEvent.cpp',
+    'IPCRemoveEvent.cpp',
+    'Metadata.cpp',
+    'Path.cpp',
+    'ReadEntriesWorker.cpp',
+    'RemoveWorker.cpp',
+    'SDCardEvent.cpp',
+    'SDCardRequestChild.cpp',
+    'SDCardRequestParent.cpp',
+    'SPCopyAndMoveToEvent.cpp',
+    'SPEvent.cpp',
+    'SPGetEntryEvent.cpp',
+    'SPGetMetadataEvent.cpp',
+    'SPGetParentEvent.cpp',
+    'SPReadEntriesEvent.cpp',
+    'SPRemoveEvent.cpp',
+    'Window.cpp',
+    'Worker.cpp',
+]
+
+EXPORTS.mozilla.dom.sdcard += [
+    'Caller.h',
+    'DirectoryEntry.h',
+    'DirectoryReader.h',
+    'Entry.h',
+    'FileEntry.h',
+    'FileSystem.h',
+    'Metadata.h',
+    'SDCardRequestChild.h',
+    'SDCardRequestParent.h',
+]

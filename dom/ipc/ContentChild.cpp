@@ -96,6 +96,9 @@
 #include "mozilla/dom/indexedDB/PIndexedDBChild.h"
 #include "mozilla/dom/mobilemessage/SmsChild.h"
 #include "mozilla/dom/devicestorage/DeviceStorageRequestChild.h"
+#ifdef MOZ_SDCARD
+#include "mozilla/dom/sdcard/SDCardRequestChild.h"
+#endif
 #include "mozilla/dom/bluetooth/PBluetoothChild.h"
 #include "mozilla/ipc/InputStreamUtils.h"
 
@@ -121,6 +124,7 @@ using namespace mozilla;
 using namespace mozilla::docshell;
 using namespace mozilla::dom::bluetooth;
 using namespace mozilla::dom::devicestorage;
+using namespace mozilla::dom::sdcard;
 using namespace mozilla::dom::ipc;
 using namespace mozilla::dom::mobilemessage;
 using namespace mozilla::dom::indexedDB;
@@ -839,6 +843,33 @@ ContentChild::DeallocPDeviceStorageRequestChild(PDeviceStorageRequestChild* aDev
 {
     delete aDeviceStorage;
     return true;
+}
+
+PSDCardRequestChild*
+ContentChild::AllocPSDCardRequest(const SDCardParams& aParams)
+{
+  // return new SDCardRequestChild();
+#ifdef MOZ_SDCARD
+    MOZ_CRASH("No one should be allocating PSDCardChild actors");
+    return nullptr;
+#else
+    MOZ_CRASH("No support for sdcard filesystem on this platform!");
+    return nullptr;
+#endif
+}
+
+bool
+ContentChild::DeallocPSDCardRequest(PSDCardRequestChild* aSDCard)
+{
+    // delete aSDCard;
+    // return true;
+#ifdef MOZ_SDCARD
+    delete aSDCard;
+    return true;
+#else
+    MOZ_NOT_REACHED("No support for sdcard filesystem on this platform!");
+    return false;
+#endif
 }
 
 PNeckoChild*
