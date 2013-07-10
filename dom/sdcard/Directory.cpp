@@ -141,13 +141,13 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
   }
 }
 
-void
-Directory::GetFile(const nsAString& path, const FileSystemFlags& options,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+already_AddRefed<mozilla::dom::Future>
+Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
 {
   SDCARD_LOG("in Directory.GetFile()");
-  GetEntry(path, options, successCallback, errorCallback, true);
+  nsRefPtr<mozilla::dom::Future> future = new mozilla::dom::Future(GetParentObject());
+  return future.forget();
+  //GetEntry(path, options, successCallback, errorCallback, true);
 }
 
 void

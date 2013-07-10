@@ -31,6 +31,10 @@ private:
     AsyncTask
   };
 
+  // Helpers
+  void Resolved();
+  void Rejected();
+
 public:
   NS_INLINE_DECL_CYCLE_COLLECTING_NATIVE_REFCOUNTING(PromiseResolver)
   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_NATIVE_CLASS(PromiseResolver)

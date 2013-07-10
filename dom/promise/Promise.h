@@ -43,6 +43,11 @@ public:
   static bool PrefEnabled();
   static bool EnabledForScope(JSContext* aCx, JSObject* /* unused */);
 
+  FutureResolver* Resolver() const
+  {
+    return mResolver;
+  }
+
   // WebIDL
 
   nsPIDOMWindow* GetParentObject() const
@@ -72,6 +77,9 @@ public:
 
   already_AddRefed<Promise>
   Catch(const Optional<OwningNonNull<AnyCallback> >& aRejectCallback);
+
+  // Helper for nested Promise objects
+  void AppendRunnable(PromiseRunnable* aRunnable);
 
 private:
   enum PromiseState {
