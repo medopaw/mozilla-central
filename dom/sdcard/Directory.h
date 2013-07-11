@@ -21,16 +21,16 @@ namespace sdcard {
 
 struct FileInfo;
 
-class DirectoryEntry MOZ_FINAL : public Entry
+class Directory MOZ_FINAL : public Entry
 {
 public:
   NS_DECL_CYCLE_COLLECTING_ISUPPORTS
-  NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(DirectoryEntry)
+  NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(Directory)
 
 public:
-  explicit DirectoryEntry(const FileInfo& aInfo);
+  explicit Directory(const FileInfo& aInfo);
 
-  ~DirectoryEntry();
+  ~Directory();
 
   virtual JSObject* WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope);
 

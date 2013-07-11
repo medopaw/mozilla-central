@@ -49,12 +49,12 @@ public:
 
   already_AddRefed<FileSystem> Filesystem() const;
 
-  void MoveTo(DirectoryEntry& parent,
+  void MoveTo(Directory& parent,
       const Optional<nsAString >& newName,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void CopyTo(DirectoryEntry& parent,
+  void CopyTo(Directory& parent,
       const Optional<nsAString >& newName,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
@@ -92,7 +92,7 @@ protected:
   nsString mRelpath;
 
 private:
-  void CopyAndMoveTo(DirectoryEntry& parent,
+  void CopyAndMoveTo(Directory& parent,
       const Optional<nsAString >& newName,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback,

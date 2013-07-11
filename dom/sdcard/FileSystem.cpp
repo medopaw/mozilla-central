@@ -46,7 +46,7 @@ FileSystem::FileSystem(nsPIDOMWindow* aWindow,
     mRoot = nullptr;
   } else {
     SDCARD_LOG("Create root.");
-    mRoot = new DirectoryEntry(info);
+    mRoot = new Directory(info);
   }
 
   SetIsDOMBinding();
@@ -79,11 +79,11 @@ FileSystem::GetName(nsString& retval) const
   SDCARD_LOG("retval=%s", NS_ConvertUTF16toUTF8(retval).get());
 }
 
-already_AddRefed<DirectoryEntry>
+already_AddRefed<Directory>
 FileSystem::Root()
 {
   SDCARD_LOG("in FileSystem.Root()");
-  nsRefPtr<DirectoryEntry> root(mRoot);
+  nsRefPtr<Directory> root(mRoot);
   return root.forget();
 }
 

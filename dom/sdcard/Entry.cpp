@@ -13,7 +13,7 @@
 #include "FileSystem.h"
 #include "Metadata.h"
 #include "FileEntry.h"
-#include "DirectoryEntry.h"
+#include "Directory.h"
 
 #include "SPCopyAndMoveToEvent.h"
 #include "SPGetMetadataEvent.h"
@@ -46,7 +46,7 @@ Entry::CreateFromRelpath(const nsAString& aPath)
   if (info.isFile) {
     return new FileEntry(info);
   } else {
-    return new DirectoryEntry(info);
+    return new Directory(info);
   }
 }
 
@@ -123,7 +123,7 @@ Entry::Filesystem() const
 }
 
 void
-Entry::MoveTo(DirectoryEntry& parent, const Optional<nsAString>& newName,
+Entry::MoveTo(Directory& parent, const Optional<nsAString>& newName,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
@@ -131,7 +131,7 @@ Entry::MoveTo(DirectoryEntry& parent, const Optional<nsAString>& newName,
 }
 
 void
-Entry::CopyTo(DirectoryEntry& parent, const Optional<nsAString>& newName,
+Entry::CopyTo(Directory& parent, const Optional<nsAString>& newName,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
@@ -139,7 +139,7 @@ Entry::CopyTo(DirectoryEntry& parent, const Optional<nsAString>& newName,
 }
 
 void
-Entry::CopyAndMoveTo(DirectoryEntry& parent,
+Entry::CopyAndMoveTo(Directory& parent,
     const Optional<nsAString>& newName,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback,

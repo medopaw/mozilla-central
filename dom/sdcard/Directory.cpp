@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "DirectoryEntry.h"
+#include "Directory.h"
 #include "mozilla/dom/FileSystemBinding.h"
 #include "nsContentUtils.h"
 
@@ -23,65 +23,65 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-NS_IMPL_CYCLE_COLLECTION_WRAPPERCACHE_0(DirectoryEntry)
+NS_IMPL_CYCLE_COLLECTION_WRAPPERCACHE_0(Directory)
 
-NS_IMPL_CYCLE_COLLECTING_ADDREF(DirectoryEntry)
-NS_IMPL_CYCLE_COLLECTING_RELEASE(DirectoryEntry)
-NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(DirectoryEntry)
+NS_IMPL_CYCLE_COLLECTING_ADDREF(Directory)
+NS_IMPL_CYCLE_COLLECTING_RELEASE(Directory)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(Directory)
   NS_WRAPPERCACHE_INTERFACE_MAP_ENTRY
   NS_INTERFACE_MAP_ENTRY(nsISupports)
 NS_INTERFACE_MAP_END
 
-DirectoryEntry::DirectoryEntry(const FileInfo& aInfo) :
+Directory::Directory(const FileInfo& aInfo) :
     Entry(aInfo)
 {
-  SDCARD_LOG("construct DirectoryEntry with FileInfo struct");
+  SDCARD_LOG("construct Directory with FileInfo struct");
   SetIsDOMBinding();
 }
 
-DirectoryEntry::~DirectoryEntry()
+Directory::~Directory()
 {
-  SDCARD_LOG("destruct DirectoryEntry");
+  SDCARD_LOG("destruct Directory");
 }
 
 JSObject*
-DirectoryEntry::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope)
+Directory::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope)
 {
-  return DirectoryEntryBinding::Wrap(aCx, aScope, this);
+  return DirectoryBinding::Wrap(aCx, aScope, this);
 }
 
 already_AddRefed<DirectoryReader>
-DirectoryEntry::CreateReader()
+Directory::CreateReader()
 {
-  SDCARD_LOG("in DirectoryEntry.CreateReader()");
+  SDCARD_LOG("in Directory.CreateReader()");
   nsRefPtr<DirectoryReader> reader = new DirectoryReader(this);
   return reader.forget();
 }
 
 void
-DirectoryEntry::GetFile(const nsAString& path, const FileSystemFlags& options,
+Directory::GetFile(const nsAString& path, const FileSystemFlags& options,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in DirectoryEntry.GetFile()");
+  SDCARD_LOG("in Directory.GetFile()");
   GetEntry(path, options, successCallback, errorCallback, true);
 }
 
 void
-DirectoryEntry::GetDirectory(const nsAString& path,
+Directory::GetDirectory(const nsAString& path,
     const FileSystemFlags& options,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in DirectoryEntry.GetDirectory()");
+  SDCARD_LOG("in Directory.GetDirectory()");
   GetEntry(path, options, successCallback, errorCallback, false);
 }
 
 void
-DirectoryEntry::RemoveRecursively(VoidCallback& successCallback,
+Directory::RemoveRecursively(VoidCallback& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in DirectoryEntry.RemoveRecursively()");
+  SDCARD_LOG("in Directory.RemoveRecursively()");
 
   ErrorCallback* pErrorCallback = nullptr;
   if (errorCallback.WasPassed()) {
@@ -105,11 +105,11 @@ DirectoryEntry::RemoveRecursively(VoidCallback& successCallback,
 }
 
 void
-DirectoryEntry::GetEntry(const nsAString& path, const FileSystemFlags& options,
+Directory::GetEntry(const nsAString& path, const FileSystemFlags& options,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback, bool isFile)
 {
-  SDCARD_LOG("in DirectoryEntry.GetEntry()");
+  SDCARD_LOG("in Directory.GetEntry()");
 
   // Assign callback nullptr if not passed
   EntryCallback* pSuccessCallback = nullptr;

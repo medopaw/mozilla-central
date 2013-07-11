@@ -12,7 +12,7 @@
 
 interface FileSystem {
     readonly attribute DOMString      name;
-    readonly attribute DirectoryEntry root;
+    readonly attribute Directory root;
 };
 
 interface Entry {
@@ -22,14 +22,14 @@ interface Entry {
     readonly attribute DOMString  name;
     readonly attribute DOMString  fullPath;
     readonly attribute FileSystem filesystem;
-    void      moveTo (DirectoryEntry parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void      copyTo (DirectoryEntry parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void      moveTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void      copyTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
 //  DOMString toURL ();
     void      remove (VoidCallback successCallback, optional ErrorCallback errorCallback);
     void      getParent (EntryCallback successCallback, optional ErrorCallback errorCallback);
 };
 
-interface DirectoryEntry : Entry {
+interface Directory : Entry {
     [Creator]
     DirectoryReader createReader ();
     void            getFile (DOMString path, optional FileSystemFlags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);

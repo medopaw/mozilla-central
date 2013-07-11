@@ -13,7 +13,7 @@
 
 #include "nsAutoPtr.h"
 #include "nsString.h"
-#include "DirectoryEntry.h"
+#include "Directory.h"
 
 class nsPIDOMWindow;
 struct JSContext;
@@ -39,7 +39,7 @@ public:
   void GetName(nsString& retval) const;
 
   // Mark this as resultNotAddRefed to return raw pointers
-  already_AddRefed<DirectoryEntry> Root();
+  already_AddRefed<Directory> Root();
 
   static FileSystem* GetFilesystem();
 
@@ -48,7 +48,7 @@ public:
 private:
   static FileSystem* smFileSystem;
   nsString mName;
-  nsRefPtr<DirectoryEntry> mRoot;
+  nsRefPtr<Directory> mRoot;
 };
 
 } // namespace sdcard

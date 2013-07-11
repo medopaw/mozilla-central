@@ -18,7 +18,7 @@ XPIDL_FLAGS += [
 CPP_SOURCES += [
     'Caller.cpp',
     'CopyAndMoveToWorker.cpp',
-    'DirectoryEntry.cpp',
+    'Directory.cpp',
     'DirectoryReader.cpp',
     'Entry.cpp',
     'Error.cpp',
@@ -52,7 +52,7 @@ CPP_SOURCES += [
 
 EXPORTS.mozilla.dom.sdcard += [
     'Caller.h',
-    'DirectoryEntry.h',
+    'Directory.h',
     'DirectoryReader.h',
     'Entry.h',
     'FileEntry.h',

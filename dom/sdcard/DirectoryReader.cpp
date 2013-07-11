@@ -10,7 +10,7 @@
 #include "Caller.h"
 #include "Window.h"
 #include "SPReadEntriesEvent.h"
-#include "DirectoryEntry.h"
+#include "Directory.h"
 #include "Utils.h"
 
 namespace mozilla {
@@ -25,7 +25,7 @@ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(DirectoryReader)
   NS_INTERFACE_MAP_ENTRY(nsISupports)
 NS_INTERFACE_MAP_END
 
-DirectoryReader::DirectoryReader(DirectoryEntry* entry) :
+DirectoryReader::DirectoryReader(Directory* entry) :
     mEntry(entry)
 {
   SDCARD_LOG("construct DirectoryReader");

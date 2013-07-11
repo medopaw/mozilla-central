@@ -27,7 +27,7 @@ NS_INTERFACE_MAP_END
 FileEntry::FileEntry(const FileInfo& aInfo) :
     Entry(aInfo)
 {
-  SDCARD_LOG("construct DirectoryEntry with FileInfo struct");
+  SDCARD_LOG("construct Directory with FileInfo struct");
   SetIsDOMBinding();
 }
 

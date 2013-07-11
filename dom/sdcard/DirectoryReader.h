@@ -19,7 +19,7 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-class DirectoryEntry;
+class Directory;
 
 class DirectoryReader MOZ_FINAL : public nsISupports, public nsWrapperCache
 {
@@ -28,7 +28,7 @@ public:
   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(DirectoryReader)
 
 public:
-  DirectoryReader(DirectoryEntry* entry);
+  DirectoryReader(Directory* entry);
   ~DirectoryReader();
 
   nsPIDOMWindow* GetParentObject() const;
@@ -39,7 +39,7 @@ public:
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
-  nsRefPtr<DirectoryEntry> mEntry;
+  nsRefPtr<Directory> mEntry;
 };
 
 } // namespace sdcard
