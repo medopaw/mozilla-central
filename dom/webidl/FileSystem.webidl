@@ -2,12 +2,6 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * The origin of this IDL file is
- * http://www.w3.org/TR/2012/WD-dom-20120105/
- *
- * Copyright © 2012 W3C® (MIT, ERCIM, Keio), All Rights Reserved. W3C
- * liability, trademark and document use rules apply.
  */
 
 interface FileSystem {
@@ -16,12 +10,12 @@ interface FileSystem {
 };
 
 interface Entry {
-    readonly attribute boolean    isFile;
-    readonly attribute boolean    isDirectory;
+    readonly  attribute boolean    isFile;
+    readonly  attribute boolean    isDirectory;
     void      getMetadata (MetadataCallback successCallback, optional ErrorCallback errorCallback);
-    readonly attribute DOMString  name;
-    readonly attribute DOMString  fullPath;
-    readonly attribute FileSystem filesystem;
+    readonly  attribute DOMString  name;
+    readonly  attribute DOMString  fullPath;
+    readonly  attribute FileSystem filesystem;
     void      moveTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void      copyTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
 //  DOMString toURL ();
@@ -32,6 +26,9 @@ interface Entry {
 interface Directory : Entry {
     [Creator]
     DirectoryReader createReader ();
+    void            makeDirectory (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    // void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    // void            moveTo (Entry entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            getFile (DOMString path, optional FileSystemFlags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            getDirectory (DOMString path, optional FileSystemFlags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            removeRecursively (VoidCallback successCallback, optional ErrorCallback errorCallback);

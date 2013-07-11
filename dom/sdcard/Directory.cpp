@@ -59,6 +59,14 @@ Directory::CreateReader()
 }
 
 void
+Directory::MakeDirectory(const nsAString& name,
+  const Optional< OwningNonNull<EntryCallback> >& successCallback,
+  const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.makeDirectory()");
+}
+
+void
 Directory::GetFile(const nsAString& path, const FileSystemFlags& options,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
