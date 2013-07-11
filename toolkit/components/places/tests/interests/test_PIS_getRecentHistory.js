@@ -7,6 +7,7 @@
 "use strict";
 
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/PlacesInterestsUtils.jsm");
 
 function run_test() {
   run_next_test();
@@ -29,7 +30,7 @@ add_task(function test_GetRecentHistory()
 
   let results = {};
 
-  yield PlacesInterestsStorage.getRecentHistory(3, function(oneRecord) {
+  yield PlacesInterestsUtils.getRecentHistory(3, function(oneRecord) {
     // make sure oneRecord looks kosher
     do_check_eq(oneRecord.url, "http://www.cars.com/");
     do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");
@@ -48,7 +49,7 @@ add_task(function test_GetRecentHistory()
     do_check_eq(results[today - 2], 3);
   });
 
-  yield PlacesInterestsStorage.getRecentHistory(1, function(oneRecord) {
+  yield PlacesInterestsUtils.getRecentHistory(1, function(oneRecord) {
     //we should only see
     dump(JSON.stringify(oneRecord) + " <<<==== \n");
     do_check_eq(oneRecord.url, "http://www.cars.com/");
@@ -58,7 +59,7 @@ add_task(function test_GetRecentHistory()
   });
 
   let haveSeenRecords = false;
-  yield PlacesInterestsStorage.getRecentHistory(0, function(oneRecord) {
+  yield PlacesInterestsUtils.getRecentHistory(0, function(oneRecord) {
     haveSeenRecords = true;
   });
 

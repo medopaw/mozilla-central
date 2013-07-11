@@ -59,6 +59,7 @@ EXTRA_JS_MODULES = \
   BookmarkJSONUtils.jsm \
   PlacesBackups.jsm \
   PlacesInterestsStorage.jsm \
+  PlacesInterestsUtils.jsm \
   $(NULL)
 
 EXTRA_PP_JS_MODULES = \

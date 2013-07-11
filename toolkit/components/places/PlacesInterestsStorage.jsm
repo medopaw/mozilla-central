@@ -83,19 +83,6 @@ const SQL = {
     "FROM moz_interests " +
     "WHERE interest IN (:interests)",
 
-  getRecentHistory:
-    "SELECT title, url, visitCount, visitDate " +
-    "FROM moz_places " +
-    "JOIN (SELECT place_id, " +
-                 "COUNT(1) visitCount, " +
-                 "visit_date/1000 - visit_date/1000 % :MS_PER_DAY visitDate " +
-          "FROM moz_historyvisits " +
-          "WHERE visit_date >= (:dayCutoff+1) * :MS_PER_DAY*1000 " +
-          "GROUP BY place_id, visitDate) " +
-    "ON place_id = id " +
-    "WHERE hidden = 0 AND " +
-          "visit_count > 0",
-
   getRecentHostsForInterests:
     "SELECT i.interest, h.host, h.frecency " +
     "FROM moz_interests i " +
@@ -300,26 +287,6 @@ let PlacesInterestsStorage = {
       key: "interest",
       listParams: {
         interests: interests,
-      },
-    });
-  },
-
-  /**
-   * Fetch recent history visits to process by page and day of visit
-   *
-   * @param   daysAgo
-   *          Number of days of recent history to fetch
-   * @param   handlePageForDay
-   *          Callback handling a day's visits for a page
-   * @returns Promise for when all the recent pages have been processed
-   */
-  getRecentHistory: function PIS_getRecentHistory(daysAgo, handlePageForDay) {
-    return this._execute(SQL.getRecentHistory, {
-      columns: ["title", "url", "visitCount", "visitDate"],
-      onRow: handlePageForDay,
-      params: {
-        dayCutoff: this._convertDateToDays() - daysAgo,
-        MS_PER_DAY: MS_PER_DAY,
       },
     });
   },

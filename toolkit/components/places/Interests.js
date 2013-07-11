@@ -14,6 +14,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/PlacesInterestsUtils.jsm");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 
@@ -104,7 +105,7 @@ Interests.prototype = {
     // clean interest tables first
     PlacesInterestsStorage.clearRecentVisits(daysBack).then(() => {
       // read moz_places data and massage it
-      PlacesInterestsStorage.getRecentHistory(daysBack, item => {
+      PlacesInterestsUtils.getRecentHistory(daysBack, item => {
         try {
           let uri = NetUtil.newURI(item.url);
           item["message"] = "getInterestsForDocument";
