@@ -59,7 +59,8 @@ public:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  already_AddRefed<mozilla::dom::Future> GetFile(const nsAString& path, const FileSystemFlags& options);
+  already_AddRefed<mozilla::dom::Future> GetFile(const nsAString& path,
+      const FileSystemFlags& options);
 
   void GetDirectory(const nsAString& path, const FileSystemFlags& options,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
@@ -71,7 +72,8 @@ public:
 private:
   void GetEntry(const nsAString& path, const FileSystemFlags& options,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback, bool isDirectory);
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
+      bool isDirectory);
 };
 
 } // namespace sdcard

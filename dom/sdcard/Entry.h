@@ -96,6 +96,12 @@ private:
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
       bool isCopy);
+
+  void CopyAndMoveTo(const nsString& entryRelpath,
+      const nsString& parentRelpath, const nsString& newName,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
+      bool isCopy);
 };
 
 } // namespace sdcard

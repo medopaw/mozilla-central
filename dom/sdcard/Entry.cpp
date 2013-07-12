@@ -141,14 +141,12 @@ Entry::CopyTo(Directory& parent, const Optional<nsAString>& newName,
 }
 
 void
-Entry::CopyAndMoveTo(Directory& parent,
-    const Optional<nsAString>& newName,
+Entry::CopyAndMoveTo(Directory& parent, const Optional<nsAString>& newName,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
     bool isCopy)
 {
-  nsString parentDOMPath, parentRelpath;
-  parent.GetFullPath(parentDOMPath);
+  nsString parentRelpath;
   parent.GetRelpath(parentRelpath);
 
   nsString strNewName;
@@ -158,6 +156,17 @@ Entry::CopyAndMoveTo(Directory& parent,
     strNewName.SetIsVoid(true);
   }
 
+  CopyAndMoveTo(mRelpath, parentRelpath, strNewName, successCallback,
+      errorCallback, isCopy);
+}
+
+void
+Entry::CopyAndMoveTo(const nsString& entryRelpath,
+      const nsString& parentRelpath, const nsString& newName,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
+      bool isCopy)
+{
   EntryCallback* pSuccessCallback = nullptr;
   if (successCallback.WasPassed()) {
     pSuccessCallback = &(successCallback.Value());
@@ -170,16 +179,17 @@ Entry::CopyAndMoveTo(Directory& parent,
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPCopyAndMoveToEvent> r = new SPCopyAndMoveToEvent(mRelpath,
-        parentRelpath, strNewName, isCopy, pCaller);
+    nsRefPtr<SPCopyAndMoveToEvent> r = new SPCopyAndMoveToEvent(entryRelpath,
+        parentRelpath, newName, isCopy, pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardCopyAndMoveParams params(mRelpath, parentRelpath, strNewName, isCopy);
+    SDCardCopyAndMoveParams params(entryRelpath, parentRelpath, newName, isCopy);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
+
 
 void
 Entry::Remove(VoidCallback& successCallback,
