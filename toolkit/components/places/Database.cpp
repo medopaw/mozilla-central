@@ -835,6 +835,8 @@ Database::InitSchema(bool* aDatabaseMigrated)
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_SHARED);
     NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_FRECENT_HOSTS);
+    NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_SHARED_INTEREST);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_SHARED_DOMAIN);
@@ -1940,6 +1942,8 @@ Database::MigrateV23Up()
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_VISITS);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_HOSTS_FRECENCY);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_FRECENT_HOSTS);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_SHARED);
     NS_ENSURE_SUCCESS(rv, rv);

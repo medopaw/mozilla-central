@@ -10,7 +10,6 @@ Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
 let dbConn = PlacesInterestsStorage.db;
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
 
 function run_test() {
@@ -23,11 +22,11 @@ add_task(function test_InterestWebAPI_getTopInterests()
   let now = Date.now();
   let results;
 
-  yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.mozilla.org/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
-
+  yield promiseAddVisitsWithRefresh(["http://www.cars.com/",
+                                     "http://www.mozilla.org/",
+                                     "http://www.netflix.com/",
+                                     "http://www.samsung.com/"
+                                    ]);
   // interests set with default values for threshold and duration
   yield addInterest("cars");
   yield addInterest("movies");
@@ -145,9 +144,10 @@ add_task(function test_InterestWebAPI_getTopInterests()
   yield PlacesInterestsStorage.clearRecentVisits(100);
   // add visits to a category beyond test threshold, i.e. 29 days and beyond
   // the category should not show up
-  yield promiseAddVisits(NetUtil.newURI("http://www.site1.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.site2.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.site3.com/"));
+  yield promiseAddVisitsWithRefresh(["http://www.site1.com/",
+                                     "http://www.site2.com/",
+                                     "http://www.site3.com/"
+                                    ]);
   yield PlacesInterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*29), visitCount: 5});
   yield PlacesInterestsStorage.addInterestHost("history", "site1.com");
   yield PlacesInterestsStorage.addInterestHost("history", "site2.com");
@@ -201,10 +201,11 @@ add_task(function test_sharable() {
   yield PlacesInterestsStorage.clearRecentVisits(30);
 
   // Add some hosts
-  yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.mozilla.org/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
+  yield promiseAddVisitsWithRefresh(["http://www.cars.com/",
+                                     "http://www.mozilla.org/",
+                                     "http://www.netflix.com/",
+                                     "http://www.samsung.com/"
+                                    ]);
 
   // interests set with default values for threshold and duration
   yield addInterest("cars");

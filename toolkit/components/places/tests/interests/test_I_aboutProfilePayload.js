@@ -10,8 +10,6 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
-
 const kInterests = ["arts", "banking", "blogging", "business", "career",
 "cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",
 "discounts", "drinks", "education", "email", "entertainment", "family",
@@ -45,6 +43,7 @@ add_task(function test_getPagePayload() {
   });
 
   let results = yield iServiceObject.getPagePayload();
+  dump(JSON.stringify(results) + " <<<<<<<<<<<<===\n");
   isIdentical(expected, results.interestsProfile);
   isIdentical({"computers":[{"host":"techmeme.com","frecency":100}],"real-estate":[{"host":"realtor.com","frecency":100}]}, results.interestsHosts);
 

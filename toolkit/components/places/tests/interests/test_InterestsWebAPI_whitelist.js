@@ -10,7 +10,6 @@ Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
 let dbConn = PlacesInterestsStorage.db;
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 let apiInstance = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
 apiInstance.QueryInterface(Ci.nsIDOMGlobalPropertyInitializer);
 

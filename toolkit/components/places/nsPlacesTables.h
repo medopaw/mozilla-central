@@ -188,4 +188,12 @@
   ")" \
 )
 
+#define CREATE_MOZ_INTERESTS_FRECENT_HOSTS NS_LITERAL_CSTRING( \
+  "CREATE TABLE moz_interests_frecent_hosts (" \
+    "  id INTEGER PRIMARY KEY" \
+    ", host TEXT NOT NULL UNIQUE" \
+    ", frecency INTEGER" \
+  ")" \
+)
+
 #endif // __nsPlacesTables_h__

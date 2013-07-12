@@ -64,6 +64,7 @@ function exposeAll(obj) {
 function Interests() {
   gInterestsService = this;
   Services.prefs.addObserver("interests.", this, false);
+  gInterestsService.refreshFrecentHosts();
 }
 
 Interests.prototype = {
@@ -172,6 +173,21 @@ Interests.prototype = {
         domainsData[domain].interests.push(interest);
       });
       return domainsList;
+    });
+  },
+
+  /**
+   * updates moz_interests_frecent_hosts with fresh select from places.moz_hosts
+   *
+   * @returns promise for update complete
+   */
+  refreshFrecentHosts: function I_refreshFrecentHosts() {
+    return PlacesInterestsUtils.getMostFrecentHosts().then(results => {
+      let promises = [];
+      results.forEach(item => {
+        promises.push(PlacesInterestsStorage.addFrecentHost(item.id,item.host,item.frecency));
+      });
+      return gatherPromises(promises).then();
     });
   },
 

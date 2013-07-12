@@ -21,6 +21,12 @@ const MS_PER_DAY = 86400000;
  * Store the SQL statements used for this file together for easy reference
  */
 const SQL = {
+  getMostFrecentHosts:
+    "SELECT id, host, frecency " +
+    "FROM moz_hosts " +
+    "ORDER BY frecency DESC " +
+    "LIMIT 200",
+
   getRecentHistory:
     "SELECT title, url, visitCount, visitDate " +
     "FROM moz_places " +
@@ -38,6 +44,17 @@ const SQL = {
 let PlacesInterestsUtils = {
   //////////////////////////////////////////////////////////////////////////////
   //// PlacesInterestsUtils
+
+  /**
+   * Fetch recent history visits to process by page and day of visit
+   *
+   * @returns Promise with an array of frecent hosts objects
+   */
+  getMostFrecentHosts: function PIS_getMostFrecentHosts(handleFrecentHost){
+    return this._execute(SQL.getMostFrecentHosts, {
+      columns: ["id", "host", "frecency"],
+    });
+  },
 
   /**
    * Fetch recent history visits to process by page and day of visit

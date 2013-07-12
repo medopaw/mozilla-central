@@ -21,6 +21,9 @@ const MS_PER_DAY = 86400000;
  * Store the SQL statements used for this file together for easy reference
  */
 const SQL = {
+  addFrecentHost:
+    "REPLACE INTO moz_interests_frecent_hosts VALUES(:id, :host, :frecency)",
+
   addInterestHost:
     "INSERT OR IGNORE INTO moz_interests_hosts (interest_id, host_id) " +
     "VALUES((SELECT id " +
@@ -28,9 +31,7 @@ const SQL = {
             "WHERE interest = :interest), " +
            "(SELECT id " +
             "FROM (SELECT id, host " +
-                  "FROM moz_hosts " +
-                  "ORDER BY frecency DESC " +
-                  "LIMIT 200) " +
+                  "FROM moz_interests_frecent_hosts) " +
             "WHERE host = :host))",
 
   addInterestVisit:
@@ -86,7 +87,7 @@ const SQL = {
   getRecentHostsForInterests:
     "SELECT i.interest, h.host, h.frecency " +
     "FROM moz_interests i " +
-      ", moz_hosts h " +
+      ", moz_interests_frecent_hosts h " +
       ", moz_interests_hosts ih " +
       ", moz_interests_visits iv " +
     "WHERE i.interest IN (:interests) " +
@@ -173,6 +174,27 @@ const SQL = {
 let PlacesInterestsStorage = {
   //////////////////////////////////////////////////////////////////////////////
   //// PlacesInterestsStorage
+
+  /**
+   * Insert a frecent host (a host among 200 most frecent hosts)
+   *
+   * @param   id
+   *          host id
+   * @param   host
+   *          host string
+   * @param   frecency
+   *          host frecency
+   * @returns Promise for when the row is added
+   */
+  addFrecentHost: function PIS_addFrecentHost(id, host, frecency) {
+    return this._execute(SQL.addFrecentHost, {
+      params: {
+        id: id,
+        host: host,
+        frecency: frecency,
+      },
+    });
+  },
 
   /**
    * Record the pair of interest and host

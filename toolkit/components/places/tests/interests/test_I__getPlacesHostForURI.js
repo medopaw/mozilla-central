@@ -6,8 +6,6 @@
 
 Cu.import("resource://gre/modules/Services.jsm");
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
-
 function checkHost(spec, host) {
   let uri = Services.io.newURI(spec, null, null);
   do_check_eq(iServiceObject._getPlacesHostForURI(uri), host);

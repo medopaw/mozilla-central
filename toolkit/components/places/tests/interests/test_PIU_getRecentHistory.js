@@ -6,7 +6,6 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsUtils.jsm");
 
 function run_test() {
@@ -16,7 +15,7 @@ function run_test() {
 add_task(function test_GetRecentHistory()
 {
   let now = Date.now();
-  let today = PlacesInterestsStorage._convertDateToDays(now);
+  let today = PlacesInterestsUtils._convertDateToDays(now);
   let microNow = now * 1000;
   yield promiseClearHistory();
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow});
@@ -36,7 +35,7 @@ add_task(function test_GetRecentHistory()
     do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");
     do_check_true(oneRecord.visitDate != null);
     do_check_true(oneRecord.visitCount != null);
-    let day = PlacesInterestsStorage._convertDateToDays(oneRecord.visitDate);
+    let day = PlacesInterestsUtils._convertDateToDays(oneRecord.visitDate);
     results[day] = oneRecord.visitCount;
   }).then(function() {
     // make sure we have:

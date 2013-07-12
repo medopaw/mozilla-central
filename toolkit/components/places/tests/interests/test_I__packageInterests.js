@@ -6,8 +6,6 @@
 
 "use strict";
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
-
 function run_test() {
   run_next_test();
 }

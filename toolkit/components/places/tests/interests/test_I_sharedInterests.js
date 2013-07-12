@@ -8,19 +8,16 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
-
 function run_test() {
   run_next_test();
 }
 
 add_task(function test_I_sharedInterestsSetting()
 {
-  yield promiseAddVisits(NetUtil.newURI("http://www.cars.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.mozilla.org/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.netflix.com/"));
-  yield promiseAddVisits(NetUtil.newURI("http://www.samsung.com/"));
-
+  yield promiseAddVisitsWithRefresh(["http://www.cars.com/",
+                                     "http://www.mozilla.org/",
+                                     "http://www.netflix.com/",
+                                     "http://www.samsung.com/"]);
   yield addInterest("cars");
   yield addInterest("computers");
   yield addInterest("movies");

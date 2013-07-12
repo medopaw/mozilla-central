@@ -13,11 +13,14 @@ Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
+
 // Import common head.
 let (commonFile = do_get_file("../head_common.js", false)) {
   let uri = Services.io.newFileURI(commonFile);
   Services.scriptloader.loadSubScript(uri.spec, this);
 }
+
+let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 
 // Put any other stuff relative to this test folder below.
 
@@ -50,7 +53,7 @@ function clearInterestsHosts() {
 
 function getHostsForInterest(interest) {
   return PlacesInterestsStorage._execute(
-    "SELECT h.host AS host FROM moz_hosts h, moz_interests i, moz_interests_hosts ih " +
+    "SELECT h.host AS host FROM moz_interests_frecent_hosts h, moz_interests i, moz_interests_hosts ih " +
     "WHERE i.interest = :interest AND h.id = ih.host_id AND i.id = ih.interest_id", {
     columns: ["host"],
     params: {
@@ -61,7 +64,7 @@ function getHostsForInterest(interest) {
 
 function getInterestsForHost(host) {
   return PlacesInterestsStorage._execute(
-    "SELECT interest FROM moz_interests i, moz_interests_hosts ih, moz_hosts h " +
+    "SELECT interest FROM moz_interests i, moz_interests_hosts ih, moz_interests_frecent_hosts h " +
     "WHERE h.host = :host AND h.id = ih.host_id AND i.id = ih.interest_id", {
     columns: ["interest"],
     params: {
@@ -87,25 +90,35 @@ function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
     visits.push(aVisitInfo)
   }
 
-  let visitPromises = [];
-  let now = Date.now();
+  // add URL visits and run syc between moz_hosts and moz_interests_frecent_hosts
+  let uriPromises = [];
   visits.forEach(function(visit) {
     let uri = NetUtil.newURI(visit.url);
-    visitPromises.push(promiseAddVisits(uri));
+    uriPromises.push(promiseAddVisits(uri));
+  });
+  // wait for urls insertions to complete
+  return Promise.promised(Array)(uriPromises).then(() => {
+    // urls are added, moz_hosts populated => refresh moz_interests_frecent_hosts
+    return iServiceObject.refreshFrecentHosts().then(() => {
+      // moz_interests_frecent_hosts is in OK state, and hosts and visits
+      let visitPromises = [];
+      let now = Date.now();
+      visits.forEach(function(visit) {
+        let uri = NetUtil.newURI(visit.url);
+        let host = uri.host.replace(/^www\./, "");
+        let visitTime = now - MS_PER_DAY*(visit.daysAgo || 0);
+        let visitCount = visit.count || 1;
+        let interests = (Array.isArray(visit.interests)) ? visit.interests : [visit.interests];
 
-    let host = uri.host.replace(/^www\./, "");
-    let visitTime = now - MS_PER_DAY*(visit.daysAgo || 0);
-    let visitCount = visit.count || 1;
-    let interests = (Array.isArray(visit.interests)) ? visit.interests : [visit.interests];
-
-    interests.forEach(function(interest) {
-      visitPromises.push(addInterest(interest));
-      visitPromises.push(PlacesInterestsStorage.addInterestVisit(interest, {visitTime: visitTime, visitCount: visitCount}));
-      visitPromises.push(PlacesInterestsStorage.addInterestHost(interest, host));
+        interests.forEach(function(interest) {
+          visitPromises.push(addInterest(interest));
+          visitPromises.push(PlacesInterestsStorage.addInterestVisit(interest, {visitTime: visitTime, visitCount: visitCount}));
+          visitPromises.push(PlacesInterestsStorage.addInterestHost(interest, host));
+        });
+      });
+      return Promise.promised(Array)(visitPromises).then();
     });
   });
-
-  return Promise.promised(Array)(visitPromises).then();
 }
 
 function promiseAddUrlInterestsVisit(url,interests,count,daysAgo) {
@@ -131,6 +144,15 @@ function addInterestVisitsToSite(site,interest,count) {
     promises.push(promiseAddUrlInterestsVisit(site,interest));
   }
   return Promise.promised(Array)(promises).then();
+}
+
+function promiseAddVisitsWithRefresh(urls) {
+  let uriArray = urls.map(url => {
+    return promiseAddVisits(NetUtil.newURI(url));
+  });
+  return Promise.promised(Array)(uriArray).then(() => {
+    return iServiceObject.refreshFrecentHosts().then();
+  });
 }
 
 function itemsHave(items,data) {

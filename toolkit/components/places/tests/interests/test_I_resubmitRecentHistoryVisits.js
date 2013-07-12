@@ -9,7 +9,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 
 function run_test() {

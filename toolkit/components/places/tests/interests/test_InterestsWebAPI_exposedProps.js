@@ -8,7 +8,6 @@
 
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI);
 
 function run_test() {
