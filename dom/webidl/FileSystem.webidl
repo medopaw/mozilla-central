@@ -27,7 +27,7 @@ interface Directory : Entry {
     [Creator]
     DirectoryReader createReader ();
     void            makeDirectory (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    // void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     // void            moveTo (Entry entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            getFile (DOMString path, optional FileSystemFlags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            getDirectory (DOMString path, optional FileSystemFlags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);

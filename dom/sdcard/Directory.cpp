@@ -104,6 +104,14 @@ Directory::MakeDirectory(const nsAString& name,
 }
 
 void
+Directory::Rename(const nsAString& oldName, const nsAString& newName,
+  const Optional< OwningNonNull<EntryCallback> >& successCallback,
+  const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.rename()");
+}
+
+void
 Directory::GetFile(const nsAString& path, const FileSystemFlags& options,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
