@@ -129,6 +129,7 @@ Entry::MoveTo(Directory& parent, const Optional<nsAString>& newName,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
+  SDCARD_LOG("in Entry.MoveTo()");
   CopyAndMoveTo(parent, newName, successCallback, errorCallback, false);
 }
 
@@ -137,6 +138,7 @@ Entry::CopyTo(Directory& parent, const Optional<nsAString>& newName,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
+  SDCARD_LOG("in Entry.CopyTo()");
   CopyAndMoveTo(parent, newName, successCallback, errorCallback, true);
 }
 
