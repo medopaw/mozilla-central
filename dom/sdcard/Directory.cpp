@@ -141,6 +141,24 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
   }
 }
 
+void
+Directory::MoveTo(const nsAString& entry, const nsAString& newName,
+      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.MoveTo()");
+}
+
+void
+Directory::MoveTo(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
+      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.MoveTo()");
+}
+
 already_AddRefed<mozilla::dom::Future>
 Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
 {

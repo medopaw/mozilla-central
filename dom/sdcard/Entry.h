@@ -92,8 +92,7 @@ protected:
   nsString mRelpath;
 
 private:
-  void CopyAndMoveTo(Directory& parent,
-      const Optional<nsAString >& newName,
+  void CopyAndMoveTo(Directory& parent, const Optional<nsAString >& newName,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
       bool isCopy);
