@@ -35,7 +35,8 @@ NS_INTERFACE_MAP_END
 Entry*
 Entry::CreateFromRelpath(const nsAString& aPath)
 {
-  SDCARD_LOG("in Entry::CreateFromRelpath() with relpath=%s", NS_ConvertUTF16toUTF8(aPath).get());
+  SDCARD_LOG("in Entry::CreateFromRelpath() with relpath=%s",
+      NS_ConvertUTF16toUTF8(aPath).get());
 
   FileInfo info;
   nsresult rv = FileUtils::GetFileInfo(aPath, info);
@@ -110,7 +111,8 @@ Entry::GetName(nsString& retval) const
 void
 Entry::GetFullPath(nsString& retval) const
 {
-  SDCARD_LOG("in Entry.GetFullPath() with fullpath=%s", NS_ConvertUTF16toUTF8(mFullPath).get());
+  SDCARD_LOG("in Entry.GetFullPath() with fullpath=%s",
+      NS_ConvertUTF16toUTF8(mFullPath).get());
   retval = mFullPath;
 }
 

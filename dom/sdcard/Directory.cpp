@@ -14,6 +14,7 @@
 #include "Path.h"
 #include "Utils.h"
 
+#include "SPCopyAndMoveToEvent.h"
 #include "SPGetEntryEvent.h"
 #include "SPRemoveEvent.h"
 #include "mozilla/dom/ContentChild.h"
@@ -82,13 +83,9 @@ Directory::MakeDirectory(const nsAString& name,
     return;
   }
 
-  // Get absolute path.
-  nsString fullPath;
-  GetFullPath(fullPath);
-  nsString absolutePath;
-  Path::Absolutize(name, fullPath, absolutePath);
+  // Get absolute real path.
   nsString realPath;
-  Path::DOMPathToRealPath(absolutePath, realPath);
+  Path::Absolutize(name, mRelpath, realPath);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
@@ -109,6 +106,39 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.rename()");
+  // Assign callback nullptr if not passed
+  EntryCallback* pSuccessCallback = nullptr;
+  ErrorCallback* pErrorCallback = nullptr;
+  if (successCallback.WasPassed()) {
+    pSuccessCallback = &(successCallback.Value());
+  }
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
+
+  // Check if names are valid.
+  if (!Path::IsValidName(oldName) || !Path::IsValidName(newName)) {
+    SDCARD_LOG("Invalid name!");
+    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return;
+  }
+
+  // Get absolute real path.
+  nsString oldPath;
+  Path::Absolutize(oldName, mRelpath, oldPath);
+
+  if (XRE_GetProcessType() == GeckoProcessType_Default) {
+    SDCARD_LOG("in b2g process");
+    nsRefPtr<SPCopyAndMoveToEvent> r = new SPCopyAndMoveToEvent(oldPath,
+        mRelpath, newName, false, pCaller);
+    r->Start();
+  } else {
+    SDCARD_LOG("in app process");
+    SDCardCopyAndMoveParams params(oldPath, mRelpath, nsString(newName), false);
+    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
+  }
 }
 
 void
@@ -183,10 +213,8 @@ Directory::GetEntry(const nsAString& path, const FileSystemFlags& options,
   }
 
   // Make sure path is absolute.
-  nsString fullPath;
-  GetFullPath(fullPath);
   nsString absolutePath;
-  Path::Absolutize(path, fullPath, absolutePath);
+  Path::Absolutize(path, mFullPath, absolutePath);
   nsString realPath;
   Path::DOMPathToRealPath(absolutePath, realPath);
 
