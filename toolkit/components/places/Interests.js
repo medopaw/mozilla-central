@@ -27,6 +27,7 @@ const kShutdown = "xpcom-shutdown";
 const kPrefChanged = "nsPref:changed";
 const kWindowReady = "toplevel-window-ready";
 const kPlacesInitComplete = "places-init-complete";
+const kIdleDaily = "idle-daily";
 
 // prefs
 const kPrefEnabled = "interests.enabled";
@@ -487,6 +488,7 @@ Interests.prototype = {
       Services.obs.addObserver(this, kWindowReady, false);
       Services.obs.addObserver(this, kShutdown, false);
       Services.obs.addObserver(this, kPlacesInitComplete, false);
+      Services.obs.addObserver(this, kIdleDaily, false);
     }
     else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
@@ -512,7 +514,11 @@ Interests.prototype = {
     else if (aTopic == kShutdown) {
       Services.obs.removeObserver(this, kStartup);
       Services.obs.removeObserver(this, kShutdown);
+      Services.obs.removeObserver(this, kIdleDaily);
       Servies.prefs.removeObserver("interests.", this);
+    }
+    else if (aTopic == kIdleDaily) {
+      this.refreshFrecentHosts();
     }
     else {
       Cu.reportError("unhandled event: "+aTopic);
