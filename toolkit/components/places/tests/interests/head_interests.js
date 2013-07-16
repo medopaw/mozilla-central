@@ -99,7 +99,7 @@ function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
   // wait for urls insertions to complete
   return Promise.promised(Array)(uriPromises).then(() => {
     // urls are added, moz_hosts populated => refresh moz_interests_frecent_hosts
-    return iServiceObject.refreshFrecentHosts().then(() => {
+    return iServiceObject._refreshFrecentHosts().then(() => {
       // moz_interests_frecent_hosts is in OK state, and hosts and visits
       let visitPromises = [];
       let now = Date.now();
@@ -151,7 +151,7 @@ function promiseAddVisitsWithRefresh(urls) {
     return promiseAddVisits(NetUtil.newURI(url));
   });
   return Promise.promised(Array)(uriArray).then(() => {
-    return iServiceObject.refreshFrecentHosts().then();
+    return iServiceObject._refreshFrecentHosts().then();
   });
 }
 

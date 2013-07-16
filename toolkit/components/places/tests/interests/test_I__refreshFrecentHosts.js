@@ -12,7 +12,7 @@ function run_test() {
   run_next_test();
 }
 
-add_task(function test_refreshFrecentHosts()
+add_task(function test_I__refreshFrecentHosts()
 {
   yield promiseAddVisitsWithRefresh(["http://www.cars.com/",
                                      "http://www.mozilla.org/",

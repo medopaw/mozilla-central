@@ -176,21 +176,6 @@ Interests.prototype = {
     });
   },
 
-  /**
-   * updates moz_interests_frecent_hosts with fresh select from places.moz_hosts
-   *
-   * @returns promise for update complete
-   */
-  refreshFrecentHosts: function I_refreshFrecentHosts() {
-    return PlacesInterestsUtils.getMostFrecentHosts().then(results => {
-      let promises = [];
-      results.forEach(item => {
-        promises.push(PlacesInterestsStorage.addFrecentHost(item.id,item.host,item.frecency));
-      });
-      return gatherPromises(promises).then();
-    });
-  },
-
   //////////////////////////////////////////////////////////////////////////////
   //// Interests Helpers
 
@@ -455,6 +440,21 @@ Interests.prototype = {
     });
   },
 
+  /**
+   * updates moz_interests_frecent_hosts with fresh select from places.moz_hosts
+   *
+   * @returns promise for update complete
+   */
+  _refreshFrecentHosts: function I__refreshFrecentHosts() {
+    return PlacesInterestsUtils.getMostFrecentHosts().then(results => {
+      let promises = [];
+      results.forEach(item => {
+        promises.push(PlacesInterestsStorage.addFrecentHost(item.id,item.host,item.frecency));
+      });
+      return gatherPromises(promises).then();
+    });
+  },
+
   //////////////////////////////////////////////////////////////////////////////
   //// nsIDOMEventListener
 
@@ -501,7 +501,7 @@ Interests.prototype = {
           this._initInterestMeta();
         }
       });
-      this.refreshFrecentHosts();
+      this._refreshFrecentHosts();
     }
     else if (aTopic == kPrefChanged) {
       if (aData == kPrefEnabled) {
@@ -518,7 +518,7 @@ Interests.prototype = {
       Servies.prefs.removeObserver("interests.", this);
     }
     else if (aTopic == kIdleDaily) {
-      this.refreshFrecentHosts();
+      this._refreshFrecentHosts();
     }
     else {
       Cu.reportError("unhandled event: "+aTopic);
