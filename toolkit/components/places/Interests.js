@@ -64,7 +64,6 @@ function exposeAll(obj) {
 function Interests() {
   gInterestsService = this;
   Services.prefs.addObserver("interests.", this, false);
-  gInterestsService.refreshFrecentHosts();
 }
 
 Interests.prototype = {
@@ -500,6 +499,7 @@ Interests.prototype = {
           this._initInterestMeta();
         }
       });
+      this.refreshFrecentHosts();
     }
     else if (aTopic == kPrefChanged) {
       if (aData == kPrefEnabled) {
