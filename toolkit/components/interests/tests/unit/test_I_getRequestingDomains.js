@@ -12,7 +12,7 @@ function run_test() {
   run_next_test();
 }
 
-add_task(function test_I_getRequestingDomains()
+add_task(function test_I_getRequestingHosts()
 {
   yield promiseAddVisitsWithRefresh(["http://www.cars.com/",
                                      "http://www.mozilla.org/",
@@ -52,7 +52,7 @@ add_task(function test_I_getRequestingDomains()
     requestingHost: "bar.com",
   });
 
-  yield iServiceObject.getRequestingDomains().then(results => {
+  yield iServiceObject.getRequestingHosts().then(results => {
     //dump(JSON.stringify(results));
     isIdentical(results,[
       {"name":"bar.com","interests":["cars","movies","technology"],"isBlocked":false,"isPrivileged":false},

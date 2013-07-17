@@ -182,9 +182,9 @@
 #define CREATE_MOZ_INTERESTS_SHARED NS_LITERAL_CSTRING( \
   "CREATE TABLE moz_interests_shared (" \
     "  interest_id INTEGER NOT NULL" \
-    ", domain TEXT NOT NULL" \
+    ", host TEXT NOT NULL" \
     ", day INTEGER NOT NULL" \
-    ", PRIMARY KEY (interest_id, domain)" \
+    ", PRIMARY KEY (interest_id, host)" \
   ")" \
 )
 

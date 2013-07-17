@@ -60,7 +60,7 @@ add_task(function test_I_sharedInterestsSetting()
                       ]);
 
   // no shared interests should be found
-  yield PlacesInterestsStorage.getDomainsForSharedInterests(["cars","movies"]).then(results => {
+  yield PlacesInterestsStorage.getHostsForSharedInterests(["cars","movies"]).then(results => {
     do_check_eq(results.length,0);
   });
 
@@ -93,14 +93,14 @@ add_task(function test_I_sharedInterestsSetting()
     requestingHost: "bar.com",
   });
 
-  yield PlacesInterestsStorage.getPersonalizedDomains().then(results => {
+  yield PlacesInterestsStorage.getPersonalizedHosts().then(results => {
     //dump( JSON.stringify(results)  + " <<<<\n");
     isIdentical(results,[
-                          {"interest":"cars","domain":"bar.com","day":today},
-                          {"interest":"movies","domain":"bar.com","day":today},
-                          {"interest":"technology","domain":"bar.com","day":today},
-                          {"interest":"cars","domain":"foo.com","day":today},
-                          {"interest":"movies","domain":"foo.com","day":today},
+                          {"interest":"cars","host":"bar.com","day":today},
+                          {"interest":"movies","host":"bar.com","day":today},
+                          {"interest":"technology","host":"bar.com","day":today},
+                          {"interest":"cars","host":"foo.com","day":today},
+                          {"interest":"movies","host":"foo.com","day":today},
                         ]);
   });
 });

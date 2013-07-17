@@ -143,36 +143,36 @@ Interests.prototype = {
   },
 
   /**
-   * Package up shared interests by domains
+   * Package up shared interests by hosts
    *
    * @param   [optional] daysBack
    *          retrieve domains that accessed interests between daysBack and now
    *          if omitted all domains will be returned
    * @returns Promise with domains + corresponding interests
    */
-  getRequestingDomains: function I_getRequestingDomains(daysBack) {
-    return PlacesInterestsStorage.getPersonalizedDomains(daysBack).then(results => {
-      let domainsData = {};
-      let domainsList = [];
-      // domains come in order
+  getRequestingHosts: function I_getRequestingHosts(daysBack) {
+    return PlacesInterestsStorage.getPersonalizedHosts(daysBack).then(results => {
+      let hostsData = {};
+      let hostsList = [];
+      // hosts come in order
       results.forEach(data => {
-        let {interest, domain} = data;
-        if (!domainsData[domain]) {
-          // create a domain object
-          let domainObject = {
-            name: domain,
+        let {interest, host} = data;
+        if (!hostsData[host]) {
+          // create a host object
+          let hostObject = {
+            name: host,
             interests: [],
-            isBlocked: this.isSiteBlocked(domain),
+            isBlocked: this.isSiteBlocked(host),
             isPrivileged: this._getDomainWhitelistedSet().
-                            has(this._normalizeHostName(domain)),
+                            has(this._normalizeHostName(host)),
           };
-          domainsData[domain] = domainObject;
-          domainsList.push(domainObject);
+          hostsData[host] = hostObject;
+          hostsList.push(hostObject);
         }
-        // push corresponding domain & the interest,date of visit
-        domainsData[domain].interests.push(interest);
+        // push corresponding host & the interest,date of visit
+        hostsData[host].interests.push(interest);
       });
-      return domainsList;
+      return hostsList;
     });
   },
 
@@ -580,7 +580,7 @@ Interests.prototype = {
     // gather and package the data promises
     promises.push(interestPromise);
     promises.push(interestHostPromise);
-    promises.push(this.getRequestingDomains());
+    promises.push(this.getRequestingHosts());
     return gatherPromises(promises).then(results => {
       let output = {};
       output.interestsProfile = results[0];

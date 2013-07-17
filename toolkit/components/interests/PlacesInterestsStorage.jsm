@@ -148,26 +148,26 @@ const SQL = {
     "VALUES((SELECT id " +
             "FROM moz_interests " +
             "WHERE interest = :interest), " +
-           ":domain, " +
+           ":host, " +
            ":day) ",
 
-  getDomainsForSharedInterests:
-    "SELECT interest, domain, day " +
+  getHostsForSharedInterests:
+    "SELECT interest, host, day " +
     "FROM moz_interests " +
     "LEFT JOIN moz_interests_shared " +
     "ON interest_id = id " +
     "WHERE interest IN (:interests) AND " +
-          "domain NOT NULL " +
+          "host NOT NULL " +
     "ORDER BY interest, day DESC ",
 
-  getPersonalizedDomains:
-    "SELECT interest, domain, day " +
+  getPersonalizedHosts:
+    "SELECT interest, host, day " +
     "FROM moz_interests_shared " +
     "LEFT JOIN moz_interests " +
     "ON interest_id = id " +
     "WHERE day >= :dayCutoff AND " +
-          "domain NOT NULL " +
-    "ORDER BY day DESC, domain ",
+          "host NOT NULL " +
+    "ORDER BY day DESC, host ",
 
 };
 
@@ -409,17 +409,17 @@ let PlacesInterestsStorage = {
    *
    * @param   interest
    *          Full interest name with namespace to set
-   * @param   domain
-   *          domain of the site an interest was shared with
+   * @param   host
+   *          host of the site an interest was shared with
    * @param   [optional] visitTime
    *          time when an interest was shared with the site
    * @returns Promise for when the interest,domain pair is set
    */
-  setSharedInterest: function PIS_setSharedInterest(interest, domain, visitTime) {
+  setSharedInterest: function PIS_setSharedInterest(interest, host, visitTime) {
     return this._execute(SQL.setSharedInterest, {
       params: {
         interest: interest,
-        domain: domain,
+        host: host,
         day: this._convertDateToDays(visitTime),
       },
     });
@@ -432,9 +432,9 @@ let PlacesInterestsStorage = {
    *          interests that were shared
    * @returns Promise with an array of {intrest,domains,day} objects
    */
-  getDomainsForSharedInterests: function PIS_getDomainsForSharedInterests(interests) {
-    return this._execute(SQL.getDomainsForSharedInterests, {
-      columns: ["interest","domain", "day"],
+  getHostsForSharedInterests: function PIS_getHostsForSharedInterests(interests) {
+    return this._execute(SQL.getHostsForSharedInterests, {
+      columns: ["interest","host", "day"],
       listParams: {
         interests: interests,
       },
@@ -448,9 +448,9 @@ let PlacesInterestsStorage = {
    *          Number of days of history to fetch
    * @returns Promise with an array of {intrest,domains,day} objects
    */
-  getPersonalizedDomains: function PIS_getPersonalizedDomains(daysAgo) {
-    return this._execute(SQL.getPersonalizedDomains, {
-      columns: ["interest","domain", "day"],
+  getPersonalizedHosts: function PIS_getPersonalizedDomains(daysAgo) {
+    return this._execute(SQL.getPersonalizedHosts, {
+      columns: ["interest","host", "day"],
       params: {
         dayCutoff: this._convertDateToDays() - (daysAgo || 180),
       },

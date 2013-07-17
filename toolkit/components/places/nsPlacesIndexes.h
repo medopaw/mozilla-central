@@ -150,7 +150,7 @@
 
 #define CREATE_IDX_MOZ_INTERESTS_SHARED_DOMAIN \
   CREATE_PLACES_IDX( \
-    "shared_domain_index", "moz_interests_shared", "domain", "" \
+    "shared_host_index", "moz_interests_shared", "host", "" \
   )
 
 #endif // nsPlacesIndexes_h__

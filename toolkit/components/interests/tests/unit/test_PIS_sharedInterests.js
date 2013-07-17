@@ -25,11 +25,11 @@ add_task(function test_PlacesInterestsStorage_sharedInterests()
   let results;
 
   // nothig was shared - results are empty
-  yield PlacesInterestsStorage.getDomainsForSharedInterests(["cars"]).then(results => {
+  yield PlacesInterestsStorage.getHostsForSharedInterests(["cars"]).then(results => {
     do_check_eq(results.length, 0);
   });
 
-  yield PlacesInterestsStorage.getPersonalizedDomains().then(results => {
+  yield PlacesInterestsStorage.getPersonalizedHosts().then(results => {
     do_check_eq(results.length, 0);
   });
 
@@ -41,25 +41,25 @@ add_task(function test_PlacesInterestsStorage_sharedInterests()
   yield PlacesInterestsStorage.setSharedInterest("cars","baz.com",now - MS_PER_DAY*2);
   yield PlacesInterestsStorage.setSharedInterest("cars","bar.com",now - MS_PER_DAY);
 
-  yield PlacesInterestsStorage.getDomainsForSharedInterests(["cars","movies"]).then(results => {
+  yield PlacesInterestsStorage.getHostsForSharedInterests(["cars","movies"]).then(results => {
     isIdentical(results,[
-                          {"interest":"cars","domain":"foo.com","day":today},
-                          {"interest":"cars","domain":"bar.com","day":today-1},
-                          {"interest":"cars","domain":"baz.com","day":today-2},
-                          {"interest":"movies","domain":"foo.com","day":today},
-                          {"interest":"movies","domain":"bar.com","day":today-1},
-                          {"interest":"movies","domain":"baz.com","day":today-2},
+                          {"interest":"cars","host":"foo.com","day":today},
+                          {"interest":"cars","host":"bar.com","day":today-1},
+                          {"interest":"cars","host":"baz.com","day":today-2},
+                          {"interest":"movies","host":"foo.com","day":today},
+                          {"interest":"movies","host":"bar.com","day":today-1},
+                          {"interest":"movies","host":"baz.com","day":today-2},
                         ]);
   });
 
-  yield PlacesInterestsStorage.getPersonalizedDomains().then(results => {
+  yield PlacesInterestsStorage.getPersonalizedHosts().then(results => {
     isIdentical(results,[
-                          {"interest":"movies","domain":"foo.com","day":today},
-                          {"interest":"cars","domain":"foo.com","day":today},
-                          {"interest":"movies","domain":"bar.com","day":today-1},
-                          {"interest":"cars","domain":"bar.com","day":today-1},
-                          {"interest":"movies","domain":"baz.com","day":today-2},
-                          {"interest":"cars","domain":"baz.com","day":today-2},
+                          {"interest":"movies","host":"foo.com","day":today},
+                          {"interest":"cars","host":"foo.com","day":today},
+                          {"interest":"movies","host":"bar.com","day":today-1},
+                          {"interest":"cars","host":"bar.com","day":today-1},
+                          {"interest":"movies","host":"baz.com","day":today-2},
+                          {"interest":"cars","host":"baz.com","day":today-2},
                         ]);
   });
 
