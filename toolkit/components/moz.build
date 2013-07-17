@@ -29,6 +29,7 @@ PARALLEL_DIRS += [
     'passwordmgr',
     'perf',
     'places',
+    'interests',
     'prompts',
     'protobuf',
     'reflect',

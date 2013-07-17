@@ -44,7 +44,6 @@ EXTRA_COMPONENTS = \
   nsPlacesExpiration.js \
   PlacesCategoriesStarter.js \
   ColorAnalyzer.js \
-  Interests.js \
   $(NULL)
 
 ifdef MOZ_XUL
@@ -58,7 +57,6 @@ EXTRA_JS_MODULES = \
   ClusterLib.js \
   BookmarkJSONUtils.jsm \
   PlacesBackups.jsm \
-  PlacesInterestsStorage.jsm \
   PlacesInterestsUtils.jsm \
   $(NULL)
 

@@ -15,7 +15,7 @@ Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 
 
 // Import common head.
-let (commonFile = do_get_file("../head_common.js", false)) {
+let (commonFile = do_get_file("../../../places/tests/head_common.js", false)) {
   let uri = Services.io.newFileURI(commonFile);
   Services.scriptloader.loadSubScript(uri.spec, this);
 }
