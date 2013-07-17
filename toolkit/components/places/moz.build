@@ -16,7 +16,6 @@ if CONFIG['MOZ_PLACES']:
         'mozIAsyncHistory.idl',
         'mozIAsyncFavicons.idl',
         'mozIAsyncLivemarks.idl',
-        'mozIInterestsWebAPI.idl',
         'mozIPlacesAutoComplete.idl',
         'mozIColorAnalyzer.idl',
         'nsIAnnotationService.idl',
