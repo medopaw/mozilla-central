@@ -7,6 +7,7 @@
 #include "Entry.h"
 #include "nsContentUtils.h"
 #include "Window.h"
+#include "Error.h"
 #include "Path.h"
 #include "FileUtils.h"
 #include "Utils.h"
@@ -178,6 +179,13 @@ Entry::CopyAndMoveTo(const nsString& entryRelpath,
     pErrorCallback = &(errorCallback.Value());
   }
   nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
+
+  // Check if path and name are valid.
+  if (!Path::IsValidPath(entryRelpath) || !Path::IsValidName(newName)) {
+    SDCARD_LOG("Invalid path or name!");
+    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return;
+  }
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");

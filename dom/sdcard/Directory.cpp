@@ -148,7 +148,13 @@ Directory::MoveTo(const nsAString& entry, const nsAString& newName,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.MoveTo()");
-  CopyAndMoveTo(nsString(entry), mRelpath, nsString(newName), successCallback, errorCallback, false);
+
+  // Check if name is valid.
+  nsString entryRelpath;
+  Path::Absolutize(entry, mRelpath, entryRelpath);
+
+  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
+      successCallback, errorCallback, false);
 }
 
 void
@@ -160,7 +166,8 @@ Directory::MoveTo(mozilla::dom::sdcard::Directory& entry, const nsAString& newNa
   SDCARD_LOG("in Directory.MoveTo()");
   nsString entryRelpath;
   entry.GetRelpath(entryRelpath);
-  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName), successCallback, errorCallback, false);
+  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
+      successCallback, errorCallback, false);
 }
 
 already_AddRefed<mozilla::dom::Future>
