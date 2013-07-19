@@ -67,6 +67,8 @@
 #include "nsXULTemplateQueryProcessorXML.h"
 #include "nsXULTemplateQueryProcessorStorage.h"
 #include "nsContentUtils.h"
+#include "ChildIterator.h"
+#include "nsCxPusher.h"
 
 using namespace mozilla::dom;
 using namespace mozilla;
@@ -1370,11 +1372,10 @@ nsXULTemplateBuilder::InitHTMLTemplateRoot()
     if (! doc)
         return NS_ERROR_UNEXPECTED;
 
-    nsIScriptGlobalObject *global = doc->GetScriptGlobalObject();
+    nsCOMPtr<nsIScriptGlobalObject> global =
+      do_QueryInterface(doc->GetWindow());
     if (! global)
         return NS_ERROR_UNEXPECTED;
-
-    JSObject *scope = global->GetGlobalJSObject();
 
     nsIScriptContext *context = global->GetContext();
     if (! context)
@@ -1385,26 +1386,25 @@ nsXULTemplateBuilder::InitHTMLTemplateRoot()
     if (! jscontext)
         return NS_ERROR_UNEXPECTED;
 
-    JSAutoRequest ar(jscontext);
-
-    JS::Value v;
+    JS::Rooted<JSObject*> scope(jscontext, global->GetGlobalJSObject());
+    JS::Rooted<JS::Value> v(jscontext);
     nsCOMPtr<nsIXPConnectJSObjectHolder> wrapper;
-    rv = nsContentUtils::WrapNative(jscontext, scope, mRoot, mRoot, &v,
+    rv = nsContentUtils::WrapNative(jscontext, scope, mRoot, mRoot, v.address(),
                                     getter_AddRefs(wrapper));
     NS_ENSURE_SUCCESS(rv, rv);
 
-    JSObject* jselement = JSVAL_TO_OBJECT(v);
+    JS::Rooted<JSObject*> jselement(jscontext, JSVAL_TO_OBJECT(v));
 
     if (mDB) {
         // database
-        JS::Value jsdatabase;
+        JS::Rooted<JS::Value> jsdatabase(jscontext);
         rv = nsContentUtils::WrapNative(jscontext, scope, mDB,
                                         &NS_GET_IID(nsIRDFCompositeDataSource),
-                                        &jsdatabase, getter_AddRefs(wrapper));
+                                        jsdatabase.address(), getter_AddRefs(wrapper));
         NS_ENSURE_SUCCESS(rv, rv);
 
         bool ok;
-        ok = JS_SetProperty(jscontext, jselement, "database", &jsdatabase);
+        ok = JS_SetProperty(jscontext, jselement, "database", jsdatabase.address());
         NS_ASSERTION(ok, "unable to set database property");
         if (! ok)
             return NS_ERROR_FAILURE;
@@ -1412,16 +1412,16 @@ nsXULTemplateBuilder::InitHTMLTemplateRoot()
 
     {
         // builder
-        JS::Value jsbuilder;
+        JS::Rooted<JS::Value> jsbuilder(jscontext);
         nsCOMPtr<nsIXPConnectJSObjectHolder> wrapper;
         rv = nsContentUtils::WrapNative(jscontext, jselement,
                                         static_cast<nsIXULTemplateBuilder*>(this),
                                         &NS_GET_IID(nsIXULTemplateBuilder),
-                                        &jsbuilder, getter_AddRefs(wrapper));
+                                        jsbuilder.address(), getter_AddRefs(wrapper));
         NS_ENSURE_SUCCESS(rv, rv);
 
         bool ok;
-        ok = JS_SetProperty(jscontext, jselement, "builder", &jsbuilder);
+        ok = JS_SetProperty(jscontext, jselement, "builder", jsbuilder.address());
         if (! ok)
             return NS_ERROR_FAILURE;
     }
@@ -1655,47 +1655,28 @@ nsXULTemplateBuilder::GetTemplateRoot(nsIContent** aResult)
         }
     }
 
-#if 1 // XXX hack to workaround bug with XBL insertion/removal?
-    {
-        // If root node has no template attribute, then look for a child
-        // node which is a template tag
-        for (nsIContent* child = mRoot->GetFirstChild();
-             child;
-             child = child->GetNextSibling()) {
+    // If root node has no template attribute, then look for a child
+    // node which is a template tag.
+    for (nsIContent* child = mRoot->GetFirstChild();
+         child;
+         child = child->GetNextSibling()) {
 
-            if (IsTemplateElement(child)) {
-                NS_ADDREF(*aResult = child);
-                return NS_OK;
-            }
+        if (IsTemplateElement(child)) {
+            NS_ADDREF(*aResult = child);
+            return NS_OK;
         }
     }
-#endif
 
-    // If we couldn't find a real child, look through the anonymous
-    // kids, too.
-    nsCOMPtr<nsIDocument> doc = mRoot->GetDocument();
-    if (! doc)
-        return NS_OK;
-
-    nsCOMPtr<nsIDOMNodeList> kids;
-    doc->BindingManager()->GetXBLChildNodesFor(mRoot, getter_AddRefs(kids));
-
-    if (kids) {
-        uint32_t length;
-        kids->GetLength(&length);
-
-        for (uint32_t i = 0; i < length; ++i) {
-            nsCOMPtr<nsIDOMNode> node;
-            kids->Item(i, getter_AddRefs(node));
-            if (! node)
-                continue;
-
-            nsCOMPtr<nsIContent> child = do_QueryInterface(node);
-
-            if (IsTemplateElement(child)) {
-                NS_ADDREF(*aResult = child.get());
-                return NS_OK;
-            }
+    // Look through the anonymous children as well. Although FlattenedChildIterator
+    // will find a template element that has been placed in an insertion point, many
+    // bindings do not have a specific insertion point for the template element, which
+    // would cause it to not be part of the flattened content tree. The check above to
+    // check the explicit children as well handles this case.
+    FlattenedChildIterator iter(mRoot);
+    for (nsIContent* child = iter.GetNextChild(); child; child = iter.GetNextChild()) {
+        if (IsTemplateElement(child)) {
+            NS_ADDREF(*aResult = child);
+            return NS_OK;
         }
     }
 

@@ -15,7 +15,7 @@ this.EXPORTED_SYMBOLS = [
 
 const {classes: Cc, interfaces: Ci, results: Cr, utils: Cu} = Components;
 
-Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
+Cu.import("resource://gre/modules/Promise.jsm");
 Cu.import("resource://gre/modules/FileUtils.jsm");
 Cu.import("resource://gre/modules/osfile.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
@@ -216,8 +216,8 @@ this.createFakeCrash = function (submitted=false, date=new Date()) {
  *
  * The purpose of this type is to aid testing of startup and shutdown.
  */
-this.InspectedHealthReporter = function (branch, policy) {
-  HealthReporter.call(this, branch, policy);
+this.InspectedHealthReporter = function (branch, policy, recorder, stateLeaf) {
+  HealthReporter.call(this, branch, policy, recorder, stateLeaf);
 
   this.onStorageCreated = null;
   this.onProviderManagerInitialized = null;

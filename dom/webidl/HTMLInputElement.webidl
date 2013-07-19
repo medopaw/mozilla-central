@@ -81,9 +81,8 @@ interface HTMLInputElement : HTMLElement {
            attribute DOMString defaultValue;
   [Pure, TreatNullAs=EmptyString, SetterThrows]
            attribute DOMString value;
-           // Bug 742206 - any to Date?
-  [Throws]
-           attribute any valueAsDate;
+  [Throws, Pref="dom.experimental_forms"]
+           attribute Date? valueAsDate;
   [Pure, SetterThrows]
            attribute unrestricted double valueAsNumber;
            attribute unsigned long width;

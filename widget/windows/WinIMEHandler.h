@@ -38,12 +38,6 @@ public:
   static void* GetNativeData(uint32_t aDataType);
 
   /**
-   * Returns true if the context or IME state is enabled.  Otherwise, false.
-   */
-  static bool IsIMEEnabled(const InputContext& aInputContext);
-  static bool IsIMEEnabled(IMEState::Enabled aIMEState);
-
-  /**
    * ProcessRawKeyMessage() message is called before calling TranslateMessage()
    * and DispatchMessage().  If this returns true, the message is consumed.
    * Then, caller must not perform TranslateMessage() nor DispatchMessage().
@@ -112,13 +106,6 @@ public:
    */
   static void InitInputContext(nsWindow* aWindow, InputContext& aInputContext);
 
-  /**
-   * "Kakutei-Undo" of ATOK or WXG (both of them are Japanese IME) causes
-   * strange WM_KEYDOWN/WM_KEYUP/WM_CHAR message pattern.  So, when this
-   * returns true, the caller needs to be careful for processing the messages.
-   */
-  static bool IsDoingKakuteiUndo(HWND aWnd);
-
 #ifdef DEBUG
   /**
    * Returns true when current keyboard layout has IME.  Otherwise, false.
@@ -128,7 +115,7 @@ public:
 
 private:
 #ifdef NS_ENABLE_TSF
-  typedef HRESULT (WINAPI *SetInputScopesFunc)(HWND aindowHandle,
+  typedef HRESULT (WINAPI *SetInputScopesFunc)(HWND windowHandle,
                                                const InputScope *inputScopes,
                                                UINT numInputScopes,
                                                wchar_t **phrase_list,

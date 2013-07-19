@@ -74,6 +74,7 @@ NS_IMPL_ISUPPORTS_INHERITED1(PuppetWidget, nsBaseWidget,
 PuppetWidget::PuppetWidget(TabChild* aTabChild)
   : mTabChild(aTabChild)
   , mDPI(-1)
+  , mDefaultScale(-1)
 {
   MOZ_COUNT_CTOR(PuppetWidget);
 }
@@ -455,13 +456,15 @@ PuppetWidget::NotifyIMEOfFocusChange(bool aFocus)
   }
 
   uint32_t chromeSeqno;
-  mIMEPreference.mWantUpdates = false;
+  mIMEPreference.mWantUpdates = nsIMEUpdatePreference::NOTIFY_NOTHING;
   mIMEPreference.mWantHints = false;
   if (!mTabChild->SendNotifyIMEFocus(aFocus, &mIMEPreference, &chromeSeqno))
     return NS_ERROR_FAILURE;
 
   if (aFocus) {
-    if (mIMEPreference.mWantUpdates && mIMEPreference.mWantHints) {
+    if ((mIMEPreference.mWantUpdates &
+           nsIMEUpdatePreference::NOTIFY_SELECTION_CHANGE) &&
+        mIMEPreference.mWantHints) {
       NotifyIMEOfSelectionChange(); // Update selection
     }
   } else {
@@ -499,7 +502,7 @@ PuppetWidget::NotifyIMEOfTextChange(uint32_t aStart,
       mTabChild->SendNotifyIMETextHint(queryEvent.mReply.mString);
     }
   }
-  if (mIMEPreference.mWantUpdates) {
+  if (mIMEPreference.mWantUpdates & nsIMEUpdatePreference::NOTIFY_TEXT_CHANGE) {
     mTabChild->SendNotifyIMETextChange(aStart, aEnd, aNewEnd);
   }
   return NS_OK;
@@ -515,7 +518,8 @@ PuppetWidget::NotifyIMEOfSelectionChange()
   if (!mTabChild)
     return NS_ERROR_FAILURE;
 
-  if (mIMEPreference.mWantUpdates) {
+  if (mIMEPreference.mWantUpdates &
+        nsIMEUpdatePreference::NOTIFY_SELECTION_CHANGE) {
     nsEventStatus status;
     nsQueryContentEvent queryEvent(true, NS_QUERY_SELECTED_TEXT, this);
     InitEvent(queryEvent, nullptr);
@@ -569,7 +573,7 @@ PuppetWidget::Paint()
 #endif
 
     if (mozilla::layers::LAYERS_D3D10 == mLayerManager->GetBackendType()) {
-      mAttachedWidgetListener->PaintWindow(this, region, 0);
+      mAttachedWidgetListener->PaintWindow(this, region);
     } else if (mozilla::layers::LAYERS_CLIENT == mLayerManager->GetBackendType()) {
       // Do nothing, the compositor will handle drawing
       if (mTabChild) {
@@ -581,7 +585,7 @@ PuppetWidget::Paint()
       ctx->Clip();
       AutoLayerManagerSetup setupLayerManager(this, ctx,
                                               BUFFER_NONE);
-      mAttachedWidgetListener->PaintWindow(this, region, 0);
+      mAttachedWidgetListener->PaintWindow(this, region);
       if (mTabChild) {
         mTabChild->NotifyPainted();
       }
@@ -632,6 +636,20 @@ PuppetWidget::GetDPI()
   }
 
   return mDPI;
+}
+
+double
+PuppetWidget::GetDefaultScaleInternal()
+{
+  if (mDefaultScale < 0) {
+    if (mTabChild) {
+      mTabChild->GetDefaultScale(&mDefaultScale);
+    } else {
+      mDefaultScale = 1;
+    }
+  }
+
+  return mDefaultScale;
 }
 
 void*

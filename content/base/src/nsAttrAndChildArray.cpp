@@ -9,6 +9,9 @@
  */
 
 #include "nsAttrAndChildArray.h"
+
+#include "mozilla/MemoryReporting.h"
+
 #include "nsMappedAttributeElement.h"
 #include "prbit.h"
 #include "nsString.h"
@@ -313,6 +316,23 @@ nsAttrAndChildArray::GetAttr(nsIAtom* aLocalName, int32_t aNamespaceID) const
         return &ATTRS(mImpl)[i].mValue;
       }
     }
+  }
+
+  return nullptr;
+}
+
+const nsAttrValue*
+nsAttrAndChildArray::GetAttr(const nsAString& aLocalName) const
+{
+  uint32_t i, slotCount = AttrSlotCount();
+  for (i = 0; i < slotCount && AttrSlotIsTaken(i); ++i) {
+    if (ATTRS(mImpl)[i].mName.Equals(aLocalName)) {
+      return &ATTRS(mImpl)[i].mValue;
+    }
+  }
+
+  if (mImpl && mImpl->mMappedAttrs) {
+    return mImpl->mMappedAttrs->GetAttr(aLocalName);
   }
 
   return nullptr;
@@ -819,7 +839,7 @@ nsAttrAndChildArray::SetChildAtPos(void** aPos, nsIContent* aChild,
 }
 
 size_t
-nsAttrAndChildArray::SizeOfExcludingThis(nsMallocSizeOfFun aMallocSizeOf) const
+nsAttrAndChildArray::SizeOfExcludingThis(mozilla::MallocSizeOf aMallocSizeOf) const
 {
   size_t n = 0;
   if (mImpl) {

@@ -13,15 +13,6 @@
 [PrefControlled]
 interface AudioBufferSourceNode : AudioNode {
 
-    //const unsigned short UNSCHEDULED_STATE = 0;
-    //const unsigned short SCHEDULED_STATE = 1;
-    //const unsigned short PLAYING_STATE = 2;
-    //const unsigned short FINISHED_STATE = 3;
-
-    //readonly attribute unsigned short playbackState;
-
-    // Playback this in-memory audio asset
-    // Many sources can share the same buffer
     attribute AudioBuffer? buffer;
 
     readonly attribute AudioParam playbackRate;
@@ -35,6 +26,9 @@ interface AudioBufferSourceNode : AudioNode {
                optional double grainDuration);
     [Throws]
     void stop(optional double when = 0);
+
+    [SetterThrows]
+    attribute EventHandler onended;
 };
 
 /*
@@ -44,12 +38,12 @@ interface AudioBufferSourceNode : AudioNode {
 [PrefControlled]
 partial interface AudioBufferSourceNode {
     // Same as start()
-    [Throws]
+    [Throws,Pref="media.webaudio.legacy.AudioBufferSourceNode"]
     void noteOn(double when);
-    [Throws]
+    [Throws,Pref="media.webaudio.legacy.AudioBufferSourceNode"]
     void noteGrainOn(double when, double grainOffset, double grainDuration);
     
-    [Throws]
+    [Throws,Pref="media.webaudio.legacy.AudioBufferSourceNode"]
     // Same as stop()
     void noteOff(double when);
 };

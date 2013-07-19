@@ -28,12 +28,15 @@
 #include "nsIAsyncVerifyRedirectCallback.h"
 #include "nsITimedChannel.h"
 #include "nsIFile.h"
+#include "nsIThreadRetargetableRequest.h"
+#include "nsIThreadRetargetableStreamListener.h"
 #include "nsDNSPrefetch.h"
 #include "TimingStruct.h"
 #include "AutoClose.h"
 #include "mozilla/Telemetry.h"
 
 class nsAHttpConnection;
+class nsIPrincipal;
 
 namespace mozilla { namespace net {
 
@@ -54,11 +57,14 @@ class nsHttpChannel : public HttpBaseChannel
                     , public nsIApplicationCacheChannel
                     , public nsIAsyncVerifyRedirectCallback
                     , public nsITimedChannel
+                    , public nsIThreadRetargetableRequest
+                    , public nsIThreadRetargetableStreamListener
 {
 public:
     NS_DECL_ISUPPORTS_INHERITED
     NS_DECL_NSIREQUESTOBSERVER
     NS_DECL_NSISTREAMLISTENER
+    NS_DECL_NSITHREADRETARGETABLESTREAMLISTENER
     NS_DECL_NSICACHEINFOCHANNEL
     NS_DECL_NSICACHINGCHANNEL
     NS_DECL_NSICACHELISTENER
@@ -69,6 +75,7 @@ public:
     NS_DECL_NSIAPPLICATIONCACHECHANNEL
     NS_DECL_NSIASYNCVERIFYREDIRECTCALLBACK
     NS_DECL_NSITIMEDCHANNEL
+    NS_DECL_NSITHREADRETARGETABLEREQUEST
 
     // nsIHttpAuthenticableChannel. We can't use
     // NS_DECL_NSIHTTPAUTHENTICABLECHANNEL because it duplicates cancel() and
@@ -117,11 +124,11 @@ public:
     NS_IMETHOD SetNotificationCallbacks(nsIInterfaceRequestor *aCallbacks);
     NS_IMETHOD SetLoadGroup(nsILoadGroup *aLoadGroup);
 
-public: /* internal necko use only */ 
+public: /* internal necko use only */
 
-    void InternalSetUploadStream(nsIInputStream *uploadStream) 
+    void InternalSetUploadStream(nsIInputStream *uploadStream)
       { mUploadStream = uploadStream; }
-    void SetUploadStreamHasHeaders(bool hasHeaders) 
+    void SetUploadStreamHasHeaders(bool hasHeaders)
       { mUploadStreamHasHeaders = hasHeaders; }
 
     nsresult SetReferrerInternal(nsIURI *referrer) {
@@ -174,6 +181,9 @@ private:
     nsresult ContinueProcessFallback(nsresult);
     void     HandleAsyncAbort();
     nsresult EnsureAssocReq();
+    void     ProcessSSLInformation();
+    bool     IsHTTPS();
+    void     RetrieveSSLOptions();
 
     nsresult ContinueOnStartRequest1(nsresult);
     nsresult ContinueOnStartRequest2(nsresult);
@@ -248,7 +258,7 @@ private:
     nsresult OpenRedirectChannel(nsresult rv);
 
     /**
-     * A function that takes care of reading STS headers and enforcing STS 
+     * A function that takes care of reading STS headers and enforcing STS
      * load rules.  After a secure channel is erected, STS requires the channel
      * to be trusted or any STS header data on the channel is ignored.
      * This is called from ProcessResponse.
@@ -279,6 +289,9 @@ private:
     // Create a aggregate set of the current notification callbacks
     // and ensure the transaction is updated to use it.
     void UpdateAggregateCallbacks();
+
+    // Disk cache is skipped for some requests when it is behaving slowly
+    bool ShouldSkipCache();
 
 private:
     nsCOMPtr<nsISupports>             mSecurityInfo;
@@ -370,6 +383,10 @@ protected:
 
 private: // cache telemetry
     bool mDidReval;
+
+private:
+    nsIPrincipal *GetPrincipal();
+    nsCOMPtr<nsIPrincipal> mPrincipal;
 };
 
 } } // namespace mozilla::net

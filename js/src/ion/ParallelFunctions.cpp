@@ -4,14 +4,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "jsinterp.h"
-#include "ParallelFunctions.h"
-#include "IonSpewer.h"
+#include "ion/ParallelFunctions.h"
 
-#include "jsinterpinlines.h"
-#include "jscompartmentinlines.h"
+#include "ion/IonSpewer.h"
+#include "vm/ArrayObject.h"
+#include "vm/Interpreter.h"
 
-#include "vm/ParallelDo.h"
+#include "jsfuninlines.h"
+#include "jsgcinlines.h"
+#include "jsobjinlines.h"
 
 using namespace js;
 using namespace ion;
@@ -36,8 +37,7 @@ ion::ParNewGCThing(gc::AllocKind allocKind)
 {
     ForkJoinSlice *slice = ForkJoinSlice::Current();
     uint32_t thingSize = (uint32_t)gc::Arena::thingSize(allocKind);
-    void *t = slice->allocator->parallelNewGCThing(allocKind, thingSize);
-    return static_cast<JSObject *>(t);
+    return gc::NewGCThing<JSObject, NoGC>(slice, allocKind, thingSize, gc::DefaultHeap);
 }
 
 // Check that the object was created by the current thread
@@ -46,8 +46,8 @@ bool
 ion::ParWriteGuard(ForkJoinSlice *slice, JSObject *object)
 {
     JS_ASSERT(ForkJoinSlice::Current() == slice);
-    return slice->allocator->arenas.containsArena(slice->runtime(),
-                                                  object->arenaHeader());
+    return !IsInsideNursery(slice->runtime(), object) &&
+           slice->allocator()->arenas.containsArena(slice->runtime(), object->arenaHeader());
 }
 
 #ifdef DEBUG
@@ -121,24 +121,30 @@ bool
 ion::ParCheckOverRecursed(ForkJoinSlice *slice)
 {
     JS_ASSERT(ForkJoinSlice::Current() == slice);
+    int stackDummy_;
 
-    // When an interrupt is triggered, we currently overwrite the
-    // stack limit with a sentinel value that brings us here.
+    // When an interrupt is triggered, the main thread stack limit is
+    // overwritten with a sentinel value that brings us here.
     // Therefore, we must check whether this is really a stack overrun
     // and, if not, check whether an interrupt is needed.
-    if (slice->isMainThread()) {
-        int stackDummy_;
-        if (!JS_CHECK_STACK_SIZE(js::GetNativeStackLimit(slice->runtime()), &stackDummy_))
-            return false;
-        return ParCheckInterrupt(slice);
-    } else {
-        // FIXME---we don't ovewrite the stack limit for worker
-        // threads, which means that technically they can recurse
-        // forever---or at least a long time---without ever checking
-        // the interrupt.  it also means that if we get here on a
-        // worker thread, this is a real stack overrun!
+    //
+    // When not on the main thread, we don't overwrite the stack
+    // limit, but we do still call into this routine if the interrupt
+    // flag is set, so we still need to double check.
+
+    uintptr_t realStackLimit;
+    if (slice->isMainThread())
+        realStackLimit = js::GetNativeStackLimit(slice->runtime());
+    else
+        realStackLimit = slice->perThreadData->ionStackLimit;
+
+    if (!JS_CHECK_STACK_SIZE(realStackLimit, &stackDummy_)) {
+        slice->bailoutRecord->setCause(ParallelBailoutOverRecursed,
+                                       NULL, NULL, NULL);
         return false;
     }
+
+    return ParCheckInterrupt(slice);
 }
 
 bool
@@ -146,8 +152,14 @@ ion::ParCheckInterrupt(ForkJoinSlice *slice)
 {
     JS_ASSERT(ForkJoinSlice::Current() == slice);
     bool result = slice->check();
-    if (!result)
+    if (!result) {
+        // Do not set the cause here.  Either it was set by this
+        // thread already by some code that then triggered an abort,
+        // or else we are just picking up an abort from some other
+        // thread.  Either way we have nothing useful to contribute so
+        // we might as well leave our bailout case unset.
         return false;
+    }
     return true;
 }
 
@@ -167,8 +179,7 @@ ion::ParPush(ParPushArgs *args)
     // slow path anyhow as it reallocates the elements vector.
     ForkJoinSlice *slice = js::ForkJoinSlice::Current();
     JSObject::EnsureDenseResult res =
-        args->object->parExtendDenseElements(slice->allocator,
-                                             &args->value, 1);
+        args->object->parExtendDenseElements(slice, &args->value, 1);
     if (res != JSObject::ED_OK)
         return NULL;
     return args->object;
@@ -178,10 +189,41 @@ JSObject *
 ion::ParExtendArray(ForkJoinSlice *slice, JSObject *array, uint32_t length)
 {
     JSObject::EnsureDenseResult res =
-        array->parExtendDenseElements(slice->allocator, NULL, length);
+        array->parExtendDenseElements(slice, NULL, length);
     if (res != JSObject::ED_OK)
         return NULL;
     return array;
+}
+
+ParallelResult
+ion::ParConcatStrings(ForkJoinSlice *slice, HandleString left, HandleString right,
+                      MutableHandleString out)
+{
+    JSString *str = ConcatStringsPure(slice, left, right);
+    if (!str)
+        return TP_RETRY_SEQUENTIALLY;
+    out.set(str);
+    return TP_SUCCESS;
+}
+
+ParallelResult
+ion::ParIntToString(ForkJoinSlice *slice, int i, MutableHandleString out)
+{
+    JSFlatString *str = Int32ToString<NoGC>(slice, i);
+    if (!str)
+        return TP_RETRY_SEQUENTIALLY;
+    out.set(str);
+    return TP_SUCCESS;
+}
+
+ParallelResult
+ion::ParDoubleToString(ForkJoinSlice *slice, double d, MutableHandleString out)
+{
+    JSString *str = js_NumberToString<NoGC>(slice, d);
+    if (!str)
+        return TP_RETRY_SEQUENTIALLY;
+    out.set(str);
+    return TP_SUCCESS;
 }
 
 #define PAR_RELATIONAL_OP(OP, EXPECTED)                                         \
@@ -215,17 +257,15 @@ do {                                                                            
 } while(0)
 
 static ParallelResult
-ParCompareStrings(ForkJoinSlice *slice, HandleString str1,
-                  HandleString str2, int32_t *res)
+ParCompareStrings(ForkJoinSlice *slice, JSString *left, JSString *right, int32_t *res)
 {
-    if (!str1->isLinear())
-        return TP_RETRY_SEQUENTIALLY;
-    if (!str2->isLinear())
-        return TP_RETRY_SEQUENTIALLY;
-    JSLinearString &linearStr1 = str1->asLinear();
-    JSLinearString &linearStr2 = str2->asLinear();
-    if (!CompareChars(linearStr1.chars(), linearStr1.length(),
-                      linearStr2.chars(), linearStr2.length(),
+    ScopedThreadSafeStringInspector leftInspector(left);
+    ScopedThreadSafeStringInspector rightInspector(right);
+    if (!leftInspector.ensureChars(slice) || !rightInspector.ensureChars(slice))
+        return TP_FATAL;
+
+    if (!CompareChars(leftInspector.chars(), left->length(),
+                      rightInspector.chars(), right->length(),
                       res))
         return TP_FATAL;
 
@@ -242,9 +282,7 @@ ParCompareMaybeStrings(ForkJoinSlice *slice,
         return TP_RETRY_SEQUENTIALLY;
     if (!v2.isString())
         return TP_RETRY_SEQUENTIALLY;
-    RootedString str1(slice->perThreadData, v1.toString());
-    RootedString str2(slice->perThreadData, v2.toString());
-    return ParCompareStrings(slice, str1, str2, res);
+    return ParCompareStrings(slice, v1.toString(), v2.toString(), res);
 }
 
 template<bool Equal>
@@ -300,7 +338,8 @@ ParStrictlyEqualImpl(ForkJoinSlice *slice, MutableHandleValue lhs, MutableHandle
             return ParLooselyEqualImpl<Equal>(slice, lhs, rhs, res);
     }
 
-    return TP_RETRY_SEQUENTIALLY;
+    *res = false;
+    return TP_SUCCESS;
 }
 
 ParallelResult
@@ -364,45 +403,73 @@ js::ion::ParStringsUnequal(ForkJoinSlice *slice, HandleString v1, HandleString v
 }
 
 void
-ion::ParallelAbort(JSScript *script)
+ion::ParallelAbort(ParallelBailoutCause cause,
+                   JSScript *outermostScript,
+                   JSScript *currentScript,
+                   jsbytecode *bytecode)
 {
+    // Spew before asserts to help with diagnosing failures.
+    Spew(SpewBailouts,
+         "Parallel abort with cause %d in %p:%s:%d "
+         "(%p:%s:%d at line %d)",
+         cause,
+         outermostScript, outermostScript->filename(), outermostScript->lineno,
+         currentScript, currentScript->filename(), currentScript->lineno,
+         (currentScript ? PCToLineNumber(currentScript, bytecode) : 0));
+
     JS_ASSERT(InParallelSection());
+    JS_ASSERT(outermostScript != NULL);
+    JS_ASSERT(currentScript != NULL);
+    JS_ASSERT(outermostScript->hasParallelIonScript());
 
     ForkJoinSlice *slice = ForkJoinSlice::Current();
 
-    Spew(SpewBailouts, "Parallel abort in %p:%s:%d (hasParallelIonScript:%d)",
-         script, script->filename(), script->lineno,
-         script->hasParallelIonScript());
+    JS_ASSERT(slice->bailoutRecord->depth == 0);
+    slice->bailoutRecord->setCause(cause, outermostScript,
+                                   currentScript, bytecode);
+}
 
-    // Otherwise what the heck are we executing?
-    JS_ASSERT(script->hasParallelIonScript());
+void
+ion::PropagateParallelAbort(JSScript *outermostScript,
+                            JSScript *currentScript)
+{
+    Spew(SpewBailouts,
+         "Propagate parallel abort via %p:%s:%d (%p:%s:%d)",
+         outermostScript, outermostScript->filename(), outermostScript->lineno,
+         currentScript, currentScript->filename(), currentScript->lineno);
 
-    if (!slice->abortedScript)
-        slice->abortedScript = script;
-    else
-        script->parallelIonScript()->setHasInvalidatedCallTarget();
+    JS_ASSERT(InParallelSection());
+    JS_ASSERT(outermostScript->hasParallelIonScript());
+
+    outermostScript->parallelIonScript()->setHasUncompiledCallTarget();
+
+    ForkJoinSlice *slice = ForkJoinSlice::Current();
+    if (currentScript)
+        slice->bailoutRecord->addTrace(currentScript, NULL);
 }
 
 void
 ion::ParCallToUncompiledScript(JSFunction *func)
 {
-    static const int max_bound_function_unrolling = 5;
-
     JS_ASSERT(InParallelSection());
 
 #ifdef DEBUG
+    static const int max_bound_function_unrolling = 5;
+
     if (func->hasScript()) {
         JSScript *script = func->nonLazyScript();
         Spew(SpewBailouts, "Call to uncompiled script: %p:%s:%d",
              script, script->filename(), script->lineno);
+    } else if (func->isInterpretedLazy()) {
+        Spew(SpewBailouts, "Call to uncompiled lazy script");
     } else if (func->isBoundFunction()) {
         int depth = 0;
-        JSFunction *target = func->getBoundFunctionTarget()->toFunction();
+        JSFunction *target = &func->getBoundFunctionTarget()->as<JSFunction>();
         while (depth < max_bound_function_unrolling) {
             if (target->hasScript())
                 break;
             if (target->isBoundFunction())
-                target = target->getBoundFunctionTarget()->toFunction();
+                target = &target->getBoundFunctionTarget()->as<JSFunction>();
             depth--;
         }
         if (target->hasScript()) {
@@ -413,7 +480,32 @@ ion::ParCallToUncompiledScript(JSFunction *func)
             Spew(SpewBailouts, "Call to bound function (excessive depth: %d)", depth);
         }
     } else {
-        JS_NOT_REACHED("ParCall'ed functions must have scripts or be ES6 bound functions.");
+        JS_ASSERT(func->isNative());
+        Spew(SpewBailouts, "Call to native function");
     }
 #endif
+}
+
+ParallelResult
+ion::InitRestParameter(ForkJoinSlice *slice, uint32_t length, Value *rest,
+                       HandleObject templateObj, HandleObject res,
+                       MutableHandleObject out)
+{
+    // In parallel execution, we should always have succeeded in allocation
+    // before this point. We can do the allocation here like in the sequential
+    // path, but duplicating the initGCThing logic is too tedious.
+    JS_ASSERT(res);
+    JS_ASSERT(res->is<ArrayObject>());
+    JS_ASSERT(!res->getDenseInitializedLength());
+    JS_ASSERT(res->type() == templateObj->type());
+    JS_ASSERT(res->type()->unknownProperties());
+
+    if (length) {
+        JSObject::EnsureDenseResult edr = res->parExtendDenseElements(slice, rest, length);
+        if (edr != JSObject::ED_OK)
+            return TP_FATAL;
+    }
+
+    out.set(res);
+    return TP_SUCCESS;
 }

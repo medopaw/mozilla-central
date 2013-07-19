@@ -7,14 +7,20 @@ package org.mozilla.gecko;
 
 import org.mozilla.gecko.mozglue.GeckoLoader;
 import org.mozilla.gecko.util.GeckoEventListener;
+import org.mozilla.gecko.util.ThreadUtils;
 
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
+import android.app.Activity;
+
 
 import java.util.Locale;
 
@@ -51,22 +57,29 @@ public class GeckoThread extends Thread implements GeckoEventListener {
             Locale.setDefault(locale);
         }
 
-        GeckoApp app = GeckoApp.mAppContext;
-        String resourcePath = app.getApplication().getPackageResourcePath();
+        Context app = GeckoAppShell.getContext();
+        String resourcePath = "";
+        Resources res  = null;
         String[] pluginDirs = null;
         try {
-            pluginDirs = app.getPluginDirectories();
+            pluginDirs = GeckoAppShell.getPluginDirectories();
         } catch (Exception e) {
             Log.w(LOGTAG, "Caught exception getting plugin dirs.", e);
         }
-        GeckoLoader.setupGeckoEnvironment(app, pluginDirs, GeckoProfile.get(app).getFilesDir().getPath());
+        
+        if (app instanceof Activity) {
+            Activity activity = (Activity)app;
+            resourcePath = activity.getApplication().getPackageResourcePath();
+            res = activity.getBaseContext().getResources();
+            GeckoLoader.setupGeckoEnvironment(activity, pluginDirs, GeckoProfile.get(app).getFilesDir().getPath());
+        }
         GeckoLoader.loadSQLiteLibs(app, resourcePath);
         GeckoLoader.loadNSSLibs(app, resourcePath);
         GeckoLoader.loadGeckoLibs(app, resourcePath);
+        GeckoJavaSampler.setLibsLoaded();
 
         Locale.setDefault(locale);
 
-        Resources res = app.getBaseContext().getResources();
         Configuration config = res.getConfiguration();
         config.locale = locale;
         res.updateConfiguration(config, res.getDisplayMetrics());
@@ -85,12 +98,15 @@ public class GeckoThread extends Thread implements GeckoEventListener {
     }
 
     private String addCustomProfileArg(String args) {
-        String profile = GeckoApp.sIsUsingCustomProfile ? "" : (" -P " + GeckoApp.mAppContext.getProfile().getName());
+        String profile = GeckoAppShell.getGeckoInterface() == null || GeckoApp.sIsUsingCustomProfile ? "" : (" -P " + GeckoAppShell.getGeckoInterface().getProfile().getName());
         return (args != null ? args : "") + profile;
     }
 
     @Override
     public void run() {
+        Looper.prepare();
+        ThreadUtils.setGeckoThread(this, new Handler());
+
         String path = initGeckoEnvironment();
 
         Log.w(LOGTAG, "zerdatime " + SystemClock.uptimeMillis() + " - runGecko");
@@ -104,6 +120,8 @@ public class GeckoThread extends Thread implements GeckoEventListener {
         GeckoAppShell.runGecko(path, args, mUri, type);
     }
 
+    private static Object sLock = new Object();
+
     @Override
     public void handleMessage(String event, JSONObject message) {
         if ("Gecko:Ready".equals(event)) {
@@ -114,13 +132,13 @@ public class GeckoThread extends Thread implements GeckoEventListener {
     }
 
     public static boolean checkLaunchState(LaunchState checkState) {
-        synchronized (sLaunchState) {
+        synchronized (sLock) {
             return sLaunchState == checkState;
         }
     }
 
     static void setLaunchState(LaunchState setState) {
-        synchronized (sLaunchState) {
+        synchronized (sLock) {
             sLaunchState = setState;
         }
     }
@@ -130,7 +148,7 @@ public class GeckoThread extends Thread implements GeckoEventListener {
      * state is <code>checkState</code>; otherwise do nothing and return false.
      */
     static boolean checkAndSetLaunchState(LaunchState checkState, LaunchState setState) {
-        synchronized (sLaunchState) {
+        synchronized (sLock) {
             if (sLaunchState != checkState)
                 return false;
             sLaunchState = setState;

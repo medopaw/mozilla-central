@@ -108,7 +108,7 @@ class StructuredTerminalFormatter(StructuredHumanFormatter):
         if s.startswith('TEST-PASS'):
             result = self.terminal.green(s[0:9]) + s[9:]
         elif s.startswith('TEST-UNEXPECTED'):
-            result = self.terminal.red(s[0:20]) + s[21:]
+            result = self.terminal.red(s[0:20]) + s[20:]
 
         return result
 
@@ -150,10 +150,15 @@ class LoggingManager(object):
     @property
     def terminal(self):
         if not self._terminal and blessings:
-            terminal = blessings.Terminal(stream=sys.stdout)
+            # Sometimes blessings fails to set up the terminal. In that case,
+            # silently fail.
+            try:
+                terminal = blessings.Terminal(stream=sys.stdout)
 
-            if terminal.is_a_tty:
-                self._terminal = terminal
+                if terminal.is_a_tty:
+                    self._terminal = terminal
+            except Exception:
+                pass
 
         return self._terminal
 

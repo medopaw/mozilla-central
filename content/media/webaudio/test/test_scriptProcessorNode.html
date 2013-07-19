@@ -10,10 +10,13 @@
 <pre id="test">
 <script class="testbody" type="text/javascript">
 
+// We do not use our generic graph test framework here because
+// the testing logic here is sort of complicated, and would
+// not be easy to map to OfflineAudioContext, as ScriptProcessorNodes
+// can experience delays.
+
 SimpleTest.waitForExplicitFinish();
 addLoadEvent(function() {
-  SpecialPowers.setBoolPref("media.webaudio.enabled", true);
-
   var context = new AudioContext();
   var buffer = null;
 
@@ -105,7 +108,6 @@ addLoadEvent(function() {
         // If we did not experience any delays, the test is done!
         sp.onaudioprocess = null;
 
-        SpecialPowers.clearUserPref("media.webaudio.enabled");
         SimpleTest.finish();
       } else if (firstNonZero != 2048) {
         // In case we just saw a zero buffer this time, wait one more round
@@ -129,7 +131,6 @@ addLoadEvent(function() {
 
           sp.onaudioprocess = null;
 
-          SpecialPowers.clearUserPref("media.webaudio.enabled");
           SimpleTest.finish();
         };
       }

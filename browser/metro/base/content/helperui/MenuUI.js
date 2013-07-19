@@ -194,7 +194,7 @@ var ContextMenuUI = {
 
     // chrome calls don't need to be translated and as such
     // don't provide target.
-    if (aMessage.target) {
+    if (aMessage.target && aMessage.target.localName === "browser") {
       coords = aMessage.target.msgBrowserToClient(aMessage, true);
     }
     this._menuPopup.show(Util.extend({}, this._defaultPositionOptions, {
@@ -338,6 +338,7 @@ function MenuPopup(aPanel, aPopup) {
   this._panel = aPanel;
   this._popup = aPopup;
   this._wantTypeBehind = false;
+  this._willReshowPopup = false;
 
   window.addEventListener('MozAppbarShowing', this, false);
 }
@@ -346,12 +347,23 @@ MenuPopup.prototype = {
   get _commands() { return this._popup.childNodes[0]; },
 
   show: function (aPositionOptions) {
-    if (this._visible)
-      return;
+    if (this._visible) {
+      this._willReshowPopup = true;
+      let self = this;
+      this._panel.addEventListener("transitionend", function () {
+        self._show(aPositionOptions);
+        self._panel.removeEventListener("transitionend", arguments.callee);
+      });
+    } else {
+      this._show(aPositionOptions);
+    }
+  },
 
+  _show: function (aPositionOptions) {
     window.addEventListener("keypress", this, true);
     window.addEventListener("mousedown", this, true);
     Elements.stack.addEventListener("PopupChanged", this, false);
+    Elements.browsers.addEventListener("PanBegin", this, false);
 
     this._panel.hidden = false;
     this._position(aPositionOptions || {});
@@ -361,9 +373,12 @@ MenuPopup.prototype = {
       self._panel.removeEventListener("transitionend", arguments.callee);
       self._panel.removeAttribute("showingfrom");
 
+      let eventName = self._willReshowPopup ? "popupmoved" : "popupshown";
       let event = document.createEvent("Events");
-      event.initEvent("popupshown", true, false);
-      document.dispatchEvent(event);
+      event.initEvent(eventName, true, false);
+      self._panel.dispatchEvent(event);
+
+      self._willReshowPopup = false;
     });
 
     let popupFrom = !aPositionOptions.bottomAligned ? "above" : "below";
@@ -382,16 +397,21 @@ MenuPopup.prototype = {
     window.removeEventListener("keypress", this, true);
     window.removeEventListener("mousedown", this, true);
     Elements.stack.removeEventListener("PopupChanged", this, false);
+    Elements.browsers.removeEventListener("PanBegin", this, false);
 
     let self = this;
     this._panel.addEventListener("transitionend", function () {
       self._panel.removeEventListener("transitionend", arguments.callee);
       self._panel.removeAttribute("hiding");
       self._panel.hidden = true;
+      self._popup.style.maxWidth = "none";
+      self._popup.style.maxHeight = "none";
 
-      let event = document.createEvent("Events");
-      event.initEvent("popuphidden", true, false);
-      document.dispatchEvent(event);
+      if (!self._willReshowPopup) {
+        let event = document.createEvent("Events");
+        event.initEvent("popuphidden", true, false);
+        self._panel.dispatchEvent(event);
+      }
     });
 
     this._panel.setAttribute("hiding", "true");
@@ -432,29 +452,37 @@ MenuPopup.prototype = {
     if (aPositionOptions.centerHorizontally)
       aX -= halfWidth;
 
-    if (aX < 0) {
-      aX = 0;
+    // Always leave some padding.
+    if (aX < kPositionPadding) {
+      aX = kPositionPadding;
     } else if (aX + width + kPositionPadding > screenWidth){
-      aX = screenWidth - width - kPositionPadding;
+      // Don't let the popup overflow to the right.
+      aX = Math.max(screenWidth - width - kPositionPadding, kPositionPadding);
     }
 
-    if (aY < 0 && aPositionOptions.moveBelowToFit) {
+    if (aY < kPositionPadding  && aPositionOptions.moveBelowToFit) {
       // show context menu below when it doesn't fit.
       aY = aPositionOptions.yPos;
-    } else if (aY < 0) {
-      aY = 0;
+    }
+
+    if (aY < kPositionPadding) {
+      aY = kPositionPadding;
+    } else if (aY + height + kPositionPadding > screenHeight){
+      aY = Math.max(screenHeight - height - kPositionPadding, kPositionPadding);
     }
 
     this._panel.left = aX;
     this._panel.top = aY;
 
-    if (!aPositionOptions.maxWidth) {
-      let excessY = (aY + height + kPositionPadding - screenHeight);
-      this._popup.style.maxHeight = (excessY > 0) ? (height - excessY) + "px" : "none";
-    }
     if (!aPositionOptions.maxHeight) {
-      let excessX = (aX + width + kPositionPadding - screenWidth);
-      this._popup.style.maxWidth = (excessX > 0) ? (width - excessX) + "px" : "none";
+      // Make sure it fits in the window.
+      let popupHeight = Math.min(aY + height + kPositionPadding, screenHeight - aY - kPositionPadding);
+      this._popup.style.maxHeight = popupHeight + "px";
+    }
+
+    if (!aPositionOptions.maxWidth) {
+      let popupWidth = Math.min(aX + width + kPositionPadding, screenWidth - aX - kPositionPadding);
+      this._popup.style.maxWidth = popupWidth + "px";
     }
   },
 
@@ -486,6 +514,9 @@ MenuPopup.prototype = {
         } else {
           this.hide();
         }
+        break;
+      case "PanBegin":
+        this.hide();
         break;
     }
   }

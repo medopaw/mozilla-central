@@ -64,7 +64,13 @@ nsGenericHTMLFrameElement::GetContentDocument()
     return nullptr;
   }
 
-  return win->GetDoc();
+  nsIDocument *doc = win->GetDoc();
+
+  // Return null for cross-origin contentDocument.
+  if (!nsContentUtils::GetSubjectPrincipal()->Subsumes(doc->NodePrincipal())) {
+    return nullptr;
+  }
+  return doc;
 }
 
 nsresult
@@ -223,7 +229,9 @@ nsGenericHTMLFrameElement::SetAttr(int32_t aNameSpaceID, nsIAtom* aName,
                                               aValue, aNotify);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  if (aNameSpaceID == kNameSpaceID_None && aName == nsGkAtoms::src) {
+  if (aNameSpaceID == kNameSpaceID_None && aName == nsGkAtoms::src &&
+      (Tag() != nsGkAtoms::iframe || 
+       !HasAttr(kNameSpaceID_None,nsGkAtoms::srcdoc))) {
     // Don't propagate error here. The attribute was successfully set, that's
     // what we should reflect.
     LoadSrc();

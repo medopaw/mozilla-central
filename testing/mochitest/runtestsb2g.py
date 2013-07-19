@@ -60,11 +60,11 @@ let specialPowersObserver = new specialpowers.SpecialPowersObserver();
 specialPowersObserver.init();
 
 let mm = container.QueryInterface(Ci.nsIFrameLoaderOwner).frameLoader.messageManager;
-container.focus();
 mm.addMessageListener("SPPrefService", specialPowersObserver);
 mm.addMessageListener("SPProcessCrashService", specialPowersObserver);
 mm.addMessageListener("SPPingService", specialPowersObserver);
 mm.addMessageListener("SpecialPowers.Quit", specialPowersObserver);
+mm.addMessageListener("SpecialPowers.Focus", specialPowersObserver);
 mm.addMessageListener("SPPermissionManager", specialPowersObserver);
 
 mm.loadFrameScript(CHILD_LOGGER_SCRIPT, true);
@@ -475,6 +475,11 @@ class B2GDeviceMochitest(B2GMochitest):
         if options.utilityPath == None:
             print "ERROR: unable to find utility path for %s, please specify with --utility-path" % (os.name)
             sys.exit(1)
+        # httpd-path is specified by standard makefile targets and may be specified
+        # on the command line to select a particular version of httpd.js. If not
+        # specified, try to select the one from xre.zip, as required in bug 882932.
+        if not options.httpdPath:
+            options.httpdPath = os.path.join(options.utilityPath, "components")
 
         options.profilePath = tempfile.mkdtemp()
         self.server = MochitestServer(localAutomation, options)

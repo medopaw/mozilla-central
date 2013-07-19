@@ -94,7 +94,7 @@
  * under gfx/layers/. To add a new backend, implement at least the following
  * interfaces:
  * - Compositor (ex. CompositorOGL)
- * - TextureHost (ex. TextureImageTextureHost)
+ * - TextureHost (ex. SharedTextureHostOGL)
  * Depending on the type of data that needs to be serialized, you may need to
  * add specific TextureClient implementations.
  */
@@ -170,6 +170,7 @@ class Compositor : public RefCounted<Compositor>
 public:
   Compositor()
     : mCompositorID(0)
+    , mDrawColoredBorders(false)
   {
     MOZ_COUNT_CTOR(Compositor);
   }
@@ -213,7 +214,7 @@ public:
    * Clients of the compositor should call this at the start of the compositing
    * process, it might be required by texture uploads etc.
    *
-   * If aFlags == CURRENT_FORCE then we will (re-)set our context on the
+   * If aFlags == ForceMakeCurrent then we will (re-)set our context on the
    * underlying API even if it is already the current context.
    */
   virtual void MakeCurrent(MakeCurrentFlags aFlags = 0) = 0;
@@ -256,7 +257,7 @@ public:
    * Declare an offset to use when rendering layers. This will be ignored when
    * rendering to a target instead of the screen.
    */
-  virtual void SetScreenRenderOffset(const gfx::Point& aOffset) = 0;
+  virtual void SetScreenRenderOffset(const ScreenPoint& aOffset) = 0;
 
   /**
    * Tell the compositor to actually draw a quad. What to do draw and how it is
@@ -322,6 +323,22 @@ public:
    */
   virtual bool SupportsPartialTextureUpdate() = 0;
 
+  void EnableColoredBorders()
+  {
+    mDrawColoredBorders = true;
+  }
+  void DisableColoredBorders()
+  {
+    mDrawColoredBorders = false;
+  }
+
+  void DrawDiagnostics(const gfx::Color& color,
+                       const gfx::Rect& visibleRect,
+                       const gfx::Rect& aClipRect,
+                       const gfx::Matrix4x4& transform,
+                       const gfx::Point& aOffset);
+
+
 #ifdef MOZ_DUMP_PAINTING
   virtual const char* Name() const = 0;
 #endif // MOZ_DUMP_PAINTING
@@ -380,6 +397,7 @@ public:
 protected:
   uint32_t mCompositorID;
   static LayersBackend sBackend;
+  bool mDrawColoredBorders;
 };
 
 } // namespace layers

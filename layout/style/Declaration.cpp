@@ -8,6 +8,7 @@
  * stylesheet
  */
 
+#include "mozilla/MemoryReporting.h"
 #include "mozilla/Util.h"
 
 #include "mozilla/css/Declaration.h"
@@ -106,6 +107,37 @@ Declaration::AppendValueToString(nsCSSProperty aProperty,
   return true;
 }
 
+// Helper to append |aString| with the shorthand sides notation used in e.g.
+// 'padding'. |aProperties| and |aValues| are expected to have 4 elements.
+static void
+AppendSidesShorthandToString(const nsCSSProperty aProperties[],
+                             const nsCSSValue* aValues[],
+                             nsAString& aString)
+{
+  const nsCSSValue& value1 = *aValues[0];
+  const nsCSSValue& value2 = *aValues[1];
+  const nsCSSValue& value3 = *aValues[2];
+  const nsCSSValue& value4 = *aValues[3];
+
+  NS_ABORT_IF_FALSE(value1.GetUnit() != eCSSUnit_Null, "null value 1");
+  value1.AppendToString(aProperties[0], aString);
+  if (value1 != value2 || value1 != value3 || value1 != value4) {
+    aString.Append(PRUnichar(' '));
+    NS_ABORT_IF_FALSE(value2.GetUnit() != eCSSUnit_Null, "null value 2");
+    value2.AppendToString(aProperties[1], aString);
+    if (value1 != value3 || value2 != value4) {
+      aString.Append(PRUnichar(' '));
+      NS_ABORT_IF_FALSE(value3.GetUnit() != eCSSUnit_Null, "null value 3");
+      value3.AppendToString(aProperties[2], aString);
+      if (value2 != value4) {
+        aString.Append(PRUnichar(' '));
+        NS_ABORT_IF_FALSE(value4.GetUnit() != eCSSUnit_Null, "null value 4");
+        value4.AppendToString(aProperties[3], aString);
+      }
+    }
+  }
+}
+
 void
 Declaration::GetValue(nsCSSProperty aProperty, nsAString& aValue) const
 {
@@ -200,29 +232,13 @@ Declaration::GetValue(nsCSSProperty aProperty, nsAString& aValue) const
                         kNotFound, "third subprop must be bottom");
       NS_ABORT_IF_FALSE(nsCSSProps::GetStringValue(subprops[3]).Find("-left") !=
                         kNotFound, "fourth subprop must be left");
-      const nsCSSValue &topValue = *data->ValueFor(subprops[0]);
-      const nsCSSValue &rightValue = *data->ValueFor(subprops[1]);
-      const nsCSSValue &bottomValue = *data->ValueFor(subprops[2]);
-      const nsCSSValue &leftValue = *data->ValueFor(subprops[3]);
-
-      NS_ABORT_IF_FALSE(topValue.GetUnit() != eCSSUnit_Null, "null top");
-      topValue.AppendToString(subprops[0], aValue);
-      if (topValue != rightValue || topValue != leftValue ||
-          topValue != bottomValue) {
-        aValue.Append(PRUnichar(' '));
-        NS_ABORT_IF_FALSE(rightValue.GetUnit() != eCSSUnit_Null, "null right");
-        rightValue.AppendToString(subprops[1], aValue);
-        if (topValue != bottomValue || rightValue != leftValue) {
-          aValue.Append(PRUnichar(' '));
-          NS_ABORT_IF_FALSE(bottomValue.GetUnit() != eCSSUnit_Null, "null bottom");
-          bottomValue.AppendToString(subprops[2], aValue);
-          if (rightValue != leftValue) {
-            aValue.Append(PRUnichar(' '));
-            NS_ABORT_IF_FALSE(leftValue.GetUnit() != eCSSUnit_Null, "null left");
-            leftValue.AppendToString(subprops[3], aValue);
-          }
-        }
-      }
+      const nsCSSValue* vals[4] = {
+        data->ValueFor(subprops[0]),
+        data->ValueFor(subprops[1]),
+        data->ValueFor(subprops[2]),
+        data->ValueFor(subprops[3])
+      };
+      AppendSidesShorthandToString(subprops, vals, aValue);
       break;
     }
     case eCSSProperty_border_radius:
@@ -239,28 +255,22 @@ Declaration::GetValue(nsCSSProperty aProperty, nsAString& aValue) const
       // For compatibility, only write a slash and the y-values
       // if they're not identical to the x-values.
       bool needY = false;
+      const nsCSSValue* xVals[4];
+      const nsCSSValue* yVals[4];
       for (int i = 0; i < 4; i++) {
         if (vals[i]->GetUnit() == eCSSUnit_Pair) {
           needY = true;
-          vals[i]->GetPairValue().mXValue.AppendToString(subprops[i], aValue);
+          xVals[i] = &vals[i]->GetPairValue().mXValue;
+          yVals[i] = &vals[i]->GetPairValue().mYValue;
         } else {
-          vals[i]->AppendToString(subprops[i], aValue);
+          xVals[i] = yVals[i] = vals[i];
         }
-        if (i < 3)
-          aValue.Append(PRUnichar(' '));
       }
 
+      AppendSidesShorthandToString(subprops, xVals, aValue);
       if (needY) {
         aValue.AppendLiteral(" / ");
-        for (int i = 0; i < 4; i++) {
-          if (vals[i]->GetUnit() == eCSSUnit_Pair) {
-            vals[i]->GetPairValue().mYValue.AppendToString(subprops[i], aValue);
-          } else {
-            vals[i]->AppendToString(subprops[i], aValue);
-          }
-          if (i < 3)
-            aValue.Append(PRUnichar(' '));
-        }
+        AppendSidesShorthandToString(subprops, yVals, aValue);
       }
       break;
     }
@@ -537,6 +547,22 @@ Declaration::GetValue(nsCSSProperty aProperty, nsAString& aValue) const
         *data->ValueFor(eCSSProperty_font_feature_settings);
       const nsCSSValue &languageOverride =
         *data->ValueFor(eCSSProperty_font_language_override);
+      const nsCSSValue &fontKerning =
+        *data->ValueFor(eCSSProperty_font_kerning);
+      const nsCSSValue &fontSynthesis =
+        *data->ValueFor(eCSSProperty_font_synthesis);
+      const nsCSSValue &fontVariantAlternates =
+        *data->ValueFor(eCSSProperty_font_variant_alternates);
+      const nsCSSValue &fontVariantCaps =
+        *data->ValueFor(eCSSProperty_font_variant_caps);
+      const nsCSSValue &fontVariantEastAsian =
+        *data->ValueFor(eCSSProperty_font_variant_east_asian);
+      const nsCSSValue &fontVariantLigatures =
+        *data->ValueFor(eCSSProperty_font_variant_ligatures);
+      const nsCSSValue &fontVariantNumeric =
+        *data->ValueFor(eCSSProperty_font_variant_numeric);
+      const nsCSSValue &fontVariantPosition =
+        *data->ValueFor(eCSSProperty_font_variant_position);
 
       if (systemFont &&
           systemFont->GetUnit() != eCSSUnit_None &&
@@ -550,21 +576,40 @@ Declaration::GetValue(nsCSSProperty aProperty, nsAString& aValue) const
             stretch.GetUnit() != eCSSUnit_System_Font ||
             sizeAdjust.GetUnit() != eCSSUnit_System_Font ||
             featureSettings.GetUnit() != eCSSUnit_System_Font ||
-            languageOverride.GetUnit() != eCSSUnit_System_Font) {
+            languageOverride.GetUnit() != eCSSUnit_System_Font ||
+            fontKerning.GetUnit() != eCSSUnit_System_Font ||
+            fontSynthesis.GetUnit() != eCSSUnit_System_Font ||
+            fontVariantAlternates.GetUnit() != eCSSUnit_System_Font ||
+            fontVariantCaps.GetUnit() != eCSSUnit_System_Font ||
+            fontVariantEastAsian.GetUnit() != eCSSUnit_System_Font ||
+            fontVariantLigatures.GetUnit() != eCSSUnit_System_Font ||
+            fontVariantNumeric.GetUnit() != eCSSUnit_System_Font ||
+            fontVariantPosition.GetUnit() != eCSSUnit_System_Font) {
           // This can't be represented as a shorthand.
           return;
         }
         systemFont->AppendToString(eCSSProperty__x_system_font, aValue);
       } else {
         // The font-stretch, font-size-adjust,
-        // -moz-font-feature-settings, and -moz-font-language-override
-        // properties are reset by this shorthand property to their
+        // -moz-font-feature-settings, -moz-font-language-override
+        // along with kerning, synthesis and other font-variant
+        // subproperties are reset by this shorthand property to their
         // initial values, but can't be represented in its syntax.
         if (stretch.GetUnit() != eCSSUnit_Enumerated ||
             stretch.GetIntValue() != NS_STYLE_FONT_STRETCH_NORMAL ||
             sizeAdjust.GetUnit() != eCSSUnit_None ||
             featureSettings.GetUnit() != eCSSUnit_Normal ||
-            languageOverride.GetUnit() != eCSSUnit_Normal) {
+            languageOverride.GetUnit() != eCSSUnit_Normal ||
+            fontKerning.GetIntValue() != NS_FONT_KERNING_AUTO ||
+            fontSynthesis.GetUnit() != eCSSUnit_Enumerated ||
+            fontSynthesis.GetIntValue() !=
+              (NS_FONT_SYNTHESIS_WEIGHT | NS_FONT_SYNTHESIS_STYLE) ||
+            fontVariantAlternates.GetUnit() != eCSSUnit_Normal ||
+            fontVariantCaps.GetUnit() != eCSSUnit_Normal ||
+            fontVariantEastAsian.GetUnit() != eCSSUnit_Normal ||
+            fontVariantLigatures.GetUnit() != eCSSUnit_Normal ||
+            fontVariantNumeric.GetUnit() != eCSSUnit_Normal ||
+            fontVariantPosition.GetUnit() != eCSSUnit_Normal) {
           return;
         }
 
@@ -807,7 +852,6 @@ Declaration::GetValue(nsCSSProperty aProperty, nsAString& aValue) const
       AppendValueToString(subprops[1], aValue);
       break;
     }
-#ifdef MOZ_FLEXBOX
     case eCSSProperty_flex: {
       // flex-grow, flex-shrink, flex-basis, separated by single space
       const nsCSSProperty* subprops =
@@ -820,7 +864,6 @@ Declaration::GetValue(nsCSSProperty aProperty, nsAString& aValue) const
       AppendValueToString(subprops[2], aValue);
       break;
     }
-#endif // MOZ_FLEXBOX
     case eCSSProperty__moz_transform: {
       // shorthands that are just aliases with different parsing rules
       const nsCSSProperty* subprops =
@@ -1036,7 +1079,7 @@ Declaration::EnsureMutable()
 }
 
 size_t
-Declaration::SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf) const
+Declaration::SizeOfIncludingThis(mozilla::MallocSizeOf aMallocSizeOf) const
 {
   size_t n = aMallocSizeOf(this);
   n += mOrder.SizeOfExcludingThis(aMallocSizeOf);

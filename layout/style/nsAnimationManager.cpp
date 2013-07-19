@@ -4,6 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "nsAnimationManager.h"
+
+#include "mozilla/MemoryReporting.h"
+
 #include "nsPresContext.h"
 #include "nsRuleProcessorData.h"
 #include "nsStyleSet.h"
@@ -12,6 +15,7 @@
 #include "nsSMILKeySpline.h"
 #include "nsEventDispatcher.h"
 #include "nsCSSFrameConstructor.h"
+#include "nsLayoutUtils.h"
 #include <math.h>
 
 using namespace mozilla;
@@ -43,11 +47,13 @@ double
 ElementAnimations::GetPositionInIteration(TimeDuration aElapsedDuration,
                                           TimeDuration aIterationDuration,
                                           double aIterationCount,
-                                          uint32_t aDirection, bool aIsForElement,
+                                          uint32_t aDirection,
                                           ElementAnimation* aAnimation,
                                           ElementAnimations* aEa,
                                           EventArray* aEventsToDispatch)
 {
+  MOZ_ASSERT(!aAnimation == !aEa && !aAnimation == !aEventsToDispatch);
+
   // Set |currentIterationCount| to the (fractional) number of
   // iterations we've completed up to the current position.
   double currentIterationCount = aElapsedDuration / aIterationDuration;
@@ -55,12 +61,11 @@ ElementAnimations::GetPositionInIteration(TimeDuration aElapsedDuration,
   if (currentIterationCount >= aIterationCount) {
     if (aAnimation) {
       // Dispatch 'animationend' when needed.
-      if (aIsForElement &&
-          aAnimation->mLastNotification !=
+      if (aAnimation->mLastNotification !=
             ElementAnimation::LAST_NOTIFICATION_END) {
         aAnimation->mLastNotification = ElementAnimation::LAST_NOTIFICATION_END;
         AnimationEventInfo ei(aEa->mElement, aAnimation->mName, NS_ANIMATION_END,
-                              aElapsedDuration);
+                              aElapsedDuration, aEa->PseudoElement());
         aEventsToDispatch->AppendElement(ei);
       }
 
@@ -129,7 +134,7 @@ ElementAnimations::GetPositionInIteration(TimeDuration aElapsedDuration,
   }
 
   // Dispatch 'animationstart' or 'animationiteration' when needed.
-  if (aAnimation && aIsForElement && dispatchStartOrIteration &&
+  if (aAnimation && dispatchStartOrIteration &&
       whichIteration != aAnimation->mLastNotification) {
     // Notify 'animationstart' even if a negative delay puts us
     // past the first iteration.
@@ -143,7 +148,7 @@ ElementAnimations::GetPositionInIteration(TimeDuration aElapsedDuration,
 
     aAnimation->mLastNotification = whichIteration;
     AnimationEventInfo ei(aEa->mElement, aAnimation->mName, message,
-                          aElapsedDuration);
+                          aElapsedDuration, aEa->PseudoElement());
     aEventsToDispatch->AppendElement(ei);
   }
 
@@ -183,8 +188,7 @@ ElementAnimations::EnsureStyleRuleFor(TimeStamp aRefreshTime,
       // FIXME: avoid recalculating every time when paused.
       GetPositionInIteration(anim.ElapsedDurationAt(aRefreshTime),
                              anim.mIterationDuration, anim.mIterationCount,
-                             anim.mDirection, IsForElement(),
-                             &anim, this, &aEventsToDispatch);
+                             anim.mDirection, &anim, this, &aEventsToDispatch);
 
       // GetPositionInIteration just adjusted mLastNotification; check
       // its new value against the value before we called
@@ -202,7 +206,6 @@ ElementAnimations::EnsureStyleRuleFor(TimeStamp aRefreshTime,
   }
 
   if (aIsThrottled) {
-    mStyleRuleRefreshTime = aRefreshTime;
     return;
   }
 
@@ -233,8 +236,8 @@ ElementAnimations::EnsureStyleRuleFor(TimeStamp aRefreshTime,
       double positionInIteration =
         GetPositionInIteration(anim.ElapsedDurationAt(aRefreshTime),
                                anim.mIterationDuration, anim.mIterationCount,
-                               anim.mDirection, IsForElement(),
-                               &anim, this, &aEventsToDispatch);
+                               anim.mDirection, &anim, this,
+                               &aEventsToDispatch);
 
       // The position is -1 when we don't have fill data for the current time,
       // so we shouldn't animate.
@@ -355,7 +358,7 @@ ElementAnimations::HasAnimationOfProperty(nsCSSProperty aProperty) const
 bool
 ElementAnimations::CanPerformOnCompositorThread(CanAnimateFlags aFlags) const
 {
-  nsIFrame* frame = mElement->GetPrimaryFrame();
+  nsIFrame* frame = nsLayoutUtils::GetStyleFrame(mElement);
   if (!frame) {
     return false;
   }
@@ -472,6 +475,7 @@ nsAnimationManager::EnsureStyleRuleFor(ElementAnimations* aET)
   aET->EnsureStyleRuleFor(mPresContext->RefreshDriver()->MostRecentRefresh(),
                           mPendingEvents,
                           false);
+  CheckNeedsRefresh();
 }
 
 /* virtual */ void
@@ -519,7 +523,7 @@ nsAnimationManager::RulesMatching(XULTreeRuleProcessorData* aData)
 #endif
 
 /* virtual */ size_t
-nsAnimationManager::SizeOfExcludingThis(nsMallocSizeOfFun aMallocSizeOf) const
+nsAnimationManager::SizeOfExcludingThis(MallocSizeOf aMallocSizeOf) const
 {
   return CommonAnimationManager::SizeOfExcludingThis(aMallocSizeOf);
 
@@ -530,7 +534,7 @@ nsAnimationManager::SizeOfExcludingThis(nsMallocSizeOfFun aMallocSizeOf) const
 }
 
 /* virtual */ size_t
-nsAnimationManager::SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf) const
+nsAnimationManager::SizeOfIncludingThis(MallocSizeOf aMallocSizeOf) const
 {
   return aMallocSizeOf(this) + SizeOfExcludingThis(aMallocSizeOf);
 }
@@ -540,6 +544,11 @@ nsAnimationManager::CheckAnimationRule(nsStyleContext* aStyleContext,
                                        mozilla::dom::Element* aElement)
 {
   if (!mPresContext->IsProcessingAnimationStyleChange()) {
+    if (!mPresContext->IsDynamic()) {
+      // For print or print preview, ignore animations.
+      return nullptr;
+    }
+
     // Everything that causes our animation data to change triggers a
     // style change, which in turn triggers a non-animation restyle.
     // Likewise, when we initially construct frames, we're not in a
@@ -630,6 +639,7 @@ nsAnimationManager::CheckAnimationRule(nsStyleContext* aStyleContext,
     ea->mNeedsRefreshes = true;
 
     ea->EnsureStyleRuleFor(refreshTime, mPendingEvents, false);
+    CheckNeedsRefresh();
     // We don't actually dispatch the mPendingEvents now.  We'll either
     // dispatch them the next time we get a refresh driver notification
     // or the next time somebody calls
@@ -950,6 +960,11 @@ nsAnimationManager::GetAnimationRule(mozilla::dom::Element* aElement,
     aPseudoType == nsCSSPseudoElements::ePseudo_after,
     "forbidden pseudo type");
 
+  if (!mPresContext->IsDynamic()) {
+    // For print or print preview, ignore animations.
+    return nullptr;
+  }
+
   ElementAnimations *ea =
     GetElementAnimations(aElement, aPseudoType, false);
   if (!ea) {
@@ -994,6 +1009,39 @@ nsAnimationManager::WillRefresh(mozilla::TimeStamp aTime)
 }
 
 void
+nsAnimationManager::AddElementData(CommonElementAnimationData* aData)
+{
+  if (!mObservingRefreshDriver) {
+    NS_ASSERTION(static_cast<ElementAnimations*>(aData)->mNeedsRefreshes,
+                 "Added data which doesn't need refreshing?");
+    // We need to observe the refresh driver.
+    mPresContext->RefreshDriver()->AddRefreshObserver(this, Flush_Style);
+    mObservingRefreshDriver = true;
+  }
+
+  PR_INSERT_BEFORE(aData, &mElementData);
+}
+
+void
+nsAnimationManager::CheckNeedsRefresh()
+{
+  for (PRCList *l = PR_LIST_HEAD(&mElementData); l != &mElementData;
+       l = PR_NEXT_LINK(l)) {
+    if (static_cast<ElementAnimations*>(l)->mNeedsRefreshes) {
+      if (!mObservingRefreshDriver) {
+        mPresContext->RefreshDriver()->AddRefreshObserver(this, Flush_Style);
+        mObservingRefreshDriver = true;
+      }
+      return;
+    }
+  }
+  if (mObservingRefreshDriver) {
+    mObservingRefreshDriver = false;
+    mPresContext->RefreshDriver()->RemoveRefreshObserver(this, Flush_Style);
+  }
+}
+
+void
 nsAnimationManager::FlushAnimations(FlushFlags aFlags)
 {
   // FIXME: check that there's at least one style rule that's not
@@ -1011,6 +1059,7 @@ nsAnimationManager::FlushAnimations(FlushFlags aFlags)
 
     nsRefPtr<css::AnimValuesStyleRule> oldStyleRule = ea->mStyleRule;
     ea->EnsureStyleRuleFor(now, mPendingEvents, canThrottleTick);
+    CheckNeedsRefresh();
     if (oldStyleRule != ea->mStyleRule) {
       ea->PostRestyleForAnimation(mPresContext);
     } else {

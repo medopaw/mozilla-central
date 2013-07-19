@@ -119,6 +119,12 @@ UpdateFilePreviewWidget(GtkFileChooser *file_chooser,
     return;
   }
 
+#if GTK_CHECK_VERSION(2,12,0)
+  GdkPixbuf *preview_pixbuf_temp = preview_pixbuf;
+  preview_pixbuf = gdk_pixbuf_apply_embedded_orientation(preview_pixbuf_temp);
+  g_object_unref(preview_pixbuf_temp);
+#endif
+
   // This is the easiest way to do center alignment without worrying about containers
   // Minimum 3px padding each side (hence the 6) just to make things nice
   gint x_padding = (MAX_PREVIEW_SIZE + 6 - gdk_pixbuf_get_width(preview_pixbuf)) / 2;
@@ -406,10 +412,6 @@ nsFilePicker::Open(nsIFilePickerShownCallback *aCallback)
   gtk_window_set_modal(window, TRUE);
   if (parent_widget) {
     gtk_window_set_destroy_with_parent(window, TRUE);
-    GtkWindowGroup *parentGroup = gtk_window_get_group(parent_widget);
-    if (parentGroup) {
-      gtk_window_group_add_window(parentGroup, window);
-    }
   }
 
   NS_ConvertUTF16toUTF8 defaultName(mDefault);

@@ -10,9 +10,7 @@
  * liability, trademark and document use rules apply.
  */
 
-interface SVGAnimatedString;
 interface SVGViewSpec;
-interface SVGPoint;
 
 interface SVGSVGElement : SVGGraphicsElement {
 
@@ -44,7 +42,7 @@ interface SVGSVGElement : SVGGraphicsElement {
   // NodeList getEnclosureList(SVGRect rect, SVGElement referenceElement);
   // boolean checkIntersection(SVGElement element, SVGRect rect);
   // boolean checkEnclosure(SVGElement element, SVGRect rect);
-  // void deselectAll();
+  void deselectAll();
   [Creator]
   SVGNumber createSVGNumber();
   [Creator]

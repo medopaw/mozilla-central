@@ -6,14 +6,20 @@
 package org.mozilla.gecko;
 
 import org.mozilla.gecko.background.announcements.AnnouncementsConstants;
+import org.mozilla.gecko.background.common.GlobalConstants;
+import org.mozilla.gecko.background.healthreport.HealthReportConstants;
 import org.mozilla.gecko.util.GeckoEventListener;
+import org.mozilla.gecko.GeckoPreferenceFragment;
 import org.mozilla.gecko.util.ThreadUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +35,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.preference.TwoStatePreference;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -49,38 +56,99 @@ public class GeckoPreferences
 {
     private static final String LOGTAG = "GeckoPreferences";
 
-    private ArrayList<String> mPreferencesList;
-    private PreferenceScreen mPreferenceScreen;
-    private static boolean sIsCharEncodingEnabled = false;
     private static final String NON_PREF_PREFIX = "android.not_a_preference.";
+    public static final String INTENT_EXTRA_RESOURCES = "resource";
+    public static String PREFS_HEALTHREPORT_UPLOAD_ENABLED = NON_PREF_PREFIX + "healthreport.uploadEnabled";
+
+    private static boolean sIsCharEncodingEnabled = false;
     private boolean mInitialized = false;
+    private int mPrefsRequestId = 0;
 
     // These match keys in resources/xml/preferences.xml.in.
     private static String PREFS_ANNOUNCEMENTS_ENABLED = NON_PREF_PREFIX + "privacy.announcements.enabled";
-    private static String PREFS_CATEGORY_GENERAL = "category_general";
-    private static String PREFS_CATEGORY_PRIVACY = "category_privacy";
+    private static String PREFS_DATA_REPORTING_PREFERENCES = NON_PREF_PREFIX + "datareporting.preferences";
+    private static String PREFS_TELEMETRY_ENABLED = "datareporting.telemetry.enabled";
+    private static String PREFS_CRASHREPORTER_ENABLED = "datareporting.crashreporter.submitEnabled";
     private static String PREFS_MENU_CHAR_ENCODING = "browser.menu.showCharacterEncoding";
     private static String PREFS_MP_ENABLED = "privacy.masterpassword.enabled";
-    private static String PREFS_TELEMETRY_ENABLED = "toolkit.telemetry.enabled";
-    private static String PREFS_TELEMETRY_ENABLED_PRERELEASE = "toolkit.telemetry.enabledPreRelease";
     private static String PREFS_UPDATER_AUTODOWNLOAD = "app.update.autodownload";
-    private static String PREFS_TITLEBAR_MODE = "android.not_a_preference.privacy.titlebar";
+    private static String PREFS_GEO_REPORTING = "app.geo.reportdata";
+    private static String PREFS_HEALTHREPORT_LINK = NON_PREF_PREFIX + "healthreport.link";
+
+    public static String PREFS_RESTORE_SESSION = NON_PREF_PREFIX + "restoreSession";
+
+    // These values are chosen to be distinct from other Activity constants.
+    private static int REQUEST_CODE_PREF_SCREEN = 5;
+    private static int RESULT_CODE_EXIT_SETTINGS = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // For fragment-capable devices, display the default fragment if no explicit fragment to show.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB &&
+            !getIntent().hasExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT)) {
+            setupTopLevelFragmentIntent();
+        }
+
         super.onCreate(savedInstanceState);
 
-        // If this is a smaller screen
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB || !onIsMultiPane()) {
-            addPreferencesFromResource(R.xml.preferences_general);
-            addPreferencesFromResource(R.xml.preferences_content);
-            addPreferencesFromResource(R.xml.preferences_privacy);
+        // Use setResourceToOpen to specify these extras.
+        Bundle intentExtras = getIntent().getExtras();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            int res = 0;
+            if (intentExtras != null && intentExtras.containsKey(INTENT_EXTRA_RESOURCES)) {
+                // Fetch resource id from intent.
+                String resourceName = intentExtras.getString(INTENT_EXTRA_RESOURCES);
+                if (resourceName != null) {
+                    res = getResources().getIdentifier(resourceName, "xml", getPackageName());
+                    if (res == 0) {
+                        Log.e(LOGTAG, "No resource found named " + resourceName);
+                    }
+                }
+            }
+            if (res == 0) {
+                // No resource specified, or the resource was invalid; use the default preferences screen.
+                Log.e(LOGTAG, "Displaying default settings.");
+                res = R.xml.preferences;
+            }
+            addPreferencesFromResource(res);
         }
 
         registerEventListener("Sanitize:Finished");
 
         if (Build.VERSION.SDK_INT >= 14)
             getActionBar().setHomeButtonEnabled(true);
+
+        // If launched from notification, explicitly cancel the notification.
+        if (intentExtras != null && intentExtras.containsKey(DataReportingNotification.ALERT_NAME_DATAREPORTING_NOTIFICATION)) {
+            NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(DataReportingNotification.ALERT_NAME_DATAREPORTING_NOTIFICATION.hashCode());
+        }
+    }
+
+    /**
+     * Set intent to display top-level settings fragment.
+     */
+    private void setupTopLevelFragmentIntent() {
+        Intent intent = getIntent();
+        // Check intent to determine settings screen to display.
+        Bundle intentExtras = intent.getExtras();
+        Bundle fragmentArgs = new Bundle();
+        // Add resource argument to fragment if it exists.
+        if (intentExtras != null && intentExtras.containsKey(INTENT_EXTRA_RESOURCES)) {
+            String resourceName = intentExtras.getString(INTENT_EXTRA_RESOURCES);
+            fragmentArgs.putString(INTENT_EXTRA_RESOURCES, resourceName);
+        } else {
+            // Use top-level settings screen.
+            if (!onIsMultiPane()) {
+                fragmentArgs.putString(INTENT_EXTRA_RESOURCES, "preferences");
+            } else {
+                fragmentArgs.putString(INTENT_EXTRA_RESOURCES, "preferences_customize_tablet");
+            }
+        }
+
+        // Build fragment intent.
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, GeckoPreferenceFragment.class.getName());
+        intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS, fragmentArgs);
     }
 
     @Override
@@ -95,9 +163,9 @@ public class GeckoPreferences
             return;
 
         mInitialized = true;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB || !onIsMultiPane()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             PreferenceScreen screen = getPreferenceScreen();
-            setupPreferences(screen);
+            mPrefsRequestId = setupPreferences(screen);
         }
     }
 
@@ -105,6 +173,9 @@ public class GeckoPreferences
     protected void onDestroy() {
         super.onDestroy();
         unregisterEventListener("Sanitize:Finished");
+        if (mPrefsRequestId > 0) {
+            PrefsHelper.removeObserver(mPrefsRequestId);
+        }
     }
 
     @Override
@@ -122,6 +193,38 @@ public class GeckoPreferences
 
         if (getApplication() instanceof GeckoApplication) {
             ((GeckoApplication) getApplication()).onActivityResume(this);
+        }
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        // For settings, we want to be able to pass results up the chain
+        // of preference screens so Settings can behave as a single unit.
+        // Specifically, when we open a link, we want to back out of all
+        // the settings screens.
+        // We need to start nested PreferenceScreens withStartActivityForResult().
+        // Android doesn't let us do that (see Preference.onClick), so we're overriding here.
+        startActivityForResult(intent, REQUEST_CODE_PREF_SCREEN);
+    }
+
+    @Override
+    public void startWithFragment(String fragmentName, Bundle args,
+            Fragment resultTo, int resultRequestCode, int titleRes, int shortTitleRes) {
+        // Overriding because we want to use startActivityForResult for Fragment intents.
+        Intent intent = onBuildStartFragmentIntent(fragmentName, args, titleRes, shortTitleRes);
+        if (resultTo == null) {
+            startActivityForResult(intent, REQUEST_CODE_PREF_SCREEN);
+        } else {
+            resultTo.startActivityForResult(intent, resultRequestCode);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (REQUEST_CODE_PREF_SCREEN == requestCode && RESULT_CODE_EXIT_SETTINGS == resultCode) {
+            // Pass this result up to the parent activity.
+            setResult(RESULT_CODE_EXIT_SETTINGS);
+            finish();
         }
     }
 
@@ -144,38 +247,66 @@ public class GeckoPreferences
         }
     }
 
-    public void setupPreferences(PreferenceGroup prefs) {
+    /**
+      * Initialize all of the preferences (native of Gecko ones) for this screen.
+      *
+      * @param prefs The android.preference.PreferenceGroup to initialize
+      * @return The integer id for the PrefsHelper.PrefHandlerBase listener added
+      *         to monitor changes to Gecko prefs.
+      */
+    public int setupPreferences(PreferenceGroup prefs) {
         ArrayList<String> list = new ArrayList<String>();
         setupPreferences(prefs, list);
-        getGeckoPreferences(prefs, list);
+        return getGeckoPreferences(prefs, list);
     }
 
+    /**
+      * Recursively loop through a PreferenceGroup. Initialize native Android prefs,
+      * and build a list of Gecko preferences in the passed in prefs array
+      *
+      * @param preferences The android.preference.PreferenceGroup to initialize
+      * @param prefs An ArrayList to fill with Gecko preferences that need to be
+      *        initialized
+      * @return The integer id for the PrefsHelper.PrefHandlerBase listener added
+      *         to monitor changes to Gecko prefs.
+      */
     private void setupPreferences(PreferenceGroup preferences, ArrayList<String> prefs) {
         for (int i = 0; i < preferences.getPreferenceCount(); i++) {
             Preference pref = preferences.getPreference(i);
+            String key = pref.getKey();
             if (pref instanceof PreferenceGroup) {
-                setupPreferences((PreferenceGroup)pref, prefs);
-            } else {
-                String key = pref.getKey();
-
-                pref.setOnPreferenceChangeListener(this);
-                if (PREFS_UPDATER_AUTODOWNLOAD.equals(key) && !AppConstants.MOZ_UPDATER) {
-                    preferences.removePreference(pref);
-                    i--;
-                    continue;
-                } else if (PREFS_TELEMETRY_ENABLED.equals(key)) {
-                    if (AppConstants.MOZ_TELEMETRY_REPORTING) {
-                        if (AppConstants.MOZ_TELEMETRY_ON_BY_DEFAULT) {
-                            pref.setKey(PREFS_TELEMETRY_ENABLED_PRERELEASE);
-                            key = PREFS_TELEMETRY_ENABLED_PRERELEASE;
-                        }
-                    } else {
+                // If no datareporting is enabled, remove UI.
+                if (PREFS_DATA_REPORTING_PREFERENCES.equals(key)) {
+                    if (!AppConstants.MOZ_DATA_REPORTING) {
                         preferences.removePreference(pref);
                         i--;
                         continue;
                     }
-                } else if (PREFS_TITLEBAR_MODE.equals(key)) {
-                    setupTitlebarPref((ListPreference)pref);
+                }
+                setupPreferences((PreferenceGroup) pref, prefs);
+            } else {
+                pref.setOnPreferenceChangeListener(this);
+                if (!AppConstants.MOZ_UPDATER &&
+                    PREFS_UPDATER_AUTODOWNLOAD.equals(key)) {
+                    preferences.removePreference(pref);
+                    i--;
+                    continue;
+                } else if (!AppConstants.MOZ_TELEMETRY_REPORTING &&
+                           PREFS_TELEMETRY_ENABLED.equals(key)) {
+                    preferences.removePreference(pref);
+                    i--;
+                    continue;
+                } else if (!AppConstants.MOZ_SERVICES_HEALTHREPORT &&
+                           (PREFS_HEALTHREPORT_UPLOAD_ENABLED.equals(key) ||
+                            PREFS_HEALTHREPORT_LINK.equals(key))) {
+                    preferences.removePreference(pref);
+                    i--;
+                    continue;
+                } else if (!AppConstants.MOZ_CRASHREPORTER &&
+                           PREFS_CRASHREPORTER_ENABLED.equals(key)) {
+                    preferences.removePreference(pref);
+                    i--;
+                    continue;
                 }
 
                 // Some Preference UI elements are not actually preferences,
@@ -217,6 +348,9 @@ public class GeckoPreferences
      * Broadcast an intent with <code>pref</code>, <code>branch</code>, and
      * <code>enabled</code> extras. This is intended to represent the
      * notification of a preference value to observers.
+     *
+     * The broadcast will be sent only to receivers registered with the
+     * (Fennec-specific) per-Android package permission.
      */
     public static void broadcastPrefAction(final Context context,
                                            final String action,
@@ -227,8 +361,19 @@ public class GeckoPreferences
         intent.putExtra("pref", pref);
         intent.putExtra("branch", GeckoApp.PREFS_NAME);
         intent.putExtra("enabled", value);
+
+        // There is a race here, but GeckoProfile returns the default profile
+        // when Gecko is not explicitly running for a different profile.  In a
+        // multi-profile world, this will need to be updated (possibly to
+        // broadcast settings for all profiles).  See Bug 882182.
+        GeckoProfile profile = GeckoProfile.get(context);
+        if (profile != null) {
+            intent.putExtra("profileName", profile.getName());
+            intent.putExtra("profilePath", profile.getDir().getAbsolutePath());
+        }
+
         Log.d(LOGTAG, "Broadcast: " + action + ", " + pref + ", " + GeckoApp.PREFS_NAME + ", " + value);
-        context.sendBroadcast(intent);
+        context.sendBroadcast(intent, GlobalConstants.PER_ANDROID_PACKAGE_PERMISSION);
     }
 
     /**
@@ -249,6 +394,26 @@ public class GeckoPreferences
     public static void broadcastAnnouncementsPref(final Context context) {
         final boolean value = getBooleanPref(context, PREFS_ANNOUNCEMENTS_ENABLED, true);
         broadcastAnnouncementsPref(context, value);
+    }
+
+    /**
+     * Broadcast the provided value as the value of the
+     * <code>PREFS_HEALTHREPORT_UPLOAD_ENABLED</code> pref.
+     */
+    public static void broadcastHealthReportUploadPref(final Context context, final boolean value) {
+        broadcastPrefAction(context,
+                            HealthReportConstants.ACTION_HEALTHREPORT_UPLOAD_PREF,
+                            PREFS_HEALTHREPORT_UPLOAD_ENABLED,
+                            value);
+    }
+
+    /**
+     * Broadcast the current value of the
+     * <code>PREFS_HEALTHREPORT_UPLOAD_ENABLED</code> pref.
+     */
+    public static void broadcastHealthReportUploadPref(final Context context) {
+        final boolean value = getBooleanPref(context, PREFS_HEALTHREPORT_UPLOAD_ENABLED, true);
+        broadcastHealthReportUploadPref(context, value);
     }
 
     /**
@@ -279,9 +444,24 @@ public class GeckoPreferences
         } else if (PREFS_ANNOUNCEMENTS_ENABLED.equals(prefName)) {
             // Send a broadcast intent to the product announcements service, either to start or
             // to stop the repeated background checks.
-            broadcastAnnouncementsPref(GeckoApp.mAppContext, ((Boolean) newValue).booleanValue());
+            broadcastAnnouncementsPref(GeckoAppShell.getContext(), ((Boolean) newValue).booleanValue());
         } else if (PREFS_UPDATER_AUTODOWNLOAD.equals(prefName)) {
-            org.mozilla.gecko.updater.UpdateServiceHelper.registerForUpdates(GeckoApp.mAppContext, (String)newValue);
+            org.mozilla.gecko.updater.UpdateServiceHelper.registerForUpdates(GeckoAppShell.getContext(), (String) newValue);
+        } else if (PREFS_HEALTHREPORT_UPLOAD_ENABLED.equals(prefName)) {
+            // The healthreport pref only lives in Android, so we do not persist
+            // to Gecko, but we do broadcast intent to the health report
+            // background uploader service, which will start or stop the
+            // repeated background upload attempts.
+            broadcastHealthReportUploadPref(GeckoAppShell.getContext(), ((Boolean) newValue).booleanValue());
+            return true;
+        } else if (PREFS_GEO_REPORTING.equals(prefName)) {
+            // Translate boolean value to int for geo reporting pref.
+            PrefsHelper.setPref(prefName, (Boolean) newValue ? 1 : 0);
+            return true;
+        } else if (PREFS_RESTORE_SESSION.equals(prefName)) {
+            // Do nothing else; the pref will be persisted in the shared prefs,
+            // and it will be read at startup in Java before a session restore.
+            return true;
         }
 
         if (!TextUtils.isEmpty(prefName)) {
@@ -289,10 +469,11 @@ public class GeckoPreferences
         }
         if (preference instanceof ListPreference) {
             // We need to find the entry for the new value
-            int newIndex = ((ListPreference)preference).findIndexOfValue((String) newValue);
-            CharSequence newEntry = ((ListPreference)preference).getEntries()[newIndex];
-            ((ListPreference)preference).setSummary(newEntry);
+            int newIndex = ((ListPreference) preference).findIndexOfValue((String) newValue);
+            CharSequence newEntry = ((ListPreference) preference).getEntries()[newIndex];
+            ((ListPreference) preference).setSummary(newEntry);
         } else if (preference instanceof LinkPreference) {
+            setResult(RESULT_CODE_EXIT_SETTINGS);
             finish();
         } else if (preference instanceof FontSizePreference) {
             final FontSizePreference fontSizePref = (FontSizePreference) preference;
@@ -302,7 +483,7 @@ public class GeckoPreferences
     }
 
     private EditText getTextBox(int aHintText) {
-        EditText input = new EditText(GeckoApp.mAppContext);
+        EditText input = new EditText(GeckoAppShell.getContext());
         int inputtype = InputType.TYPE_CLASS_TEXT;
         inputtype |= InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
         input.setInputType(inputtype);
@@ -379,7 +560,7 @@ public class GeckoPreferences
                 linearLayout.addView(input2);
 
                 builder.setTitle(R.string.masterpassword_create_title)
-                       .setView((View)linearLayout)
+                       .setView((View) linearLayout)
                        .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {  
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -414,8 +595,8 @@ public class GeckoPreferences
                         });
 
                         PasswordTextWatcher watcher = new PasswordTextWatcher(input1, input2, dialog);
-                        input1.addTextChangedListener((TextWatcher)watcher);
-                        input2.addTextChangedListener((TextWatcher)watcher);
+                        input1.addTextChangedListener((TextWatcher) watcher);
+                        input2.addTextChangedListener((TextWatcher) watcher);
 
                 break;
             case DIALOG_REMOVE_MASTER_PASSWORD:
@@ -423,7 +604,7 @@ public class GeckoPreferences
                 linearLayout.addView(input);
 
                 builder.setTitle(R.string.masterpassword_remove_title)
-                       .setView((View)linearLayout)
+                       .setView((View) linearLayout)
                        .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {  
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -459,26 +640,48 @@ public class GeckoPreferences
     }
 
     // Initialize preferences by requesting the preference values from Gecko
-    private void getGeckoPreferences(final PreferenceGroup screen, ArrayList<String> prefs) {
+    private int getGeckoPreferences(final PreferenceGroup screen, ArrayList<String> prefs) {
         JSONArray jsonPrefs = new JSONArray(prefs);
 
-        PrefsHelper.getPrefs(jsonPrefs, new PrefsHelper.PrefHandlerBase() {
+        return PrefsHelper.getPrefs(jsonPrefs, new PrefsHelper.PrefHandlerBase() {
             private Preference getField(String prefName) {
                 return screen.findPreference(prefName);
+            }
+
+            // Handle v14 TwoStatePreference with backwards compatibility.
+            class CheckBoxPrefSetter {
+                public void setBooleanPref(Preference preference, boolean value) {
+                    if ((preference instanceof CheckBoxPreference) &&
+                       ((CheckBoxPreference) preference).isChecked() != value) {
+                        ((CheckBoxPreference) preference).setChecked(value);
+                    }
+                }
+            }
+
+            class TwoStatePrefSetter extends CheckBoxPrefSetter {
+                @Override
+                public void setBooleanPref(Preference preference, boolean value) {
+                    if ((preference instanceof TwoStatePreference) &&
+                       ((TwoStatePreference) preference).isChecked() != value) {
+                        ((TwoStatePreference) preference).setChecked(value);
+                    }
+                }
             }
 
             @Override
             public void prefValue(String prefName, final boolean value) {
                 final Preference pref = getField(prefName);
-                if (pref instanceof CheckBoxPreference) {
-                    ThreadUtils.postToUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (((CheckBoxPreference)pref).isChecked() != value)
-                                ((CheckBoxPreference)pref).setChecked(value);
-                        }
-                    });
+                final CheckBoxPrefSetter prefSetter;
+                if (Build.VERSION.SDK_INT < 14) {
+                    prefSetter = new CheckBoxPrefSetter();
+                } else {
+                    prefSetter = new TwoStatePrefSetter();
                 }
+                ThreadUtils.postToUiThread(new Runnable() {
+                    public void run() {
+                        prefSetter.setBooleanPref(pref, value);
+                    }
+                });
             }
 
             @Override
@@ -488,17 +691,17 @@ public class GeckoPreferences
                     ThreadUtils.postToUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ((EditTextPreference)pref).setText(value);
+                            ((EditTextPreference) pref).setText(value);
                         }
                     });
                 } else if (pref instanceof ListPreference) {
                     ThreadUtils.postToUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ((ListPreference)pref).setValue(value);
+                            ((ListPreference) pref).setValue(value);
                             // Set the summary string to the current entry
-                            CharSequence selectedEntry = ((ListPreference)pref).getEntry();
-                            ((ListPreference)pref).setSummary(selectedEntry);
+                            CharSequence selectedEntry = ((ListPreference) pref).getEntry();
+                            ((ListPreference) pref).setSummary(selectedEntry);
                         }
                     });
                 } else if (pref instanceof FontSizePreference) {
@@ -512,6 +715,32 @@ public class GeckoPreferences
                         }
                     });
                 }
+            }
+
+            @Override
+            public void prefValue(String prefName, final int value) {
+                final Preference pref = getField(prefName);
+                final CheckBoxPrefSetter prefSetter;
+                if (PREFS_GEO_REPORTING.equals(prefName)) {
+                    if (Build.VERSION.SDK_INT < 14) {
+                        prefSetter = new CheckBoxPrefSetter();
+                    } else {
+                        prefSetter = new TwoStatePrefSetter();
+                    }
+                    ThreadUtils.postToUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            prefSetter.setBooleanPref(pref, value == 1);
+                        }
+                    });
+                } else {
+                    Log.w(LOGTAG, "Unhandled int value for pref [" + pref + "]");
+                }
+            }
+
+            @Override
+            public boolean isObserver() {
+                return true;
             }
 
             @Override
@@ -540,28 +769,30 @@ public class GeckoPreferences
         return false;
     }
 
-    private void setupTitlebarPref(final ListPreference pref) {
-        final SharedPreferences settings = getSharedPreferences(BrowserToolbar.PREFS_NAME, 0);
-        boolean value = settings.getBoolean(BrowserToolbar.PREFS_SHOW_URL, false);
+    /**
+     * Given an Intent instance, add extras to specify which settings section to
+     * open.
+     *
+     * resource should be a valid Android XML resource identifier.
+     *
+     * The mechanism to open a section differs based on Android version.
+     */
+    public static void setResourceToOpen(final Intent intent, final String resource) {
+        if (intent == null) {
+            throw new IllegalArgumentException("intent must not be null");
+        }
+        if (resource == null) {
+            return;
+        }
 
-        final String[] entries = new String[] {
-            getResources().getString(R.string.pref_titlebar_mode_url),
-            getResources().getString(R.string.pref_titlebar_mode_title)
-        };
-        pref.setEntries(entries);
-        pref.setEntryValues(entries);
-        pref.setValueIndex(value ? 0 : 1);
-        pref.setSummary(value ? entries[0] : entries[1]);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            intent.putExtra("resource", resource);
+        } else {
+            intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, GeckoPreferenceFragment.class.getName());
 
-        pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                settings.edit()
-                        .putBoolean(BrowserToolbar.PREFS_SHOW_URL, newValue.toString().equals(entries[0]))
-                        .commit();
-                pref.setSummary(newValue.toString());
-                return true;
-            }
-        });
+            Bundle fragmentArgs = new Bundle();
+            fragmentArgs.putString("resource", resource);
+            intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS, fragmentArgs);
+        }
     }
 }

@@ -140,6 +140,8 @@ class Test:
                         test.jitflags.append('--no-jm')
                     elif name == 'ion-eager':
                         test.jitflags.append('--ion-eager')
+                    elif name == 'no-ion':
+                        test.jitflags.append('--no-ion')
                     elif name == 'dump-bytecode':
                         test.jitflags.append('--dump-bytecode')
                     else:
@@ -284,7 +286,8 @@ def run_test(test, prefix, options):
 
 def check_output(out, err, rc, test):
     if test.expect_error:
-        return test.expect_error in err
+        # The shell exits with code 3 on uncaught exceptions.
+        return test.expect_error in err and rc == 3
 
     for line in out.split('\n'):
         if line.startswith('Trace stats check failed'):
@@ -497,9 +500,11 @@ def process_test_results(results, num_tests, options):
             doing = 'after %s' % res.test.path
             if not ok:
                 failures.append(res)
-                pb.message("FAIL - %s" % res.test.path)
-            if res.timed_out:
-                timeouts += 1
+                if res.timed_out:
+                    pb.message("TIMEOUT - %s" % res.test.path)
+                    timeouts += 1
+                else:
+                    pb.message("FAIL - %s" % res.test.path)
 
             if options.tinderbox:
                 if ok:

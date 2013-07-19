@@ -25,6 +25,8 @@ function setUpAndTearDown() {
   yield waitForCondition(function () {
       return !SelectionHelperUI.isSelectionUIVisible;
     }, kCommonWaitMs, kCommonPollMs);
+  InputSourceHelper.isPrecise = false;
+  InputSourceHelper.fireUpdate();
 }
 
 gTests.push({
@@ -43,8 +45,6 @@ gTests.push({
 
     gWindow = Browser.selectedTab.browser.contentWindow;
     gFrame = gWindow.document.getElementById("frame1");
-
-    InputSourceHelper.isPrecise = false;
   },
 });
 
@@ -55,7 +55,7 @@ gTests.push({
   run: function test() {
     gFrame.focus();
 
-    sendContextMenuClick(130, 95);
+    sendContextMenuClick(165, 35);
 
     yield waitForCondition(function () {
         return SelectionHelperUI.isSelectionUIVisible;
@@ -88,7 +88,7 @@ gTests.push({
     let ypos = SelectionHelperUI.endMark.yPos + kMarkerOffsetY;
 
     let touchdrag = new TouchDragAndHold();
-    yield touchdrag.start(gWindow, SelectionHelperUI.endMark.xPos, ypos, 600, ypos);
+    yield touchdrag.start(gWindow, SelectionHelperUI.endMark.xPos, ypos, 640, ypos);
     touchdrag.end();
 
     yield waitForCondition(function () {
@@ -101,7 +101,7 @@ gTests.push({
        "selection test");
 
     touchdrag = new TouchDragAndHold();
-    yield touchdrag.start(gWindow, SelectionHelperUI.endMark.xPos, ypos, 300, ypos);
+    yield touchdrag.start(gWindow, SelectionHelperUI.endMark.xPos, ypos, 320, ypos);
     touchdrag.end();
 
     yield waitForCondition(function () {
@@ -124,7 +124,7 @@ gTests.push({
     gFrame.contentDocument.defaultView.scrollBy(0, 200);
     yield scrollPromise;
 
-    sendContextMenuClick(527, 188);
+    sendContextMenuClick(30, 240);
 
     yield waitForCondition(function () {
         return SelectionHelperUI.isSelectionUIVisible;
@@ -144,7 +144,7 @@ gTests.push({
     ok(menuItem, "menu item exists");
     ok(!menuItem.hidden, "menu item visible");
     let popupPromise = waitForEvent(document, "popuphidden");
-    EventUtils.synthesizeMouse(menuItem, 10, 10, {}, gWindow);
+    sendElementTap(gWindow, menuItem);
     yield popupPromise;
     ok(popupPromise && !(popupPromise instanceof Error), "promise error");
 
@@ -185,8 +185,7 @@ gTests.push({
     gFrame.contentDocument.defaultView.scrollBy(0, 200);
     yield scrollPromise;
 
-    InputSourceHelper.isPrecise = false;
-    sendContextMenuClick(114, 91);
+    sendContextMenuClick(114, 130);
 
     yield waitForCondition(function () {
         return SelectionHelperUI.isSelectionUIVisible;

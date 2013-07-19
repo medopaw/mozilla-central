@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
-#include "tests.h"
+#include "jsapi-tests/tests.h"
 #include "jsdbgapi.h"
 #include "jscntxt.h"
 
@@ -131,10 +131,7 @@ ThrowHook(JSContext *cx, JSScript *, jsbytecode *, jsval *rval, void *closure)
 
 BEGIN_TEST(testDebugger_throwHook)
 {
-    uint32_t newopts =
-        JS_GetOptions(cx) | JSOPTION_METHODJIT | JSOPTION_METHODJIT_ALWAYS;
-    uint32_t oldopts = JS_SetOptions(cx, newopts);
-
+    CHECK(JS_SetDebugMode(cx, true));
     CHECK(JS_SetThrowHook(rt, ThrowHook, NULL));
     EXEC("function foo() { throw 3 };\n"
          "for (var i = 0; i < 10; ++i) { \n"
@@ -145,7 +142,6 @@ BEGIN_TEST(testDebugger_throwHook)
          "}\n");
     CHECK(called);
     CHECK(JS_SetThrowHook(rt, NULL, NULL));
-    JS_SetOptions(cx, oldopts);
     return true;
 }
 END_TEST(testDebugger_throwHook)
@@ -243,12 +239,8 @@ END_TEST(testDebugger_newScriptHook)
 
 BEGIN_TEST(testDebugger_singleStepThrow)
     {
-        CHECK(JS_SetDebugModeForCompartment(cx, cx->compartment, true));
+        CHECK(JS_SetDebugModeForCompartment(cx, cx->compartment(), true));
         CHECK(JS_SetInterrupt(rt, onStep, NULL));
-
-        uint32_t opts = JS_GetOptions(cx);
-        opts |= JSOPTION_METHODJIT | JSOPTION_METHODJIT_ALWAYS;
-        JS_SetOptions(cx, opts);
 
         CHECK(JS_DefineFunction(cx, global, "setStepMode", setStepMode, 0, 0));
         EXEC("var e;\n"

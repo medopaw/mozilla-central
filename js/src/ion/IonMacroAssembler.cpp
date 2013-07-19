@@ -4,9 +4,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+#include "ion/IonMacroAssembler.h"
+
 #include "jsinfer.h"
 
+#include "ion/AsmJS.h"
 #include "ion/Bailouts.h"
+#include "ion/BaselineFrame.h"
 #include "ion/BaselineIC.h"
 #include "ion/BaselineJIT.h"
 #include "ion/BaselineRegisters.h"
@@ -15,7 +19,10 @@
 #include "js/RootingAPI.h"
 #include "vm/ForkJoin.h"
 
+#include "jsgcinlines.h"
 #include "jsinferinlines.h"
+
+#include "vm/Shape-inl.h"
 
 using namespace js;
 using namespace js::ion;
@@ -77,10 +84,13 @@ MacroAssembler::guardTypeSet(const Source &address, const TypeSet *types,
         branchTestString(Equal, tag, matched);
     if (types->hasType(types::Type::NullType()))
         branchTestNull(Equal, tag, matched);
+    if (types->hasType(types::Type::MagicArgType()))
+        branchTestMagic(Equal, tag, matched);
 
     if (types->hasType(types::Type::AnyObjectType())) {
         branchTestObject(Equal, tag, matched);
     } else if (types->getObjectCount()) {
+        JS_ASSERT(scratch != InvalidReg);
         branchTestObject(NotEqual, tag, miss);
         Register obj = extractObject(address, scratch);
 
@@ -133,24 +143,36 @@ MacroAssembler::PushRegsInMask(RegisterSet set)
     int32_t diffF = set.fpus().size() * sizeof(double);
     int32_t diffG = set.gprs().size() * STACK_SLOT_SIZE;
 
-#ifdef JS_CPU_ARM
+#if defined(JS_CPU_X86) || defined(JS_CPU_X64)
+    // On x86, always use push to push the integer registers, as it's fast
+    // on modern hardware and it's a small instruction.
+    for (GeneralRegisterBackwardIterator iter(set.gprs()); iter.more(); iter++) {
+        diffG -= STACK_SLOT_SIZE;
+        Push(*iter);
+    }
+#elif defined(JS_CPU_ARM)
     if (set.gprs().size() > 1) {
         adjustFrame(diffG);
         startDataTransferM(IsStore, StackPointer, DB, WriteBack);
-        for (GeneralRegisterIterator iter(set.gprs()); iter.more(); iter++) {
+        for (GeneralRegisterBackwardIterator iter(set.gprs()); iter.more(); iter++) {
             diffG -= STACK_SLOT_SIZE;
             transferReg(*iter);
         }
         finishDataTransfer();
-    } else
-#endif
-    {
+    } else {
         reserveStack(diffG);
-        for (GeneralRegisterIterator iter(set.gprs()); iter.more(); iter++) {
+        for (GeneralRegisterBackwardIterator iter(set.gprs()); iter.more(); iter++) {
             diffG -= STACK_SLOT_SIZE;
             storePtr(*iter, Address(StackPointer, diffG));
         }
     }
+#else
+    reserveStack(diffG);
+    for (GeneralRegisterBackwardIterator iter(set.gprs()); iter.more(); iter++) {
+        diffG -= STACK_SLOT_SIZE;
+        storePtr(*iter, Address(StackPointer, diffG));
+    }
+#endif
     JS_ASSERT(diffG == 0);
 
 #ifdef JS_CPU_ARM
@@ -158,7 +180,7 @@ MacroAssembler::PushRegsInMask(RegisterSet set)
     diffF += transferMultipleByRuns(set.fpus(), IsStore, StackPointer, DB);
 #else
     reserveStack(diffF);
-    for (FloatRegisterIterator iter(set.fpus()); iter.more(); iter++) {
+    for (FloatRegisterBackwardIterator iter(set.fpus()); iter.more(); iter++) {
         diffF -= sizeof(double);
         storeDouble(*iter, Address(StackPointer, diffF));
     }
@@ -183,7 +205,7 @@ MacroAssembler::PopRegsInMaskIgnore(RegisterSet set, RegisterSet ignore)
     } else
 #endif
     {
-        for (FloatRegisterIterator iter(set.fpus()); iter.more(); iter++) {
+        for (FloatRegisterBackwardIterator iter(set.fpus()); iter.more(); iter++) {
             diffF -= sizeof(double);
             if (!ignore.has(*iter))
                 loadDouble(Address(StackPointer, diffF), *iter);
@@ -192,10 +214,21 @@ MacroAssembler::PopRegsInMaskIgnore(RegisterSet set, RegisterSet ignore)
     }
     JS_ASSERT(diffF == 0);
 
+#if defined(JS_CPU_X86) || defined(JS_CPU_X64)
+    // On x86, use pop to pop the integer registers, if we're not going to
+    // ignore any slots, as it's fast on modern hardware and it's a small
+    // instruction.
+    if (ignore.empty(false)) {
+        for (GeneralRegisterForwardIterator iter(set.gprs()); iter.more(); iter++) {
+            diffG -= STACK_SLOT_SIZE;
+            Pop(*iter);
+        }
+    } else
+#endif
 #ifdef JS_CPU_ARM
     if (set.gprs().size() > 1 && ignore.empty(false)) {
         startDataTransferM(IsLoad, StackPointer, IA, WriteBack);
-        for (GeneralRegisterIterator iter(set.gprs()); iter.more(); iter++) {
+        for (GeneralRegisterBackwardIterator iter(set.gprs()); iter.more(); iter++) {
             diffG -= STACK_SLOT_SIZE;
             transferReg(*iter);
         }
@@ -204,7 +237,7 @@ MacroAssembler::PopRegsInMaskIgnore(RegisterSet set, RegisterSet ignore)
     } else
 #endif
     {
-        for (GeneralRegisterIterator iter(set.gprs()); iter.more(); iter++) {
+        for (GeneralRegisterBackwardIterator iter(set.gprs()); iter.more(); iter++) {
             diffG -= STACK_SLOT_SIZE;
             if (!ignore.has(*iter))
                 loadPtr(Address(StackPointer, diffG), *iter);
@@ -214,29 +247,50 @@ MacroAssembler::PopRegsInMaskIgnore(RegisterSet set, RegisterSet ignore)
     JS_ASSERT(diffG == 0);
 }
 
+void
+MacroAssembler::branchNurseryPtr(Condition cond, const Address &ptr1, const ImmMaybeNurseryPtr &ptr2,
+                                 Label *label)
+{
+#ifdef JSGC_GENERATIONAL
+    if (ptr2.value && gc::IsInsideNursery(GetIonContext()->cx->runtime(), (void *)ptr2.value))
+        embedsNurseryPointers_ = true;
+#endif
+    branchPtr(cond, ptr1, ptr2, label);
+}
+
+void
+MacroAssembler::moveNurseryPtr(const ImmMaybeNurseryPtr &ptr, const Register &reg)
+{
+#ifdef JSGC_GENERATIONAL
+    if (ptr.value && gc::IsInsideNursery(GetIonContext()->cx->runtime(), (void *)ptr.value))
+        embedsNurseryPointers_ = true;
+#endif
+    movePtr(ptr, reg);
+}
+
 template<typename T>
 void
 MacroAssembler::loadFromTypedArray(int arrayType, const T &src, AnyRegister dest, Register temp,
                                    Label *fail)
 {
     switch (arrayType) {
-      case TypedArray::TYPE_INT8:
+      case TypedArrayObject::TYPE_INT8:
         load8SignExtend(src, dest.gpr());
         break;
-      case TypedArray::TYPE_UINT8:
-      case TypedArray::TYPE_UINT8_CLAMPED:
+      case TypedArrayObject::TYPE_UINT8:
+      case TypedArrayObject::TYPE_UINT8_CLAMPED:
         load8ZeroExtend(src, dest.gpr());
         break;
-      case TypedArray::TYPE_INT16:
+      case TypedArrayObject::TYPE_INT16:
         load16SignExtend(src, dest.gpr());
         break;
-      case TypedArray::TYPE_UINT16:
+      case TypedArrayObject::TYPE_UINT16:
         load16ZeroExtend(src, dest.gpr());
         break;
-      case TypedArray::TYPE_INT32:
+      case TypedArrayObject::TYPE_INT32:
         load32(src, dest.gpr());
         break;
-      case TypedArray::TYPE_UINT32:
+      case TypedArrayObject::TYPE_UINT32:
         if (dest.isFloat()) {
             load32(src, temp);
             convertUInt32ToDouble(temp, dest.fpu());
@@ -246,17 +300,16 @@ MacroAssembler::loadFromTypedArray(int arrayType, const T &src, AnyRegister dest
             j(Assembler::Signed, fail);
         }
         break;
-      case TypedArray::TYPE_FLOAT32:
-      case TypedArray::TYPE_FLOAT64:
-        if (arrayType == js::TypedArray::TYPE_FLOAT32)
+      case TypedArrayObject::TYPE_FLOAT32:
+      case TypedArrayObject::TYPE_FLOAT64:
+        if (arrayType == TypedArrayObject::TYPE_FLOAT32)
             loadFloatAsDouble(src, dest.fpu());
         else
             loadDouble(src, dest.fpu());
         canonicalizeDouble(dest.fpu());
         break;
       default:
-        JS_NOT_REACHED("Invalid typed array type");
-        break;
+        MOZ_ASSUME_UNREACHABLE("Invalid typed array type");
     }
 }
 
@@ -271,16 +324,16 @@ MacroAssembler::loadFromTypedArray(int arrayType, const T &src, const ValueOpera
                                    bool allowDouble, Register temp, Label *fail)
 {
     switch (arrayType) {
-      case TypedArray::TYPE_INT8:
-      case TypedArray::TYPE_UINT8:
-      case TypedArray::TYPE_UINT8_CLAMPED:
-      case TypedArray::TYPE_INT16:
-      case TypedArray::TYPE_UINT16:
-      case TypedArray::TYPE_INT32:
+      case TypedArrayObject::TYPE_INT8:
+      case TypedArrayObject::TYPE_UINT8:
+      case TypedArrayObject::TYPE_UINT8_CLAMPED:
+      case TypedArrayObject::TYPE_INT16:
+      case TypedArrayObject::TYPE_UINT16:
+      case TypedArrayObject::TYPE_INT32:
         loadFromTypedArray(arrayType, src, AnyRegister(dest.scratchReg()), InvalidReg, NULL);
         tagValue(JSVAL_TYPE_INT32, dest.scratchReg(), dest);
         break;
-      case TypedArray::TYPE_UINT32:
+      case TypedArrayObject::TYPE_UINT32:
         // Don't clobber dest when we could fail, instead use temp.
         load32(src, temp);
         test32(temp, temp);
@@ -305,14 +358,13 @@ MacroAssembler::loadFromTypedArray(int arrayType, const T &src, const ValueOpera
             tagValue(JSVAL_TYPE_INT32, temp, dest);
         }
         break;
-      case TypedArray::TYPE_FLOAT32:
-      case TypedArray::TYPE_FLOAT64:
+      case TypedArrayObject::TYPE_FLOAT32:
+      case TypedArrayObject::TYPE_FLOAT64:
         loadFromTypedArray(arrayType, src, AnyRegister(ScratchFloatReg), dest.scratchReg(), NULL);
         boxDouble(ScratchFloatReg, dest);
         break;
       default:
-        JS_NOT_REACHED("Invalid typed array type");
-        break;
+        MOZ_ASSUME_UNREACHABLE("Invalid typed array type");
     }
 }
 
@@ -433,6 +485,26 @@ MacroAssembler::newGCThing(const Register &result, gc::AllocKind allocKind, Labe
     branch32(Assembler::NotEqual, result, Imm32(0), fail);
 #endif
 
+    // Don't execute the inline path if the compartment has an object metadata callback,
+    // as the metadata to use for the object may vary between executions of the op.
+    if (GetIonContext()->compartment->objectMetadataCallback)
+        jump(fail);
+
+#ifdef JSGC_GENERATIONAL
+    Nursery &nursery = zone->rt->gcNursery;
+    if (nursery.isEnabled() && allocKind <= gc::FINALIZE_OBJECT_LAST) {
+        // Inline Nursery::allocate. No explicit check for nursery.isEnabled()
+        // is needed, as the comparison with the nursery's end will always fail
+        // in such cases.
+        loadPtr(AbsoluteAddress(nursery.addressOfPosition()), result);
+        addPtr(Imm32(thingSize), result);
+        branchPtr(Assembler::BelowOrEqual, AbsoluteAddress(nursery.addressOfCurrentEnd()), result, fail);
+        storePtr(result, AbsoluteAddress(nursery.addressOfPosition()));
+        subPtr(Imm32(thingSize), result);
+        return;
+    }
+#endif // JSGC_GENERATIONAL
+
     // Inline FreeSpan::allocate.
     // There is always exactly one FreeSpan per allocKind per JSCompartment.
     // If a FreeSpan is replaced, its members are updated in the freeLists table,
@@ -474,7 +546,7 @@ MacroAssembler::parNewGCThing(const Register &result,
                               const Register &threadContextReg,
                               const Register &tempReg1,
                               const Register &tempReg2,
-                              JSObject *templateObject,
+                              gc::AllocKind allocKind,
                               Label *fail)
 {
     // Similar to ::newGCThing(), except that it allocates from a
@@ -487,12 +559,11 @@ MacroAssembler::parNewGCThing(const Register &result,
     // register as `threadContextReg`.  Then we overwrite that
     // register which messed up the OOL code.
 
-    gc::AllocKind allocKind = templateObject->tenuredGetAllocKind();
     uint32_t thingSize = (uint32_t)gc::Arena::thingSize(allocKind);
 
     // Load the allocator:
-    // tempReg1 = (Allocator*) forkJoinSlice->allocator
-    loadPtr(Address(threadContextReg, offsetof(js::ForkJoinSlice, allocator)),
+    // tempReg1 = (Allocator*) forkJoinSlice->allocator()
+    loadPtr(Address(threadContextReg, ThreadSafeContext::offsetOfAllocator()),
             tempReg1);
 
     // Get a pointer to the relevant free list:
@@ -524,6 +595,41 @@ MacroAssembler::parNewGCThing(const Register &result,
 }
 
 void
+MacroAssembler::parNewGCThing(const Register &result,
+                              const Register &threadContextReg,
+                              const Register &tempReg1,
+                              const Register &tempReg2,
+                              JSObject *templateObject,
+                              Label *fail)
+{
+    gc::AllocKind allocKind = templateObject->tenuredGetAllocKind();
+    JS_ASSERT(allocKind >= gc::FINALIZE_OBJECT0 && allocKind <= gc::FINALIZE_OBJECT_LAST);
+    JS_ASSERT(!templateObject->hasDynamicElements());
+
+    parNewGCThing(result, threadContextReg, tempReg1, tempReg2, allocKind, fail);
+}
+
+void
+MacroAssembler::parNewGCString(const Register &result,
+                               const Register &threadContextReg,
+                               const Register &tempReg1,
+                               const Register &tempReg2,
+                               Label *fail)
+{
+    parNewGCThing(result, threadContextReg, tempReg1, tempReg2, js::gc::FINALIZE_STRING, fail);
+}
+
+void
+MacroAssembler::parNewGCShortString(const Register &result,
+                                    const Register &threadContextReg,
+                                    const Register &tempReg1,
+                                    const Register &tempReg2,
+                                    Label *fail)
+{
+    parNewGCThing(result, threadContextReg, tempReg1, tempReg2, js::gc::FINALIZE_SHORT_STRING, fail);
+}
+
+void
 MacroAssembler::initGCThing(const Register &obj, JSObject *templateObject)
 {
     // Fast initialization of an empty object returned by NewGCThing().
@@ -532,7 +638,7 @@ MacroAssembler::initGCThing(const Register &obj, JSObject *templateObject)
     storePtr(ImmGCPtr(templateObject->type()), Address(obj, JSObject::offsetOfType()));
     storePtr(ImmWord((void *)NULL), Address(obj, JSObject::offsetOfSlots()));
 
-    if (templateObject->isArray()) {
+    if (templateObject->is<ArrayObject>()) {
         JS_ASSERT(!templateObject->getDenseInitializedLength());
 
         int elementsOffset = JSObject::offsetOfFixedElements();
@@ -546,7 +652,7 @@ MacroAssembler::initGCThing(const Register &obj, JSObject *templateObject)
                 Address(obj, elementsOffset + ObjectElements::offsetOfCapacity()));
         store32(Imm32(templateObject->getDenseInitializedLength()),
                 Address(obj, elementsOffset + ObjectElements::offsetOfInitializedLength()));
-        store32(Imm32(templateObject->getArrayLength()),
+        store32(Imm32(templateObject->as<ArrayObject>().length()),
                 Address(obj, elementsOffset + ObjectElements::offsetOfLength()));
         store32(Imm32(templateObject->shouldConvertDoubleElements()
                       ? ObjectElements::CONVERT_DOUBLE_ELEMENTS
@@ -669,7 +775,10 @@ MacroAssembler::performOsr()
     bind(&isFunction);
     {
         // Function - create the callee token, then get the script.
-        orPtr(Imm32(CalleeToken_Function), calleeToken);
+
+        // Skip the or-ing of CalleeToken_Function into calleeToken since it is zero.
+        JS_ASSERT(CalleeToken_Function == 0);
+
         loadPtr(Address(script, JSFunction::offsetOfNativeOrScript()), script);
     }
 
@@ -693,123 +802,35 @@ MacroAssembler::performOsr()
     ret();
 }
 
+static void
+ReportOverRecursed(JSContext *cx)
+{
+    js_ReportOverRecursed(cx);
+}
+
 void
 MacroAssembler::generateBailoutTail(Register scratch, Register bailoutInfo)
 {
     enterExitFrame();
 
-    Label reflow;
-    Label interpret;
     Label exception;
-    Label osr;
-    Label boundscheck;
-    Label overrecursed;
-    Label invalidate;
     Label baseline;
 
     // The return value from Bailout is tagged as:
-    // - 0x0: done (thunk to interpreter)
+    // - 0x0: done (enter baseline)
     // - 0x1: error (handle exception)
-    // - 0x2: reflow args
-    // - 0x3: reflow barrier
-    // - 0x4: monitor types
-    // - 0x5: bounds check failure
-    // - 0x6: force invalidation
-    // - 0x7: overrecursed
-    // - 0x8: cached shape guard failure
-    // - 0x9: bailout to baseline
+    // - 0x2: overrecursed
 
-    branch32(LessThan, ReturnReg, Imm32(BAILOUT_RETURN_FATAL_ERROR), &interpret);
+    branch32(Equal, ReturnReg, Imm32(BAILOUT_RETURN_OK), &baseline);
     branch32(Equal, ReturnReg, Imm32(BAILOUT_RETURN_FATAL_ERROR), &exception);
 
-    branch32(LessThan, ReturnReg, Imm32(BAILOUT_RETURN_BOUNDS_CHECK), &reflow);
-
-    branch32(Equal, ReturnReg, Imm32(BAILOUT_RETURN_BOUNDS_CHECK), &boundscheck);
-    branch32(Equal, ReturnReg, Imm32(BAILOUT_RETURN_OVERRECURSED), &overrecursed);
-    branch32(Equal, ReturnReg, Imm32(BAILOUT_RETURN_SHAPE_GUARD), &invalidate);
-    branch32(Equal, ReturnReg, Imm32(BAILOUT_RETURN_BASELINE), &baseline);
-
-    // Fall-through: cached shape guard failure.
-    {
-        setupUnalignedABICall(0, scratch);
-        callWithABI(JS_FUNC_TO_DATA_PTR(void *, CachedShapeGuardFailure));
-
-        branchTest32(Zero, ReturnReg, ReturnReg, &exception);
-        jump(&interpret);
-    }
-
-    // Force invalidation.
-    bind(&invalidate);
-    {
-        setupUnalignedABICall(0, scratch);
-        callWithABI(JS_FUNC_TO_DATA_PTR(void *, ShapeGuardFailure));
-
-        branchTest32(Zero, ReturnReg, ReturnReg, &exception);
-        jump(&interpret);
-    }
-
-    // Bounds-check failure.
-    bind(&boundscheck);
-    {
-        setupUnalignedABICall(0, scratch);
-        callWithABI(JS_FUNC_TO_DATA_PTR(void *, BoundsCheckFailure));
-
-        branchTest32(Zero, ReturnReg, ReturnReg, &exception);
-        jump(&interpret);
-    }
-
-    // Reflow types.
-    bind(&reflow);
-    {
-        setupUnalignedABICall(1, scratch);
-        passABIArg(ReturnReg);
-        callWithABI(JS_FUNC_TO_DATA_PTR(void *, ReflowTypeInfo));
-
-        branchTest32(Zero, ReturnReg, ReturnReg, &exception);
-        jump(&interpret);
-    }
-
-    // Throw an over-recursion error.
-    bind(&overrecursed);
+    // Fall-through: overrecursed.
     {
         loadJSContext(ReturnReg);
         setupUnalignedABICall(1, scratch);
         passABIArg(ReturnReg);
-        callWithABI(JS_FUNC_TO_DATA_PTR(void *, js_ReportOverRecursed));
+        callWithABI(JS_FUNC_TO_DATA_PTR(void *, ReportOverRecursed));
         jump(&exception);
-    }
-
-    bind(&interpret);
-    {
-        // Reserve space for Interpret() to store a Value.
-        subPtr(Imm32(sizeof(Value)), StackPointer);
-        mov(StackPointer, ReturnReg);
-
-        // Call out to the interpreter.
-        setupUnalignedABICall(1, scratch);
-        passABIArg(ReturnReg);
-        callWithABI(JS_FUNC_TO_DATA_PTR(void *, ThunkToInterpreter));
-
-        // Load the value the interpreter returned.
-        popValue(JSReturnOperand);
-
-        // Check for an exception.
-        JS_STATIC_ASSERT(!Interpret_Error);
-        branchTest32(Zero, ReturnReg, ReturnReg, &exception);
-
-        // Remove the exitCode pointer from the stack.
-        leaveExitFrame();
-
-        branch32(Equal, ReturnReg, Imm32(Interpret_OSR), &osr);
-
-        // Return to the caller.
-        ret();
-    }
-
-    bind(&osr);
-    {
-        unboxPrivate(JSReturnOperand, OsrFrameReg);
-        performOsr();
     }
 
     bind(&exception);
@@ -964,6 +985,38 @@ MacroAssembler::loadBaselineOrIonRaw(Register script, Register dest, ExecutionMo
 }
 
 void
+MacroAssembler::loadBaselineOrIonNoArgCheck(Register script, Register dest, ExecutionMode mode,
+                                            Label *failure)
+{
+    if (mode == SequentialExecution) {
+        loadPtr(Address(script, JSScript::offsetOfBaselineOrIonSkipArgCheck()), dest);
+        if (failure)
+            branchTestPtr(Assembler::Zero, dest, dest, failure);
+    } else {
+        // Find second register to get the offset to skip argument check
+        Register offset = script;
+        if (script == dest) {
+            GeneralRegisterSet regs(GeneralRegisterSet::All());
+            regs.take(dest);
+            offset = regs.takeAny();
+        }
+
+        loadPtr(Address(script, JSScript::offsetOfParallelIonScript()), dest);
+        if (failure)
+            branchPtr(Assembler::BelowOrEqual, dest, ImmWord(ION_COMPILING_SCRIPT), failure);
+
+        Push(offset);
+        load32(Address(script, IonScript::offsetOfSkipArgCheckEntryOffset()), offset);
+
+        loadPtr(Address(dest, IonScript::offsetOfMethod()), dest);
+        loadPtr(Address(dest, IonCode::offsetOfCode()), dest);
+        addPtr(offset, dest);
+
+        Pop(offset);
+    }
+}
+
+void
 MacroAssembler::loadBaselineFramePtr(Register framePtr, Register dest)
 {
     movePtr(framePtr, dest);
@@ -971,8 +1024,7 @@ MacroAssembler::loadBaselineFramePtr(Register framePtr, Register dest)
 }
 
 void
-MacroAssembler::enterParallelExitFrameAndLoadSlice(const VMFunction *f, Register slice,
-                                                   Register scratch)
+MacroAssembler::loadForkJoinSlice(Register slice, Register scratch)
 {
     // Load the current ForkJoinSlice *. If we need a parallel exit frame,
     // chances are we are about to do something very slow anyways, so just
@@ -981,6 +1033,29 @@ MacroAssembler::enterParallelExitFrameAndLoadSlice(const VMFunction *f, Register
     callWithABI(JS_FUNC_TO_DATA_PTR(void *, ParForkJoinSlice));
     if (ReturnReg != slice)
         movePtr(ReturnReg, slice);
+}
+
+void
+MacroAssembler::loadContext(Register cxReg, Register scratch, ExecutionMode executionMode)
+{
+    switch (executionMode) {
+      case SequentialExecution:
+        // The scratch register is not used for sequential execution.
+        loadJSContext(cxReg);
+        break;
+      case ParallelExecution:
+        loadForkJoinSlice(cxReg, scratch);
+        break;
+      default:
+        MOZ_ASSUME_UNREACHABLE("No such execution mode");
+    }
+}
+
+void
+MacroAssembler::enterParallelExitFrameAndLoadSlice(const VMFunction *f, Register slice,
+                                                   Register scratch)
+{
+    loadForkJoinSlice(slice, scratch);
     // Load the PerThreadData from from the slice.
     loadPtr(Address(slice, offsetof(ForkJoinSlice, perThreadData)), scratch);
     linkParallelExitFrame(scratch);
@@ -988,6 +1063,17 @@ MacroAssembler::enterParallelExitFrameAndLoadSlice(const VMFunction *f, Register
     exitCodePatch_ = PushWithPatch(ImmWord(-1));
     // Push the VMFunction pointer, to mark arguments.
     Push(ImmWord(f));
+}
+
+void
+MacroAssembler::enterFakeParallelExitFrame(Register slice, Register scratch,
+                                           IonCode *codeVal)
+{
+    // Load the PerThreadData from from the slice.
+    loadPtr(Address(slice, offsetof(ForkJoinSlice, perThreadData)), scratch);
+    linkParallelExitFrame(scratch);
+    Push(ImmWord(uintptr_t(codeVal)));
+    Push(ImmWord(uintptr_t(NULL)));
 }
 
 void
@@ -1004,7 +1090,25 @@ MacroAssembler::enterExitFrameAndLoadContext(const VMFunction *f, Register cxReg
         enterParallelExitFrameAndLoadSlice(f, cxReg, scratch);
         break;
       default:
-        JS_NOT_REACHED("No such execution mode");
+        MOZ_ASSUME_UNREACHABLE("No such execution mode");
+    }
+}
+
+void
+MacroAssembler::enterFakeExitFrame(Register cxReg, Register scratch,
+                                   ExecutionMode executionMode,
+                                   IonCode *codeVal)
+{
+    switch (executionMode) {
+      case SequentialExecution:
+        // The cx and scratch registers are not used for sequential execution.
+        enterFakeExitFrame(codeVal);
+        break;
+      case ParallelExecution:
+        enterFakeParallelExitFrame(cxReg, scratch, codeVal);
+        break;
+      default:
+        MOZ_ASSUME_UNREACHABLE("No such execution mode");
     }
 }
 
@@ -1026,13 +1130,32 @@ MacroAssembler::handleFailure(ExecutionMode executionMode)
         handler = JS_FUNC_TO_DATA_PTR(void *, ion::HandleParallelFailure);
         break;
       default:
-        JS_NOT_REACHED("No such execution mode");
+        MOZ_ASSUME_UNREACHABLE("No such execution mode");
     }
     MacroAssemblerSpecific::handleFailureWithHandler(handler);
 
     // Doesn't actually emit code, but balances the leave()
     if (sps_)
         sps_->reenter(*this, InvalidReg);
+}
+
+void
+MacroAssembler::pushCalleeToken(Register callee, ExecutionMode mode)
+{
+    // Tag and push a callee, then clear the tag after pushing. This is needed
+    // if we dereference the callee pointer after pushing it as part of a
+    // frame.
+    tagCallee(callee, mode);
+    push(callee);
+    clearCalleeTag(callee, mode);
+}
+
+void
+MacroAssembler::PushCalleeToken(Register callee, ExecutionMode mode)
+{
+    tagCallee(callee, mode);
+    Push(callee);
+    clearCalleeTag(callee, mode);
 }
 
 void
@@ -1046,7 +1169,7 @@ MacroAssembler::tagCallee(Register callee, ExecutionMode mode)
         orPtr(Imm32(CalleeToken_ParallelFunction), callee);
         return;
       default:
-        JS_NOT_REACHED("No such execution mode");
+        MOZ_ASSUME_UNREACHABLE("No such execution mode");
     }
 }
 
@@ -1061,7 +1184,7 @@ MacroAssembler::clearCalleeTag(Register callee, ExecutionMode mode)
         andPtr(Imm32(~0x3), callee);
         return;
       default:
-        JS_NOT_REACHED("No such execution mode");
+        MOZ_ASSUME_UNREACHABLE("No such execution mode");
     }
 }
 
@@ -1111,21 +1234,6 @@ MacroAssembler::printf(const char *output, Register value)
 }
 
 void
-MacroAssembler::copyMem(Register copyFrom, Register copyEnd, Register copyTo, Register temp)
-{
-    Label copyDone;
-    Label copyLoop;
-    bind(&copyLoop);
-    branchPtr(Assembler::AboveOrEqual, copyFrom, copyEnd, &copyDone);
-    load32(Address(copyFrom, 0), temp);
-    store32(temp, Address(copyTo, 0));
-    addPtr(Imm32(4), copyTo);
-    addPtr(Imm32(4), copyFrom);
-    jump(&copyLoop);
-    bind(&copyDone);
-}
-
-void
 MacroAssembler::convertInt32ValueToDouble(const Address &address, Register scratch, Label *done)
 {
     branchTestInt32(Assembler::NotEqual, address, done);
@@ -1134,7 +1242,116 @@ MacroAssembler::convertInt32ValueToDouble(const Address &address, Register scrat
     storeDouble(ScratchFloatReg, address);
 }
 
-#ifdef JS_ASMJS
+static const double DoubleZero = 0.0;
+
+void
+MacroAssembler::convertValueToDouble(ValueOperand value, FloatRegister output, Label *fail)
+{
+    Register tag = splitTagForTest(value);
+
+    Label isDouble, isInt32, isBool, isNull, done;
+
+    branchTestDouble(Assembler::Equal, tag, &isDouble);
+    branchTestInt32(Assembler::Equal, tag, &isInt32);
+    branchTestBoolean(Assembler::Equal, tag, &isBool);
+    branchTestNull(Assembler::Equal, tag, &isNull);
+    branchTestUndefined(Assembler::NotEqual, tag, fail);
+
+    // fall-through: undefined
+    loadStaticDouble(&js_NaN, output);
+    jump(&done);
+
+    bind(&isNull);
+    loadStaticDouble(&DoubleZero, output);
+    jump(&done);
+
+    bind(&isBool);
+    boolValueToDouble(value, output);
+    jump(&done);
+
+    bind(&isInt32);
+    int32ValueToDouble(value, output);
+    jump(&done);
+
+    bind(&isDouble);
+    unboxDouble(value, output);
+    bind(&done);
+}
+
+void
+MacroAssembler::convertValueToInt32(ValueOperand value, FloatRegister temp,
+                                    Register output, Label *fail)
+{
+    Register tag = splitTagForTest(value);
+
+    Label done, simple, isInt32, isBool, isDouble;
+
+    branchTestInt32(Assembler::Equal, tag, &isInt32);
+    branchTestBoolean(Assembler::Equal, tag, &isBool);
+    branchTestDouble(Assembler::Equal, tag, &isDouble);
+    branchTestNull(Assembler::NotEqual, tag, fail);
+
+    // The value is null - just emit 0.
+    mov(Imm32(0), output);
+    jump(&done);
+
+    // Try converting double into integer
+    bind(&isDouble);
+    unboxDouble(value, temp);
+    convertDoubleToInt32(temp, output, fail, /* -0 check */ false);
+    jump(&done);
+
+    // Just unbox a bool, the result is 0 or 1.
+    bind(&isBool);
+    unboxBoolean(value, output);
+    jump(&done);
+
+    // Integers can be unboxed.
+    bind(&isInt32);
+    unboxInt32(value, output);
+
+    bind(&done);
+}
+
+void
+MacroAssembler::PushEmptyRooted(VMFunction::RootType rootType)
+{
+    switch (rootType) {
+      case VMFunction::RootNone:
+        MOZ_ASSUME_UNREACHABLE("Handle must have root type");
+      case VMFunction::RootObject:
+      case VMFunction::RootString:
+      case VMFunction::RootPropertyName:
+      case VMFunction::RootFunction:
+      case VMFunction::RootCell:
+        Push(ImmWord((void *)NULL));
+        break;
+      case VMFunction::RootValue:
+        Push(UndefinedValue());
+        break;
+    }
+}
+
+void
+MacroAssembler::popRooted(VMFunction::RootType rootType, Register cellReg,
+                          const ValueOperand &valueReg)
+{
+    switch (rootType) {
+      case VMFunction::RootNone:
+        MOZ_ASSUME_UNREACHABLE("Handle must have root type");
+      case VMFunction::RootObject:
+      case VMFunction::RootString:
+      case VMFunction::RootPropertyName:
+      case VMFunction::RootFunction:
+      case VMFunction::RootCell:
+        Pop(cellReg);
+        break;
+      case VMFunction::RootValue:
+        Pop(valueReg);
+        break;
+    }
+}
+
 ABIArgIter::ABIArgIter(const MIRTypeVector &types)
   : gen_(),
     types_(types),
@@ -1152,4 +1369,3 @@ ABIArgIter::operator++(int)
     if (!done())
         gen_.next(types_[i_]);
 }
-#endif

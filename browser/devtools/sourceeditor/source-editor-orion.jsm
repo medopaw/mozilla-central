@@ -16,7 +16,7 @@ XPCOMUtils.defineLazyServiceGetter(this, "clipboardHelper",
                                    "@mozilla.org/widget/clipboardhelper;1",
                                    "nsIClipboardHelper");
 
-const ORION_SCRIPT = "chrome://browser/content/orion.js";
+const ORION_SCRIPT = "chrome://browser/content/devtools/orion.js";
 const ORION_IFRAME = "data:text/html;charset=utf8,<!DOCTYPE html>" +
   "<html style='height:100%' dir='ltr'>" +
   "<head><link rel='stylesheet'" +
@@ -123,11 +123,13 @@ const DEFAULT_KEYBINDINGS = [
     action: "Move to Bracket Opening",
     code: Ci.nsIDOMKeyEvent.DOM_VK_OPEN_BRACKET,
     accel: true,
+    alt: true,
   },
   {
     action: "Move to Bracket Closing",
     code: Ci.nsIDOMKeyEvent.DOM_VK_CLOSE_BRACKET,
     accel: true,
+    alt: true,
   },
 ];
 

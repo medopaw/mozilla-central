@@ -4,8 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef jsion_lir_opcodes_common_h__
-#define jsion_lir_opcodes_common_h__
+#ifndef ion_LOpcodes_h
+#define ion_LOpcodes_h
 
 #define LIR_COMMON_OPCODE_LIST(_)   \
     _(Label)                        \
@@ -92,6 +92,7 @@
     _(AbsI)                         \
     _(AbsD)                         \
     _(SqrtD)                        \
+    _(Atan2D)                       \
     _(PowI)                         \
     _(PowD)                         \
     _(Random)                       \
@@ -107,6 +108,7 @@
     _(ModD)                         \
     _(BinaryV)                      \
     _(Concat)                       \
+    _(ParConcat)                    \
     _(CharCodeAt)                   \
     _(FromCharCode)                 \
     _(Int32ToDouble)                \
@@ -115,6 +117,7 @@
     _(DoubleToInt32)                \
     _(TruncateDToInt32)             \
     _(IntToString)                  \
+    _(DoubleToString)               \
     _(Start)                        \
     _(OsrEntry)                     \
     _(OsrValue)                     \
@@ -128,6 +131,7 @@
     _(Slots)                        \
     _(Elements)                     \
     _(ConvertElementsToDoubles)     \
+    _(MaybeToDoubleElement)         \
     _(LoadSlotV)                    \
     _(LoadSlotT)                    \
     _(StoreSlotV)                   \
@@ -139,6 +143,8 @@
     _(ParDump)                      \
     _(TypeBarrier)                  \
     _(MonitorTypes)                 \
+    _(PostWriteBarrierO)            \
+    _(PostWriteBarrierV)            \
     _(InitializedLength)            \
     _(SetInitializedLength)         \
     _(BoundsCheck)                  \
@@ -190,6 +196,8 @@
     _(CallDeleteProperty)           \
     _(SetPropertyCacheV)            \
     _(SetPropertyCacheT)            \
+    _(SetElementCacheV)             \
+    _(SetElementCacheT)             \
     _(SetPropertyPolymorphicV)      \
     _(SetPropertyPolymorphicT)      \
     _(CallIteratorStart)            \
@@ -203,6 +211,9 @@
     _(StringLength)                 \
     _(ArgumentsLength)              \
     _(GetArgument)                  \
+    _(RunOncePrologue)              \
+    _(Rest)                         \
+    _(ParRest)                      \
     _(TypeOfV)                      \
     _(ToIdV)                        \
     _(Floor)                        \
@@ -218,6 +229,7 @@
     _(SetDOMProperty)               \
     _(CallDOMNative)                \
     _(IsCallable)                   \
+    _(HaveSameClass)                \
     _(AsmJSLoadHeap)                \
     _(AsmJSStoreHeap)               \
     _(AsmJSLoadGlobalVar)           \
@@ -232,16 +244,15 @@
     _(ParCheckInterrupt)
 
 #if defined(JS_CPU_X86)
-# include "x86/LOpcodes-x86.h"
+# include "ion/x86/LOpcodes-x86.h"
 #elif defined(JS_CPU_X64)
-# include "x64/LOpcodes-x64.h"
+# include "ion/x64/LOpcodes-x64.h"
 #elif defined(JS_CPU_ARM)
-# include "arm/LOpcodes-arm.h"
+# include "ion/arm/LOpcodes-arm.h"
 #endif
 
 #define LIR_OPCODE_LIST(_)          \
     LIR_COMMON_OPCODE_LIST(_)       \
     LIR_CPU_OPCODE_LIST(_)
 
-#endif // jsion_lir_opcodes_common_h__
-
+#endif /* ion_LOpcodes_h */

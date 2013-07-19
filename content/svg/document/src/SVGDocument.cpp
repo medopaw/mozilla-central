@@ -19,30 +19,8 @@ namespace dom {
 //----------------------------------------------------------------------
 // Implementation
 
-SVGDocument::SVGDocument()
-{
-}
-
-SVGDocument::~SVGDocument()
-{
-}
-
 //----------------------------------------------------------------------
 // nsISupports methods:
-
-NS_IMPL_ISUPPORTS_INHERITED1(SVGDocument, XMLDocument, nsIDOMSVGDocument)
-
-//----------------------------------------------------------------------
-// nsIDOMSVGDocument methods:
-
-/* readonly attribute DOMString domain; */
-NS_IMETHODIMP
-SVGDocument::GetDomain(nsAString& aDomain)
-{
-  ErrorResult rv;
-  GetDomain(aDomain, rv);
-  return rv.ErrorCode();
-}
 
 void
 SVGDocument::GetDomain(nsAString& aDomain, ErrorResult& aRv)
@@ -61,16 +39,6 @@ SVGDocument::GetDomain(nsAString& aDomain, ErrorResult& aRv)
     }
     CopyUTF8toUTF16(domain, aDomain);
   }
-}
-
-/* readonly attribute SVGSVGElement rootElement; */
-NS_IMETHODIMP
-SVGDocument::GetRootElement(nsIDOMSVGElement** aRootElement)
-{
-  ErrorResult rv;
-  nsCOMPtr<nsIDOMSVGElement> retval = GetRootElement(rv);
-  retval.forget(aRootElement);
-  return rv.ErrorCode();
 }
 
 nsSVGElement*
@@ -104,11 +72,7 @@ SVGDocument::Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const
 JSObject*
 SVGDocument::WrapNode(JSContext *aCx, JS::Handle<JSObject*> aScope)
 {
-  JSObject* obj = SVGDocumentBinding::Wrap(aCx, aScope, this);
-  if (obj && !PostCreateWrapper(aCx, obj)) {
-    return nullptr;
-  }
-  return obj;
+  return SVGDocumentBinding::Wrap(aCx, aScope, this);
 }
 
 } // namespace dom

@@ -186,6 +186,10 @@ public:
     eIntID_SubmenuDelay,
     // can popups overlap menu/task bar?
     eIntID_MenusCanOverlapOSBar,
+    // should overlay scrollbars be used?
+    eIntID_UseOverlayScrollbars,
+    // allow H and V overlay scrollbars to overlap?
+    eIntID_AllowOverlayScrollbarsOverlap,
     // show/hide scrollbars based on activity
     eIntID_ShowHideScrollbars,
     // skip navigating to disabled menu item?
@@ -348,20 +352,42 @@ public:
      */
     eIntID_WindowsThemeIdentifier,
     /**
+     * Return an appropriate os version identifier.
+     */
+    eIntID_OperatingSystemVersionIdentifier,
+    /**
      * 0: scrollbar button repeats to scroll only when cursor is on the button.
      * 1: scrollbar button repeats to scroll even if cursor is outside of it.
      */
     eIntID_ScrollbarButtonAutoRepeatBehavior,
     /**
-     * Dealy before showing a tooltip.
+     * Delay before showing a tooltip.
      */
     eIntID_TooltipDelay,
-
     /*
      * A Boolean value to determine whether Mac OS X Lion style swipe animations
      * should be used.
      */
-    eIntID_SwipeAnimationEnabled
+    eIntID_SwipeAnimationEnabled,
+
+    /*
+     * A boolean value indicating whether or not the device has a hardware
+     * home button. Used on gaia to determine whether a home button
+     * is shown.
+     */
+     eIntID_PhysicalHomeButton,
+ 
+     /*
+      * Controls whether overlay scrollbars display when the user moves
+      * the mouse in a scrollable frame.
+      */
+     eIntID_ScrollbarDisplayOnMouseMove,
+ 
+     /*
+      * Overlay scrollbar animation constants.
+      */
+     eIntID_ScrollbarFadeBeginDelay,
+     eIntID_ScrollbarFadeDuration
   };
 
   /**
@@ -375,7 +401,19 @@ public:
     eWindowsTheme_LunaOlive,
     eWindowsTheme_LunaSilver,
     eWindowsTheme_Royale,
-    eWindowsTheme_Zune
+    eWindowsTheme_Zune,
+    eWindowsTheme_AeroLite
+  };
+
+  /**
+   * Operating system versions.
+   */
+  enum OperatingSystemVersion {
+    eOperatingSystemVersion_WindowsXP = 0,
+    eOperatingSystemVersion_WindowsVista,
+    eOperatingSystemVersion_Windows7,
+    eOperatingSystemVersion_Windows8,
+    eOperatingSystemVersion_Unknown
   };
 
   enum {

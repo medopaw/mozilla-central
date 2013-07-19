@@ -30,18 +30,19 @@ function PaymentContentHelper() {
 PaymentContentHelper.prototype = {
   __proto__: DOMRequestIpcHelper.prototype,
 
-  QueryInterface: XPCOMUtils.generateQI([Ci.nsIDOMNavigatorPayment,
-                                         Ci.nsIDOMGlobalPropertyInitializer]),
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsINavigatorPayment,
+                                         Ci.nsIDOMGlobalPropertyInitializer,
+                                         Ci.nsISupportsWeakReference]),
   classID:        PAYMENTCONTENTHELPER_CID,
   classInfo:      XPCOMUtils.generateCI({
     classID: PAYMENTCONTENTHELPER_CID,
     contractID: "@mozilla.org/payment/content-helper;1",
     classDescription: "Payment Content Helper",
     flags: Ci.nsIClassInfo.DOM_OBJECT,
-    interfaces: [Ci.nsIDOMNavigatorPayment]
+    interfaces: [Ci.nsINavigatorPayment]
   }),
 
-  // nsIDOMNavigatorPayment
+  // nsINavigatorPayment
 
   pay: function pay(aJwts) {
     let request = this.createRequest();
@@ -78,7 +79,7 @@ PaymentContentHelper.prototype = {
 
   init: function(aWindow) {
     this._window = aWindow;
-    this.initHelper(aWindow, PAYMENT_IPC_MSG_NAMES);
+    this.initDOMRequestHelper(aWindow, PAYMENT_IPC_MSG_NAMES);
     return this.pay.bind(this);
   },
 

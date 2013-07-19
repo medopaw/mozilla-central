@@ -36,9 +36,6 @@
 #include "ocsp.h"
 #include "ocspti.h"     /* internals for pretty-printing routines *only* */
 
-#define VERSIONSTRING "$Revision$ ($Date$) $Author$"
-
-
 struct _DataBufferList;
 struct _DataBuffer;
 
@@ -1023,7 +1020,7 @@ void print_ssl3_handshake(unsigned char *recordBuf,
     case 15: PR_FPUTS("certificate_verify)\n"          ); break;
     case 16: PR_FPUTS("client_key_exchange)\n"         ); break;
     case 20: PR_FPUTS("finished)\n"                    ); break;
-    case 22: PR_FPUTS("certificate_status_request)\n"  ); break;
+    case 22: PR_FPUTS("certificate_status)\n"          ); break;
     default: PR_FPUTS("unknown)\n"                     ); break;
     }
 
@@ -1321,7 +1318,7 @@ void print_ssl3_handshake(unsigned char *recordBuf,
       }
       break;
 
-    case 22: /*certificate_status_request*/
+    case 22: /* certificate_status */
       {
         SECItem data;
         PRFileDesc *ofd;
@@ -1765,7 +1762,7 @@ int main(int argc,  char *argv[])
   SECStatus   rv;
 
   progName = argv[0];
-  optstate = PL_CreateOptState(argc,argv,"fvxhslp:");
+  optstate = PL_CreateOptState(argc,argv,"fxhslp:");
     while ((status = PL_GetNextOpt(optstate)) == PL_OPT_OK) {
     switch (optstate->option) {
     case 'f':
@@ -1773,9 +1770,6 @@ int main(int argc,  char *argv[])
       break;
     case 'h':
       hexparse++;
-      break;
-    case 'v':
-      PR_fprintf(PR_STDOUT,"Version: %s\n",VERSIONSTRING);
       break;
     case 's':
       sslparse++;

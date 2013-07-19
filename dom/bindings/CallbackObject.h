@@ -25,7 +25,8 @@
 #include "mozilla/Assertions.h"
 #include "mozilla/ErrorResult.h"
 #include "mozilla/Util.h"
-#include "nsContentUtils.h" // nsCxPusher
+#include "nsContentUtils.h"
+#include "nsCxPusher.h"
 #include "nsWrapperCache.h"
 #include "nsJSEnvironment.h"
 #include "xpcpublic.h"
@@ -75,7 +76,7 @@ public:
    */
   JS::Handle<JSObject*> CallbackPreserveColor() const
   {
-    return JS::Handle<JSObject*>::fromMarkedLocation(&mCallback);
+    return mCallback;
   }
 
   enum ExceptionHandling {
@@ -110,7 +111,7 @@ protected:
     }
   }
 
-  JSObject* mCallback;
+  JS::Heap<JSObject*> mCallback;
 
   class MOZ_STACK_CLASS CallSetup
   {
@@ -121,7 +122,7 @@ protected:
      * non-null.
      */
   public:
-    CallSetup(JSObject* const aCallable, ErrorResult& aRv,
+    CallSetup(JS::Handle<JSObject*> aCallable, ErrorResult& aRv,
               ExceptionHandling aExceptionHandling);
     ~CallSetup();
 
@@ -144,15 +145,11 @@ protected:
     // is gone
     nsAutoMicroTask mMt;
 
-    // Can't construct an XPCAutoRequest until we have a JSContext, so
-    // this needs to be a Maybe.
-    Maybe<XPCAutoRequest> mAr;
-
-    // Can't construct a TerminationFuncHolder without an nsJSContext.  But we
-    // generally want its destructor to come after the destructor of mCxPusher.
-    Maybe<nsJSContext::TerminationFuncHolder> mTerminationFuncHolder;
-
     nsCxPusher mCxPusher;
+
+    // Constructed the rooter within the scope of mCxPusher above, so that it's
+    // always within a request during its lifetime.
+    Maybe<JS::Rooted<JSObject*> > mRootedCallable;
 
     // Can't construct a JSAutoCompartment without a JSContext either.  Also,
     // Put mAc after mCxPusher so that we exit the compartment before we pop the
@@ -341,12 +338,13 @@ public:
       return nullptr;
     }
 
-    JSObject* obj;
-    if (NS_FAILED(wrappedJS->GetJSObject(&obj)) || !obj) {
+    AutoSafeJSContext cx;
+
+    JS::Rooted<JSObject*> obj(cx, wrappedJS->GetJSObject());
+    if (!obj) {
       return nullptr;
     }
 
-    SafeAutoJSContext cx;
     JSAutoCompartment ac(cx, obj);
 
     nsRefPtr<WebIDLCallbackT> newCallback = new WebIDLCallbackT(obj);

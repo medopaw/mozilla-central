@@ -14,6 +14,7 @@
 #include "AccessibleWrap.h"
 #include "TableAccessible.h"
 #include "TableCellAccessible.h"
+#include "IUnknownImpl.h"
 
 #include "nsCOMPtr.h"
 #include "nsString.h"
@@ -25,6 +26,9 @@ using namespace mozilla::a11y;
 STDMETHODIMP
 ia2AccessibleTableCell::QueryInterface(REFIID iid, void** ppv)
 {
+  if (!ppv)
+    return E_INVALIDARG;
+
   *ppv = nullptr;
 
   if (IID_IAccessibleTableCell == iid) {
@@ -43,6 +47,9 @@ STDMETHODIMP
 ia2AccessibleTableCell::get_table(IUnknown** aTable)
 {
   A11Y_TRYBLOCK_BEGIN
+
+  if (!aTable)
+    return E_INVALIDARG;
 
   *aTable = nullptr;
   if (!mTableCell)
@@ -65,6 +72,9 @@ ia2AccessibleTableCell::get_columnExtent(long* aSpan)
 {
   A11Y_TRYBLOCK_BEGIN
 
+  if (!aSpan)
+    return E_INVALIDARG;
+
   *aSpan = 0;
   if (!mTableCell)
     return CO_E_OBJNOTCONNECTED;
@@ -81,6 +91,9 @@ ia2AccessibleTableCell::get_columnHeaderCells(IUnknown*** aCellAccessibles,
                                               long* aNColumnHeaderCells)
 {
   A11Y_TRYBLOCK_BEGIN
+
+  if (!aCellAccessibles || !aNColumnHeaderCells)
+    return E_INVALIDARG;
 
   *aCellAccessibles = nullptr;
   *aNColumnHeaderCells = 0;
@@ -114,6 +127,9 @@ ia2AccessibleTableCell::get_columnIndex(long* aColIdx)
 {
   A11Y_TRYBLOCK_BEGIN
 
+  if (!aColIdx)
+    return E_INVALIDARG;
+
   *aColIdx = -1;
   if (!mTableCell)
     return CO_E_OBJNOTCONNECTED;
@@ -128,6 +144,9 @@ STDMETHODIMP
 ia2AccessibleTableCell::get_rowExtent(long* aSpan)
 {
   A11Y_TRYBLOCK_BEGIN
+
+  if (!aSpan)
+    return E_INVALIDARG;
 
   *aSpan = 0;
   if (!mTableCell)
@@ -144,6 +163,9 @@ ia2AccessibleTableCell::get_rowHeaderCells(IUnknown*** aCellAccessibles,
                                            long* aNRowHeaderCells)
 {
   A11Y_TRYBLOCK_BEGIN
+
+  if (!aCellAccessibles || !aNRowHeaderCells)
+    return E_INVALIDARG;
 
   *aCellAccessibles = nullptr;
   *aNRowHeaderCells = 0;
@@ -176,6 +198,9 @@ ia2AccessibleTableCell::get_rowIndex(long* aRowIdx)
 {
   A11Y_TRYBLOCK_BEGIN
 
+  if (!aRowIdx)
+    return E_INVALIDARG;
+
   *aRowIdx = -1;
   if (!mTableCell)
     return CO_E_OBJNOTCONNECTED;
@@ -193,6 +218,9 @@ ia2AccessibleTableCell::get_rowColumnExtents(long* aRowIdx, long* aColIdx,
                                              boolean* aIsSelected)
 {
   A11Y_TRYBLOCK_BEGIN
+
+  if (!aRowIdx || !aColIdx || !aRowExtents || !aColExtents || !aIsSelected)
+    return E_INVALIDARG;
 
   *aRowIdx = *aColIdx = *aRowExtents = *aColExtents = 0;
   *aIsSelected = false;
@@ -214,6 +242,9 @@ STDMETHODIMP
 ia2AccessibleTableCell::get_isSelected(boolean* aIsSelected)
 {
   A11Y_TRYBLOCK_BEGIN
+
+  if (!aIsSelected)
+    return E_INVALIDARG;
 
   *aIsSelected = false;
   if (!mTableCell)

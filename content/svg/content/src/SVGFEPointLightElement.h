@@ -31,17 +31,17 @@ protected:
 
 public:
   virtual bool AttributeAffectsRendering(
-          int32_t aNameSpaceID, nsIAtom* aAttribute) const;
+          int32_t aNameSpaceID, nsIAtom* aAttribute) const MOZ_OVERRIDE;
 
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
 
   // WebIDL
-  already_AddRefed<nsIDOMSVGAnimatedNumber> X();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> Y();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> Z();
+  already_AddRefed<SVGAnimatedNumber> X();
+  already_AddRefed<SVGAnimatedNumber> Y();
+  already_AddRefed<SVGAnimatedNumber> Z();
 
 protected:
-  virtual NumberAttributesInfo GetNumberInfo();
+  virtual NumberAttributesInfo GetNumberInfo() MOZ_OVERRIDE;
 
   enum { ATTR_X, ATTR_Y, ATTR_Z };
   nsSVGNumber2 mNumberAttributes[3];

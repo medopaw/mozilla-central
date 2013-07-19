@@ -9,21 +9,21 @@
 #ifndef HTMLLabelElement_h
 #define HTMLLabelElement_h
 
+#include "mozilla/Attributes.h"
 #include "nsGenericHTMLElement.h"
 #include "nsIDOMHTMLLabelElement.h"
 
 namespace mozilla {
 namespace dom {
 
-class HTMLLabelElement : public nsGenericHTMLFormElement,
-                         public nsIDOMHTMLLabelElement
+class HTMLLabelElement MOZ_FINAL : public nsGenericHTMLFormElement,
+                                   public nsIDOMHTMLLabelElement
 {
 public:
   HTMLLabelElement(already_AddRefed<nsINodeInfo> aNodeInfo)
     : nsGenericHTMLFormElement(aNodeInfo),
       mHandlingEvent(false)
   {
-    SetIsDOMBinding();
   }
   virtual ~HTMLLabelElement();
 
@@ -61,19 +61,19 @@ public:
   virtual void Focus(mozilla::ErrorResult& aError) MOZ_OVERRIDE;
 
   // nsIFormControl
-  NS_IMETHOD_(uint32_t) GetType() const { return NS_FORM_LABEL; }
-  NS_IMETHOD Reset();
-  NS_IMETHOD SubmitNamesValues(nsFormSubmission* aFormSubmission);
+  NS_IMETHOD_(uint32_t) GetType() const MOZ_OVERRIDE { return NS_FORM_LABEL; }
+  NS_IMETHOD Reset() MOZ_OVERRIDE;
+  NS_IMETHOD SubmitNamesValues(nsFormSubmission* aFormSubmission) MOZ_OVERRIDE;
 
-  virtual bool IsDisabled() const { return false; }
+  virtual bool IsDisabled() const MOZ_OVERRIDE { return false; }
 
   // nsIContent
-  virtual nsresult PostHandleEvent(nsEventChainPostVisitor& aVisitor);
+  virtual nsresult PostHandleEvent(nsEventChainPostVisitor& aVisitor) MOZ_OVERRIDE;
   virtual void PerformAccesskey(bool aKeyCausesActivation,
-                                bool aIsTrustedEvent);
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+                                bool aIsTrustedEvent) MOZ_OVERRIDE;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
 
-  virtual nsIDOMNode* AsDOMNode() { return this; }
+  virtual nsIDOMNode* AsDOMNode() MOZ_OVERRIDE { return this; }
 
   nsGenericHTMLElement* GetLabeledElement() const;
 protected:

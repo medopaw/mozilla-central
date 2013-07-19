@@ -13,7 +13,8 @@ from mach.decorators import (
 
 @CommandProvider
 class SearchProvider(object):
-    @Command('mxr', help='Search for something in MXR.')
+    @Command('mxr', category='misc',
+        description='Search for something in MXR.')
     @CommandArgument('term', nargs='+', help='Term(s) to search for.')
     def mxr(self, term):
         import webbrowser
@@ -21,7 +22,8 @@ class SearchProvider(object):
         uri = 'https://mxr.mozilla.org/mozilla-central/search?string=%s' % term
         webbrowser.open_new_tab(uri)
 
-    @Command('dxr', help='Search for something in DXR.')
+    @Command('dxr', category='misc',
+        description='Search for something in DXR.')
     @CommandArgument('term', nargs='+', help='Term(s) to search for.')
     def dxr(self, term):
         import webbrowser
@@ -29,7 +31,8 @@ class SearchProvider(object):
         uri = 'http://dxr.mozilla.org/search?tree=mozilla-central&q=%s' % term
         webbrowser.open_new_tab(uri)
 
-    @Command('mdn', help='Search for something on MDN.')
+    @Command('mdn', category='misc',
+        description='Search for something on MDN.')
     @CommandArgument('term', nargs='+', help='Term(s) to search for.')
     def mdn(self, term):
         import webbrowser
@@ -37,7 +40,8 @@ class SearchProvider(object):
         uri = 'https://developer.mozilla.org/search?q=%s' % term
         webbrowser.open_new_tab(uri)
 
-    @Command('google', help='Search for something on Google.')
+    @Command('google', category='misc',
+        description='Search for something on Google.')
     @CommandArgument('term', nargs='+', help='Term(s) to search for.')
     def google(self, term):
         import webbrowser
@@ -45,7 +49,8 @@ class SearchProvider(object):
         uri = 'https://www.google.com/search?q=%s' % term
         webbrowser.open_new_tab(uri)
 
-    @Command('search', help='Search for something on the Internets. '
+    @Command('search', category='misc',
+        description='Search for something on the Internets. '
         'This will open 3 new browser tabs and search for the term on Google, '
         'MDN, and MXR.')
     @CommandArgument('term', nargs='+', help='Term(s) to search for.')
@@ -54,3 +59,20 @@ class SearchProvider(object):
         self.mdn(term)
         self.mxr(term)
 
+
+@CommandProvider
+class UUIDProvider(object):
+    @Command('uuid', category='misc',
+        description='Generate a uuid.')
+    @CommandArgument('--format', '-f', choices=['idl', 'cpp'], default='idl',
+                     help='Output format for the generated uuid.')
+    def uuid(self, format):
+        import uuid
+        u = uuid.uuid4()
+        if format == 'idl':
+            print(u)
+        else:
+            u = u.hex
+            print('{ 0x%s, 0x%s, 0x%s, \\' % (u[0:8], u[8:12], u[12:16]))
+            pairs = tuple(map(lambda n: u[n:n+2], range(16, 32, 2)))
+            print(('  { ' + '0x%s, ' * 7 + '0x%s } }') % pairs)

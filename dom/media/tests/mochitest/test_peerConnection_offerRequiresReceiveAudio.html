@@ -5,6 +5,7 @@
   <script type="application/javascript" src="/tests/SimpleTest/SimpleTest.js"></script>
   <script type="application/javascript" src="head.js"></script>
   <script type="application/javascript" src="pc.js"></script>
+  <script type="application/javascript" src="templates.js"></script>
 </head>
 <body>
 <pre id="test">
@@ -18,7 +19,7 @@
     var test = new PeerConnectionTest();
     test.setOfferConstraints({ mandatory: { OfferToReceiveAudio: true } });
     test.run();
-  }, true);
+  });
 </script>
 </pre>
 </body>

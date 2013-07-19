@@ -30,7 +30,7 @@ var Bookmarks = {
                                                       aURI,
                                                       bookmarkService.DEFAULT_INDEX,
                                                       bookmarkTitle);
-  
+
       // XXX Used for browser-chrome tests
       let event = document.createEvent("Events");
       event.initEvent("BookmarkCreated", true, false);
@@ -69,7 +69,7 @@ var Bookmarks = {
 /**
  * Wraps a list/grid control implementing nsIDOMXULSelectControlElement and
  * fills it with the user's bookmarks.
- * 
+ *
  * @param           aSet    Control implementing nsIDOMXULSelectControlElement.
  * @param {Number}  aLimit  Maximum number of items to show in the view.
  * @param           aRoot   Bookmark root to show in the view.
@@ -77,6 +77,7 @@ var Bookmarks = {
 function BookmarksView(aSet, aLimit, aRoot, aFilterUnpinned) {
   this._set = aSet;
   this._set.controller = this;
+  this._inBatch = false; // batch up grid updates to avoid redundant arrangeItems calls
 
   this._limit = aLimit;
   this._filterUnpinned = aFilterUnpinned;
@@ -152,6 +153,8 @@ BookmarksView.prototype = {
     rootNode.containerOpen = true;
     let childCount = rootNode.childCount;
 
+    this._inBatch = true; // batch up grid updates to avoid redundant arrangeItems calls
+
     for (let i = 0, addedCount = 0; i < childCount && addedCount < limit; i++) {
       let node = rootNode.getChild(i);
 
@@ -188,9 +191,10 @@ BookmarksView.prototype = {
     // This can happen when undoing a delete.
     if (aRefresh) {
       while (this._set.itemCount > limit)
-        this._set.removeItemAt(this._set.itemCount - 1);
+        this._set.removeItemAt(this._set.itemCount - 1, true);
     }
-
+    this._set.arrangeItems();
+    this._inBatch = false;
     rootNode.containerOpen = false;
   },
 
@@ -202,15 +206,14 @@ BookmarksView.prototype = {
   },
 
   clearBookmarks: function bv_clearBookmarks() {
-    while (this._set.itemCount > 0)
-      this._set.removeItemAt(0);
+    this._set.clearAll();
   },
 
   addBookmark: function bv_addBookmark(aBookmarkId, aPos) {
     let index = this._bookmarkService.getItemIndex(aBookmarkId);
     let uri = this._bookmarkService.getBookmarkURI(aBookmarkId);
     let title = this._bookmarkService.getItemTitle(aBookmarkId) || uri.spec;
-    let item = this._set.insertItemAt(aPos || index, title, uri.spec);
+    let item = this._set.insertItemAt(aPos || index, title, uri.spec, this._inBatch);
     item.setAttribute("bookmarkId", aBookmarkId);
     this._setContextActions(item);
     this._updateFavicon(aBookmarkId, item, uri);
@@ -231,13 +234,15 @@ BookmarksView.prototype = {
     if (!aIconUri) {
       return;
     }
-    ColorUtils.getForegroundAndBackgroundIconColors(aIconUri, function(foregroundColor, backgroundColor) {
+    let successAction = function(foregroundColor, backgroundColor) {
       aItem.style.color = foregroundColor; //color text
       aItem.setAttribute("customColor", backgroundColor); //set background
       if (aItem.refresh) {
         aItem.refresh();
       }
-    });
+    };
+    let failureAction = function() {};
+    ColorUtils.getForegroundAndBackgroundIconColors(aIconUri, successAction, failureAction);
   },
 
   _sendNeedsRefresh: function bv__sendNeedsRefresh(){
@@ -252,7 +257,7 @@ BookmarksView.prototype = {
 
     if (!item)
       return;
-    
+
     let oldIndex = this._set.getIndexOfItem(item);
     let index = this._bookmarkService.getItemIndex(aBookmarkId);
 
@@ -274,7 +279,7 @@ BookmarksView.prototype = {
   removeBookmark: function bv_removeBookmark(aBookmarkId) {
     let item = this._getItemForBookmarkId(aBookmarkId);
     let index = this._set.getIndexOfItem(item);
-    this._set.removeItemAt(index);
+    this._set.removeItemAt(index, this._inBatch);
   },
 
   destruct: function bv_destruct() {
@@ -309,6 +314,8 @@ BookmarksView.prototype = {
           let event = document.createEvent("Events");
           // we need the restore button to show (the tile node will go away though)
           event.actions = ["restore"];
+          event.noun = tileGroup.contextNoun;
+          event.qty = selectedTiles.length;
           event.initEvent("MozContextActionsChange", true, false);
           tileGroup.dispatchEvent(event);
         }, 0);
@@ -354,14 +361,7 @@ BookmarksView.prototype = {
           for (let bookmarkId of this._toRemove) {
             this._bookmarkService.removeItem(bookmarkId);
           }
-
           this._toRemove = null;
-          this._set.clearSelection();
-
-          // Clear context app bar
-          let event = document.createEvent("Events");
-          event.initEvent("MozContextActionsChange", true, false);
-          this._set.dispatchEvent(event);
         }
         break;
 
@@ -433,7 +433,7 @@ BookmarkChangeListener.prototype = {
     let itemIndex = PlacesUtils.bookmarks.getItemIndex(aItemId);
     if (!this._view.inCurrentView(aParentId, aItemId))
       return;
-    
+
     this._view.updateBookmark(aItemId);
   },
 

@@ -45,10 +45,10 @@ public:
   virtual void SetDescriptorFromReply(TextureIdentifier aTextureId,
                                       const SurfaceDescriptor& aDescriptor) MOZ_OVERRIDE
   {
-    mTextureClient->SetDescriptorFromReply(aDescriptor);
+    mDeprecatedTextureClient->SetDescriptorFromReply(aDescriptor);
   }
 protected:
-  RefPtr<TextureClient> mTextureClient;
+  RefPtr<DeprecatedTextureClient> mDeprecatedTextureClient;
   TextureInfo mTextureInfo;
 };
 
@@ -81,6 +81,7 @@ public:
   }
 
   virtual void Update(gfx::IntSize aSize, ClientCanvasLayer* aLayer);
+  virtual void Updated() MOZ_OVERRIDE;
 };
 
 }

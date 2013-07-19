@@ -4,21 +4,25 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#if !defined(jsion_ion_h__) && defined(JS_ION)
-#define jsion_ion_h__
+#ifndef ion_Ion_h
+#define ion_Ion_h
+
+#ifdef JS_ION
+
+#include "mozilla/MemoryReporting.h"
 
 #include "jscntxt.h"
 #include "jscompartment.h"
-#include "IonCode.h"
-#include "CompileInfo.h"
+#include "ion/IonCode.h"
+#include "ion/CompileInfo.h"
 #include "jsinfer.h"
-#include "jsinterp.h"
+
+#include "vm/Interpreter.h"
 
 namespace js {
 namespace ion {
 
 class TempAllocator;
-class ParallelCompileContext; // in ParallelArrayAnalysis.h
 
 // Possible register allocators which may be used.
 enum IonRegisterAllocator {
@@ -102,12 +106,6 @@ struct IonOptions
     // Default: 1,000
     uint32_t usesBeforeCompile;
 
-    // How many invocations or loop iterations are needed before functions
-    // are compiled when JM is disabled.
-    //
-    // Default: 40
-    uint32_t usesBeforeCompileNoJaeger;
-
     // How many invocations or loop iterations are needed before calls
     // are inlined, as a fraction of usesBeforeCompile.
     //
@@ -183,7 +181,7 @@ struct IonOptions
 
     void setEagerCompilation() {
         eagerCompilation = true;
-        usesBeforeCompile = usesBeforeCompileNoJaeger = 0;
+        usesBeforeCompile = 0;
         baselineUsesBeforeCompile = 0;
 
         parallelCompilation = false;
@@ -204,7 +202,6 @@ struct IonOptions
         parallelCompilation(false),
         baselineUsesBeforeCompile(10),
         usesBeforeCompile(1000),
-        usesBeforeCompileNoJaeger(40),
         usesBeforeInliningFactor(.125),
         osrPcMismatchesBeforeRecompile(6000),
         frequentBailoutThreshold(10),
@@ -272,17 +269,20 @@ bool InitializeIon();
 
 // Get and set the current Ion context.
 IonContext *GetIonContext();
+IonContext *MaybeGetIonContext();
 
 bool SetIonContext(IonContext *ctx);
 
 bool CanIonCompileScript(JSContext *cx, HandleScript script, bool osr);
 
 MethodStatus CanEnterAtBranch(JSContext *cx, JSScript *script,
-                              AbstractFramePtr fp, jsbytecode *pc, bool isConstructing);
-MethodStatus CanEnter(JSContext *cx, JSScript *script, AbstractFramePtr fp, bool isConstructing);
-MethodStatus CompileFunctionForBaseline(JSContext *cx, HandleScript script, AbstractFramePtr fp,
+                              BaselineFrame *frame, jsbytecode *pc, bool isConstructing);
+MethodStatus CanEnter(JSContext *cx, RunState &state);
+MethodStatus CompileFunctionForBaseline(JSContext *cx, HandleScript script, BaselineFrame *frame,
                                         bool isConstructing);
 MethodStatus CanEnterUsingFastInvoke(JSContext *cx, HandleScript script, uint32_t numActualArgs);
+
+MethodStatus CanEnterInParallel(JSContext *cx, HandleScript script);
 
 enum IonExecStatus
 {
@@ -295,11 +295,7 @@ enum IonExecStatus
     IonExec_Error,
 
     // The method call succeeed and returned a value.
-    IonExec_Ok,
-
-    // A guard triggered in IonMonkey and we must resume execution in
-    // the interpreter.
-    IonExec_Bailout
+    IonExec_Ok
 };
 
 static inline bool
@@ -308,11 +304,14 @@ IsErrorStatus(IonExecStatus status)
     return status == IonExec_Error || status == IonExec_Aborted;
 }
 
-IonExecStatus Cannon(JSContext *cx, StackFrame *fp);
-IonExecStatus SideCannon(JSContext *cx, StackFrame *fp, jsbytecode *pc);
+struct EnterJitData;
+
+bool SetEnterJitData(JSContext *cx, EnterJitData &data, RunState &state, AutoValueVector &vals);
+
+IonExecStatus Cannon(JSContext *cx, RunState &state);
 
 // Used to enter Ion from C++ natives like Array.map. Called from FastInvokeGuard.
-IonExecStatus FastInvoke(JSContext *cx, HandleFunction fun, CallArgsList &args);
+IonExecStatus FastInvoke(JSContext *cx, HandleFunction fun, CallArgs &args);
 
 // Walk the stack and invalidate active Ion frames for the invalid scripts.
 void Invalidate(types::TypeCompartment &types, FreeOp *fop,
@@ -339,9 +338,12 @@ CodeGenerator *CompileBackEnd(MIRGenerator *mir, MacroAssembler *maybeMasm = NUL
 void AttachFinishedCompilations(JSContext *cx);
 void FinishOffThreadBuilder(IonBuilder *builder);
 
-static inline bool IsEnabled(JSContext *cx)
+static inline bool
+IsEnabled(JSContext *cx)
 {
-    return cx->hasOption(JSOPTION_ION) && cx->typeInferenceEnabled();
+    return cx->hasOption(JSOPTION_ION) &&
+        cx->hasOption(JSOPTION_BASELINE) &&
+        cx->typeInferenceEnabled();
 }
 
 void ForbidCompilation(JSContext *cx, JSScript *script);
@@ -349,12 +351,13 @@ void ForbidCompilation(JSContext *cx, JSScript *script, ExecutionMode mode);
 uint32_t UsesBeforeIonRecompile(JSScript *script, jsbytecode *pc);
 
 void PurgeCaches(JSScript *script, JS::Zone *zone);
-size_t SizeOfIonData(JSScript *script, JSMallocSizeOfFun mallocSizeOf);
+size_t SizeOfIonData(JSScript *script, mozilla::MallocSizeOf mallocSizeOf);
 void DestroyIonScripts(FreeOp *fop, JSScript *script);
 void TraceIonScripts(JSTracer* trc, JSScript *script);
 
 } // namespace ion
 } // namespace js
 
-#endif // jsion_ion_h__
+#endif // JS_ION
 
+#endif /* ion_Ion_h */

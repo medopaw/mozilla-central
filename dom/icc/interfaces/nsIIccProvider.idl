@@ -4,21 +4,26 @@
 
 #include "nsISupports.idl"
 
-interface nsIDOMWindow;
-interface nsIDOMDOMRequest;
 interface nsIDOMContact;
+interface nsIDOMDOMRequest;
+interface nsIDOMMozIccInfo;
+interface nsIDOMWindow;
 
-[scriptable, uuid(f383a42b-0961-4bb0-b45e-dbc345d59237)]
+[scriptable, uuid(82d25440-c913-11e2-8b8b-0800200c9a66)]
 interface nsIIccListener : nsISupports
 {
   void notifyStkCommand(in DOMString aMessage);
   void notifyStkSessionEnd();
+  void notifyIccCardLockError(in DOMString lockType,
+                              in unsigned long retryCount);
+  void notifyCardStateChanged();
+  void notifyIccInfoChanged();
 };
 
 /**
  * XPCOM component (in the content process) that provides the ICC information.
  */
-[scriptable, uuid(c74b434a-fb2a-4e22-a6cd-1ac353e3f4ce)]
+[scriptable, uuid(52fa6780-c913-11e2-8b8b-0800200c9a66)]
 interface nsIIccProvider : nsISupports
 {
   /**
@@ -29,6 +34,19 @@ interface nsIIccProvider : nsISupports
   void registerIccMsg(in nsIIccListener listener);
   void unregisterIccMsg(in nsIIccListener listener);
 
+  /**
+   * UICC Information
+   */
+  readonly attribute nsIDOMMozIccInfo iccInfo;
+
+  /**
+   * Card State
+   */
+  readonly attribute DOMString cardState;
+
+  /**
+   * STK interfaces.
+   */
   void sendStkResponse(in nsIDOMWindow window,
                        in jsval        command,
                        in jsval        response);
@@ -39,6 +57,20 @@ interface nsIIccProvider : nsISupports
                               in jsval        timer);
   void sendStkEventDownload(in nsIDOMWindow window,
                             in jsval        event);
+
+  /**
+   * Card lock interfaces.
+   */
+  nsIDOMDOMRequest getCardLockState(in nsIDOMWindow window, in DOMString lockType);
+  nsIDOMDOMRequest unlockCardLock(in nsIDOMWindow window, in jsval info);
+  nsIDOMDOMRequest setCardLock(in nsIDOMWindow window, in jsval info);
+  nsIDOMDOMRequest getCardLockRetryCount(in nsIDOMWindow window, in DOMString lockType);
+
+  /**
+   * Phonebook interfaces.
+   */
+  nsIDOMDOMRequest readContacts(in nsIDOMWindow window,
+                                in DOMString contactType);
 
   nsIDOMDOMRequest updateContact(in nsIDOMWindow window,
                                  in DOMString contactType,

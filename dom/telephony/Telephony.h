@@ -1,5 +1,5 @@
-/* -*- Mode: c++; c-basic-offset: 2; indent-tabs-mode: nil; tab-width: 40 -*- */
-/* vim: set ts=2 et sw=2 tw=40: */
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim: set ts=8 sts=2 et sw=2 tw=80: */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -8,6 +8,9 @@
 #define mozilla_dom_telephony_telephony_h__
 
 #include "TelephonyCommon.h"
+// Need to include TelephonyCall.h because we have inline methods that
+// assume they see the definition of TelephonyCall.
+#include "TelephonyCall.h"
 
 #include "nsIDOMTelephony.h"
 #include "nsIDOMTelephonyCall.h"
@@ -30,6 +33,9 @@ class Telephony : public nsDOMEventTargetHelper,
    */
   class Listener;
 
+  class EnumerationAck;
+  friend class EnumerationAck;
+
   nsCOMPtr<nsITelephonyProvider> mProvider;
   nsRefPtr<Listener> mListener;
 
@@ -38,22 +44,24 @@ class Telephony : public nsDOMEventTargetHelper,
 
   // Cached calls array object. Cleared whenever mCalls changes and then rebuilt
   // once a page looks for the liveCalls attribute.
-  JSObject* mCallsArray;
+  JS::Heap<JSObject*> mCallsArray;
 
   bool mRooted;
+  bool mEnumerated;
 
 public:
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIDOMTELEPHONY
   NS_DECL_NSITELEPHONYLISTENER
-
   NS_REALLY_FORWARD_NSIDOMEVENTTARGET(nsDOMEventTargetHelper)
   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS_INHERITED(
                                                    Telephony,
                                                    nsDOMEventTargetHelper)
 
   static already_AddRefed<Telephony>
-  Create(nsPIDOMWindow* aOwner, nsITelephonyProvider* aProvider);
+  Create(nsPIDOMWindow* aOwner, ErrorResult& aRv);
+
+  static bool CheckPermission(nsPIDOMWindow* aOwner);
 
   nsISupports*
   ToISupports()
@@ -85,6 +93,8 @@ public:
     return mProvider;
   }
 
+  virtual void EventListenerAdded(nsIAtom* aType) MOZ_OVERRIDE;
+
 private:
   Telephony();
   ~Telephony();
@@ -106,6 +116,9 @@ private:
   nsresult
   DispatchCallEvent(const nsAString& aType,
                     nsIDOMTelephonyCall* aCall);
+
+  void
+  EnqueueEnumerationAck();
 };
 
 END_TELEPHONY_NAMESPACE

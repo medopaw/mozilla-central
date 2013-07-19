@@ -49,6 +49,7 @@
 #include "nsISimpleEnumerator.h"
 
 #include "nsThreadUtils.h"
+#include "mozilla/MemoryReporting.h"
 #include "mozilla/Telemetry.h"
 
 static const char DISK_CACHE_DEVICE_ID[] = { "disk" };
@@ -296,7 +297,7 @@ nsDiskCache::Hash(const char * key, PLDHashNumber initval)
   const uint8_t *k = reinterpret_cast<const uint8_t*>(key);
   uint32_t a, b, c, len, length;
 
-  length = PL_strlen(key);
+  length = strlen(key);
   /* Set up the internal state */
   len = length;
   a = b = 0x9e3779b9;  /* the golden ratio; an arbitrary value */
@@ -1190,7 +1191,7 @@ nsDiskCacheDevice::SetMaxEntrySize(int32_t maxSizeInKilobytes)
 }
 
 size_t
-nsDiskCacheDevice::SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf)
+nsDiskCacheDevice::SizeOfIncludingThis(MallocSizeOf aMallocSizeOf)
 {
     size_t usage = aMallocSizeOf(this);
 

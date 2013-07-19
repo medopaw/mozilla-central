@@ -5,18 +5,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 XPIDL_SOURCES += [
-    'nsIDOMGetSVGDocument.idl',
     'nsIDOMSVGAnimatedEnum.idl',
-    'nsIDOMSVGAnimatedInteger.idl',
-    'nsIDOMSVGAnimatedLength.idl',
     'nsIDOMSVGAnimatedNumber.idl',
-    'nsIDOMSVGAnimatedRect.idl',
-    'nsIDOMSVGAnimatedString.idl',
-    'nsIDOMSVGDocument.idl',
     'nsIDOMSVGElement.idl',
     'nsIDOMSVGLength.idl',
     'nsIDOMSVGNumber.idl',
-    'nsIDOMSVGRect.idl',
 ]
 
 XPIDL_MODULE = 'dom_svg'

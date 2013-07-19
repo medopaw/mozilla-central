@@ -50,7 +50,7 @@ public:
     const RuntimeService::NavigatorStrings& strings =
       rts->GetNavigatorStrings();
 
-    JSString* appName, *version, *platform, *userAgent;
+    JS::Rooted<JSString*> appName(aCx), version(aCx), platform(aCx), userAgent(aCx);
 
 #define COPY_STRING(_jsstr, _str)                                              \
   if (strings. _str .IsEmpty()) {                                              \
@@ -117,7 +117,8 @@ private:
   }
 
   static JSBool
-  GetProperty(JSContext* aCx, JSHandleObject aObj, JSHandleId aIdval, JSMutableHandleValue aVp)
+  GetProperty(JSContext* aCx, JS::Handle<JSObject*> aObj, JS::Handle<jsid> aIdval,
+              JS::MutableHandle<JS::Value> aVp)
   {
     JSClass* classPtr = JS_GetClass(aObj);
     if (classPtr != &sClass) {

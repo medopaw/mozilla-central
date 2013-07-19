@@ -6,6 +6,7 @@
 #ifndef mozilla_dom_HTMLParagraphElement_h
 #define mozilla_dom_HTMLParagraphElement_h
 
+#include "mozilla/Attributes.h"
 #include "mozilla/Util.h"
 
 #include "nsIDOMHTMLParagraphElement.h"
@@ -14,14 +15,13 @@
 namespace mozilla {
 namespace dom {
 
-class HTMLParagraphElement : public nsGenericHTMLElement,
-                             public nsIDOMHTMLParagraphElement
+class HTMLParagraphElement MOZ_FINAL : public nsGenericHTMLElement,
+                                       public nsIDOMHTMLParagraphElement
 {
 public:
   HTMLParagraphElement(already_AddRefed<nsINodeInfo> aNodeInfo)
     : nsGenericHTMLElement(aNodeInfo)
   {
-    SetIsDOMBinding();
   }
   virtual ~HTMLParagraphElement();
 
@@ -43,13 +43,13 @@ public:
   virtual bool ParseAttribute(int32_t aNamespaceID,
                                 nsIAtom* aAttribute,
                                 const nsAString& aValue,
-                                nsAttrValue& aResult);
-  NS_IMETHOD_(bool) IsAttributeMapped(const nsIAtom* aAttribute) const;
-  virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
+                                nsAttrValue& aResult) MOZ_OVERRIDE;
+  NS_IMETHOD_(bool) IsAttributeMapped(const nsIAtom* aAttribute) const MOZ_OVERRIDE;
+  virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const MOZ_OVERRIDE;
 
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
 
-  virtual nsIDOMNode* AsDOMNode() { return this; }
+  virtual nsIDOMNode* AsDOMNode() MOZ_OVERRIDE { return this; }
 
   // WebIDL API
   // The XPCOM GetAlign is fine for our purposes

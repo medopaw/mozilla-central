@@ -2,48 +2,96 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var Cc = Components.classes;
-var Ci = Components.interfaces;
-var Cu = Components.utils;
-var Cr = Components.results;
+'use strict';
 
-Cu.import('resource://gre/modules/accessibility/Utils.jsm');
-Cu.import('resource://gre/modules/accessibility/Presentation.jsm');
-Cu.import('resource://gre/modules/accessibility/TraversalRules.jsm');
-Cu.import('resource://gre/modules/Services.jsm');
+const Ci = Components.interfaces;
+const Cu = Components.utils;
+
+const EVENT_VIRTUALCURSOR_CHANGED = Ci.nsIAccessibleEvent.EVENT_VIRTUALCURSOR_CHANGED;
+const EVENT_STATE_CHANGE = Ci.nsIAccessibleEvent.EVENT_STATE_CHANGE;
+const EVENT_SCROLLING_START = Ci.nsIAccessibleEvent.EVENT_SCROLLING_START;
+const EVENT_TEXT_CARET_MOVED = Ci.nsIAccessibleEvent.EVENT_TEXT_CARET_MOVED;
+const EVENT_TEXT_INSERTED = Ci.nsIAccessibleEvent.EVENT_TEXT_INSERTED;
+const EVENT_TEXT_REMOVED = Ci.nsIAccessibleEvent.EVENT_TEXT_REMOVED;
+const EVENT_FOCUS = Ci.nsIAccessibleEvent.EVENT_FOCUS;
+
+const ROLE_INTERNAL_FRAME = Ci.nsIAccessibleRole.ROLE_INTERNAL_FRAME;
+const ROLE_DOCUMENT = Ci.nsIAccessibleRole.ROLE_DOCUMENT;
+const ROLE_CHROME_WINDOW = Ci.nsIAccessibleRole.ROLE_CHROME_WINDOW;
+
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'Services',
+  'resource://gre/modules/Services.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'Utils',
+  'resource://gre/modules/accessibility/Utils.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'Logger',
+  'resource://gre/modules/accessibility/Utils.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'Presentation',
+  'resource://gre/modules/accessibility/Presentation.jsm');
+XPCOMUtils.defineLazyModuleGetter(this, 'TraversalRules',
+  'resource://gre/modules/accessibility/TraversalRules.jsm');
 
 this.EXPORTED_SYMBOLS = ['EventManager'];
 
-this.EventManager = {
+this.EventManager = function EventManager(aContentScope) {
+  this.contentScope = aContentScope;
+  this.addEventListener = this.contentScope.addEventListener.bind(
+    this.contentScope);
+  this.removeEventListener = this.contentScope.removeEventListener.bind(
+    this.contentScope);
+  this.sendMsgFunc = this.contentScope.sendAsyncMessage.bind(
+    this.contentScope);
+  this.webProgress = this.contentScope.docShell.
+    QueryInterface(Ci.nsIInterfaceRequestor).
+    getInterface(Ci.nsIWebProgress);
+};
+
+this.EventManager.prototype = {
   editState: {},
 
-  start: function start(aSendMsgFunc) {
+  start: function start() {
     try {
       if (!this._started) {
-        this.sendMsgFunc = aSendMsgFunc || function() {};
-
         Logger.info('EventManager.start', Utils.MozBuildApp);
 
         this._started = true;
-        Services.obs.addObserver(this, 'accessible-event', false);
-      }
 
+        AccessibilityEventObserver.addListener(this);
+
+        this.webProgress.addProgressListener(this,
+          (Ci.nsIWebProgress.NOTIFY_STATE_ALL |
+           Ci.nsIWebProgress.NOTIFY_LOCATION));
+        this.addEventListener('scroll', this, true);
+        this.addEventListener('resize', this, true);
+        // XXX: Ideally this would be an a11y event. Bug #742280.
+        this.addEventListener('DOMActivate', this, true);
+      }
       this.present(Presentation.tabStateChanged(null, 'newtab'));
 
     } catch (x) {
-      Logger.error('Failed to start EventManager');
-      Logger.logException(x);
+      Logger.logException(x, 'Failed to start EventManager');
     }
   },
 
+  // XXX: Stop is not called when the tab is closed (|TabClose| event is too
+  // late). It is only called when the AccessFu is disabled explicitly.
   stop: function stop() {
     if (!this._started) {
       return;
     }
     Logger.info('EventManager.stop', Utils.MozBuildApp);
-    Services.obs.removeObserver(this, 'accessible-event');
-    this._started = false;
+    AccessibilityEventObserver.removeListener(this);
+    try {
+      this.webProgress.removeProgressListener(this);
+      this.removeEventListener('scroll', this, true);
+      this.removeEventListener('resize', this, true);
+      // XXX: Ideally this would be an a11y event. Bug #742280.
+      this.removeEventListener('DOMActivate', this, true);
+    } catch (x) {
+      // contentScope is dead.
+    } finally {
+      this._started = false;
+    }
   },
 
   handleEvent: function handleEvent(aEvent) {
@@ -80,23 +128,7 @@ this.EventManager = {
       }
       }
     } catch (x) {
-      Logger.error('Error handling DOM event');
-      Logger.logException(x);
-    }
-  },
-
-  observe: function observe(aSubject, aTopic, aData) {
-    switch (aTopic) {
-      case 'accessible-event':
-        var event;
-        try {
-          event = aSubject.QueryInterface(Ci.nsIAccessibleEvent);
-          this.handleAccEvent(event);
-        } catch (x) {
-          Logger.error('Error handing accessible event');
-          Logger.logException(x);
-          return;
-        }
+      Logger.logException(x, 'Error handling DOM event');
     }
   },
 
@@ -107,18 +139,18 @@ this.EventManager = {
 
     // Don't bother with non-content events in firefox.
     if (Utils.MozBuildApp == 'browser' &&
-        aEvent.eventType != Ci.nsIAccessibleEvent.EVENT_VIRTUALCURSOR_CHANGED &&
-        aEvent.accessibleDocument != Utils.CurrentContentDoc) {
+        aEvent.eventType != EVENT_VIRTUALCURSOR_CHANGED &&
+        aEvent.accessibleDocument.docType == 'window') {
       return;
     }
 
     switch (aEvent.eventType) {
-      case Ci.nsIAccessibleEvent.EVENT_VIRTUALCURSOR_CHANGED:
+      case EVENT_VIRTUALCURSOR_CHANGED:
       {
         let pivot = aEvent.accessible.
-          QueryInterface(Ci.nsIAccessibleCursorable).virtualCursor;
+          QueryInterface(Ci.nsIAccessibleDocument).virtualCursor;
         let position = pivot.position;
-        if (position.role == Ci.nsIAccessibleRole.ROLE_INTERNAL_FRAME)
+        if (position && position.role == ROLE_INTERNAL_FRAME)
           break;
         let event = aEvent.
           QueryInterface(Ci.nsIAccessibleVirtualCursorChangeEvent);
@@ -132,7 +164,7 @@ this.EventManager = {
 
         break;
       }
-      case Ci.nsIAccessibleEvent.EVENT_STATE_CHANGE:
+      case EVENT_STATE_CHANGE:
       {
         let event = aEvent.QueryInterface(Ci.nsIAccessibleStateChangeEvent);
         if (event.state == Ci.nsIAccessibleStates.STATE_CHECKED &&
@@ -144,13 +176,13 @@ this.EventManager = {
         }
         break;
       }
-      case Ci.nsIAccessibleEvent.EVENT_SCROLLING_START:
+      case EVENT_SCROLLING_START:
       {
         let vc = Utils.getVirtualCursor(aEvent.accessibleDocument);
         vc.moveNext(TraversalRules.Simple, aEvent.accessible, true);
         break;
       }
-      case Ci.nsIAccessibleEvent.EVENT_TEXT_CARET_MOVED:
+      case EVENT_TEXT_CARET_MOVED:
       {
         let acc = aEvent.accessible;
         let characterCount = acc.
@@ -180,16 +212,19 @@ this.EventManager = {
             editState.atStart != this.editState.atStart)
           this.sendMsgFunc("AccessFu:Input", editState);
 
+        this.present(Presentation.textSelectionChanged(acc.getText(0,-1),
+                     caretOffset, caretOffset, 0, 0, aEvent.isFromUserInput));
+
         this.editState = editState;
         break;
       }
-      case Ci.nsIAccessibleEvent.EVENT_TEXT_INSERTED:
-      case Ci.nsIAccessibleEvent.EVENT_TEXT_REMOVED:
+      case EVENT_TEXT_INSERTED:
+      case EVENT_TEXT_REMOVED:
       {
         if (aEvent.isFromUserInput) {
           // XXX support live regions as well.
           let event = aEvent.QueryInterface(Ci.nsIAccessibleTextChangeEvent);
-          let isInserted = event.isInserted();
+          let isInserted = event.isInserted;
           let txtIface = aEvent.accessible.QueryInterface(Ci.nsIAccessibleText);
 
           let text = '';
@@ -208,13 +243,12 @@ this.EventManager = {
         }
         break;
       }
-      case Ci.nsIAccessibleEvent.EVENT_FOCUS:
+      case EVENT_FOCUS:
       {
         // Put vc where the focus is at
         let acc = aEvent.accessible;
         let doc = aEvent.accessibleDocument;
-        if (acc.role != Ci.nsIAccessibleRole.ROLE_DOCUMENT &&
-            doc.role != Ci.nsIAccessibleRole.ROLE_CHROME_WINDOW) {
+        if (acc.role != ROLE_DOCUMENT && doc.role != ROLE_CHROME_WINDOW) {
           let vc = Utils.getVirtualCursor(doc);
           vc.moveNext(TraversalRules.Simple, acc, true);
         }
@@ -225,11 +259,6 @@ this.EventManager = {
 
   present: function present(aPresentationData) {
     this.sendMsgFunc("AccessFu:Present", aPresentationData);
-  },
-
-  presentVirtualCursorPosition: function presentVirtualCursorPosition(aVirtualCursor) {
-    this.present(Presentation.pivotChanged(aVirtualCursor.position, null,
-                                           Ci.nsIAccessiblePivot.REASON_NONE));
   },
 
   onStateChange: function onStateChange(aWebProgress, aRequest, aStateFlags, aStatus) {
@@ -268,4 +297,145 @@ this.EventManager = {
                                          Ci.nsISupportsWeakReference,
                                          Ci.nsISupports,
                                          Ci.nsIObserver])
+};
+
+const AccessibilityEventObserver = {
+
+  /**
+   * A WeakMap containing [content, EventManager] pairs.
+   */
+  eventManagers: new WeakMap(),
+
+  /**
+   * A total number of registered eventManagers.
+   */
+  listenerCount: 0,
+
+  /**
+   * An indicator of an active 'accessible-event' observer.
+   */
+  started: false,
+
+  /**
+   * Start an AccessibilityEventObserver.
+   */
+  start: function start() {
+    if (this.started || this.listenerCount === 0) {
+      return;
+    }
+    Services.obs.addObserver(this, 'accessible-event', false);
+    this.started = true;
+  },
+
+  /**
+   * Stop an AccessibilityEventObserver.
+   */
+  stop: function stop() {
+    if (!this.started) {
+      return;
+    }
+    Services.obs.removeObserver(this, 'accessible-event');
+    // Clean up all registered event managers.
+    this.eventManagers.clear();
+    this.listenerCount = 0;
+    this.started = false;
+  },
+
+  /**
+   * Register an EventManager and start listening to the
+   * 'accessible-event' messages.
+   *
+   * @param aEventManager EventManager
+   *        An EventManager object that was loaded into the specific content.
+   */
+  addListener: function addListener(aEventManager) {
+    let content = aEventManager.contentScope.content;
+    if (!this.eventManagers.has(content)) {
+      this.listenerCount++;
+    }
+    this.eventManagers.set(content, aEventManager);
+    // Since at least one EventManager was registered, start listening.
+    Logger.debug('AccessibilityEventObserver.addListener. Total:',
+      this.listenerCount);
+    this.start();
+  },
+
+  /**
+   * Unregister an EventManager and, optionally, stop listening to the
+   * 'accessible-event' messages.
+   *
+   * @param aEventManager EventManager
+   *        An EventManager object that was stopped in the specific content.
+   */
+  removeListener: function removeListener(aEventManager) {
+    let content = aEventManager.contentScope.content;
+    if (!this.eventManagers.delete(content)) {
+      return;
+    }
+    this.listenerCount--;
+    Logger.debug('AccessibilityEventObserver.removeListener. Total:',
+      this.listenerCount);
+    if (this.listenerCount === 0) {
+      // If there are no EventManagers registered at the moment, stop listening
+      // to the 'accessible-event' messages.
+      this.stop();
+    }
+  },
+
+  /**
+   * Lookup an EventManager for a specific content. If the EventManager is not
+   * found, walk up the hierarchy of parent windows.
+   * @param content Window
+   *        A content Window used to lookup the corresponding EventManager.
+   */
+  getListener: function getListener(content) {
+    let eventManager = this.eventManagers.get(content);
+    if (eventManager) {
+      return eventManager;
+    }
+    let parent = content.parent;
+    if (parent === content) {
+      // There is no parent or the parent is of a different type.
+      return null;
+    }
+    return this.getListener(parent);
+  },
+
+  /**
+   * Handle the 'accessible-event' message.
+   */
+  observe: function observe(aSubject, aTopic, aData) {
+    if (aTopic !== 'accessible-event') {
+      return;
+    }
+    let event = aSubject.QueryInterface(Ci.nsIAccessibleEvent);
+    if (!event.accessibleDocument) {
+      Logger.warning(
+        'AccessibilityEventObserver.observe: no accessible document:',
+        Logger.eventToString(event), "accessible:",
+        Logger.accessibleToString(event.accessible));
+      return;
+    }
+    let content = event.accessibleDocument.window;
+    // Match the content window to its EventManager.
+    let eventManager = this.getListener(content);
+    if (!eventManager || !eventManager._started) {
+      if (Utils.MozBuildApp === 'browser' &&
+          !(content instanceof Ci.nsIDOMChromeWindow)) {
+        Logger.warning(
+          'AccessibilityEventObserver.observe: ignored event:',
+          Logger.eventToString(event), "accessible:",
+          Logger.accessibleToString(event.accessible), "document:",
+          Logger.accessibleToString(event.accessibleDocument));
+      }
+      return;
+    }
+    try {
+      eventManager.handleAccEvent(event);
+    } catch (x) {
+      Logger.logException(x, 'Error handing accessible event');
+    } finally {
+      return;
+    }
+  }
 };

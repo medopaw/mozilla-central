@@ -15,6 +15,27 @@
 
 namespace mozilla {
 
+/**
+ * Return a value of type |To|, containing the underlying bit pattern of |from|.
+ *
+ * |To| and |From| must be types of the same size; be careful of cross-platform
+ * size differences, or this might fail to compile on some but not all
+ * platforms.
+ */
+template<typename To, typename From>
+inline To
+BitwiseCast(const From from)
+{
+  MOZ_STATIC_ASSERT(sizeof(From) == sizeof(To),
+                    "To and From must have the same size");
+  union {
+    From from;
+    To to;
+  } u;
+  u.from = from;
+  return u.to;
+}
+
 namespace detail {
 
 enum ToSignedness { ToIsSigned, ToIsUnsigned };
@@ -31,27 +52,80 @@ struct BoundsCheckImpl;
 // that are obviously the same type (and will undergo no further conversions),
 // even when it's not strictly necessary, for explicitness.
 
+enum UUComparison { FromIsBigger, FromIsNotBigger };
+
+// Unsigned-to-unsigned range check
+
+template<typename From, typename To,
+         UUComparison = (sizeof(From) > sizeof(To)) ? FromIsBigger : FromIsNotBigger>
+struct UnsignedUnsignedCheck;
+
+template<typename From, typename To>
+struct UnsignedUnsignedCheck<From, To, FromIsBigger>
+{
+  public:
+    static bool checkBounds(const From from) {
+      return from <= From(To(-1));
+    }
+};
+
+template<typename From, typename To>
+struct UnsignedUnsignedCheck<From, To, FromIsNotBigger>
+{
+  public:
+    static bool checkBounds(const From from) {
+      return true;
+    }
+};
+
 template<typename From, typename To>
 struct BoundsCheckImpl<From, To, FromIsUnsigned, ToIsUnsigned>
 {
   public:
-    static bool check(const From from) {
-      typedef typename Conditional<sizeof(From) >= sizeof(To), From, To>::Type
-              LargerType;
-      return LargerType(from) <= LargerType(To(-1));
+    static bool checkBounds(const From from) {
+      return UnsignedUnsignedCheck<From, To>::checkBounds(from);
     }
 };
+
+// Signed-to-unsigned range check
 
 template<typename From, typename To>
 struct BoundsCheckImpl<From, To, FromIsSigned, ToIsUnsigned>
 {
   public:
-    static bool check(const From from) {
+    static bool checkBounds(const From from) {
       if (from < 0)
         return false;
       if (sizeof(To) >= sizeof(From))
-        return To(from) <= To(-1);
+        return true;
       return from <= From(To(-1));
+    }
+};
+
+// Unsigned-to-signed range check
+
+enum USComparison { FromIsSmaller, FromIsNotSmaller };
+
+template<typename From, typename To,
+         USComparison = (sizeof(From) < sizeof(To)) ? FromIsSmaller : FromIsNotSmaller>
+struct UnsignedSignedCheck;
+
+template<typename From, typename To>
+struct UnsignedSignedCheck<From, To, FromIsSmaller>
+{
+  public:
+    static bool checkBounds(const From from) {
+      return true;
+    }
+};
+
+template<typename From, typename To>
+struct UnsignedSignedCheck<From, To, FromIsNotSmaller>
+{
+  public:
+    static bool checkBounds(const From from) {
+      const To MaxValue = To((1ULL << (CHAR_BIT * sizeof(To) - 1)) - 1);
+      return from <= From(MaxValue);
     }
 };
 
@@ -59,25 +133,24 @@ template<typename From, typename To>
 struct BoundsCheckImpl<From, To, FromIsUnsigned, ToIsSigned>
 {
   public:
-    static bool check(const From from) {
-      if (sizeof(From) < sizeof(To))
-        return true;
-      const To MaxValue = To((1ULL << (CHAR_BIT * sizeof(To) - 1)) - 1);
-      return from <= From(MaxValue);
+    static bool checkBounds(const From from) {
+      return UnsignedSignedCheck<From, To>::checkBounds(from);
     }
 };
+
+// Signed-to-signed range check
 
 template<typename From, typename To>
 struct BoundsCheckImpl<From, To, FromIsSigned, ToIsSigned>
 {
   public:
-    static bool check(const From from) {
-      typedef typename Conditional<sizeof(To) >= sizeof(From), To, From>::Type
-              LargerType;
+    static bool checkBounds(const From from) {
+      if (sizeof(From) <= sizeof(To))
+        return true;
       const To MaxValue = To((1ULL << (CHAR_BIT * sizeof(To) - 1)) - 1);
       const To MinValue = -MaxValue - To(1);
-      return LargerType(MinValue) <= LargerType(from) &&
-             LargerType(from) <= LargerType(MaxValue);
+      return From(MinValue) <= from &&
+             From(from) <= From(MaxValue);
     }
 };
 
@@ -89,15 +162,15 @@ template<typename From>
 class BoundsChecker<From, From, true>
 {
   public:
-    static bool check(const From from) { return true; }
+    static bool checkBounds(const From from) { return true; }
 };
 
 template<typename From, typename To>
 class BoundsChecker<From, To, true>
 {
   public:
-    static bool check(const From from) {
-      return BoundsCheckImpl<From, To>::check(from);
+    static bool checkBounds(const From from) {
+      return BoundsCheckImpl<From, To>::checkBounds(from);
     }
 };
 
@@ -105,7 +178,7 @@ template<typename From, typename To>
 inline bool
 IsInBounds(const From from)
 {
-  return BoundsChecker<From, To>::check(from);
+  return BoundsChecker<From, To>::checkBounds(from);
 }
 
 } // namespace detail

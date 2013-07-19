@@ -38,6 +38,9 @@ public:
 
   virtual LayersBackend GetBackendType() { return LAYERS_CLIENT; }
   virtual void GetBackendName(nsAString& name);
+#ifdef MOZ_LAYERS_HAVE_LOG
+  virtual const char* Name() const { return "Client"; }
+#endif // MOZ_LAYERS_HAVE_LOG
 
   virtual void SetRoot(Layer* aLayer);
 
@@ -49,6 +52,10 @@ public:
   virtual already_AddRefed<CanvasLayer> CreateCanvasLayer();
   virtual already_AddRefed<ColorLayer> CreateColorLayer();
   virtual already_AddRefed<RefLayer> CreateRefLayer();
+
+  virtual void FlushRendering() MOZ_OVERRIDE;
+
+  virtual bool NeedsWidgetInvalidation() MOZ_OVERRIDE { return false; }
 
   ShadowableLayer* Hold(Layer* aLayer);
 
@@ -70,7 +77,9 @@ public:
 
   void SetTransactionIncomplete() { mTransactionIncomplete = true; }
 
-  bool HasShadowTarget() { return !!mShadowTarget; } 
+  bool HasShadowTarget() { return !!mShadowTarget; }
+
+  void SetShadowTarget(gfxContext *aTarget) { mShadowTarget = aTarget; }
 
   bool CompositorMightResample() { return mCompositorMightResample; } 
   

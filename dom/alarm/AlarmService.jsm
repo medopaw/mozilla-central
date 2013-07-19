@@ -20,6 +20,10 @@ Cu.import("resource://gre/modules/AlarmDB.jsm");
 
 this.EXPORTED_SYMBOLS = ["AlarmService"];
 
+XPCOMUtils.defineLazyGetter(this, "appsService", function() {
+  return Cc["@mozilla.org/AppsService;1"].getService(Ci.nsIAppsService);
+});
+
 XPCOMUtils.defineLazyServiceGetter(this, "ppmm",
                                    "@mozilla.org/parentprocessmessagemanager;1",
                                    "nsIMessageListenerManager");
@@ -48,6 +52,8 @@ let myGlobal = this;
 this.AlarmService = {
   init: function init() {
     debug("init()");
+    Services.obs.addObserver(this, "profile-change-teardown", false);
+    Services.obs.addObserver(this, "webapps-clear-data",false);
 
     this._currentTimezoneOffset = (new Date()).getTimezoneOffset();
 
@@ -59,11 +65,11 @@ this.AlarmService = {
     alarmHalService.setTimezoneChangedCb(this._onTimezoneChanged.bind(this));
 
     // Add the messages to be listened to.
-    const messages = ["AlarmsManager:GetAll",
+    this._messages = ["AlarmsManager:GetAll",
                       "AlarmsManager:Add",
                       "AlarmsManager:Remove"];
-    messages.forEach(function addMessage(msgName) {
-        ppmm.addMessageListener(msgName, this);
+    this._messages.forEach(function addMessage(msgName) {
+      ppmm.addMessageListener(msgName, this);
     }.bind(this));
 
     // Set the indexeddb database.
@@ -86,11 +92,15 @@ this.AlarmService = {
   },
   set _currentAlarm(aAlarm) {
     this._alarm = aAlarm;
-    if (!aAlarm)
+    if (!aAlarm) {
       return;
+    }
 
-    if (!this._alarmHalService.setAlarm(this._getAlarmTime(aAlarm) / 1000, 0))
+    let alarmTimeInMs = this._getAlarmTime(aAlarm);
+    let ns = (alarmTimeInMs % 1000) * 1000000;
+    if (!this._alarmHalService.setAlarm(alarmTimeInMs / 1000, ns)) {
       throw Components.results.NS_ERROR_FAILURE;
+    }
   },
 
   receiveMessage: function receiveMessage(aMessage) {
@@ -99,8 +109,7 @@ this.AlarmService = {
 
     // To prevent the hacked child process from sending commands to parent
     // to schedule alarms, we need to check its permission and manifest URL.
-    if (["AlarmsManager:GetAll", "AlarmsManager:Add", "AlarmsManager:Remove"]
-          .indexOf(aMessage.name) != -1) {
+    if (this._messages.indexOf(aMessage.name) != -1) {
       if (!aMessage.target.assertPermission("alarms")) {
         debug("Got message from a child process with no 'alarms' permission.");
         return null;
@@ -322,16 +331,23 @@ this.AlarmService = {
   },
 
   _getAlarmTime: function _getAlarmTime(aAlarm) {
-    let alarmTime = (new Date(aAlarm.date)).getTime();
+    // Avoid casting a Date object to a Date again to
+    // preserve milliseconds. See bug 810973.
+    let alarmTime;
+    if (aAlarm.date instanceof Date) {
+      alarmTime = aAlarm.date.getTime();
+    } else {
+      alarmTime = (new Date(aAlarm.date)).getTime();
+    }
 
     // For an alarm specified with "ignoreTimezone", it must be fired respect
     // to the user's timezone.  Supposing an alarm was set at 7:00pm at Tokyo,
     // it must be gone off at 7:00pm respect to Paris' local time when the user
     // is located at Paris.  We can adjust the alarm UTC time by calculating
     // the difference of the orginal timezone and the current timezone.
-    if (aAlarm.ignoreTimezone)
+    if (aAlarm.ignoreTimezone) {
        alarmTime += (this._currentTimezoneOffset - aAlarm.timezoneOffset) * 60000;
-
+    }
     return alarmTime;
   },
 
@@ -384,14 +400,12 @@ this.AlarmService = {
       return;
     }
 
-    aNewAlarm['timezoneOffset'] = this._currentTimezoneOffset;
-    let aNewAlarmTime = this._getAlarmTime(aNewAlarm);
-    if (aNewAlarmTime <= Date.now()) {
-      debug("Adding a alarm that has past time.");
-      this._debugCurrentAlarm();
-      aErrorCb("InvalidStateError");
+    if (!aNewAlarm.date) {
+      aErrorCb("alarm.date is null");
       return;
     }
+
+    aNewAlarm['timezoneOffset'] = this._currentTimezoneOffset;
 
     this._db.add(
       aNewAlarm,
@@ -415,6 +429,7 @@ this.AlarmService = {
         // If the new alarm is earlier than the current alarm, swap them and
         // push the previous alarm back to queue.
         let alarmQueue = this._alarmQueue;
+        let aNewAlarmTime = this._getAlarmTime(aNewAlarm);
         let currentAlarmTime = this._getAlarmTime(this._currentAlarm);
         if (aNewAlarmTime < currentAlarmTime) {
           alarmQueue.unshift(this._currentAlarm);
@@ -490,6 +505,58 @@ this.AlarmService = {
         this._debugCurrentAlarm();
       }.bind(this)
     );
+  },
+
+  observe: function(aSubject, aTopic, aData) {
+    switch (aTopic) {
+      case "profile-change-teardown":
+        this.uninit();
+        break;
+      case "webapps-clear-data":
+        let params =
+          aSubject.QueryInterface(Ci.mozIApplicationClearPrivateDataParams);
+        if (!params) {
+          debug("Error! Fail to remove alarms for an uninstalled app.");
+          return;
+        }
+
+        let manifestURL = appsService.getManifestURLByLocalId(params.appId);
+        if (!manifestURL) {
+          debug("Error! Fail to remove alarms for an uninstalled app.");
+          return;
+        }
+
+        this._db.getAll(
+          manifestURL,
+          function getAllSuccessCb(aAlarms) {
+            aAlarms.forEach(function removeAlarm(aAlarm) {
+              this.remove(aAlarm.id, manifestURL);
+            }, this);
+          }.bind(this),
+          function getAllErrorCb(aErrorMsg) {
+            throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+          }
+        );
+        break;
+    }
+  },
+
+  uninit: function uninit() {
+    debug("uninit()");
+    Services.obs.removeObserver(this, "profile-change-teardown");
+    Services.obs.removeObserver(this, "webapps-clear-data");
+
+    this._messages.forEach(function(aMsgName) {
+      ppmm.removeMessageListener(aMsgName, this);
+    }.bind(this));
+    ppmm = null;
+
+    if (this._db) {
+      this._db.close();
+    }
+    this._db = null;
+
+    this._alarmHalService = null;
   }
 }
 

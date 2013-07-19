@@ -111,11 +111,11 @@ SmsMessage::Create(int32_t aId,
 
   // We support both a Date object and a millisecond timestamp as a number.
   if (aTimestamp.isObject()) {
-    JSObject& obj = aTimestamp.toObject();
-    if (!JS_ObjectIsDate(aCx, &obj)) {
+    JS::Rooted<JSObject*> obj(aCx, &aTimestamp.toObject());
+    if (!JS_ObjectIsDate(aCx, obj)) {
       return NS_ERROR_INVALID_ARG;
     }
-    data.timestamp() = js_DateGetMsecSinceEpoch(&obj);
+    data.timestamp() = js_DateGetMsecSinceEpoch(obj);
   } else {
     if (!aTimestamp.isNumber()) {
       return NS_ERROR_INVALID_ARG;
@@ -178,8 +178,7 @@ SmsMessage::GetDelivery(nsAString& aDelivery)
     case eDeliveryState_Unknown:
     case eDeliveryState_EndGuard:
     default:
-      MOZ_NOT_REACHED("We shouldn't get any other delivery state!");
-      return NS_ERROR_UNEXPECTED;
+      MOZ_CRASH("We shouldn't get any other delivery state!");
   }
 
   return NS_OK;
@@ -203,8 +202,7 @@ SmsMessage::GetDeliveryStatus(nsAString& aDeliveryStatus)
       break;
     case eDeliveryStatus_EndGuard:
     default:
-      MOZ_NOT_REACHED("We shouldn't get any other delivery status!");
-      return NS_ERROR_UNEXPECTED;
+      MOZ_CRASH("We shouldn't get any other delivery status!");
   }
 
   return NS_OK;
@@ -251,8 +249,7 @@ SmsMessage::GetMessageClass(nsAString& aMessageClass)
       aMessageClass = MESSAGE_CLASS_CLASS_3;
       break;
     default:
-      MOZ_NOT_REACHED("We shouldn't get any other message class!");
-      return NS_ERROR_UNEXPECTED;
+      MOZ_CRASH("We shouldn't get any other message class!");
   }
 
   return NS_OK;

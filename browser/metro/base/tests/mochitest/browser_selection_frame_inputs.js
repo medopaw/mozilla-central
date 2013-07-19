@@ -28,6 +28,8 @@ function setUpAndTearDown() {
   yield waitForCondition(function () {
       return !SelectionHelperUI.isSelectionUIVisible;
     }, kCommonWaitMs, kCommonPollMs);
+  InputSourceHelper.isPrecise = false;
+  InputSourceHelper.fireUpdate();
 }
 
 gTests.push({
@@ -51,8 +53,6 @@ gTests.push({
     ok(gWindow != null, "gWindow");
     ok(gFrame != null, "gFrame");
     ok(gInput != null, "gInput");
-
-    InputSourceHelper.isPrecise = false;
   },
 });
 
@@ -65,7 +65,7 @@ gTests.push({
     gInput.selectionStart = gInput.selectionEnd = 0;
 
     let promise = waitForEvent(document, "popupshown");
-    sendContextMenuClick(232, 583);
+    sendContextMenuClickToElement(gWindow, gFrame, 135, 10);
     yield promise;
 
     checkContextUIMenuItemVisibility(["context-select",
@@ -75,7 +75,7 @@ gTests.push({
     ok(menuItem, "menu item exists");
     ok(!menuItem.hidden, "menu item visible");
     let popupPromise = waitForEvent(document, "popuphidden");
-    EventUtils.synthesizeMouse(menuItem, 10, 10, {}, gWindow);
+    sendElementTap(gWindow, menuItem);
     yield popupPromise;
 
     yield waitForCondition(function () {
@@ -84,8 +84,9 @@ gTests.push({
 
     is(getTrimmedSelection(gInput).toString(), "straight", "selection test");
 
-    checkMonoclePositionRange("start", 210, 220, 600, 605);
-    checkMonoclePositionRange("end", 250, 260, 600, 605);
+    let rect = gFrame.getBoundingClientRect();
+    checkMonoclePositionRange("start", rect.left + 125, rect.left + 135, rect.top + 20, rect.top + 30);
+    checkMonoclePositionRange("end", rect.left + 165, rect.left + 175, rect.top + 20, rect.top + 30);
   },
 });
 
@@ -98,7 +99,7 @@ gTests.push({
     gInput.selectionStart = gInput.selectionEnd = 0;
 
     let promise = waitForEvent(document, "popupshown");
-    sendContextMenuClick(232, 583);
+    sendContextMenuClickToElement(gWindow, gFrame, 135, 10);
     yield promise;
 
     checkContextUIMenuItemVisibility(["context-select",
@@ -108,7 +109,7 @@ gTests.push({
     ok(menuItem, "menu item exists");
     ok(!menuItem.hidden, "menu item visible");
     let popupPromise = waitForEvent(document, "popuphidden");
-    EventUtils.synthesizeMouse(menuItem, 10, 10, {}, gWindow);
+    sendElementTap(gWindow, menuItem);
     yield popupPromise;
 
     yield waitForCondition(function () {

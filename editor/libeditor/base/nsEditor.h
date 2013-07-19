@@ -230,7 +230,7 @@ public:
                                 const nsAString *aAttribute = nullptr,
                                 const nsAString *aValue = nullptr);
   nsresult JoinNodes(nsINode* aNodeToKeep, nsIContent* aNodeToMove);
-  nsresult MoveNode(nsIContent* aNode, nsINode* aParent, int32_t aOffset);
+  nsresult MoveNode(nsINode* aNode, nsINode* aParent, int32_t aOffset);
   nsresult MoveNode(nsIDOMNode *aNode, nsIDOMNode *aParent, int32_t aOffset);
 
   /* Method to replace certain CreateElementNS() calls. 
@@ -471,6 +471,7 @@ public:
    */
   static already_AddRefed<nsIDOMNode> GetNodeLocation(nsIDOMNode* aChild,
                                                       int32_t* outOffset);
+  static nsINode* GetNodeLocation(nsINode* aChild, int32_t* aOffset);
 
   /** returns the number of things inside aNode in the out-param aCount.  
     * @param  aNode is the node to get the length of.  
@@ -740,6 +741,11 @@ public:
            IsInteractionAllowed();
   }
 
+  bool HasIndependentSelection() const
+  {
+    return !!mSelConWeak;
+  }
+
   // Get the input event target. This might return null.
   virtual already_AddRefed<nsIContent> GetInputEventTargetContent() = 0;
 
@@ -772,6 +778,9 @@ public:
   // a host of the editor, i.e., the editor doesn't get focus, this does
   // nothing.
   nsresult InitializeSelection(nsIDOMEventTarget* aFocusEventTarget);
+
+  // Finalizes selection and caret for the editor.
+  void FinalizeSelection();
 
   // This method has to be called by nsEditorEventListener::Focus.
   // All actions that have to be done when the editor is focused needs to be

@@ -136,7 +136,12 @@ public:
 
         if (mContext) {
             [mContext makeCurrentContext];
-            GLint swapInt = 1;
+            // Use blocking swap only with the default frame rate.
+            // If swapInt is 1, then glSwapBuffers will block and wait for a vblank signal.
+            // While this is fine for the default refresh rate, if the user chooses some
+            // other rate, and specifically if this rate is higher than the screen refresh rate,
+            // then we want a non-blocking glSwapBuffers, which will happen when swapInt==0.
+            GLint swapInt = gfxPlatform::GetPrefLayoutFrameRate() == -1 ? 1 : 0;
             [mContext setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
         }
         return true;
@@ -145,6 +150,8 @@ public:
     virtual bool IsCurrent() {
         return [NSOpenGLContext currentContext] == mContext;
     }
+
+    virtual GLenum GetPreferredARGB32Format() MOZ_OVERRIDE { return LOCAL_GL_BGRA; }
 
     bool SetupLookupFunction()
     {
@@ -171,12 +178,15 @@ public:
     bool ResizeOffscreen(const gfxIntSize& aNewSize);
 
     virtual already_AddRefed<TextureImage>
-    CreateBasicTextureImage(GLuint aTexture,
-                            const nsIntSize& aSize,
-                            GLenum aWrapMode,
-                            TextureImage::ContentType aContentType,
-                            GLContext* aContext,
-                            TextureImage::Flags aFlags = TextureImage::NoFlags);
+    CreateTextureImage(const nsIntSize& aSize,
+                       TextureImage::ContentType aContentType,
+                       GLenum aWrapMode,
+                       TextureImage::Flags aFlags = TextureImage::NoFlags) MOZ_OVERRIDE;
+
+    virtual already_AddRefed<TextureImage>
+    TileGenFunc(const nsIntSize& aSize,
+                TextureImage::ContentType aContentType,
+                TextureImage::Flags aFlags = TextureImage::NoFlags) MOZ_OVERRIDE;
 
     virtual SharedTextureHandle CreateSharedHandle(SharedTextureShareType shareType,
                                                    void* buffer,
@@ -198,7 +208,7 @@ public:
                                         SharedHandleDetails& details)
     {
         details.mTarget = LOCAL_GL_TEXTURE_RECTANGLE_ARB;
-        details.mProgramType = RGBARectLayerProgramType;
+        details.mTextureFormat = FORMAT_R8G8B8A8;
         return true;
     }
 
@@ -213,6 +223,13 @@ public:
 
     NSOpenGLContext *mContext;
     GLuint mTempTextureName;
+
+    already_AddRefed<TextureImage>
+    CreateTextureImageInternal(const nsIntSize& aSize,
+                               TextureImage::ContentType aContentType,
+                               GLenum aWrapMode,
+                               TextureImage::Flags aFlags);
+
 };
 
 bool
@@ -224,12 +241,10 @@ GLContextCGL::ResizeOffscreen(const gfxIntSize& aNewSize)
 class TextureImageCGL : public BasicTextureImage
 {
     friend already_AddRefed<TextureImage>
-    GLContextCGL::CreateBasicTextureImage(GLuint,
-                                          const nsIntSize&,
-                                          GLenum,
-                                          TextureImage::ContentType,
-                                          GLContext*,
-                                          TextureImage::Flags);
+    GLContextCGL::CreateTextureImageInternal(const nsIntSize& aSize,
+                                             TextureImage::ContentType aContentType,
+                                             GLenum aWrapMode,
+                                             TextureImage::Flags aFlags);
 public:
     ~TextureImageCGL()
     {
@@ -329,16 +344,54 @@ private:
 };
 
 already_AddRefed<TextureImage>
-GLContextCGL::CreateBasicTextureImage(GLuint aTexture,
-                                      const nsIntSize& aSize,
-                                      GLenum aWrapMode,
-                                      TextureImage::ContentType aContentType,
-                                      GLContext* aContext,
-                                      TextureImage::Flags aFlags)
+GLContextCGL::CreateTextureImageInternal(const nsIntSize& aSize,
+                                         TextureImage::ContentType aContentType,
+                                         GLenum aWrapMode,
+                                         TextureImage::Flags aFlags)
 {
+    bool useNearestFilter = aFlags & TextureImage::UseNearestFilter;
+    MakeCurrent();
+
+    GLuint texture;
+    fGenTextures(1, &texture);
+
+    fActiveTexture(LOCAL_GL_TEXTURE0);
+    fBindTexture(LOCAL_GL_TEXTURE_2D, texture);
+
+    GLint texfilter = useNearestFilter ? LOCAL_GL_NEAREST : LOCAL_GL_LINEAR;
+    fTexParameteri(LOCAL_GL_TEXTURE_2D, LOCAL_GL_TEXTURE_MIN_FILTER, texfilter);
+    fTexParameteri(LOCAL_GL_TEXTURE_2D, LOCAL_GL_TEXTURE_MAG_FILTER, texfilter);
+    fTexParameteri(LOCAL_GL_TEXTURE_2D, LOCAL_GL_TEXTURE_WRAP_S, aWrapMode);
+    fTexParameteri(LOCAL_GL_TEXTURE_2D, LOCAL_GL_TEXTURE_WRAP_T, aWrapMode);
+
     nsRefPtr<TextureImageCGL> teximage
-        (new TextureImageCGL(aTexture, aSize, aWrapMode, aContentType, aContext, aFlags));
+        (new TextureImageCGL(texture, aSize, aWrapMode, aContentType, this, aFlags));
     return teximage.forget();
+}
+
+already_AddRefed<TextureImage>
+GLContextCGL::CreateTextureImage(const nsIntSize& aSize,
+                                 TextureImage::ContentType aContentType,
+                                 GLenum aWrapMode,
+                                 TextureImage::Flags aFlags)
+{
+    if (!IsOffscreenSizeAllowed(gfxIntSize(aSize.width, aSize.height)) &&
+        gfxPlatform::OffMainThreadCompositingEnabled()) {
+      NS_ASSERTION(aWrapMode == LOCAL_GL_CLAMP_TO_EDGE, "Can't support wrapping with tiles!");
+      nsRefPtr<TextureImage> t = new gl::TiledTextureImage(this, aSize, aContentType, aFlags);
+      return t.forget();
+    }
+
+    return CreateBasicTextureImage(this, aSize, aContentType, aWrapMode, aFlags);
+}
+
+already_AddRefed<TextureImage>
+GLContextCGL::TileGenFunc(const nsIntSize& aSize,
+                          TextureImage::ContentType aContentType,
+                          TextureImage::Flags aFlags)
+{
+    return CreateTextureImageInternal(aSize, aContentType,
+                                      LOCAL_GL_CLAMP_TO_EDGE, aFlags);
 }
 
 static GLContextCGL *

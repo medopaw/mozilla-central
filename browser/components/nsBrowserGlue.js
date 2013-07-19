@@ -65,6 +65,8 @@ XPCOMUtils.defineLazyModuleGetter(this, "Task",
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesBackups",
                                   "resource://gre/modules/PlacesBackups.jsm");
 
+XPCOMUtils.defineLazyModuleGetter(this, "OS",
+                                  "resource://gre/modules/osfile.jsm");
 
 const PREF_PLUGINS_NOTIFYUSER = "plugins.update.notifyUser";
 const PREF_PLUGINS_UPDATEURL  = "plugins.update.url";
@@ -168,7 +170,7 @@ BrowserGlue.prototype = {
         this._onAppDefaults();
         break;
       case "final-ui-startup":
-        this._onProfileStartup();
+        this._finalUIStartup();
         break;
       case "browser-delayed-startup-finished":
         this._onFirstWindowLoaded();
@@ -317,6 +319,41 @@ BrowserGlue.prototype = {
         });
         break;
 #endif
+      case "browser-search-engine-modified":
+        if (data != "engine-default" && data != "engine-current") {
+          break;
+        }
+        // Enforce that the search service's defaultEngine is always equal to
+        // its currentEngine. The search service will notify us any time either
+        // of them are changed (either by directly setting the relevant prefs,
+        // i.e. if add-ons try to change this directly, or if the
+        // nsIBrowserSearchService setters are called).
+        // No need to initialize the search service, since it's guaranteed to be
+        // initialized already when this notification fires.
+        let ss = Services.search;
+        if (ss.currentEngine.name == ss.defaultEngine.name)
+          return;
+        if (data == "engine-current")
+          ss.defaultEngine = ss.currentEngine;
+        else
+          ss.currentEngine = ss.defaultEngine;
+        break;
+      case "browser-search-service":
+        if (data != "init-complete")
+          return;
+        Services.obs.removeObserver(this, "browser-search-service");
+        this._syncSearchEngines();
+        break;
+    }
+  },
+
+  _syncSearchEngines: function () {
+    // Only do this if the search service is already initialized. This function
+    // gets called in finalUIStartup and from a browser-search-service observer,
+    // to catch both cases (search service initialization occurring before and
+    // after final-ui-startup)
+    if (Services.search.isInitialized) {
+      Services.search.defaultEngine = Services.search.currentEngine;
     }
   },
 
@@ -351,6 +388,8 @@ BrowserGlue.prototype = {
 #ifdef MOZ_SERVICES_HEALTHREPORT
     os.addObserver(this, "keyword-search", false);
 #endif
+    os.addObserver(this, "browser-search-engine-modified", false);
+    os.addObserver(this, "browser-search-service", false);
   },
 
   // cleanup (called on application shutdown)
@@ -384,16 +423,22 @@ BrowserGlue.prototype = {
 #ifdef MOZ_SERVICES_HEALTHREPORT
     os.removeObserver(this, "keyword-search");
 #endif
+    os.removeObserver(this, "browser-search-engine-modified");
+    try {
+      os.removeObserver(this, "browser-search-service");
+      // may have already been removed by the observer
+    } catch (ex) {}
   },
 
   _onAppDefaults: function BG__onAppDefaults() {
     // apply distribution customizations (prefs)
-    // other customizations are applied in _onProfileStartup()
+    // other customizations are applied in _finalUIStartup()
     this._distributionCustomizer.applyPrefDefaults();
   },
 
-  // profile startup handler (contains profile initialization routines)
-  _onProfileStartup: function BG__onProfileStartup() {
+  // runs on startup, before the first command line handler is invoked
+  // (i.e. before the first window is opened)
+  _finalUIStartup: function BG__finalUIStartup() {
     this._sanitizer.onStartup();
     // check if we're in safe mode
     if (Services.appinfo.inSafeMode) {
@@ -409,6 +454,8 @@ BrowserGlue.prototype = {
     this._migrateUI();
 
     this._setUpUserAgentOverrides();
+
+    this._syncSearchEngines();
 
     webappsUI.init();
     PageThumbs.init();
@@ -496,6 +543,41 @@ BrowserGlue.prototype = {
                           nb.PRIORITY_INFO_LOW, buttons);
   },
 
+  /**
+   * Show a notification bar offering a reset if the profile has been unused for some time.
+   */
+  _resetUnusedProfileNotification: function () {
+    let win = this.getMostRecentBrowserWindow();
+    if (!win)
+      return;
+
+    Cu.import("resource://gre/modules/ResetProfile.jsm");
+    if (!ResetProfile.resetSupported())
+      return;
+
+    let productName = Services.strings
+                              .createBundle("chrome://branding/locale/brand.properties")
+                              .GetStringFromName("brandShortName");
+    let resetBundle = Services.strings
+                              .createBundle("chrome://global/locale/resetProfile.properties");
+
+    let message = resetBundle.formatStringFromName("resetUnusedProfile.message", [productName], 1);
+    let buttons = [
+      {
+        label:     resetBundle.formatStringFromName("resetProfile.resetButton.label", [productName], 1),
+        accessKey: resetBundle.GetStringFromName("resetProfile.resetButton.accesskey"),
+        callback: function () {
+          ResetProfile.openConfirmationDialog(win);
+        }
+      },
+    ];
+
+    let nb = win.document.getElementById("global-notificationbox");
+    nb.appendNotification(message, "reset-unused-profile",
+                          "chrome://global/skin/icons/question-16.png",
+                          nb.PRIORITY_INFO_LOW, buttons);
+  },
+
   // the first browser window has finished initializing
   _onFirstWindowLoaded: function BG__onFirstWindowLoaded() {
 #ifdef XP_WIN
@@ -504,12 +586,21 @@ BrowserGlue.prototype = {
     if (WINTASKBAR_CONTRACTID in Cc &&
         Cc[WINTASKBAR_CONTRACTID].getService(Ci.nsIWinTaskbar).available) {
       let temp = {};
-      Cu.import("resource://gre/modules/WindowsJumpLists.jsm", temp);
+      Cu.import("resource:///modules/WindowsJumpLists.jsm", temp);
       temp.WinTaskbarJumpList.startup();
     }
 #endif
 
     this._trackSlowStartup();
+
+    // Offer to reset a user's profile if it hasn't been used for 60 days.
+    const OFFER_PROFILE_RESET_INTERVAL_MS = 60 * 24 * 60 * 60 * 1000;
+    let processStartupTime = Services.startup.getStartupInfo().process;
+    let lastUse = Services.appinfo.replacedLockTime;
+    if (processStartupTime && lastUse &&
+        processStartupTime.getTime() - lastUse >= OFFER_PROFILE_RESET_INTERVAL_MS) {
+      this._resetUnusedProfileNotification();
+    }
   },
 
   /**
@@ -579,9 +670,17 @@ BrowserGlue.prototype = {
           (ss.sessionType == Ci.nsISessionStartup.RECOVER_SESSION);
       }
       catch (ex) { /* never mind; suppose SessionStore is broken */ }
-      if (shouldCheck &&
-          !shell.isDefaultBrowser(true, false) &&
-          !willRecoverSession) {
+
+      let isDefault = shell.isDefaultBrowser(true, false); // startup check, check all assoc
+      try {
+        // Report default browser status on startup to telemetry
+        // so we can track whether we are the default.
+        Services.telemetry.getHistogramById("BROWSER_IS_USER_DEFAULT")
+                          .add(isDefault);
+      }
+      catch (ex) { /* Don't break the default prompt if telemetry is broken. */ }
+
+      if (shouldCheck && !isDefault && !willRecoverSession) {
         Services.tm.mainThread.dispatch(function() {
           var win = this.getMostRecentBrowserWindow();
           var brandBundle = win.document.getElementById("bundle_brand");
@@ -688,7 +787,8 @@ BrowserGlue.prototype = {
         // tabs checks browser.tabs.warnOnClose and returns if it's ok to close
         // the window. It doesn't actually close the window.
         mostRecentBrowserWindow = Services.wm.getMostRecentWindow("navigator:browser");
-        aCancelQuit.data = !mostRecentBrowserWindow.gBrowser.warnAboutClosingTabs(true);
+        let allTabs = mostRecentBrowserWindow.gBrowser.closingTabsEnum.ALL;
+        aCancelQuit.data = !mostRecentBrowserWindow.gBrowser.warnAboutClosingTabs(allTabs)
       }
       return;
     }
@@ -1170,7 +1270,7 @@ BrowserGlue.prototype = {
   },
 
   _migrateUI: function BG__migrateUI() {
-    const UI_VERSION = 12;
+    const UI_VERSION = 14;
     const BROWSER_DOCURL = "chrome://browser/content/browser.xul#";
     let currentUIVersion = 0;
     try {
@@ -1344,23 +1444,27 @@ BrowserGlue.prototype = {
       let currentset = this._getPersist(toolbarResource, currentsetResource);
       // Need to migrate only if toolbar is customized.
       if (currentset) {
-        if (currentset.contains("bookmarks-menu-button-container"))
-          currentset = currentset.replace(/(^|,)bookmarks-menu-button-container($|,)/,"$2");
-
-        // Now insert the new button.
-        if (currentset.contains("downloads-button")) {
-          currentset = currentset.replace(/(^|,)downloads-button($|,)/,
-                                          "$1bookmarks-menu-button,downloads-button$2");
-        } else if (currentset.contains("home-button")) {
-          currentset = currentset.replace(/(^|,)home-button($|,)/,
-                                          "$1bookmarks-menu-button,home-button$2");
-        } else {
-          // Just append.
-          currentset = currentset.replace(/(^|,)window-controls($|,)/,
-                                          "$1bookmarks-menu-button,window-controls$2")
+        if (currentset.contains("bookmarks-menu-button-container")) {
+          currentset = currentset.replace(/(^|,)bookmarks-menu-button-container($|,)/,
+                                          "$1bookmarks-menu-button$2");
+          this._setPersist(toolbarResource, currentsetResource, currentset);
         }
-        this._setPersist(toolbarResource, currentsetResource, currentset);
       }
+    }
+
+    if (currentUIVersion < 13) {
+      try {
+        if (Services.prefs.getBoolPref("plugins.hide_infobar_for_missing_plugin"))
+          Services.prefs.setBoolPref("plugins.notifyMissingFlash", false);
+      }
+      catch (ex) {}
+    }
+
+    if (currentUIVersion < 14) {
+      // DOM Storage doesn't specially handle about: pages anymore.
+      let path = OS.Path.join(OS.Constants.Path.profileDir,
+                              "chromeappsstore.sqlite");
+      OS.File.remove(path);
     }
 
     if (this._dirty)
@@ -1647,6 +1751,13 @@ ContentPermissionPrompt.prototype = {
     var requestingWindow = aRequest.window.top;
     var chromeWin = this._getChromeWindow(requestingWindow).wrappedJSObject;
     var browser = chromeWin.gBrowser.getBrowserForDocument(requestingWindow.document);
+    if (!browser) {
+      // find the requesting browser or iframe
+      browser = requestingWindow.QueryInterface(Ci.nsIInterfaceRequestor)
+                                  .getInterface(Ci.nsIWebNavigation)
+                                  .QueryInterface(Ci.nsIDocShell)
+                                  .chromeEventHandler;
+    }
     var requestPrincipal = aRequest.principal;
 
     // Transform the prompt actions into PopupNotification actions.

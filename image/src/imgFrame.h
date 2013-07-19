@@ -7,6 +7,8 @@
 #ifndef imgFrame_h
 #define imgFrame_h
 
+#include "mozilla/MemoryReporting.h"
+#include "mozilla/Mutex.h"
 #include "nsRect.h"
 #include "nsPoint.h"
 #include "nsSize.h"
@@ -38,9 +40,8 @@ public:
             const nsIntMargin &aPadding, const nsIntRect &aSubimage,
             uint32_t aImageFlags = imgIContainer::FLAG_NONE);
 
-  nsresult Extract(const nsIntRect& aRegion, imgFrame** aResult);
-
   nsresult ImageUpdated(const nsIntRect &aUpdateRect);
+  bool GetIsDirty() const;
 
   nsIntRect GetRect() const;
   gfxASurface::gfxImageFormat GetFormat() const;
@@ -50,7 +51,9 @@ public:
   bool GetIsPaletted() const;
   bool GetHasAlpha() const;
   void GetImageData(uint8_t **aData, uint32_t *length) const;
+  uint8_t* GetImageData() const;
   void GetPaletteData(uint32_t **aPalette, uint32_t *length) const;
+  uint32_t* GetPaletteData() const;
 
   int32_t GetTimeout() const;
   void SetTimeout(int32_t aTimeout);
@@ -69,7 +72,7 @@ public:
 
   nsresult LockImageData();
   nsresult UnlockImageData();
-  void MarkImageDataDirty();
+  void ApplyDirtToSurfaces();
 
   nsresult GetSurface(gfxASurface **aSurface) const
   {
@@ -104,14 +107,17 @@ public:
 
   size_t SizeOfExcludingThisWithComputedFallbackIfHeap(
            gfxASurface::MemoryLocation aLocation,
-           nsMallocSizeOfFun aMallocSizeOf) const;
+           mozilla::MallocSizeOf aMallocSizeOf) const;
 
   uint8_t GetPaletteDepth() const { return mPaletteDepth; }
-
-private: // methods
   uint32_t PaletteDataLength() const {
+    if (!mPaletteDepth)
+      return 0;
+
     return ((1 << mPaletteDepth) * sizeof(uint32_t));
   }
+
+private: // methods
 
   struct SurfaceWithFormat {
     nsRefPtr<gfxDrawable> mDrawable;
@@ -146,6 +152,8 @@ private: // data
 
   nsIntRect    mDecoded;
 
+  mutable mozilla::Mutex mDirtyMutex;
+
   // The palette and image data for images that are paletted, since Cairo
   // doesn't support these images.
   // The paletted data comes first, then the image data itself.
@@ -176,6 +184,7 @@ private: // data
 #ifdef XP_WIN
   bool mIsDDBSurface;
 #endif
+  bool mDirty;
 };
 
 namespace mozilla {

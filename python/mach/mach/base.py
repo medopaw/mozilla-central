@@ -4,11 +4,43 @@
 
 from __future__ import unicode_literals
 
-from collections import namedtuple
 
-# Holds mach run-time state so it can easily be passed to command providers.
-CommandContext = namedtuple('CommandContext', ['topdir', 'cwd',
-    'settings', 'log_manager', 'commands'])
+class CommandContext(object):
+    """Holds run-time state so it can easily be passed to command providers."""
+    def __init__(self, topdir=None, cwd=None, settings=None, log_manager=None,
+        commands=None):
+        self.topdir = topdir
+        self.cwd = cwd
+        self.settings = settings
+        self.log_manager = log_manager
+        self.commands = commands
+
+
+class MachError(Exception):
+    """Base class for all errors raised by mach itself."""
+
+
+class NoCommandError(MachError):
+    """No command was passed into mach."""
+
+
+class UnknownCommandError(MachError):
+    """Raised when we attempted to execute an unknown command."""
+
+    def __init__(self, command, verb):
+        MachError.__init__(self)
+
+        self.command = command
+        self.verb = verb
+
+class UnrecognizedArgumentError(MachError):
+    """Raised when an unknown argument is passed to mach."""
+
+    def __init__(self, command, arguments):
+        MachError.__init__(self)
+
+        self.command = command
+        self.arguments = arguments
 
 
 class MethodHandler(object):
@@ -33,23 +65,32 @@ class MethodHandler(object):
         # the name of the function.
         'method',
 
-        # The argparse subparser for this command's arguments.
-        'parser',
+        # The name of the command.
+        'name',
 
-        # Arguments passed to add_parser() on the main mach subparser. This is
-        # a 2-tuple of positional and named arguments, respectively.
-        'parser_args',
+        # String category this command belongs to.
+        'category',
+
+        # Description of the purpose of this command.
+        'description',
+
+        # Whether to allow all arguments from the parser.
+        'allow_all_arguments',
 
         # Arguments added to this command's parser. This is a 2-tuple of
         # positional and named arguments, respectively.
         'arguments',
     )
 
-    def __init__(self, cls, method, parser_args, arguments=None,
-        pass_context=False):
+    def __init__(self, cls, method, name, category=None, description=None,
+        allow_all_arguments=False, arguments=None, pass_context=False):
 
         self.cls = cls
         self.method = method
-        self.parser_args = parser_args
+        self.name = name
+        self.category = category
+        self.description = description
+        self.allow_all_arguments = allow_all_arguments
         self.arguments = arguments or []
         self.pass_context = pass_context
+

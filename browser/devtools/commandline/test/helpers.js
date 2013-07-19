@@ -21,13 +21,12 @@ this.EXPORTED_SYMBOLS = [ 'helpers' ];
 var helpers = {};
 this.helpers = helpers;
 let require = (Cu.import("resource://gre/modules/devtools/Require.jsm", {})).require;
-Components.utils.import("resource:///modules/devtools/gcli.jsm", {});
+Components.utils.import("resource://gre/modules/devtools/gcli.jsm", {});
 
 let console = (Cu.import("resource://gre/modules/devtools/Console.jsm", {})).console;
-let devtools = (Cu.import("resource:///modules/devtools/gDevTools.jsm", {})).devtools;
-let TargetFactory = devtools.TargetFactory;
+let TargetFactory = (Cu.import("resource://gre/modules/devtools/Loader.jsm", {})).devtools.TargetFactory;
 
-let Promise = (Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js", {})).Promise;
+let promise = (Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js", {})).Promise;
 let assert = { ok: ok, is: is, log: info };
 
 var util = require('util/util');
@@ -61,7 +60,7 @@ var converters = require('gcli/converters');
  * @param options An optional set of options to customize the way the tests run
  */
 helpers.addTab = function(url, callback, options) {
-  var deferred = Promise.defer();
+  var deferred = promise.defer();
 
   waitForExplicitFinish();
 
@@ -97,7 +96,7 @@ helpers.addTab = function(url, callback, options) {
     };
 
     var reply = callback(options);
-    Promise.resolve(reply).then(cleanUp, function(error) {
+    promise.resolve(reply).then(cleanUp, function(error) {
       ok(false, error);
       cleanUp();
     });
@@ -119,7 +118,7 @@ helpers.addTab = function(url, callback, options) {
 helpers.addTabWithToolbar = function(url, callback, options) {
   return helpers.addTab(url, function(innerOptions) {
     var win = innerOptions.chromeWindow;
-    var deferred = Promise.defer();
+    var deferred = promise.defer();
 
     win.DeveloperToolbar.show(true, function() {
       innerOptions.display = win.DeveloperToolbar.display;
@@ -131,7 +130,7 @@ helpers.addTabWithToolbar = function(url, callback, options) {
       };
 
       var reply = callback(innerOptions);
-      Promise.resolve(reply).then(cleanUp, function(error) {
+      promise.resolve(reply).then(cleanUp, function(error) {
         ok(false, error);
         cleanUp();
       });
@@ -158,13 +157,14 @@ helpers.runTests = function(options, tests) {
   });
 
   var recover = function(error) {
+    ok(false, error);
     console.error(error);
   };
 
   info("SETUP");
   var setupDone = (tests.setup != null) ?
-      Promise.resolve(tests.setup(options)) :
-      Promise.resolve();
+      promise.resolve(tests.setup(options)) :
+      promise.resolve();
 
   var testDone = setupDone.then(function() {
     return util.promiseEach(testNames, function(testName) {
@@ -173,13 +173,13 @@ helpers.runTests = function(options, tests) {
 
       if (typeof action === "function") {
         var reply = action.call(tests, options);
-        return Promise.resolve(reply);
+        return promise.resolve(reply);
       }
       else if (Array.isArray(action)) {
         return helpers.audit(options, action);
       }
 
-      return Promise.reject("test action '" + testName +
+      return promise.reject("test action '" + testName +
                             "' is not a function or helpers.audit() object");
     });
   }, recover);
@@ -187,8 +187,8 @@ helpers.runTests = function(options, tests) {
   return testDone.then(function() {
     info("SHUTDOWN");
     return (tests.shutdown != null) ?
-        Promise.resolve(tests.shutdown(options)) :
-        Promise.resolve();
+        promise.resolve(tests.shutdown(options)) :
+        promise.resolve();
   }, recover);
 };
 
@@ -226,7 +226,7 @@ helpers._actual = {
                 .replace(/ $/, '');
     };
 
-    var promisedJoin = util.promised(join);
+    var promisedJoin = promise.promised(join);
     return promisedJoin(templateData.directTabText,
                         templateData.emptyParameters,
                         templateData.arrowTabText);
@@ -314,12 +314,12 @@ helpers._createDebugCheck = function(options) {
   var hintsPromise = helpers._actual.hints(options);
   var predictionsPromise = helpers._actual.predictions(options);
 
-  return util.all(hintsPromise, predictionsPromise).then(function(values) {
+  return promise.all(hintsPromise, predictionsPromise).then(function(values) {
     var hints = values[0];
     var predictions = values[1];
     var output = '';
 
-    output += 'helpers.audit(options, [\n';
+    output += 'return helpers.audit(options, [\n';
     output += '  {\n';
 
     if (cursor === input.length) {
@@ -341,7 +341,7 @@ helpers._createDebugCheck = function(options) {
     output += '      current: \'' + helpers._actual.current(options) + '\',\n';
     output += '      status: \'' + helpers._actual.status(options) + '\',\n';
     output += '      options: ' + outputArray(helpers._actual.options(options)) + ',\n';
-    output += '      error: \'' + helpers._actual.message(options) + '\',\n';
+    output += '      message: \'' + helpers._actual.message(options) + '\',\n';
     output += '      predictions: ' + outputArray(predictions) + ',\n';
     output += '      unassigned: ' + outputArray(requisition._unassigned) + ',\n';
     output += '      outputState: \'' + helpers._actual.outputState(options) + '\',\n';
@@ -378,6 +378,8 @@ helpers._createDebugCheck = function(options) {
     output += '    exec: {\n';
     output += '      output: \'\',\n';
     output += '      completed: true,\n';
+    output += '      type: \'string\',\n';
+    output += '      error: false\n';
     output += '    }\n';
     output += '  }\n';
     output += ']);';
@@ -457,7 +459,7 @@ var CHUNKER = /([^<]*)(<[A-Z]+>)/;
  */
 helpers.setInput = function(options, typed, cursor) {
   checkOptions(options);
-  var promise = undefined;
+  var inputPromise = undefined;
   var inputter = options.display.inputter;
   // We try to measure average keypress time, but setInput can simulate
   // several, so we try to keep track of how many
@@ -465,7 +467,7 @@ helpers.setInput = function(options, typed, cursor) {
 
   // The easy case is a simple string without things like <TAB>
   if (typed.indexOf('<') === -1) {
-    promise = inputter.setInput(typed);
+    inputPromise = inputter.setInput(typed);
   }
   else {
     // Cut the input up into input strings separated by '<KEY>' tokens. The
@@ -476,7 +478,7 @@ helpers.setInput = function(options, typed, cursor) {
     chunkLen = chunks.length + 1;
 
     // We're working on this in chunks so first clear the input
-    promise = inputter.setInput('').then(function() {
+    inputPromise = inputter.setInput('').then(function() {
       return util.promiseEach(chunks, function(chunk) {
         if (chunk.charAt(0) === '<') {
           var action = ACTIONS[chunk];
@@ -493,7 +495,7 @@ helpers.setInput = function(options, typed, cursor) {
     });
   }
 
-  return promise.then(function() {
+  return inputPromise.then(function() {
     if (cursor != null) {
       options.display.inputter.setCursor({ start: cursor, end: cursor });
     }
@@ -529,7 +531,7 @@ helpers.setInput = function(options, typed, cursor) {
  */
 helpers._check = function(options, name, checks) {
   if (checks == null) {
-    return Promise.resolve();
+    return promise.resolve();
   }
 
   var outstanding = [];
@@ -625,12 +627,13 @@ helpers._check = function(options, name, checks) {
     Object.keys(checks.args).forEach(function(paramName) {
       var check = checks.args[paramName];
 
-      var assignment;
-      if (paramName === 'command') {
+      // We allow an 'argument' called 'command' to be the command itself, but
+      // what if the command has a parameter called 'command' (for example, an
+      // 'exec' command)? We default to using the parameter because checking
+      // the command value is less useful
+      var assignment = requisition.getAssignment(paramName);
+      if (assignment == null && paramName === 'command') {
         assignment = requisition.commandAssignment;
-      }
-      else {
-        assignment = requisition.getAssignment(paramName);
       }
 
       if (assignment == null) {
@@ -639,9 +642,19 @@ helpers._check = function(options, name, checks) {
       }
 
       if ('value' in check) {
-        assert.is(assignment.value,
-                  check.value,
-                  'arg.' + paramName + '.value' + suffix);
+        if (typeof check.value === 'function') {
+          try {
+            check.value(assignment.value);
+          }
+          catch (ex) {
+            assert.ok(false, '' + ex);
+          }
+        }
+        else {
+          assert.is(assignment.value,
+                    check.value,
+                    'arg.' + paramName + '.value' + suffix);
+        }
       }
 
       if ('name' in check) {
@@ -687,7 +700,7 @@ helpers._check = function(options, name, checks) {
     });
   }
 
-  return util.all(outstanding).then(function() {
+  return promise.all(outstanding).then(function() {
     // Ensure the promise resolves to nothing
     return undefined;
   });
@@ -702,10 +715,19 @@ helpers._check = function(options, name, checks) {
  */
 helpers._exec = function(options, name, expected) {
   if (expected == null) {
-    return Promise.resolve();
+    return promise.resolve({});
   }
 
-  var output = options.display.requisition.exec({ hidden: true });
+  var output;
+  try {
+    output = options.display.requisition.exec({ hidden: true });
+  }
+  catch (ex) {
+    assert.ok(false, 'Failure executing \'' + name + '\': ' + ex);
+    util.errorHandler(ex);
+
+    return promise.resolve({});
+  }
 
   if ('completed' in expected) {
     assert.is(output.completed,
@@ -715,28 +737,40 @@ helpers._exec = function(options, name, expected) {
 
   if (!options.window.document.createElement) {
     assert.log('skipping output tests (missing doc.createElement) for ' + name);
-    return Promise.resolve();
+    return promise.resolve({ output: output });
   }
 
   if (!('output' in expected)) {
-    return Promise.resolve();
+    return promise.resolve({ output: output });
   }
 
-  var deferred = Promise.defer();
-
   var checkOutput = function() {
-    var div = options.window.document.createElement('div');
-    var nodePromise = converters.convert(output.data, output.type, 'dom',
-                                         options.display.requisition.context);
-    nodePromise.then(function(node) {
-      div.appendChild(node);
-      var actualOutput = div.textContent.trim();
+    if ('type' in expected) {
+      assert.is(output.type,
+                expected.type,
+                'output.type for: ' + name);
+    }
+
+    if ('error' in expected) {
+      assert.is(output.error,
+                expected.error,
+                'output.error for: ' + name);
+    }
+
+    var conversionContext = options.display.requisition.conversionContext;
+    var convertPromise = converters.convert(output.data, output.type, 'dom',
+                                            conversionContext);
+    return convertPromise.then(function(node) {
+      var actualOutput = node.textContent.trim();
 
       var doTest = function(match, against) {
-        if (!match.test(against)) {
-          assert.ok(false, 'html output for ' + name + ' against ' + match.source);
-          log('Actual textContent');
-          log(against);
+        if (match.test(against)) {
+          assert.ok(true, 'html output for ' + name + ' should match /' +
+                          match.source + '/');
+        } else {
+          assert.ok(false, 'html output for ' + name + ' should match /' +
+                           match.source +
+                           '/. Actual textContent: "' + against + '"');
         }
       };
 
@@ -754,24 +788,11 @@ helpers._exec = function(options, name, expected) {
         doTest(expected.output, actualOutput);
       }
 
-      deferred.resolve();
+      return { output: output, text: actualOutput };
     });
   };
 
-  if (output.completed !== false) {
-    checkOutput();
-  }
-  else {
-    var changed = function() {
-      if (output.completed !== false) {
-        checkOutput();
-        output.onChange.remove(changed);
-      }
-    };
-    output.onChange.add(changed);
-  }
-
-  return deferred.promise;
+  return output.promise.then(checkOutput, checkOutput);
 };
 
 /**
@@ -783,20 +804,20 @@ helpers._setup = function(options, name, action) {
   }
 
   if (typeof action === 'function') {
-    return Promise.resolve(action());
+    return promise.resolve(action());
   }
 
-  return Promise.reject('setup must be a string or a function');
+  return promise.reject('\'setup\' property must be a string or a function. Is ' + action);
 };
 
 /**
  * Helper to shutdown the test
  */
-helpers._post = function(name, action) {
+helpers._post = function(name, action, data) {
   if (typeof action === 'function') {
-    return Promise.resolve(action());
+    return promise.resolve(action(data.output, data.text));
   }
-  return Promise.resolve(action);
+  return promise.resolve(action);
 };
 
 /*
@@ -806,11 +827,13 @@ var totalResponseTime = 0;
 var averageOver = 0;
 var maxResponseTime = 0;
 var maxResponseCulprit = undefined;
+var start = undefined;
 
 /**
  * Restart the stats collection process
  */
 helpers.resetResponseTimes = function() {
+  start = new Date().getTime();
   totalResponseTime = 0;
   averageOver = 0;
   maxResponseTime = 0;
@@ -842,6 +865,20 @@ Object.defineProperty(helpers, 'maxResponseTime', {
  */
 Object.defineProperty(helpers, 'maxResponseCulprit', {
   get: function() { return maxResponseCulprit; },
+  enumerable: true
+});
+
+/**
+ * Quick summary of the times
+ */
+Object.defineProperty(helpers, 'timingSummary', {
+  get: function() {
+    var elapsed = (new Date().getTime() - start) / 1000;
+    return 'Total ' + elapsed + 's, ' +
+           'ave response ' + helpers.averageResponseTime + 'ms, ' +
+           'max response ' + helpers.maxResponseTime + 'ms ' +
+           'from \'' + helpers.maxResponseCulprit + '\'';
+  },
   enumerable: true
 });
 
@@ -910,7 +947,7 @@ helpers.audit = function(options, audits) {
       if (skip) {
         var reason = audit.skipIf.name ? 'due to ' + audit.skipIf.name : '';
         assert.log('Skipped ' + name + ' ' + reason);
-        return Promise.resolve(undefined);
+        return promise.resolve(undefined);
       }
     }
 
@@ -923,13 +960,13 @@ helpers.audit = function(options, audits) {
             'due to ' + audit.skipRemainingIf.name :
             '';
         assert.log('Skipped ' + name + ' ' + skipReason);
-        return Promise.resolve(undefined);
+        return promise.resolve(undefined);
       }
     }
 
     if (skipReason != null) {
       assert.log('Skipped ' + name + ' ' + skipReason);
-      return Promise.resolve(undefined);
+      return promise.resolve(undefined);
     }
 
     var start = new Date().getTime();
@@ -940,19 +977,22 @@ helpers.audit = function(options, audits) {
       if (typeof chunkLen !== 'number') {
         chunkLen = 1;
       }
-      var responseTime = (new Date().getTime() - start) / chunkLen;
-      totalResponseTime += responseTime;
-      if (responseTime > maxResponseTime) {
-        maxResponseTime = responseTime;
-        maxResponseCulprit = assert.currentTest + '/' + name;
+
+      if (assert.currentTest) {
+        var responseTime = (new Date().getTime() - start) / chunkLen;
+        totalResponseTime += responseTime;
+        if (responseTime > maxResponseTime) {
+          maxResponseTime = responseTime;
+          maxResponseCulprit = assert.currentTest + '/' + name;
+        }
+        averageOver++;
       }
-      averageOver++;
 
       var checkDone = helpers._check(options, name, audit.check);
       return checkDone.then(function() {
         var execDone = helpers._exec(options, name, audit.exec);
-        return execDone.then(function() {
-          return helpers._post(name, audit.post).then(function() {
+        return execDone.then(function(data) {
+          return helpers._post(name, audit.post, data).then(function() {
             if (assert.testLogging) {
               log('- END \'' + name + '\' in ' + assert.currentTest);
             }
@@ -960,9 +1000,8 @@ helpers.audit = function(options, audits) {
         });
       });
     });
-  }).then(null, function(ex) {
-    console.error(ex.stack);
-    throw(ex);
+  }).then(function() {
+    return options.display.inputter.setInput('');
   });
 };
 

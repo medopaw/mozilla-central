@@ -13,6 +13,9 @@
 #include "CompositorParent.h"
 #include "mozilla/layers/CompositorOGL.h"
 #include "mozilla/layers/BasicCompositor.h"
+#ifdef XP_WIN
+#include "mozilla/layers/CompositorD3D11.h"
+#endif
 #include "LayerTransactionParent.h"
 #include "nsIWidget.h"
 #include "nsGkAtoms.h"
@@ -131,6 +134,7 @@ CompositorParent::CompositorParent(nsIWidget* aWidget,
                                    int aSurfaceWidth, int aSurfaceHeight)
   : mWidget(aWidget)
   , mCurrentCompositeTask(NULL)
+  , mIsTesting(false)
   , mPaused(false)
   , mUseExternalSurfaceSize(aUseExternalSurfaceSize)
   , mEGLSurfaceSize(aSurfaceWidth, aSurfaceHeight)
@@ -242,6 +246,18 @@ CompositorParent::RecvMakeSnapshot(const SurfaceDescriptor& aInSnapshot,
   nsRefPtr<gfxContext> target = new gfxContext(opener.Get());
   ComposeToTarget(target);
   *aOutSnapshot = aInSnapshot;
+  return true;
+}
+
+bool
+CompositorParent::RecvFlushRendering()
+{
+  // If we're waiting to do a composite, then cancel it
+  // and do it immediately instead.
+  if (mCurrentCompositeTask) {
+    mCurrentCompositeTask->Cancel();
+    ComposeToTarget(nullptr);
+  }
   return true;
 }
 
@@ -420,12 +436,6 @@ CompositorParent::ScheduleComposition()
 }
 
 void
-CompositorParent::SetTransformation(float aScale, nsIntPoint aScrollOffset)
-{
-  mCompositionManager->SetTransformation(aScale, aScrollOffset);
-}
-
-void
 CompositorParent::Composite()
 {
   NS_ABORT_IF_FALSE(CompositorThreadID() == PlatformThread::CurrentId(),
@@ -448,7 +458,8 @@ CompositorParent::Composite()
     }
   }
 
-  bool requestNextFrame = mCompositionManager->TransformShadowTree(mLastCompose);
+  TimeStamp time = mIsTesting ? mTestTime : mLastCompose;
+  bool requestNextFrame = mCompositionManager->TransformShadowTree(time);
   if (requestNextFrame) {
     ScheduleComposition();
   }
@@ -504,6 +515,7 @@ SetShadowProperties(Layer* aLayer)
   LayerComposite* layerComposite = aLayer->AsLayerComposite();
   // Set the layerComposite's base transform to the layer's base transform.
   layerComposite->SetShadowTransform(aLayer->GetBaseTransform());
+  layerComposite->SetShadowTransformSetByAnimation(false);
   layerComposite->SetShadowVisibleRegion(aLayer->GetVisibleRegion());
   layerComposite->SetShadowClipRect(aLayer->GetClipRect());
   layerComposite->SetShadowOpacity(aLayer->GetOpacity());
@@ -539,6 +551,9 @@ CompositorParent::ShadowLayersUpdated(LayerTransactionParent* aLayerTree,
   mLayerManager->SetRoot(root);
   if (root) {
     SetShadowProperties(root);
+    if (mIsTesting) {
+      mCompositionManager->TransformShadowTree(mTestTime);
+    }
   }
   ScheduleComposition();
   LayerManagerComposite *layerComposite = mLayerManager->AsLayerManagerComposite();
@@ -548,9 +563,9 @@ CompositorParent::ShadowLayersUpdated(LayerTransactionParent* aLayerTree,
 }
 
 PLayerTransactionParent*
-CompositorParent::AllocPLayerTransaction(const LayersBackend& aBackendHint,
-                                         const uint64_t& aId,
-                                         TextureFactoryIdentifier* aTextureFactoryIdentifier)
+CompositorParent::AllocPLayerTransactionParent(const LayersBackend& aBackendHint,
+                                               const uint64_t& aId,
+                                               TextureFactoryIdentifier* aTextureFactoryIdentifier)
 {
   MOZ_ASSERT(aId == 0);
 
@@ -568,6 +583,11 @@ CompositorParent::AllocPLayerTransaction(const LayersBackend& aBackendHint,
   } else if (aBackendHint == mozilla::layers::LAYERS_BASIC) {
     mLayerManager =
       new LayerManagerComposite(new BasicCompositor(mWidget));
+#ifdef XP_WIN
+  } else if (aBackendHint == mozilla::layers::LAYERS_D3D11) {
+    mLayerManager =
+      new LayerManagerComposite(new CompositorD3D11(mWidget));
+#endif
   } else {
     NS_ERROR("Unsupported backend selected for Async Compositor");
     return nullptr;
@@ -588,7 +608,7 @@ CompositorParent::AllocPLayerTransaction(const LayersBackend& aBackendHint,
 }
 
 bool
-CompositorParent::DeallocPLayerTransaction(PLayerTransactionParent* actor)
+CompositorParent::DeallocPLayerTransactionParent(PLayerTransactionParent* actor)
 {
   delete actor;
   return true;
@@ -639,6 +659,19 @@ CompositorParent* CompositorParent::RemoveCompositor(uint64_t id)
   CompositorParent *retval = it->second;
   sCompositorMap->erase(it);
   return retval;
+}
+
+/* static */ void
+CompositorParent::SetTimeAndSampleAnimations(TimeStamp aTime, bool aIsTesting)
+{
+  if (!sCompositorMap) {
+    return;
+  }
+  for (CompositorMap::iterator it = sCompositorMap->begin(); it != sCompositorMap->end(); ++it) {
+    it->second->mIsTesting = aIsTesting;
+    it->second->mTestTime = aTime;
+    it->second->mCompositionManager->TransformShadowTree(aTime);
+  }
 }
 
 typedef map<uint64_t, CompositorParent::LayerTreeState> LayerTreeMap;
@@ -722,13 +755,14 @@ public:
   virtual bool RecvMakeSnapshot(const SurfaceDescriptor& aInSnapshot,
                                 SurfaceDescriptor* aOutSnapshot)
   { return true; }
+  virtual bool RecvFlushRendering() MOZ_OVERRIDE { return true; }
 
   virtual PLayerTransactionParent*
-    AllocPLayerTransaction(const LayersBackend& aBackendType,
-                           const uint64_t& aId,
-                           TextureFactoryIdentifier* aTextureFactoryIdentifier) MOZ_OVERRIDE;
+    AllocPLayerTransactionParent(const LayersBackend& aBackendType,
+                                 const uint64_t& aId,
+                                 TextureFactoryIdentifier* aTextureFactoryIdentifier) MOZ_OVERRIDE;
 
-  virtual bool DeallocPLayerTransaction(PLayerTransactionParent* aLayers) MOZ_OVERRIDE;
+  virtual bool DeallocPLayerTransactionParent(PLayerTransactionParent* aLayers) MOZ_OVERRIDE;
 
   virtual void ShadowLayersUpdated(LayerTransactionParent* aLayerTree,
                                    const TargetConfig& aTargetConfig,
@@ -778,9 +812,10 @@ UpdateIndirectTree(uint64_t aId, Layer* aRoot, const TargetConfig& aTargetConfig
 {
   sIndirectLayerTrees[aId].mRoot = aRoot;
   sIndirectLayerTrees[aId].mTargetConfig = aTargetConfig;
-  if (ContainerLayer* root = aRoot->AsContainerLayer()) {
+  ContainerLayer* rootContainer = aRoot->AsContainerLayer();
+  if (rootContainer) {
     if (AsyncPanZoomController* apzc = sIndirectLayerTrees[aId].mController) {
-      apzc->NotifyLayersUpdated(root->GetFrameMetrics(), isFirstPaint);
+      apzc->NotifyLayersUpdated(rootContainer->GetFrameMetrics(), isFirstPaint);
     }
   }
 }
@@ -810,9 +845,9 @@ CrossProcessCompositorParent::ActorDestroy(ActorDestroyReason aWhy)
 }
 
 PLayerTransactionParent*
-CrossProcessCompositorParent::AllocPLayerTransaction(const LayersBackend& aBackendType,
-                                                     const uint64_t& aId,
-                                                     TextureFactoryIdentifier* aTextureFactoryIdentifier)
+CrossProcessCompositorParent::AllocPLayerTransactionParent(const LayersBackend& aBackendType,
+                                                           const uint64_t& aId,
+                                                           TextureFactoryIdentifier* aTextureFactoryIdentifier)
 {
   MOZ_ASSERT(aId != 0);
 
@@ -822,7 +857,7 @@ CrossProcessCompositorParent::AllocPLayerTransaction(const LayersBackend& aBacke
 }
 
 bool
-CrossProcessCompositorParent::DeallocPLayerTransaction(PLayerTransactionParent* aLayers)
+CrossProcessCompositorParent::DeallocPLayerTransactionParent(PLayerTransactionParent* aLayers)
 {
   LayerTransactionParent* slp = static_cast<LayerTransactionParent*>(aLayers);
   RemoveIndirectTree(slp->GetId());

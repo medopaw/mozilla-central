@@ -125,7 +125,7 @@ Key::EncodeJSValInternal(JSContext* aCx, const jsval aVal,
 
   if (JSVAL_IS_DOUBLE(aVal)) {
     double d = JSVAL_TO_DOUBLE(aVal);
-    if (MOZ_DOUBLE_IS_NaN(d)) {
+    if (mozilla::IsNaN(d)) {
       return NS_ERROR_DOM_INDEXEDDB_DATA_ERR;
     }
     EncodeNumber(d, eFloat + aTypeOffset);
@@ -133,7 +133,7 @@ Key::EncodeJSValInternal(JSContext* aCx, const jsval aVal,
   }
 
   if (!JSVAL_IS_PRIMITIVE(aVal)) {
-    JSObject* obj = JSVAL_TO_OBJECT(aVal);
+    JS::Rooted<JSObject*> obj(aCx, JSVAL_TO_OBJECT(aVal));
     if (JS_IsArrayObject(aCx, obj)) {
       aTypeOffset += eMaxType;
 
@@ -151,8 +151,8 @@ Key::EncodeJSValInternal(JSContext* aCx, const jsval aVal,
       }
 
       for (uint32_t index = 0; index < length; index++) {
-        jsval val;
-        if (!JS_GetElement(aCx, obj, index, &val)) {
+        JS::Rooted<JS::Value> val(aCx);
+        if (!JS_GetElement(aCx, obj, index, val.address())) {
           return NS_ERROR_DOM_INDEXEDDB_UNKNOWN_ERR;
         }
 
@@ -185,13 +185,13 @@ Key::EncodeJSValInternal(JSContext* aCx, const jsval aVal,
 // static
 nsresult
 Key::DecodeJSValInternal(const unsigned char*& aPos, const unsigned char* aEnd,
-                         JSContext* aCx, uint8_t aTypeOffset, jsval* aVal,
+                         JSContext* aCx, uint8_t aTypeOffset, JS::MutableHandle<JS::Value> aVal,
                          uint16_t aRecursionDepth)
 {
   NS_ENSURE_TRUE(aRecursionDepth < MaxRecursionDepth, NS_ERROR_DOM_INDEXEDDB_DATA_ERR);
 
   if (*aPos - aTypeOffset >= eArray) {
-    JSObject* array = JS_NewArrayObject(aCx, 0, nullptr);
+    JS::Rooted<JSObject*> array(aCx, JS_NewArrayObject(aCx, 0, nullptr));
     if (!array) {
       NS_WARNING("Failed to make array!");
       return NS_ERROR_DOM_INDEXEDDB_UNKNOWN_ERR;
@@ -206,14 +206,14 @@ Key::DecodeJSValInternal(const unsigned char*& aPos, const unsigned char* aEnd,
 
     uint32_t index = 0;
     while (aPos < aEnd && *aPos - aTypeOffset != eTerminator) {
-      jsval val;
+      JS::Rooted<JS::Value> val(aCx);
       nsresult rv = DecodeJSValInternal(aPos, aEnd, aCx, aTypeOffset,
                                         &val, aRecursionDepth + 1);
       NS_ENSURE_SUCCESS(rv, rv);
 
       aTypeOffset = 0;
 
-      if (!JS_SetElement(aCx, array, index++, &val)) {
+      if (!JS_SetElement(aCx, array, index++, val.address())) {
         NS_WARNING("Failed to set array element!");
         return NS_ERROR_DOM_INDEXEDDB_UNKNOWN_ERR;
       }
@@ -223,12 +223,12 @@ Key::DecodeJSValInternal(const unsigned char*& aPos, const unsigned char* aEnd,
                  "Should have found end-of-array marker");
     ++aPos;
 
-    *aVal = OBJECT_TO_JSVAL(array);
+    aVal.setObject(*array);
   }
   else if (*aPos - aTypeOffset == eString) {
     nsString key;
     DecodeString(aPos, aEnd, key);
-    if (!xpc::StringToJsval(aCx, key, aVal)) {
+    if (!xpc::StringToJsval(aCx, key, aVal.address())) {
       return NS_ERROR_DOM_INDEXEDDB_UNKNOWN_ERR;
     }
   }
@@ -240,10 +240,10 @@ Key::DecodeJSValInternal(const unsigned char*& aPos, const unsigned char* aEnd,
       return NS_ERROR_DOM_INDEXEDDB_UNKNOWN_ERR;
     }
 
-    *aVal = OBJECT_TO_JSVAL(date);
+    aVal.setObject(*date);
   }
   else if (*aPos - aTypeOffset == eFloat) {
-    *aVal = DOUBLE_TO_JSVAL(DecodeNumber(aPos, aEnd));
+    aVal.setDouble(DecodeNumber(aPos, aEnd));
   }
   else {
     NS_NOTREACHED("Unknown key type!");

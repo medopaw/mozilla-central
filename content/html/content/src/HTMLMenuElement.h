@@ -6,6 +6,7 @@
 #ifndef mozilla_dom_HTMLMenuElement_h
 #define mozilla_dom_HTMLMenuElement_h
 
+#include "mozilla/Attributes.h"
 #include "nsIDOMHTMLMenuElement.h"
 #include "nsIHTMLMenu.h"
 #include "nsGenericHTMLElement.h"
@@ -13,9 +14,9 @@
 namespace mozilla {
 namespace dom {
 
-class HTMLMenuElement : public nsGenericHTMLElement,
-                        public nsIDOMHTMLMenuElement,
-                        public nsIHTMLMenu
+class HTMLMenuElement MOZ_FINAL : public nsGenericHTMLElement,
+                                  public nsIDOMHTMLMenuElement,
+                                  public nsIHTMLMenu
 {
 public:
   HTMLMenuElement(already_AddRefed<nsINodeInfo> aNodeInfo);
@@ -44,11 +45,11 @@ public:
   virtual bool ParseAttribute(int32_t aNamespaceID,
                                 nsIAtom* aAttribute,
                                 const nsAString& aValue,
-                                nsAttrValue& aResult);
+                                nsAttrValue& aResult) MOZ_OVERRIDE;
 
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
 
-  virtual nsIDOMNode* AsDOMNode() { return this; }
+  virtual nsIDOMNode* AsDOMNode() MOZ_OVERRIDE { return this; }
 
   uint8_t GetType() const { return mType; }
 

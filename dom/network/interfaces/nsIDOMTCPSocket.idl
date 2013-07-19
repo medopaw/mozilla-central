@@ -25,7 +25,7 @@
 //  be possible to do (similarly to the WebSocket API):
 //    var s = new MozTCPSocket(host, port); 
 
-[scriptable, uuid(b82e17da-6476-11e1-8813-57a2ffe9e42c)]
+[scriptable, uuid(1f99bc6f-73d3-44db-9dbf-5fc441704a7c)]
 interface nsIDOMTCPSocket : nsISupports
 {
   /**
@@ -183,11 +183,10 @@ interface nsIDOMTCPSocket : nsISupports
  * Needed to account for multiple possible types that can be provided to
  * the socket callbacks as arguments.
  */
-[scriptable, uuid(fff9ed4a-5e94-4fc0-84e4-7f4d35d0a26c)]
+[scriptable, uuid(322193a3-da17-4ca5-ad26-3539c519ea4b)]
 interface nsITCPSocketInternal : nsISupports {
-  // Trigger the callback for |type| and provide an Error() object with the given data
-  void callListenerError(in DOMString type, in DOMString message, in DOMString filename,
-                         in uint32_t lineNumber, in uint32_t columnNumber);
+  // Trigger the callback for |type| and provide a DOMError() object with the given data
+  void callListenerError(in DOMString type, in DOMString name);
 
   // Trigger the callback for |type| and provide a string argument
   void callListenerData(in DOMString type, in DOMString data);

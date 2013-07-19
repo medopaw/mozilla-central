@@ -12,9 +12,9 @@
 #include "nsXPIDLString.h"
 #include "nsISaveAsCharset.h"
 #include "nsNativeCharsetUtils.h"
+#include "nsServiceManagerUtils.h"
 
 #ifndef MOZ_DISABLE_CRYPTOLEGACY
-#include "nsNSSComponent.h"
 #include "nsKeygenHandler.h"
 #include "nsKeygenThread.h"
 #include "nsNSSCertificate.h"
@@ -35,6 +35,7 @@
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsContentUtils.h"
+#include "nsCxPusher.h"
 #include "nsDOMJSUtils.h"
 #include "nsIXPConnect.h"
 #include "nsIRunnable.h"
@@ -920,7 +921,7 @@ cryptojs_ReadArgsAndGenerateKey(JSContext *cx,
   nsresult  rv;
 
   if (!JSVAL_IS_INT(argv[0])) {
-    JS_ReportError(cx, "%s%s\n", JS_ERROR,
+    JS_ReportError(cx, "%s%s", JS_ERROR,
                    "passed in non-integer for key size");
     return NS_ERROR_FAILURE;
   }
@@ -934,7 +935,7 @@ cryptojs_ReadArgsAndGenerateKey(JSContext *cx,
   }
 
   if (JSVAL_IS_NULL(argv[2])) {
-    JS_ReportError(cx,"%s%s\n", JS_ERROR,
+    JS_ReportError(cx,"%s%s", JS_ERROR,
              "key generation type not specified");
     return NS_ERROR_FAILURE;
   }
@@ -1856,22 +1857,19 @@ nsCrypto::GenerateCRMFRequest(nsIDOMCRMFObject** aReturn)
   nrv = ncc->GetJSContext(&cx);
   NS_ENSURE_SUCCESS(nrv, nrv);
 
-  JSObject* script_obj = nullptr;
   nsCOMPtr<nsIXPConnectJSObjectHolder> holder;
-
-  JSAutoRequest ar(cx);
 
   /*
    * Get all of the parameters.
    */
   if (argc < 5 || ((argc-5) % 3) != 0) {
-    JS_ReportError(cx, "%s", "%s%s\n", JS_ERROR,
+    JS_ReportError(cx, "%s%s", JS_ERROR,
                   "incorrect number of parameters");
     return NS_ERROR_FAILURE;
   }
   
   if (JSVAL_IS_NULL(argv[0])) {
-    JS_ReportError(cx, "%s%s\n", JS_ERROR, "no DN specified");
+    JS_ReportError(cx, "%s%s", JS_ERROR, "no DN specified");
     return NS_ERROR_FAILURE;
   }
   
@@ -1906,7 +1904,7 @@ nsCrypto::GenerateCRMFRequest(nsIDOMCRMFObject** aReturn)
     NS_ENSURE_TRUE(!!eaCert, NS_ERROR_OUT_OF_MEMORY);
   }
   if (JSVAL_IS_NULL(argv[4])) {
-    JS_ReportError(cx, "%s%s\n", JS_ERROR, "no completion "
+    JS_ReportError(cx, "%s%s", JS_ERROR, "no completion "
                    "function specified");
     return NS_ERROR_FAILURE;
   }
@@ -1916,13 +1914,13 @@ nsCrypto::GenerateCRMFRequest(nsIDOMCRMFObject** aReturn)
   JSAutoByteString jsCallback(cx, jsString);
   NS_ENSURE_TRUE(!!jsCallback, NS_ERROR_OUT_OF_MEMORY);
 
-  nrv = xpc->WrapNative(cx, ::JS_GetGlobalObject(cx),
+  nrv = xpc->WrapNative(cx, JS_GetGlobalForScopeChain(cx),
                         static_cast<nsIDOMCrypto *>(this),
                         NS_GET_IID(nsIDOMCrypto), getter_AddRefs(holder));
   NS_ENSURE_SUCCESS(nrv, nrv);
 
-  nrv = holder->GetJSObject(&script_obj);
-  NS_ENSURE_SUCCESS(nrv, nrv);
+  JS::RootedObject script_obj(cx, holder->GetJSObject());
+  NS_ENSURE_STATE(script_obj);
 
   //Put up some UI warning that someone is trying to 
   //escrow the private key.
@@ -2176,14 +2174,9 @@ NS_IMETHODIMP
 nsCryptoRunnable::Run()
 {
   nsNSSShutDownPreventionLock locker;
-  JSContext *cx = m_args->m_cx;
-
+  AutoPushJSContext cx(m_args->m_cx);
   JSAutoRequest ar(cx);
   JSAutoCompartment ac(cx, m_args->m_scope);
-
-  // make sure the right context is on the stack. must not return w/out popping
-  nsCxPusher pusher;
-  pusher.Push(cx);
 
   JSBool ok =
     JS_EvaluateScriptForPrincipals(cx, m_args->m_scope,
@@ -2509,7 +2502,7 @@ nsCrypto::SignText(const nsAString& aStringToSign, const nsAString& aCaOption,
 
   if (!aCaOption.EqualsLiteral("auto") &&
       !aCaOption.EqualsLiteral("ask")) {
-    JS_ReportError(cx, "%s%s\n", JS_ERROR, "caOption argument must be ask or auto");
+    JS_ReportError(cx, "%s%s", JS_ERROR, "caOption argument must be ask or auto");
 
     aResult.Append(internalError);
 

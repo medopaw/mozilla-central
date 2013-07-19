@@ -20,7 +20,7 @@ function runTests(aTab) {
   let toolDefinition = {
     id: toolId,
     isTargetSupported: function() true,
-    killswitch: "devtools.test-tool.enabled",
+    visibilityswitch: "devtools.test-tool.enabled",
     url: "about:blank",
     label: "someLabel",
     build: function(iframeWindow, toolbox) {
@@ -97,7 +97,7 @@ function DevToolPanel(iframeWindow, toolbox) {
 
 DevToolPanel.prototype = {
   open: function() {
-    let deferred = Promise.defer();
+    let deferred = promise.defer();
 
     executeSoon(function() {
       this._isReady = true;
@@ -117,6 +117,6 @@ DevToolPanel.prototype = {
   _isReady: false,
 
   destroy: function DTI_destroy() {
-    return Promise.defer(null);
+    return promise.defer(null);
   },
 };

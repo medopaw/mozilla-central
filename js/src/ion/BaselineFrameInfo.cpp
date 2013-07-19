@@ -4,11 +4,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "BaselineFrameInfo.h"
-#include "IonSpewer.h"
+#include "ion/BaselineFrameInfo.h"
+#include "ion/IonSpewer.h"
+#include "ion/shared/BaselineCompiler-shared.h"
 
 #include "jsanalyze.h"
-#include "jsinferinlines.h"
 
 using namespace js;
 using namespace js::ion;
@@ -45,8 +45,7 @@ FrameInfo::sync(StackValue *val)
         masm.pushValue(val->constant());
         break;
       default:
-        JS_NOT_REACHED("Invalid kind");
-        break;
+        MOZ_ASSUME_UNREACHABLE("Invalid kind");
     }
 
     val->setStack();
@@ -102,7 +101,7 @@ FrameInfo::popValue(ValueOperand dest)
         masm.moveValue(val->reg(), dest);
         break;
       default:
-        JS_NOT_REACHED("Invalid kind");
+        MOZ_ASSUME_UNREACHABLE("Invalid kind");
     }
 
     // masm.popValue already adjusted the stack pointer, don't do it twice.
@@ -138,17 +137,16 @@ FrameInfo::popRegsAndSync(uint32_t uses)
         break;
       }
       default:
-        JS_NOT_REACHED("Invalid uses");
+        MOZ_ASSUME_UNREACHABLE("Invalid uses");
     }
 }
 
 #ifdef DEBUG
 void
-FrameInfo::assertValidState(jsbytecode *pc)
+FrameInfo::assertValidState(const BytecodeInfo &info)
 {
     // Check stack depth.
-    analyze::Bytecode *code = script->analysis()->maybeCode(pc);
-    JS_ASSERT_IF(code, stackDepth() == code->stackDepth);
+    JS_ASSERT(stackDepth() == info.stackDepth);
 
     // Start at the bottom, find the first value that's not synced.
     uint32_t i = 0;
@@ -176,7 +174,7 @@ FrameInfo::assertValidState(jsbytecode *pc)
                 JS_ASSERT(!usedR1);
                 usedR1 = true;
             } else {
-                JS_NOT_REACHED("Invalid register");
+                MOZ_ASSUME_UNREACHABLE("Invalid register");
             }
         }
     }

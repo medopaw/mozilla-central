@@ -10,6 +10,7 @@
 #ifndef nsDOMAttributeMap_h
 #define nsDOMAttributeMap_h
 
+#include "mozilla/MemoryReporting.h"
 #include "mozilla/dom/Attr.h"
 #include "mozilla/ErrorResult.h"
 #include "nsCycleCollectionParticipant.h"
@@ -99,7 +100,7 @@ public:
   virtual ~nsDOMAttributeMap();
 
   NS_DECL_CYCLE_COLLECTING_ISUPPORTS
-  NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(nsDOMAttributeMap)
+  NS_DECL_CYCLE_COLLECTION_SKIPPABLE_SCRIPT_HOLDER_CLASS(nsDOMAttributeMap)
 
   // nsIDOMMozNamedAttrMap interface
   NS_DECL_NSIDOMMOZNAMEDATTRMAP
@@ -181,10 +182,10 @@ public:
     // No supported names we want to show up in iteration.
   }
 
-  size_t SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf) const;
+  size_t SizeOfIncludingThis(mozilla::MallocSizeOf aMallocSizeOf) const;
 
 private:
-  Element *mContent; // Weak reference
+  nsCOMPtr<Element> mContent;
 
   /**
    * Cache of Attrs.

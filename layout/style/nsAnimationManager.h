@@ -11,6 +11,7 @@
 #include "nsStyleContext.h"
 #include "nsDataHashtable.h"
 #include "nsGUIEvent.h"
+#include "mozilla/MemoryReporting.h"
 #include "mozilla/TimeStamp.h"
 #include "mozilla/Preferences.h"
 #include "nsThreadUtils.h"
@@ -29,9 +30,11 @@ struct AnimationEventInfo {
 
   AnimationEventInfo(mozilla::dom::Element *aElement,
                      const nsString& aAnimationName,
-                     uint32_t aMessage, mozilla::TimeDuration aElapsedTime)
+                     uint32_t aMessage, mozilla::TimeDuration aElapsedTime,
+                     const nsAString& aPseudoElement)
     : mElement(aElement),
-      mEvent(true, aMessage, aAnimationName, aElapsedTime.ToSeconds())
+      mEvent(true, aMessage, aAnimationName, aElapsedTime.ToSeconds(),
+             aPseudoElement)
   {
   }
 
@@ -40,7 +43,8 @@ struct AnimationEventInfo {
   AnimationEventInfo(const AnimationEventInfo &aOther)
     : mElement(aOther.mElement),
       mEvent(true, aOther.mEvent.message,
-             aOther.mEvent.animationName, aOther.mEvent.elapsedTime)
+             aOther.mEvent.animationName, aOther.mEvent.elapsedTime,
+             aOther.mEvent.pseudoElement)
   {
   }
 };
@@ -141,11 +145,12 @@ struct ElementAnimations MOZ_FINAL
   // run (because it is not currently active and has no fill behavior), but
   // only does so if aAnimation is non-null; with a null aAnimation it is an
   // error to give aCurrentTime < aStartTime, and fill-forwards is assumed.
+  // After calling GetPositionInIteration with non-null aAnimation and aEa, be
+  // sure to call CheckNeedsRefresh on the animation manager afterwards.
   static double GetPositionInIteration(TimeDuration aElapsedDuration,
                                        TimeDuration aIterationDuration,
                                        double aIterationCount,
                                        uint32_t aDirection,
-                                       bool aIsForElement = true,
                                        ElementAnimation* aAnimation = nullptr,
                                        ElementAnimations* aEa = nullptr,
                                        EventArray* aEventsToDispatch = nullptr);
@@ -156,6 +161,15 @@ struct ElementAnimations MOZ_FINAL
 
   bool IsForElement() const { // rather than for a pseudo-element
     return mElementProperty == nsGkAtoms::animationsProperty;
+  }
+
+  nsString PseudoElement()
+  {
+    return mElementProperty == nsGkAtoms::animationsProperty ?
+             EmptyString() :
+             mElementProperty == nsGkAtoms::animationsOfBeforeProperty ?
+               NS_LITERAL_STRING("::before") :
+               NS_LITERAL_STRING("::after");
   }
 
   void PostRestyleForAnimation(nsPresContext *aPresContext) {
@@ -175,12 +189,14 @@ struct ElementAnimations MOZ_FINAL
   InfallibleTArray<ElementAnimation> mAnimations;
 };
 
-class nsAnimationManager : public mozilla::css::CommonAnimationManager
+class nsAnimationManager MOZ_FINAL
+  : public mozilla::css::CommonAnimationManager
 {
 public:
   nsAnimationManager(nsPresContext *aPresContext)
     : mozilla::css::CommonAnimationManager(aPresContext)
     , mKeyframesListIsDirty(true)
+    , mObservingRefreshDriver(false)
   {
     mKeyframesRules.Init(16); // FIXME: make infallible!
   }
@@ -222,9 +238,9 @@ public:
 #ifdef MOZ_XUL
   virtual void RulesMatching(XULTreeRuleProcessorData* aData) MOZ_OVERRIDE;
 #endif
-  virtual size_t SizeOfExcludingThis(nsMallocSizeOfFun aMallocSizeOf)
+  virtual size_t SizeOfExcludingThis(mozilla::MallocSizeOf aMallocSizeOf)
     const MOZ_MUST_OVERRIDE MOZ_OVERRIDE;
-  virtual size_t SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf)
+  virtual size_t SizeOfIncludingThis(mozilla::MallocSizeOf aMallocSizeOf)
     const MOZ_MUST_OVERRIDE MOZ_OVERRIDE;
 
   // nsARefreshObserver
@@ -268,6 +284,18 @@ public:
                                           nsCSSPseudoElements::Type aPseudoType,
                                           bool aCreateIfNeeded);
 
+protected:
+  virtual void ElementDataRemoved() MOZ_OVERRIDE
+  {
+    CheckNeedsRefresh();
+  }
+  virtual void AddElementData(mozilla::css::CommonElementAnimationData* aData) MOZ_OVERRIDE;
+
+  /**
+   * Check to see if we should stop or start observing the refresh driver
+   */
+  void CheckNeedsRefresh();
+
 private:
   void BuildAnimations(nsStyleContext* aStyleContext,
                        InfallibleTArray<ElementAnimation>& aAnimations);
@@ -288,6 +316,8 @@ private:
   nsDataHashtable<nsStringHashKey, nsCSSKeyframesRule*> mKeyframesRules;
 
   EventArray mPendingEvents;
+
+  bool mObservingRefreshDriver;
 };
 
 #endif /* !defined(nsAnimationManager_h_) */

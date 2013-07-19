@@ -184,11 +184,11 @@ TiledContentHost::RenderTile(const TiledTexture& aTile,
                              const nsIntPoint& aTextureOffset,
                              const nsIntSize& aTextureBounds)
 {
-  MOZ_ASSERT(aTile.mTextureHost, "Trying to render a placeholder tile?");
+  MOZ_ASSERT(aTile.mDeprecatedTextureHost, "Trying to render a placeholder tile?");
 
   RefPtr<TexturedEffect> effect =
-    CreateTexturedEffect(aTile.mTextureHost, aFilter);
-  if (aTile.mTextureHost->Lock()) {
+    CreateTexturedEffect(aTile.mDeprecatedTextureHost, aFilter);
+  if (aTile.mDeprecatedTextureHost->Lock()) {
     aEffectChain.mPrimaryEffect = effect;
   } else {
     return;
@@ -205,9 +205,11 @@ TiledContentHost::RenderTile(const TiledTexture& aTile,
                                   textureRect.width / aTextureBounds.width,
                                   textureRect.height / aTextureBounds.height);
     mCompositor->DrawQuad(graphicsRect, aClipRect, aEffectChain, aOpacity, aTransform, aOffset);
+    mCompositor->DrawDiagnostics(gfx::Color(0.0,0.5,0.0,1.0),
+                                 graphicsRect, aClipRect, aTransform, aOffset);
   }
 
-  aTile.mTextureHost->Unlock();
+  aTile.mDeprecatedTextureHost->Unlock();
 }
 
 void
@@ -222,6 +224,10 @@ TiledContentHost::RenderLayerBuffer(TiledLayerBufferComposite& aLayerBuffer,
                                     nsIntRect aVisibleRect,
                                     gfx::Matrix4x4 aTransform)
 {
+  if (!mCompositor) {
+    NS_WARNING("Can't render tiled content host - no compositor");
+    return;
+  }
   float resolution = aLayerBuffer.GetResolution();
   gfxSize layerScale(1, 1);
   // We assume that the current frame resolution is the one used in our primary
@@ -288,16 +294,16 @@ void
 TiledTexture::Validate(gfxReusableSurfaceWrapper* aReusableSurface, Compositor* aCompositor, uint16_t aSize)
 {
   TextureFlags flags = 0;
-  if (!mTextureHost) {
+  if (!mDeprecatedTextureHost) {
     // convert placeholder tile to a real tile
-    mTextureHost = TextureHost::CreateTextureHost(SurfaceDescriptor::Tnull_t,
+    mDeprecatedTextureHost = DeprecatedTextureHost::CreateDeprecatedTextureHost(SurfaceDescriptor::Tnull_t,
                                                   TEXTURE_HOST_TILED,
                                                   flags);
-    mTextureHost->SetCompositor(aCompositor);
+    mDeprecatedTextureHost->SetCompositor(aCompositor);
     flags |= NewTile;
   }
 
-  mTextureHost->Update(aReusableSurface, flags, gfx::IntSize(aSize, aSize));
+  mDeprecatedTextureHost->Update(aReusableSurface, flags, gfx::IntSize(aSize, aSize));
 }
 
 #ifdef MOZ_LAYERS_HAVE_LOG
@@ -310,6 +316,30 @@ TiledContentHost::PrintInfo(nsACString& aTo, const char* aPrefix)
 }
 #endif
 
+void
+TiledContentHost::Dump(FILE* aFile,
+                       const char* aPrefix,
+                       bool aDumpHtml)
+{
+  if (!aFile) {
+    aFile = stderr;
+  }
+
+  TiledLayerBufferComposite::Iterator it = mVideoMemoryTiledBuffer.TilesBegin();
+  TiledLayerBufferComposite::Iterator stop = mVideoMemoryTiledBuffer.TilesEnd();
+  if (aDumpHtml) {
+    fprintf(aFile, "<ul>");
+  }
+  for (;it != stop; ++it) {
+    fprintf(aFile, "%s", aPrefix);
+    fprintf(aFile, aDumpHtml ? "<li> <a href=" : "Tile ");
+    DumpDeprecatedTextureHost(aFile, it->mDeprecatedTextureHost);
+    fprintf(aFile, aDumpHtml ? " >Tile</a></li>" : " ");
+  }
+    if (aDumpHtml) {
+    fprintf(aFile, "</ul>");
+  }
+}
 
 } // namespace
 } // namespace

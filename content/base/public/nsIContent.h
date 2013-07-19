@@ -5,6 +5,7 @@
 #ifndef nsIContent_h___
 #define nsIContent_h___
 
+#include "mozilla/Attributes.h"
 #include "nsCaseTreatment.h" // for enum, cannot be forward-declared
 #include "nsIDocument.h"
 
@@ -32,8 +33,8 @@ enum nsLinkState {
 
 // IID for the nsIContent interface
 #define NS_ICONTENT_IID \
-{ 0x8a8b4b1d, 0x72d8, 0x428e, \
- { 0x95, 0x75, 0xf9, 0x18, 0xba, 0xf6, 0x9e, 0xa1 } }
+{ 0Xf22c131c, 0Xc554, 0X4d06, \
+  { 0X81, 0Xac, 0X86, 0X64, 0X2f, 0X05, 0Xcc, 0X81 } }
 
 /**
  * A node of content in a document's content model. This interface
@@ -302,6 +303,12 @@ public:
   inline bool IsMathML(nsIAtom* aTag) const
   {
     return mNodeInfo->Equals(aTag, kNameSpaceID_MathML);
+  }
+
+  inline bool IsActiveChildrenElement() const
+  {
+    return mNodeInfo->Equals(nsGkAtoms::children, kNameSpaceID_XBL) &&
+           GetBindingParent();
   }
 
   /**
@@ -610,7 +617,8 @@ public:
 
   /**
    * Returns the content node that is the parent of this node in the flattened
-   * tree.
+   * tree. For nodes that are not filtered into an insertion point, this
+   * simply returns their DOM parent in the original DOM tree.
    *
    * @return the flattened tree parent
    */
@@ -630,17 +638,6 @@ public:
    * XXXjwatt: IMO IsInteractiveLink would be a better name.
    */
   virtual bool IsLink(nsIURI** aURI) const = 0;
-
-  /**
-   * Get the cached state of the link.  If the state is unknown, 
-   * return eLinkState_Unknown.
-   *
-   * @return The cached link state of the link.
-   */
-  virtual nsLinkState GetLinkState() const
-  {
-    return eLinkState_NotLink;
-  }
 
   /**
     * Get a pointer to the full href URI (fully resolved and canonicalized,
@@ -846,9 +843,9 @@ public:
   }
 
   // Overloaded from nsINode
-  virtual already_AddRefed<nsIURI> GetBaseURI() const;
+  virtual already_AddRefed<nsIURI> GetBaseURI() const MOZ_OVERRIDE;
 
-  virtual nsresult PreHandleEvent(nsEventChainPreVisitor& aVisitor);
+  virtual nsresult PreHandleEvent(nsEventChainPreVisitor& aVisitor) MOZ_OVERRIDE;
 
   virtual bool IsPurple() = 0;
   virtual void RemovePurple() = 0;

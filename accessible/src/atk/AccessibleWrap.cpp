@@ -680,8 +680,7 @@ getRoleCB(AtkObject *aAtkObj)
   switch (accWrap->Role()) {
 #include "RoleMap.h"
     default:
-      MOZ_NOT_REACHED("Unknown role.");
-      aAtkObj->role = ATK_ROLE_UNKNOWN;
+      MOZ_CRASH("Unknown role.");
   };
 
 #undef ROLE
@@ -951,14 +950,13 @@ AccessibleWrap::HandleAccEvent(AccEvent* aEvent)
   nsresult rv = Accessible::HandleAccEvent(aEvent);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  return FirePlatformEvent(aEvent);
-}
-
-nsresult
-AccessibleWrap::FirePlatformEvent(AccEvent* aEvent)
-{
     Accessible* accessible = aEvent->GetAccessible();
     NS_ENSURE_TRUE(accessible, NS_ERROR_FAILURE);
+
+    // The accessible can become defunct if we have an xpcom event listener
+    // which decides it would be fun to change the DOM and flush layout.
+    if (accessible->IsDefunct())
+        return NS_OK;
 
     uint32_t type = aEvent->GetEventType();
 

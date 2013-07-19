@@ -11,10 +11,7 @@ include $(DEPTH)/config/autoconf.mk
 
 LIBXUL_LIBRARY = 1
 LIBRARY_NAME = exception_handler_s
-
-ifeq ($(OS_ARCH),Darwin)
-CMMSRCS = mac_utils.mm
-endif
+MSVC_ENABLE_PGO := 1
 
 ifeq ($(OS_ARCH),Linux)
 # There's no define for XP_LINUX normally.
@@ -42,27 +39,9 @@ endif
 LOCAL_INCLUDES += -I$(srcdir)/google-breakpad/src
 DEFINES += -DUNICODE -D_UNICODE
 
-CPPSRCS = \
-	nsExceptionHandler.cpp \
-	$(NULL)
-
-ifdef MOZ_CRASHREPORTER_INJECTOR
-CPPSRCS += \
-  LoadLibraryRemote.cpp \
-  InjectCrashReporter.cpp \
-  $(NULL)
-endif
-
-FORCE_STATIC_LIB = 1
-
-EXTRA_JS_MODULES = \
-  CrashSubmit.jsm \
-  KeyValueParser.jsm \
-  $(NULL)
-
 include $(topsrcdir)/config/config.mk
-include $(topsrcdir)/ipc/chromium/chromium-config.mk
 include $(topsrcdir)/config/rules.mk
+include $(topsrcdir)/ipc/chromium/chromium-config.mk
 
 check::
 	$(PYTHON) $(srcdir)/tools/unit-symbolstore.py

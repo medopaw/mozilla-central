@@ -14,6 +14,13 @@
 #include "ia2AccessibleHyperlink.h"
 #include "ia2AccessibleValue.h"
 
+#ifdef __GNUC__
+// Inheriting from both XPCOM and MSCOM interfaces causes a lot of warnings
+// about virtual functions being hidden by each other. This is done by
+// design, so silence the warning.
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+#endif
+
 namespace mozilla {
 namespace a11y {
 
@@ -28,8 +35,8 @@ public: // construction, destruction
     Accessible(aContent, aDoc) { }
   virtual ~AccessibleWrap() { }
 
-    // nsISupports
-    NS_DECL_ISUPPORTS_INHERITED
+  // nsISupports
+  NS_DECL_ISUPPORTS_INHERITED
 
   public: // IUnknown methods - see iunknown.h for documentation
     STDMETHODIMP QueryInterface(REFIID, void**);
@@ -236,7 +243,6 @@ public: // construction, destruction
   static IDispatch *NativeAccessible(nsIAccessible *aXPAccessible);
 
 protected:
-  virtual nsresult FirePlatformEvent(AccEvent* aEvent);
 
   /**
    * Creates ITypeInfo for LIBID_Accessibility if it's needed and returns it.
@@ -262,7 +268,8 @@ protected:
     NAVRELATION_PARENT_WINDOW_OF = 0x100c,
     NAVRELATION_DEFAULT_BUTTON = 0x100d,
     NAVRELATION_DESCRIBED_BY = 0x100e,
-    NAVRELATION_DESCRIPTION_FOR = 0x100f
+    NAVRELATION_DESCRIPTION_FOR = 0x100f,
+    NAVRELATION_NODE_PARENT_OF = 0x1010
   };
 };
 

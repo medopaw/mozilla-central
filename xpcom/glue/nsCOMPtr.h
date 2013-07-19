@@ -22,6 +22,7 @@
 #include "mozilla/Attributes.h"
 #include "mozilla/TypeTraits.h"
 #include "mozilla/Assertions.h"
+#include "mozilla/NullPtr.h"
 
   // Wrapping includes can speed up compiles (see "Large Scale C++ Software Design")
 #ifndef nsDebug_h___
@@ -145,6 +146,17 @@ struct already_AddRefed
       |nsCOMPtr_helper|.
     */
   {
+#ifdef MOZ_HAVE_CXX11_NULLPTR
+    /* We use decltype(nullptr) instead of std::nullptr_t because the standard
+     * library might be old, and to save including <cstddef>.  All compilers
+     * that support nullptr seem to support decltype. */
+    already_AddRefed(decltype(nullptr) aNullPtr)
+      : mRawPtr(nullptr)
+    {
+    }
+
+    explicit
+#endif
     already_AddRefed( T* aRawPtr )
         : mRawPtr(aRawPtr)
       {
@@ -204,26 +216,6 @@ struct already_AddRefed
 
     T* mRawPtr;
   };
-
-template <class T>
-inline
-const already_AddRefed<T>
-getter_AddRefs( T* aRawPtr )
-    /*
-      ...makes typing easier, because it deduces the template type, e.g., 
-      you write |dont_AddRef(fooP)| instead of |already_AddRefed<IFoo>(fooP)|.
-    */
-  {
-    return already_AddRefed<T>(aRawPtr);
-  }
-
-template <class T>
-inline
-const already_AddRefed<T>
-getter_AddRefs( const already_AddRefed<T> aAlreadyAddRefedPtr )
-  {
-    return aAlreadyAddRefedPtr;
-  }
 
 template <class T>
 inline

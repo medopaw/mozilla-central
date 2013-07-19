@@ -87,7 +87,7 @@ IonRuntime::generateEnterJIT(JSContext *cx, EnterJitType type)
     JS_ASSERT(OsrFrameReg == reg_frame);
 
     MacroAssembler masm(cx);
-    AutoFlushCache afc("GenerateEnterJIT", cx->runtime->ionRuntime());
+    AutoFlushCache afc("GenerateEnterJIT", cx->runtime()->ionRuntime());
     Assembler *aasm = &masm;
 
     // Save non-volatile registers. These must be saved by the trampoline,
@@ -411,12 +411,12 @@ IonRuntime::generateArgumentsRectifier(JSContext *cx, ExecutionMode mode, void *
 
     // Construct IonJSFrameLayout.
     masm.ma_push(r0); // actual arguments.
-    masm.ma_push(r1); // calleeToken.
+    masm.pushCalleeToken(r1, mode);
     masm.ma_push(r6); // frame descriptor.
 
     // Call the target function.
     // Note that this code assumes the function is JITted.
-    masm.ma_ldr(DTRAddr(r1, DtrOffImm(offsetof(JSFunction, u.i.script_))), r3);
+    masm.ma_ldr(DTRAddr(r1, DtrOffImm(JSFunction::offsetOfNativeOrScript())), r3);
     masm.loadBaselineOrIonRaw(r3, r3, mode, NULL);
     masm.ma_callIonHalfPush(r3);
 
@@ -629,11 +629,12 @@ IonRuntime::generateVMWrapper(JSContext *cx, const VMFunction &f)
       case Type_Handle:
         outReg = r4;
         regs.take(outReg);
-        masm.Push(UndefinedValue());
+        masm.PushEmptyRooted(f.outParamRootType);
         masm.ma_mov(sp, outReg);
         break;
 
       case Type_Int32:
+      case Type_Pointer:
         outReg = r4;
         regs.take(outReg);
         masm.reserveStack(sizeof(int32_t));
@@ -659,11 +660,11 @@ IonRuntime::generateVMWrapper(JSContext *cx, const VMFunction &f)
             argDisp += sizeof(void *);
             break;
           case VMFunction::DoubleByValue:
-            JS_NOT_REACHED("VMCalls with double-size value arguments is not supported.");
-            masm.passABIArg(MoveOperand(argsBase, argDisp));
-            argDisp += sizeof(void *);
-            masm.passABIArg(MoveOperand(argsBase, argDisp));
-            argDisp += sizeof(void *);
+            // Values should be passed by reference, not by value, so we
+            // assert that the argument is a double-precision float.
+            JS_ASSERT(f.argPassedInFloatReg(explicitArg));
+            masm.passABIArg(MoveOperand(argsBase, argDisp, MoveOperand::FLOAT));
+            argDisp += sizeof(double);
             break;
           case VMFunction::WordByRef:
             masm.passABIArg(MoveOperand(argsBase, argDisp, MoveOperand::EFFECTIVE));
@@ -694,19 +695,22 @@ IonRuntime::generateVMWrapper(JSContext *cx, const VMFunction &f)
         masm.branch32(Assembler::NotEqual, r0, Imm32(TP_SUCCESS), &failure);
         break;
       default:
-        JS_NOT_REACHED("unknown failure kind");
-        break;
+        MOZ_ASSUME_UNREACHABLE("unknown failure kind");
     }
 
     // Load the outparam and free any allocated stack.
     switch (f.outParam) {
       case Type_Handle:
+        masm.popRooted(f.outParamRootType, ReturnReg, JSReturnOperand);
+        break;
+
       case Type_Value:
         masm.loadValue(Address(sp, 0), JSReturnOperand);
         masm.freeStack(sizeof(Value));
         break;
 
       case Type_Int32:
+      case Type_Pointer:
         masm.load32(Address(sp, 0), ReturnReg);
         masm.freeStack(sizeof(int32_t));
         break;
@@ -741,12 +745,18 @@ IonRuntime::generatePreBarrier(JSContext *cx, MIRType type)
 {
     MacroAssembler masm(cx);
 
-    RegisterSet save = RegisterSet(GeneralRegisterSet(Registers::VolatileMask),
-                                   FloatRegisterSet(FloatRegisters::VolatileMask));
+    RegisterSet save;
+    if (cx->runtime()->jitSupportsFloatingPoint) {
+        save = RegisterSet(GeneralRegisterSet(Registers::VolatileMask),
+                           FloatRegisterSet(FloatRegisters::VolatileMask));
+    } else {
+        save = RegisterSet(GeneralRegisterSet(Registers::VolatileMask),
+                           FloatRegisterSet());
+    }
     masm.PushRegsInMask(save);
 
     JS_ASSERT(PreBarrierReg == r1);
-    masm.movePtr(ImmWord(cx->runtime), r0);
+    masm.movePtr(ImmWord(cx->runtime()), r0);
 
     masm.setupUnalignedABICall(2, r2);
     masm.passABIArg(r0);
@@ -786,7 +796,7 @@ IonRuntime::generateDebugTrapHandler(JSContext *cx)
     masm.movePtr(ImmWord((void *)NULL), BaselineStubReg);
     EmitEnterStubFrame(masm, scratch2);
 
-    IonCompartment *ion = cx->compartment->ionCompartment();
+    IonCompartment *ion = cx->compartment()->ionCompartment();
     IonCode *code = ion->getVMWrapper(HandleDebugTrapInfo);
     if (!code)
         return NULL;
@@ -810,6 +820,17 @@ IonRuntime::generateDebugTrapHandler(JSContext *cx)
     masm.mov(r11, sp);
     masm.pop(r11);
     masm.ret();
+
+    Linker linker(masm);
+    return linker.newCode(cx, JSC::OTHER_CODE);
+}
+
+IonCode *
+IonRuntime::generateExceptionTailStub(JSContext *cx)
+{
+    MacroAssembler masm;
+
+    masm.handleFailureWithHandlerTail();
 
     Linker linker(masm);
     return linker.newCode(cx, JSC::OTHER_CODE);

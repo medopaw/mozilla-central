@@ -66,8 +66,6 @@ nsVolumeService::Shutdown()
     return;
   }
   if (XRE_GetProcessType() != GeckoProcessType_Default) {
-    nsCOMPtr<nsIObserverService> obs = GetObserverService();
-    obs->RemoveObserver(sSingleton.get(), NS_VOLUME_STATE_CHANGED);
     sSingleton = nullptr;
     return;
   }
@@ -91,10 +89,6 @@ nsVolumeService::nsVolumeService()
   sSingleton = this;
 
   if (XRE_GetProcessType() != GeckoProcessType_Default) {
-    // For child processes, we keep a cache of the volume state.
-    nsCOMPtr<nsIObserverService> obs = GetObserverService();
-    obs->AddObserver(this, NS_VOLUME_STATE_CHANGED, false /*weak*/);
-
     // Request the initial state for all volumes.
     ContentChild::GetSingleton()->SendBroadcastVolume(NS_LITERAL_STRING(""));
     return;
@@ -193,12 +187,24 @@ NS_IMETHODIMP nsVolumeService::GetVolumeByName(const nsAString& aVolName, nsIVol
 NS_IMETHODIMP
 nsVolumeService::GetVolumeByPath(const nsAString& aPath, nsIVolume **aResult)
 {
-  nsCString utf8Path = NS_ConvertUTF16toUTF8(aPath);
+  NS_ConvertUTF16toUTF8 utf8Path(aPath);
   char realPathBuf[PATH_MAX];
 
-  if (!realpath(utf8Path.get(), realPathBuf)) {
-    ERR("GetVolumeByPath: realpath on '%s' failed: %d", utf8Path.get(), errno);
-    return NSRESULT_FOR_ERRNO();
+  while (realpath(utf8Path.get(), realPathBuf) < 0) {
+    if (errno != ENOENT) {
+      ERR("GetVolumeByPath: realpath on '%s' failed: %d", utf8Path.get(), errno);
+      return NSRESULT_FOR_ERRNO();
+    }
+    // The pathname we were passed doesn't exist, so we try stripping off trailing
+    // components until we get a successful call to realpath, or until we run out
+    // of components (if we finally get to /something then we also stop).
+    int32_t slashIndex = utf8Path.RFindChar('/');
+    if ((slashIndex == kNotFound) || (slashIndex == 0)) {
+      errno = ENOENT;
+      ERR("GetVolumeByPath: realpath on '%s' failed.", utf8Path.get());
+      return NSRESULT_FOR_ERRNO();
+    }
+    utf8Path.Assign(Substring(utf8Path, 0, slashIndex));
   }
 
   // The volume mount point is always a directory. Something like /mnt/sdcard
@@ -217,7 +223,7 @@ nsVolumeService::GetVolumeByPath(const nsAString& aPath, nsIVolume **aResult)
   nsVolume::Array::index_type volIndex;
   for (volIndex = 0; volIndex < numVolumes; volIndex++) {
     nsRefPtr<nsVolume> vol = mVolumeArray[volIndex];
-    nsAutoCString volMountPointSlash = NS_ConvertUTF16toUTF8(vol->MountPoint());
+    NS_ConvertUTF16toUTF8 volMountPointSlash(vol->MountPoint());
     volMountPointSlash.Append(NS_LITERAL_CSTRING("/"));
     nsDependentCSubstring testStr(realPathBuf, volMountPointSlash.Length());
     if (volMountPointSlash.Equals(testStr)) {
@@ -320,7 +326,7 @@ nsVolumeService::FindVolumeByName(const nsAString& aName)
 
 //static
 already_AddRefed<nsVolume>
-nsVolumeService::CreateOrFindVolumeByName(const nsAString& aName)
+nsVolumeService::CreateOrFindVolumeByName(const nsAString& aName, bool aIsFake /*= false*/)
 {
   MonitorAutoLock autoLock(mArrayMonitor);
 
@@ -331,23 +337,9 @@ nsVolumeService::CreateOrFindVolumeByName(const nsAString& aName)
   }
   // Volume not found - add a new one
   vol = new nsVolume(aName);
+  vol->SetIsFake(aIsFake);
   mVolumeArray.AppendElement(vol);
   return vol.forget();
-}
-
-NS_IMETHODIMP
-nsVolumeService::Observe(nsISupports* aSubject, const char* aTopic, const PRUnichar* aData)
-{
-  if (strcmp(aTopic, NS_VOLUME_STATE_CHANGED) != 0) {
-    return NS_OK;
-  }
-  MOZ_ASSERT(XRE_GetProcessType() != GeckoProcessType_Default);
-  nsCOMPtr<nsIVolume> vol = do_QueryInterface(aSubject);
-  if (!vol) {
-    return NS_OK;
-  }
-  UpdateVolume(vol);
-  return NS_OK;
 }
 
 void
@@ -357,22 +349,61 @@ nsVolumeService::UpdateVolume(nsIVolume* aVolume)
 
   nsString volName;
   aVolume->GetName(volName);
-  nsRefPtr<nsVolume> vol = CreateOrFindVolumeByName(volName);
+  bool aIsFake;
+  aVolume->GetIsFake(&aIsFake);
+  nsRefPtr<nsVolume> vol = CreateOrFindVolumeByName(volName, aIsFake);
   if (vol->Equals(aVolume)) {
     // Nothing has really changed. Don't bother telling anybody.
     return;
   }
-  vol->Set(aVolume);
-  if (XRE_GetProcessType() != GeckoProcessType_Default) {
-    // Only the parent broadcasts the state changes
+
+  if (!vol->IsFake() && aIsFake) {
+    // Prevent an incoming fake volume from overriding an existing real volume.
     return;
   }
+
+  vol->Set(aVolume);
   nsCOMPtr<nsIObserverService> obs = GetObserverService();
   if (!obs) {
     return;
   }
   NS_ConvertUTF8toUTF16 stateStr(vol->StateStr());
   obs->NotifyObservers(vol, NS_VOLUME_STATE_CHANGED, stateStr.get());
+}
+
+NS_IMETHODIMP
+nsVolumeService::CreateFakeVolume(const nsAString& name, const nsAString& path)
+{
+  if (XRE_GetProcessType() == GeckoProcessType_Default) {
+    nsRefPtr<nsVolume> vol = new nsVolume(name, path, nsIVolume::STATE_INIT, -1);
+    vol->SetIsFake(true);
+    UpdateVolume(vol.get());
+    return NS_OK;
+  }
+
+  ContentChild::GetSingleton()->SendCreateFakeVolume(nsString(name), nsString(path));
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsVolumeService::SetFakeVolumeState(const nsAString& name, int32_t state)
+{
+  if (XRE_GetProcessType() == GeckoProcessType_Default) {
+    nsRefPtr<nsVolume> vol;
+    {
+      MonitorAutoLock autoLock(mArrayMonitor);
+      vol = FindVolumeByName(name);
+    }
+    if (!vol || !vol->IsFake()) {
+      return NS_ERROR_NOT_AVAILABLE;
+    }
+    vol->SetState(state);
+    UpdateVolume(vol.get());
+    return NS_OK;
+  }
+
+  ContentChild::GetSingleton()->SendSetFakeVolumeState(nsString(name), state);
+  return NS_OK;
 }
 
 /***************************************************************************

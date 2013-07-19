@@ -22,8 +22,8 @@
 namespace mozilla {
 namespace dom {
 
-class PluginDocument : public MediaDocument
-                     , public nsIPluginDocument
+class PluginDocument MOZ_FINAL : public MediaDocument
+                               , public nsIPluginDocument
 {
 public:
   PluginDocument();
@@ -109,13 +109,8 @@ PluginDocument::~PluginDocument()
 {}
 
 
-NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(PluginDocument, MediaDocument)
-  NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mPluginContent)
-NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
-
-NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN_INHERITED(PluginDocument, MediaDocument)
-  NS_IMPL_CYCLE_COLLECTION_UNLINK(mPluginContent)
-NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+NS_IMPL_CYCLE_COLLECTION_INHERITED_1(PluginDocument, MediaDocument,
+                                     mPluginContent)
 
 NS_IMPL_ADDREF_INHERITED(PluginDocument, MediaDocument)
 NS_IMPL_RELEASE_INHERITED(PluginDocument, MediaDocument)

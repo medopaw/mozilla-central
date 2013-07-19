@@ -4,8 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef jsion_lir_x86_shared_h__
-#define jsion_lir_x86_shared_h__
+#ifndef ion_shared_LIR_x86_shared_h
+#define ion_shared_LIR_x86_shared_h
 
 namespace js {
 namespace ion {
@@ -43,6 +43,35 @@ class LDivI : public LBinaryMath<1>
     }
 };
 
+// Signed division by a power-of-two constant.
+class LDivPowTwoI : public LBinaryMath<0>
+{
+    const int32_t shift_;
+
+  public:
+    LIR_HEADER(DivPowTwoI)
+
+    LDivPowTwoI(const LAllocation &lhs, const LAllocation &lhsCopy, int32_t shift)
+      : shift_(shift)
+    {
+        setOperand(0, lhs);
+        setOperand(1, lhsCopy);
+    }
+
+    const LAllocation *numerator() {
+        return getOperand(0);
+    }
+    const LAllocation *numeratorCopy() {
+        return getOperand(1);
+    }
+    int32_t shift() const {
+        return shift_;
+    }
+    MDiv *mir() const {
+        return mir_->toDiv();
+    }
+};
+
 class LModI : public LBinaryMath<1>
 {
   public:
@@ -68,12 +97,12 @@ class LModI : public LBinaryMath<1>
 
 // This class performs a simple x86 'div', yielding either a quotient or remainder depending on
 // whether this instruction is defined to output eax (quotient) or edx (remainder).
-class LAsmJSDivOrMod : public LBinaryMath<1>
+class LUDivOrMod : public LBinaryMath<1>
 {
   public:
-    LIR_HEADER(AsmJSDivOrMod);
+    LIR_HEADER(UDivOrMod);
 
-    LAsmJSDivOrMod(const LAllocation &lhs, const LAllocation &rhs, const LDefinition &temp) {
+    LUDivOrMod(const LAllocation &lhs, const LAllocation &rhs, const LDefinition &temp) {
         setOperand(0, lhs);
         setOperand(1, rhs);
         setTemp(0, temp);
@@ -248,25 +277,7 @@ class LMulI : public LBinaryMath<0, 1>
     }
 };
 
-// Constant double.
-class LDouble : public LInstructionHelper<1, 0, 0>
-{
-    double d_;
-
-  public:
-    LIR_HEADER(Double)
-
-    LDouble(double d)
-      : d_(d)
-    { }
-
-    double getDouble() const {
-        return d_;
-    }
-};
-
 } // namespace ion
 } // namespace js
 
-#endif // jsion_lir_x86_shared_h__
-
+#endif /* ion_shared_LIR_x86_shared_h */

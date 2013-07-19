@@ -28,6 +28,7 @@
 #include "nsString.h"
 #include "nsThreadUtils.h"
 #include "nsXULAppAPI.h"
+#include "OpenFileFinder.h"
 #include "Volume.h"
 #include "VolumeManager.h"
 
@@ -71,8 +72,9 @@ using namespace mozilla::hal;
 #define USE_DEBUG 0
 
 #undef LOG
-#define LOG(args...)  __android_log_print(ANDROID_LOG_INFO, "AutoMounter" , ## args)
-#define ERR(args...)  __android_log_print(ANDROID_LOG_ERROR, "AutoMounter" , ## args)
+#define LOG(args...)  __android_log_print(ANDROID_LOG_INFO,  "AutoMounter", ## args)
+#define LOGW(args...) __android_log_print(ANDROID_LOG_WARN,  "AutoMounter", ## args)
+#define ERR(args...)  __android_log_print(ANDROID_LOG_ERROR, "AutoMounter", ## args)
 
 #if USE_DEBUG
 #define DBG(args...)  __android_log_print(ANDROID_LOG_DEBUG, "AutoMounter" , ## args)
@@ -84,10 +86,6 @@ namespace mozilla {
 namespace system {
 
 class AutoMounter;
-
-// sAutoVolumeName contains an array of the volume names that the AutoMounter will
-// try to automount. Any other volumes will be ignored.
-static const nsDependentCString sAutoVolumeName[] = { NS_LITERAL_CSTRING("sdcard") };
 
 /***************************************************************************/
 
@@ -174,11 +172,15 @@ public:
     VolumeManager::RegisterStateObserver(&mVolumeManagerStateObserver);
     Volume::RegisterObserver(&mVolumeEventObserver);
 
-    for (size_t i = 0; i < NS_ARRAY_LENGTH(sAutoVolumeName); i++) {
-      RefPtr<Volume> vol = VolumeManager::FindAddVolumeByName(sAutoVolumeName[i]);
+    VolumeManager::VolumeArray::size_type numVolumes = VolumeManager::NumVolumes();
+    VolumeManager::VolumeArray::index_type i;
+    for (i = 0; i < numVolumes; i++) {
+      RefPtr<Volume> vol = VolumeManager::GetVolume(i);
       if (vol) {
         vol->RegisterObserver(&mVolumeEventObserver);
-        mAutoVolume.AppendElement(vol);
+        // We need to pick up the intial value of the
+        // ums.volume.NAME.enabled setting.
+        AutoMounterSetting::CheckVolumeSettings(vol->Name());
       }
     }
 
@@ -188,10 +190,13 @@ public:
 
   ~AutoMounter()
   {
-    VolumeArray::index_type volIndex;
-    VolumeArray::size_type  numVolumes = mAutoVolume.Length();
+    VolumeManager::VolumeArray::size_type numVolumes = VolumeManager::NumVolumes();
+    VolumeManager::VolumeArray::index_type volIndex;
     for (volIndex = 0; volIndex < numVolumes; volIndex++) {
-      mAutoVolume[volIndex]->UnregisterObserver(&mVolumeEventObserver);
+      RefPtr<Volume> vol = VolumeManager::GetVolume(volIndex);
+      if (vol) {
+        vol->UnregisterObserver(&mVolumeEventObserver);
+      }
     }
     Volume::UnregisterObserver(&mVolumeEventObserver);
     VolumeManager::UnregisterStateObserver(&mVolumeManagerStateObserver);
@@ -240,13 +245,27 @@ public:
     }
   }
 
+  void SetSharingMode(const nsACString& aVolumeName, bool aAllowSharing)
+  {
+    RefPtr<Volume> vol = VolumeManager::FindVolumeByName(aVolumeName);
+    if (!vol) {
+      return;
+    }
+    if (vol->IsSharingEnabled() == aAllowSharing) {
+      return;
+    }
+    vol->SetSharingEnabled(aAllowSharing);
+    DBG("Calling UpdateState due to volume %s shareing set to %d",
+        vol->NameStr(), (int)aAllowSharing);
+    UpdateState();
+  }
+
 private:
 
   AutoVolumeEventObserver         mVolumeEventObserver;
   AutoVolumeManagerStateObserver  mVolumeManagerStateObserver;
   RefPtr<VolumeResponseCallback>  mResponseCallback;
   int32_t                         mMode;
-  VolumeArray                     mAutoVolume;
 };
 
 static StaticRefPtr<AutoMounter> sAutoMounter;
@@ -322,12 +341,6 @@ AutoMounter::UpdateState()
     return;
   }
 
-  if (mAutoVolume.Length() == 0) {
-    // No volumes of interest, nothing to do
-    LOG("UpdateState: No volumes found");
-    return;
-  }
-
   bool  umsAvail = false;
   bool  umsEnabled = false;
 
@@ -363,17 +376,18 @@ AutoMounter::UpdateState()
       umsAvail, umsEnabled, mMode, usbCablePluggedIn, tryToShare);
 
   VolumeArray::index_type volIndex;
-  VolumeArray::size_type  numVolumes = mAutoVolume.Length();
+  VolumeArray::size_type  numVolumes = VolumeManager::NumVolumes();
   for (volIndex = 0; volIndex < numVolumes; volIndex++) {
-    RefPtr<Volume>  vol = mAutoVolume[volIndex];
+    RefPtr<Volume>  vol = VolumeManager::GetVolume(volIndex);
     Volume::STATE   volState = vol->State();
 
     if (vol->State() == nsIVolume::STATE_MOUNTED) {
-      LOG("UpdateState: Volume %s is %s and %s @ %s gen %d locked %d",
+      LOG("UpdateState: Volume %s is %s and %s @ %s gen %d locked %d sharing %c",
           vol->NameStr(), vol->StateStr(),
           vol->MediaPresent() ? "inserted" : "missing",
           vol->MountPoint().get(), vol->MountGeneration(),
-          (int)vol->IsMountLocked());
+          (int)vol->IsMountLocked(),
+          vol->CanBeShared() ? (vol->IsSharingEnabled() ? 'y' : 'n') : 'x');
     } else {
       LOG("UpdateState: Volume %s is %s and %s", vol->NameStr(), vol->StateStr(),
           vol->MediaPresent() ? "inserted" : "missing");
@@ -383,26 +397,57 @@ AutoMounter::UpdateState()
       continue;
     }
 
-    if (tryToShare) {
+    if (tryToShare && vol->IsSharingEnabled()) {
       // We're going to try to unmount and share the volumes
       switch (volState) {
         case nsIVolume::STATE_MOUNTED: {
           if (vol->IsMountLocked()) {
             // The volume is currently locked, so leave it in the mounted
             // state.
-            DBG("UpdateState: Mounted volume %s is locked, leaving",
-                vol->NameStr());
+            LOGW("UpdateState: Mounted volume %s is locked, not sharing",
+                 vol->NameStr());
             break;
           }
+
+          // Check to see if there are any open files on the volume and
+          // don't initiate the unmount while there are open files.
+          OpenFileFinder::Info fileInfo;
+          OpenFileFinder fileFinder(vol->MountPoint());
+          if (fileFinder.First(&fileInfo)) {
+            LOGW("The following files are open under '%s'",
+                 vol->MountPoint().get());
+            do {
+              LOGW("  PID: %d file: '%s' app: '%s' comm: '%s' exe: '%s'\n",
+                   fileInfo.mPid,
+                   fileInfo.mFileName.get(),
+                   fileInfo.mAppName.get(),
+                   fileInfo.mComm.get(),
+                   fileInfo.mExe.get());
+            } while (fileFinder.Next(&fileInfo));
+            LOGW("UpdateState: Mounted volume %s has open files, not sharing",
+                 vol->NameStr());
+
+            // Check again in 5 seconds to see if the files are closed. Since
+            // we're trying to share the volume, this implies that we're
+            // plugged into the PC via USB and this in turn implies that the
+            // battery is charging, so we don't need to be too concerned about
+            // wasting battery here.
+            MessageLoopForIO::current()->
+              PostDelayedTask(FROM_HERE,
+                              NewRunnableMethod(this, &AutoMounter::UpdateState),
+                              5000);
+            break;
+          }
+
           // Volume is mounted, we need to unmount before
           // we can share.
-          DBG("UpdateState: Unmounting %s", vol->NameStr());
+          LOG("UpdateState: Unmounting %s", vol->NameStr());
           vol->StartUnmount(mResponseCallback);
           return; // UpdateState will be called again when the Unmount command completes
         }
         case nsIVolume::STATE_IDLE: {
           // Volume is unmounted. We can go ahead and share.
-          DBG("UpdateState: Sharing %s", vol->NameStr());
+          LOG("UpdateState: Sharing %s", vol->NameStr());
           vol->StartShare(mResponseCallback);
           return; // UpdateState will be called again when the Share command completes
         }
@@ -416,14 +461,14 @@ AutoMounter::UpdateState()
       switch (volState) {
         case nsIVolume::STATE_SHARED: {
           // Volume is shared. We can go ahead and unshare.
-          DBG("UpdateState: Unsharing %s", vol->NameStr());
+          LOG("UpdateState: Unsharing %s", vol->NameStr());
           vol->StartUnshare(mResponseCallback);
           return; // UpdateState will be called again when the Unshare command completes
         }
         case nsIVolume::STATE_IDLE: {
           // Volume is unmounted, try to mount.
 
-          DBG("UpdateState: Mounting %s", vol->NameStr());
+          LOG("UpdateState: Mounting %s", vol->NameStr());
           vol->StartMount(mResponseCallback);
           return; // UpdateState will be called again when Mount command completes
         }
@@ -463,6 +508,15 @@ SetAutoMounterModeIOThread(const int32_t& aMode)
   MOZ_ASSERT(sAutoMounter);
 
   sAutoMounter->SetMode(aMode);
+}
+
+static void
+SetAutoMounterSharingModeIOThread(const nsCString& aVolumeName, const bool& aAllowSharing)
+{
+  MOZ_ASSERT(MessageLoop::current() == XRE_GetIOMessageLoop());
+  MOZ_ASSERT(sAutoMounter);
+
+  sAutoMounter->SetSharingMode(aVolumeName, aAllowSharing);
 }
 
 static void
@@ -535,6 +589,15 @@ SetAutoMounterMode(int32_t aMode)
   XRE_GetIOMessageLoop()->PostTask(
       FROM_HERE,
       NewRunnableFunction(SetAutoMounterModeIOThread, aMode));
+}
+
+void
+SetAutoMounterSharingMode(const nsCString& aVolumeName, bool aAllowSharing)
+{
+  XRE_GetIOMessageLoop()->PostTask(
+      FROM_HERE,
+      NewRunnableFunction(SetAutoMounterSharingModeIOThread, 
+                          aVolumeName, aAllowSharing));
 }
 
 void

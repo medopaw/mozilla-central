@@ -10,6 +10,7 @@ from mozpack.packager.formats import (
 from mozpack.packager import (
     preprocess_manifest,
     preprocess,
+    Component,
     SimpleManifestSink,
 )
 from mozpack.files import (
@@ -315,7 +316,7 @@ def main():
         if args.manifest:
             preprocess_manifest(sink, args.manifest, defines)
         else:
-            sink.add('', 'bin/*')
+            sink.add(Component(''), 'bin/*')
         sink.close(args.manifest is not None)
 
         if args.removals:
@@ -351,7 +352,8 @@ def main():
     # Fill startup cache
     if isinstance(formatter, OmniJarFormatter) and launcher.can_launch():
         if buildconfig.substs['LIBXUL_SDK']:
-            gre_path = buildconfig.substs['LIBXUL_DIST']
+            gre_path = mozpack.path.join(buildconfig.substs['LIBXUL_DIST'],
+                                         'bin')
         else:
             gre_path = None
         for base in sorted([[p for p in [mozpack.path.join('bin', b), b]

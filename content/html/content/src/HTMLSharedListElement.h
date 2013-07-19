@@ -5,6 +5,7 @@
 
 #ifndef mozilla_dom_HTMLSharedListElement_h
 #define mozilla_dom_HTMLSharedListElement_h
+#include "mozilla/Attributes.h"
 #include "mozilla/Util.h"
 
 #include "nsIDOMHTMLOListElement.h"
@@ -15,16 +16,15 @@
 namespace mozilla {
 namespace dom {
 
-class HTMLSharedListElement : public nsGenericHTMLElement,
-                              public nsIDOMHTMLOListElement,
-                              public nsIDOMHTMLDListElement,
-                              public nsIDOMHTMLUListElement
+class HTMLSharedListElement MOZ_FINAL : public nsGenericHTMLElement,
+                                        public nsIDOMHTMLOListElement,
+                                        public nsIDOMHTMLDListElement,
+                                        public nsIDOMHTMLUListElement
 {
 public:
   HTMLSharedListElement(already_AddRefed<nsINodeInfo> aNodeInfo)
     : nsGenericHTMLElement(aNodeInfo)
   {
-    SetIsDOMBinding();
   }
   virtual ~HTMLSharedListElement();
 
@@ -52,12 +52,12 @@ public:
   virtual bool ParseAttribute(int32_t aNamespaceID,
                                 nsIAtom* aAttribute,
                                 const nsAString& aValue,
-                                nsAttrValue& aResult);
-  virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
-  NS_IMETHOD_(bool) IsAttributeMapped(const nsIAtom* aAttribute) const;
+                                nsAttrValue& aResult) MOZ_OVERRIDE;
+  virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const MOZ_OVERRIDE;
+  NS_IMETHOD_(bool) IsAttributeMapped(const nsIAtom* aAttribute) const MOZ_OVERRIDE;
   virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
 
-  virtual nsIDOMNode* AsDOMNode()
+  virtual nsIDOMNode* AsDOMNode() MOZ_OVERRIDE
   {
     return static_cast<nsIDOMHTMLOListElement*>(this);
   }

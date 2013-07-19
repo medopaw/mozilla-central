@@ -123,6 +123,7 @@ public:
                                         LayersBackend aBackendHint = mozilla::layers::LAYERS_NONE,
                                         LayerManagerPersistence aPersistence = LAYER_MANAGER_CURRENT,
                                         bool* aAllowRetaining = nullptr);
+  virtual mozilla::layers::LayersBackend GetPreferredCompositorBackend() { return mozilla::layers::LAYERS_D3D11; }
 
   // IME related interfaces
   NS_IMETHOD_(void) SetInputContext(const InputContext& aContext,
@@ -150,7 +151,7 @@ public:
 
 #ifdef ACCESSIBILITY
   mozilla::a11y::Accessible* DispatchAccessibleEvent(uint32_t aEventType);
-  mozilla::a11y::Accessible* GetRootAccessible();
+  mozilla::a11y::Accessible* GetAccessible();
 #endif // ACCESSIBILITY
 
   // needed for current nsIFilePicker
@@ -203,6 +204,5 @@ protected:
   nsCOMPtr<nsIdleService> mIdleService;
   HWND mWnd;
   WNDPROC mMetroWndProc;
-  nsIWidget::InputContext mInputContext;
   bool mTempBasicLayerInUse;
 };

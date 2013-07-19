@@ -93,9 +93,7 @@ NS_IMPL_FORWARD_EVENT_HANDLER(nsDOMFileReader, error, FileIOObject)
 void
 nsDOMFileReader::RootResultArrayBuffer()
 {
-  nsContentUtils::PreserveWrapper(
-    static_cast<EventTarget*>(
-      static_cast<nsDOMEventTargetHelper*>(this)), this);
+  NS_HOLD_JS_OBJECTS(this, nsDOMFileReader);
 }
 
 //nsDOMFileReader constructors/initializers
@@ -113,7 +111,8 @@ nsDOMFileReader::nsDOMFileReader()
 nsDOMFileReader::~nsDOMFileReader()
 {
   FreeFileData();
-
+  mResultArrayBuffer = nullptr;
+  NS_DROP_JS_OBJECTS(this, nsDOMFileReader);
   nsLayoutStatics::Release();
 }
 
@@ -133,9 +132,11 @@ nsDOMFileReader::Init()
   mPrincipal.swap(principal);
 
   // Instead of grabbing some random global from the context stack,
-  // let's use the default one (junk drawer) for now.
+  // let's use the default one (junk scope) for now.
   // We should move away from this Init...
-  BindToOwner(xpc::GetNativeForGlobal(xpc::GetJunkScope()));
+  nsCOMPtr<nsIGlobalObject> global = xpc::GetJunkScopeGlobal();
+  NS_ENSURE_TRUE(global, NS_ERROR_FAILURE);
+  BindToOwner(global);
   return NS_OK;
 }
 
@@ -184,8 +185,8 @@ nsDOMFileReader::GetReadyState(uint16_t *aReadyState)
 JS::Value
 nsDOMFileReader::GetResult(JSContext* aCx, ErrorResult& aRv)
 {
-  JS::Value result = JS::UndefinedValue();
-  aRv = GetResult(aCx, &result);
+  JS::Rooted<JS::Value> result(aCx, JS::UndefinedValue());
+  aRv = GetResult(aCx, result.address());
   return result;
 }
 
@@ -213,7 +214,7 @@ nsDOMFileReader::GetResult(JSContext* aCx, JS::Value* aResult)
 }
 
 NS_IMETHODIMP
-nsDOMFileReader::GetError(nsIDOMDOMError** aError)
+nsDOMFileReader::GetError(nsISupports** aError)
 {
   NS_IF_ADDREF(*aError = GetError());
   return NS_OK;

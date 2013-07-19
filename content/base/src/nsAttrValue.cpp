@@ -15,6 +15,7 @@
 #include "nsAttrValueInlines.h"
 #include "nsIAtom.h"
 #include "nsUnicharUtils.h"
+#include "mozilla/MemoryReporting.h"
 #include "mozilla/css/StyleRule.h"
 #include "mozilla/css/Declaration.h"
 #include "nsContentUtils.h"
@@ -307,8 +308,7 @@ nsAttrValue::SetTo(const nsAttrValue& aOther)
     }
     case eCSSStyleRule:
     {
-      MOZ_NOT_REACHED("These should be refcounted!");
-      break;
+      MOZ_CRASH("These should be refcounted!");
     }
     case eURL:
     {
@@ -373,7 +373,7 @@ void
 nsAttrValue::SetTo(const nsAString& aValue)
 {
   ResetIfSet();
-  nsStringBuffer* buf = GetStringBuffer(aValue);
+  nsStringBuffer* buf = GetStringBuffer(aValue).get();
   if (buf) {
     SetPtrValueAndType(buf, eStringBase);
   }
@@ -1526,7 +1526,7 @@ nsAttrValue::ParsePositiveIntValue(const nsAString& aString)
 void
 nsAttrValue::SetColorValue(nscolor aColor, const nsAString& aString)
 {
-  nsStringBuffer* buf = GetStringBuffer(aString);
+  nsStringBuffer* buf = GetStringBuffer(aString).get();
   if (!buf) {
     return;
   }
@@ -1717,7 +1717,7 @@ nsAttrValue::SetMiscAtomOrString(const nsAString* aValue)
           reinterpret_cast<uintptr_t>(atom.forget().get()) | eAtomBase;
       }
     } else {
-      nsStringBuffer* buf = GetStringBuffer(*aValue);
+      nsStringBuffer* buf = GetStringBuffer(*aValue).get();
       if (buf) {
         cont->mStringBits = reinterpret_cast<uintptr_t>(buf) | eStringBase;
       }
@@ -1853,7 +1853,7 @@ nsAttrValue::EnsureEmptyAtomArray()
   return true;
 }
 
-nsStringBuffer*
+already_AddRefed<nsStringBuffer>
 nsAttrValue::GetStringBuffer(const nsAString& aValue) const
 {
   uint32_t len = aValue.Length();
@@ -1861,10 +1861,9 @@ nsAttrValue::GetStringBuffer(const nsAString& aValue) const
     return nullptr;
   }
 
-  nsStringBuffer* buf = nsStringBuffer::FromString(aValue);
+  nsRefPtr<nsStringBuffer> buf = nsStringBuffer::FromString(aValue);
   if (buf && (buf->StorageSize()/sizeof(PRUnichar) - 1) == len) {
-    buf->AddRef();
-    return buf;
+    return buf.forget();
   }
 
   buf = nsStringBuffer::Alloc((len + 1) * sizeof(PRUnichar));
@@ -1874,7 +1873,7 @@ nsAttrValue::GetStringBuffer(const nsAString& aValue) const
   PRUnichar *data = static_cast<PRUnichar*>(buf->Data());
   CopyUnicodeTo(aValue, 0, data, len);
   data[len] = PRUnichar(0);
-  return buf;
+  return buf.forget();
 }
 
 int32_t
@@ -1950,7 +1949,7 @@ nsAttrValue::StringToInteger(const nsAString& aValue, bool* aStrict,
 }
 
 size_t
-nsAttrValue::SizeOfExcludingThis(nsMallocSizeOfFun aMallocSizeOf) const
+nsAttrValue::SizeOfExcludingThis(MallocSizeOf aMallocSizeOf) const
 {
   size_t n = 0;
 

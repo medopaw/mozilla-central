@@ -10,18 +10,12 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-PROGRAM		= rdfpoll$(BIN_SUFFIX)
-CPPSRCS		= rdfpoll.cpp
-
-
 LIBS		= \
 		$(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
 		$(LIBS_DIR) \
 		$(XPCOM_LIBS) \
 		$(NSPR_LIBS) \
 		$(NULL)
-
-include $(topsrcdir)/config/config.mk
 
 include $(topsrcdir)/config/rules.mk
 

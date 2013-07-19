@@ -1474,8 +1474,20 @@ class Rule(object):
 
     def getcommands(self, target, makefile):
         assert isinstance(target, Target)
+        # Prerequisites are merged if the target contains multiple rules and is
+        # not a terminal (double colon) rule. See
+        # https://www.gnu.org/software/make/manual/make.html#Multiple-Targets.
+        prereqs = []
+        prereqs.extend(self.prerequisites)
 
-        return getcommandsforrule(self, target, makefile, self.prerequisites, stem=None)
+        if not self.doublecolon:
+            for rule in target.rules:
+                # The current rule comes first, which is already in prereqs so
+                # we don't need to add it again.
+                if rule != self:
+                    prereqs.extend(rule.prerequisites)
+
+        return getcommandsforrule(self, target, makefile, prereqs, stem=None)
         # TODO: $* in non-pattern rules?
 
 class PatternRuleInstance(object):
@@ -1670,8 +1682,11 @@ class Makefile(object):
         Inform the makefile of a target which is a candidate for being the default target,
         if there isn't already a default target.
         """
-        if self.defaulttarget is None and t != '.PHONY':
+        flavor, source, value = self.variables.get('.DEFAULT_GOAL')
+        if self.defaulttarget is None and t != '.PHONY' and value is None:
             self.defaulttarget = t
+            self.variables.set('.DEFAULT_GOAL', Variables.FLAVOR_SIMPLE,
+                               Variables.SOURCE_AUTOMATIC, t)
 
     def getpatternvariables(self, pattern):
         assert isinstance(pattern, Pattern)

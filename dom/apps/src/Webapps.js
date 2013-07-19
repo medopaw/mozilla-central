@@ -242,7 +242,7 @@ WebappsRegistry.prototype = {
 
   // nsIDOMGlobalPropertyInitializer implementation
   init: function(aWindow) {
-    this.initHelper(aWindow, ["Webapps:Install:Return:OK", "Webapps:Install:Return:KO",
+    this.initDOMRequestHelper(aWindow, ["Webapps:Install:Return:OK", "Webapps:Install:Return:KO",
                               "Webapps:GetInstalled:Return:OK",
                               "Webapps:GetSelf:Return:OK",
                               "Webapps:CheckInstalled:Return:OK" ]);
@@ -264,7 +264,8 @@ WebappsRegistry.prototype = {
 
   classID: Components.ID("{fff440b3-fae2-45c1-bf03-3b5a2e432270}"),
 
-  QueryInterface: XPCOMUtils.generateQI([Ci.mozIDOMApplicationRegistry,
+  QueryInterface: XPCOMUtils.generateQI([Ci.nsISupportsWeakReference,
+                                         Ci.mozIDOMApplicationRegistry,
 #ifdef MOZ_B2G
                                          Ci.mozIDOMApplicationRegistry2,
 #elifdef MOZ_WIDGET_ANDROID
@@ -283,36 +284,6 @@ WebappsRegistry.prototype = {
                                                  ],
                                     flags: Ci.nsIClassInfo.DOM_OBJECT,
                                     classDescription: "Webapps Registry"})
-}
-
-/**
-  * nsIDOMDOMError object
-  */
-function createDOMError(aError) {
-  let error = Cc["@mozilla.org/dom-error;1"]
-                .createInstance(Ci.nsIDOMDOMError);
-  error.wrappedJSObject.init(aError);
-  return error;
-}
-
-function DOMError() {
-  this.wrappedJSObject = this;
-}
-
-DOMError.prototype = {
-  init: function domerror_init(aError) {
-    this.name = aError;
-  },
-
-  classID: Components.ID("{dcc1d5b7-43d8-4740-9244-b3d8db0f503d}"),
-
-  QueryInterface: XPCOMUtils.generateQI([Ci.nsIDOMDOMError]),
-
-  classInfo: XPCOMUtils.generateCI({classID: Components.ID("{dcc1d5b7-43d8-4740-9244-b3d8db0f503d}"),
-                                    contractID: "@mozilla.org/dom-error;1",
-                                    interfaces: [Ci.nsIDOMDOMError],
-                                    flags: Ci.nsIClassInfo.DOM_OBJECT,
-                                    classDescription: "DOMError object"})
 }
 
 /**
@@ -394,11 +365,13 @@ WebappsApplication.prototype = {
 
     this._downloadError = null;
 
-    this.initHelper(aWindow, ["Webapps:OfflineCache",
+    this.initDOMRequestHelper(aWindow, ["Webapps:OfflineCache",
                               "Webapps:CheckForUpdate:Return:OK",
                               "Webapps:CheckForUpdate:Return:KO",
+                              "Webapps:Launch:Return:OK",
                               "Webapps:Launch:Return:KO",
-                              "Webapps:PackageEvent"]);
+                              "Webapps:PackageEvent",
+                              "Webapps:ClearBrowserData:Return"]);
 
     cpmm.sendAsyncMessage("Webapps:RegisterForMessages",
                           ["Webapps:OfflineCache",
@@ -459,7 +432,7 @@ WebappsApplication.prototype = {
   },
 
   get downloadError() {
-    return createDOMError(this._downloadError);
+    return new this._window.DOMError(this._downloadError || '');
   },
 
   download: function() {
@@ -494,11 +467,26 @@ WebappsApplication.prototype = {
   },
 
   clearBrowserData: function() {
+    let request = this.createRequest();
     let browserChild =
       BrowserElementPromptService.getBrowserElementChildForWindow(this._window);
     if (browserChild) {
-      browserChild.messageManager.sendAsyncMessage("Webapps:ClearBrowserData");
+      browserChild.messageManager.sendAsyncMessage(
+        "Webapps:ClearBrowserData",
+        { manifestURL: this.manifestURL,
+          oid: this._id,
+          requestID: this.getRequestId(request) }
+      );
+    } else {
+      let runnable = {
+        run: function run() {
+          Services.DOMRequest.fireError(request, "NO_CLEARABLE_BROWSER");
+        }
+      }
+      Services.tm.currentThread.dispatch(runnable,
+                                         Ci.nsIThread.DISPATCH_NORMAL);
     }
+    return request;
   },
 
   uninit: function() {
@@ -532,6 +520,9 @@ WebappsApplication.prototype = {
       case "Webapps:Launch:Return:KO":
         Services.DOMRequest.fireError(req, "APP_INSTALL_PENDING");
         break;
+      case "Webapps:Launch:Return:OK":
+        Services.DOMRequest.fireSuccess(req, null);
+        break;
       case "Webapps:CheckForUpdate:Return:KO":
         Services.DOMRequest.fireError(req, msg.error);
         break;
@@ -539,9 +530,25 @@ WebappsApplication.prototype = {
         if (msg.manifestURL != this.manifestURL)
           return;
 
-        for (let prop in msg.app) {
-          this[prop] = msg.app[prop];
-        }
+        manifestCache.evict(this.manifestURL, this.innerWindowID);
+
+        let hiddenProps = ["manifest", "updateManifest"];
+        let updatableProps = ["installOrigin", "installTime", "installState",
+            "lastUpdateCheck", "updateTime", "progress", "downloadAvailable",
+            "downloading", "readyToApplyDownload", "downloadSize"];
+        // Props that we don't update: origin, receipts, manifestURL, removable.
+
+        updatableProps.forEach(function(prop) {
+          if (msg.app[prop]) {
+            this[prop] = msg.app[prop];
+          }
+        }, this);
+
+        hiddenProps.forEach(function(prop) {
+          if (msg.app[prop]) {
+            this["_" + prop] = msg.app[prop];
+          }
+        }, this);
 
         if (msg.event == "downloadapplied") {
           this._fireEvent("downloadapplied", this._ondownloadapplied);
@@ -563,6 +570,7 @@ WebappsApplication.prototype = {
           if (this.installState == "installed") {
             this._downloadError = null;
             this.downloading = false;
+            this.downloadAvailable = false;
             this._fireEvent("downloadsuccess", this._ondownloadsuccess);
             this._fireEvent("downloadapplied", this._ondownloadapplied);
           } else {
@@ -588,6 +596,7 @@ WebappsApplication.prototype = {
         this.progress = app.progress || msg.progress || 0;
         this.readyToApplyDownload = app.readyToApplyDownload;
         this.updateTime = app.updateTime;
+        this.origin = app.origin;
 
         switch(msg.type) {
           case "error":
@@ -620,12 +629,16 @@ WebappsApplication.prototype = {
             break;
         }
         break;
+      case "Webapps:ClearBrowserData:Return":
+        Services.DOMRequest.fireSuccess(req, null);
+        break;
     }
   },
 
   classID: Components.ID("{723ed303-7757-4fb0-b261-4f78b1f6bd22}"),
 
-  QueryInterface: XPCOMUtils.generateQI([Ci.mozIDOMApplication]),
+  QueryInterface: XPCOMUtils.generateQI([Ci.mozIDOMApplication,
+                                         Ci.nsISupportsWeakReference]),
 
   classInfo: XPCOMUtils.generateCI({classID: Components.ID("{723ed303-7757-4fb0-b261-4f78b1f6bd22}"),
                                     contractID: "@mozilla.org/webapps/application;1",
@@ -638,7 +651,7 @@ WebappsApplication.prototype = {
   * mozIDOMApplicationMgmt object
   */
 function WebappsApplicationMgmt(aWindow) {
-  this.initHelper(aWindow, ["Webapps:GetAll:Return:OK",
+  this.initDOMRequestHelper(aWindow, ["Webapps:GetAll:Return:OK",
                             "Webapps:GetAll:Return:KO",
                             "Webapps:Uninstall:Return:OK",
                             "Webapps:Uninstall:Broadcast:Return:OK",
@@ -687,6 +700,7 @@ WebappsApplicationMgmt.prototype = {
     dump("-- webapps.js uninstall " + aApp.manifestURL + "\n");
     let request = this.createRequest();
     cpmm.sendAsyncMessage("Webapps:Uninstall", { origin: aApp.origin,
+                                                 manifestURL: aApp.manifestURL,
                                                  oid: this._id,
                                                  requestID: this.getRequestId(request) });
     return request;
@@ -775,7 +789,7 @@ WebappsApplicationMgmt.prototype = {
 
   classID: Components.ID("{8c1bca96-266f-493a-8d57-ec7a95098c15}"),
 
-  QueryInterface: XPCOMUtils.generateQI([Ci.mozIDOMApplicationMgmt]),
+  QueryInterface: XPCOMUtils.generateQI([Ci.mozIDOMApplicationMgmt, Ci.nsISupportsWeakReference]),
 
   classInfo: XPCOMUtils.generateCI({classID: Components.ID("{8c1bca96-266f-493a-8d57-ec7a95098c15}"),
                                     contractID: "@mozilla.org/webapps/application-mgmt;1",
@@ -785,5 +799,4 @@ WebappsApplicationMgmt.prototype = {
 }
 
 this.NSGetFactory = XPCOMUtils.generateNSGetFactory([WebappsRegistry,
-                                                     WebappsApplication,
-                                                     DOMError]);
+                                                     WebappsApplication]);

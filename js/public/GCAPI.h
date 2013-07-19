@@ -4,10 +4,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef js_gc_api_h___
-#define js_gc_api_h___
+#ifndef js_GCAPI_h
+#define js_GCAPI_h
 
-#include "HeapAPI.h"
+#include "js/HeapAPI.h"
 
 namespace JS {
 
@@ -205,7 +205,7 @@ WasIncrementalGC(JSRuntime *rt);
 
 class ObjectPtr
 {
-    JSObject *value;
+    Heap<JSObject *> value;
 
   public:
     ObjectPtr() : value(NULL) {}
@@ -237,6 +237,10 @@ class ObjectPtr
         IncrementalObjectBarrier(value);
         value = obj;
         return *this;
+    }
+
+    void trace(JSTracer *trc, const char *name) {
+        JS_CallHeapObjectTracer(trc, &value, name);
     }
 
     JSObject &operator*() const { return *value; }
@@ -287,4 +291,4 @@ ExposeValueToActiveJS(const Value &v)
 
 } /* namespace JS */
 
-#endif /* js_gc_api_h___ */
+#endif /* js_GCAPI_h */

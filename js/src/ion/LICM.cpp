@@ -6,15 +6,74 @@
 
 #include <stdio.h>
 
-#include "Ion.h"
-#include "IonBuilder.h"
-#include "IonSpewer.h"
-#include "LICM.h"
-#include "MIR.h"
-#include "MIRGraph.h"
+#include "ion/Ion.h"
+#include "ion/IonBuilder.h"
+#include "ion/IonSpewer.h"
+#include "ion/LICM.h"
+#include "ion/MIR.h"
+#include "ion/MIRGraph.h"
 
 using namespace js;
 using namespace js::ion;
+
+namespace {
+
+typedef Vector<MBasicBlock*, 1, IonAllocPolicy> BlockQueue;
+typedef Vector<MInstruction*, 1, IonAllocPolicy> InstructionQueue;
+
+class Loop
+{
+    MIRGenerator *mir;
+
+  public:
+    // Loop code may return three values:
+    enum LoopReturn {
+        LoopReturn_Success,
+        LoopReturn_Error, // Compilation failure.
+        LoopReturn_Skip   // The loop is not suitable for LICM, but there is no error.
+    };
+
+  public:
+    // A loop is constructed on a backedge found in the control flow graph.
+    Loop(MIRGenerator *mir, MBasicBlock *footer);
+
+    // Initializes the loop, finds all blocks and instructions contained in the loop.
+    LoopReturn init();
+
+    // Identifies hoistable loop invariant instructions and moves them out of the loop.
+    bool optimize();
+
+  private:
+    // These blocks define the loop.  header_ points to the loop header
+    MBasicBlock *header_;
+
+    // The pre-loop block is the first predecessor of the loop header.  It is where
+    // the loop is first entered and where hoisted instructions will be placed.
+    MBasicBlock* preLoop_;
+
+    bool hoistInstructions(InstructionQueue &toHoist);
+
+    // Utility methods for invariance testing and instruction hoisting.
+    bool isInLoop(MDefinition *ins);
+    bool isBeforeLoop(MDefinition *ins);
+    bool isLoopInvariant(MInstruction *ins);
+    bool isLoopInvariant(MDefinition *ins);
+
+    // This method determines if this block hot within a loop.  That is, if it's
+    // always or usually run when the loop executes
+    bool checkHotness(MBasicBlock *block);
+
+    // Worklist and worklist usage methods
+    InstructionQueue worklist_;
+    bool insertInWorklist(MInstruction *ins);
+    MInstruction* popFromWorklist();
+
+    inline bool isHoistable(const MDefinition *ins) const {
+        return ins->isMovable() && !ins->isEffectful() && !ins->neverHoist();
+    }
+};
+
+} /* namespace anonymous */
 
 LICM::LICM(MIRGenerator *mir, MIRGraph &graph)
   : mir(mir), graph(graph)
@@ -155,21 +214,6 @@ Loop::optimize()
             if (!invariantInstructions.append(ins))
                 return false;
 
-            // Loop through uses of invariant instruction and add back to work list.
-            for (MUseDefIterator iter(ins->toDefinition()); iter; iter++) {
-                MDefinition *consumer = iter.def();
-
-                if (consumer->isInWorklist())
-                    continue;
-
-                // if the consumer of this invariant instruction is in the
-                // loop, and it is also worth hoisting, then process it.
-                if (isInLoop(consumer) && isHoistable(consumer)) {
-                    if (!insertInWorklist(consumer->toInstruction()))
-                        return false;
-                }
-            }
-
             if (IonSpewEnabled(IonSpew_LICM))
                 fprintf(IonSpewFile, " Loop Invariant!\n");
         }
@@ -183,6 +227,27 @@ Loop::optimize()
 bool
 Loop::hoistInstructions(InstructionQueue &toHoist)
 {
+    // Iterate in post-order (uses before definitions)
+    for (int32_t i = toHoist.length() - 1; i >= 0; i--) {
+        MInstruction *ins = toHoist[i];
+
+        // Don't hoist MConstantElements, MConstant and MBox
+        // if it doesn't enable us to hoist one of its uses.
+        // We want those instructions as close as possible to their use.
+        if (ins->isConstantElements() || ins->isConstant() || ins->isBox()) {
+            bool loopInvariantUse = false;
+            for (MUseDefIterator use(ins); use; use++) {
+                if (use.def()->isLoopInvariant()) {
+                    loopInvariantUse = true;
+                    break;
+                }
+            }
+
+            if (!loopInvariantUse)
+                ins->setNotLoopInvariant();
+        }
+    }
+
     // Move all instructions to the preLoop_ block just before the control instruction.
     for (size_t i = 0; i < toHoist.length(); i++) {
         MInstruction *ins = toHoist[i];
@@ -192,6 +257,9 @@ Loop::hoistInstructions(InstructionQueue &toHoist)
         JS_ASSERT(!ins->isControlInstruction());
         JS_ASSERT(!ins->isEffectful());
         JS_ASSERT(ins->isMovable());
+
+        if (!ins->isLoopInvariant())
+            continue;
 
         if (checkHotness(ins->block())) {
             ins->block()->moveBefore(preLoop_->lastIns(), ins);
@@ -238,7 +306,7 @@ Loop::isLoopInvariant(MInstruction *ins)
 
     // An instruction is only loop invariant if it and all of its operands can
     // be safely hoisted into the loop preheader.
-    for (size_t i = 0; i < ins->numOperands(); i ++) {
+    for (size_t i = 0, e = ins->numOperands(); i < e; i++) {
         if (isInLoop(ins->getOperand(i)) &&
             !ins->getOperand(i)->isLoopInvariant()) {
 
@@ -250,6 +318,7 @@ Loop::isLoopInvariant(MInstruction *ins)
             return false;
         }
     }
+
     return true;
 }
 

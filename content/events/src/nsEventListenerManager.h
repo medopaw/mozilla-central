@@ -12,11 +12,13 @@
 #include "nsIDOMEventListener.h"
 #include "nsAutoPtr.h"
 #include "nsCOMArray.h"
+#include "nsCxPusher.h"
 #include "nsIScriptContext.h"
 #include "nsCycleCollectionParticipant.h"
 #include "nsTObserverArray.h"
 #include "nsGUIEvent.h"
 #include "nsIJSEventListener.h"
+#include "mozilla/MemoryReporting.h"
 #include "mozilla/dom/EventTarget.h"
 #include "mozilla/dom/EventListenerBinding.h"
 
@@ -209,7 +211,7 @@ class nsEventListenerManager
 {
 
 public:
-  nsEventListenerManager(nsISupports* aTarget);
+  nsEventListenerManager(mozilla::dom::EventTarget* aTarget);
   virtual ~nsEventListenerManager();
 
   NS_INLINE_DECL_CYCLE_COLLECTING_NATIVE_REFCOUNTING(nsEventListenerManager)
@@ -399,11 +401,11 @@ public:
 
   bool MayHaveMouseEnterLeaveEventListener() { return mMayHaveMouseEnterLeaveEventListener; }
 
-  size_t SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf) const;
+  size_t SizeOfIncludingThis(mozilla::MallocSizeOf aMallocSizeOf) const;
 
   void MarkForCC();
 
-  nsISupports* GetTarget() { return mTarget; }
+  mozilla::dom::EventTarget* GetTarget() { return mTarget; }
 protected:
   void HandleEventInternal(nsPresContext* aPresContext,
                            nsEvent* aEvent,
@@ -441,7 +443,7 @@ protected:
    * in aListenerStruct.
    */
   nsresult SetEventHandlerInternal(nsIScriptContext *aContext,
-                                   JSObject* aScopeGlobal,
+                                   JS::Handle<JSObject*> aScopeGlobal,
                                    nsIAtom* aName,
                                    const nsEventHandler& aHandler,
                                    bool aPermitUntrustedEvents,
@@ -532,14 +534,11 @@ protected:
   uint32_t mNoListenerForEvent : 24;
 
   nsAutoTObserverArray<nsListenerStruct, 2> mListeners;
-  nsISupports*                              mTarget;  //WEAK
+  mozilla::dom::EventTarget*                mTarget;  //WEAK
   nsCOMPtr<nsIAtom>                         mNoListenerForEventAtom;
 
-  static uint32_t                           mInstanceCount;
-  static jsid                               sAddListenerID;
-
-  friend class nsEventTargetChainItem;
-  static uint32_t                           sCreatedCount;
+  friend class ELMCreationDetector;
+  static uint32_t                           sMainThreadCreatedCount;
 };
 
 /**

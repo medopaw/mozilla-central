@@ -308,7 +308,7 @@ nsContentSink::ProcessHeaderData(nsIAtom* aHeader, const nsAString& aValue,
     NS_ENSURE_TRUE(codebaseURI, rv);
 
     nsCOMPtr<nsIPrompt> prompt;
-    nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(mDocument->GetScriptGlobalObject());
+    nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(mDocument->GetWindow());
     if (window) {
       window->GetPrompter(getter_AddRefs(prompt));
     }
@@ -1440,7 +1440,8 @@ void
 nsContentSink::DidBuildModelImpl(bool aTerminated)
 {
   if (mDocument) {
-    MOZ_ASSERT(mDocument->GetReadyStateEnum() ==
+    MOZ_ASSERT(aTerminated ||
+               mDocument->GetReadyStateEnum() ==
                nsIDocument::READYSTATE_LOADING, "Bad readyState");
     mDocument->SetReadyStateInternal(nsIDocument::READYSTATE_INTERACTIVE);
   }
@@ -1500,7 +1501,7 @@ nsContentSink::IsScriptExecutingImpl()
 nsresult
 nsContentSink::WillParseImpl(void)
 {
-  if (mRunsToCompletion) {
+  if (mRunsToCompletion || !mDocument) {
     return NS_OK;
   }
 

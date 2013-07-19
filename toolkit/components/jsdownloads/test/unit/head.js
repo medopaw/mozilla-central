@@ -21,6 +21,8 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 XPCOMUtils.defineLazyModuleGetter(this, "DownloadPaths",
                                   "resource://gre/modules/DownloadPaths.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "DownloadIntegration",
+                                  "resource://gre/modules/DownloadIntegration.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "Downloads",
                                   "resource://gre/modules/Downloads.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "FileUtils",
@@ -29,44 +31,88 @@ XPCOMUtils.defineLazyModuleGetter(this, "HttpServer",
                                   "resource://testing-common/httpd.js");
 XPCOMUtils.defineLazyModuleGetter(this, "NetUtil",
                                   "resource://gre/modules/NetUtil.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils",
+                                  "resource://gre/modules/PlacesUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "Promise",
                                   "resource://gre/modules/commonjs/sdk/core/promise.js");
 XPCOMUtils.defineLazyModuleGetter(this, "Services",
                                   "resource://gre/modules/Services.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "Task",
                                   "resource://gre/modules/Task.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "OS",
+                                  "resource://gre/modules/osfile.jsm");
 
 const ServerSocket = Components.Constructor(
                                 "@mozilla.org/network/server-socket;1",
                                 "nsIServerSocket",
                                 "init");
+const BinaryOutputStream = Components.Constructor(
+                                      "@mozilla.org/binaryoutputstream;1",
+                                      "nsIBinaryOutputStream",
+                                      "setOutputStream")
 
-const HTTP_SERVER_PORT = 4444;
-const HTTP_BASE = "http://localhost:" + HTTP_SERVER_PORT;
+Object.defineProperty(this, "HTTP_BASE", {get: function() {
+  return "http://localhost:" + gHttpServer.identity.primaryPort;
+}});
 
-const FAKE_SERVER_PORT = 4445;
-const FAKE_BASE = "http://localhost:" + FAKE_SERVER_PORT;
+Object.defineProperty(this, "FAKE_BASE", {get: function() {
+  return "http://localhost:" + gFakeServerPort;
+}});
 
-const TEST_SOURCE_URI = NetUtil.newURI(HTTP_BASE + "/source.txt");
-const TEST_EMPTY_URI = NetUtil.newURI(HTTP_BASE + "/empty.txt");
-const TEST_FAKE_SOURCE_URI = NetUtil.newURI(FAKE_BASE + "/source.txt");
+Object.defineProperty(this, "TEST_REFERRER_URI", {get: function() {
+  return NetUtil.newURI(HTTP_BASE + "/referrer.html");
+}});
+
+Object.defineProperty(this, "TEST_SOURCE_URI", {get: function() {
+  return NetUtil.newURI(HTTP_BASE + "/source.txt");
+}});
+
+Object.defineProperty(this, "TEST_EMPTY_URI", {get: function() {
+  return NetUtil.newURI(HTTP_BASE + "/empty.txt");
+}});
+
+Object.defineProperty(this, "TEST_FAKE_SOURCE_URI", {get: function() {
+  return NetUtil.newURI(FAKE_BASE + "/source.txt");
+}});
 
 const TEST_EMPTY_NOPROGRESS_PATH = "/empty-noprogress.txt";
-const TEST_EMPTY_NOPROGRESS_URI = NetUtil.newURI(HTTP_BASE +
-                                                 TEST_EMPTY_NOPROGRESS_PATH);
+
+Object.defineProperty(this, "TEST_EMPTY_NOPROGRESS_URI", {get: function() {
+  return NetUtil.newURI(HTTP_BASE + TEST_EMPTY_NOPROGRESS_PATH);
+}});
 
 const TEST_INTERRUPTIBLE_PATH = "/interruptible.txt";
-const TEST_INTERRUPTIBLE_URI = NetUtil.newURI(HTTP_BASE +
-                                              TEST_INTERRUPTIBLE_PATH);
+
+Object.defineProperty(this, "TEST_INTERRUPTIBLE_URI", {get: function() {
+  return NetUtil.newURI(HTTP_BASE + TEST_INTERRUPTIBLE_PATH);
+}});
+
+const TEST_INTERRUPTIBLE_GZIP_PATH = "/interruptible_gzip.txt";
+
+Object.defineProperty(this, "TEST_INTERRUPTIBLE_GZIP_URI", {get: function() {
+  return NetUtil.newURI(HTTP_BASE + TEST_INTERRUPTIBLE_GZIP_PATH);
+}});
 
 const TEST_TARGET_FILE_NAME = "test-download.txt";
+const TEST_STORE_FILE_NAME = "test-downloads.json";
+
 const TEST_DATA_SHORT = "This test string is downloaded.";
+// Generate using gzipCompressString in TelemetryPing.js.
+const TEST_DATA_SHORT_GZIP_ENCODED_FIRST = [
+ 31,139,8,0,0,0,0,0,0,3,11,201,200,44,86,40,73,45,46,81,40,46,41,202,204
+];
+const TEST_DATA_SHORT_GZIP_ENCODED_SECOND = [
+  75,87,0,114,83,242,203,243,114,242,19,83,82,83,244,0,151,222,109,43,31,0,0,0
+];
+const TEST_DATA_SHORT_GZIP_ENCODED =
+  TEST_DATA_SHORT_GZIP_ENCODED_FIRST.concat(TEST_DATA_SHORT_GZIP_ENCODED_SECOND);
 
 /**
  * All the tests are implemented with add_task, this starts them automatically.
  */
 function run_test()
 {
+  do_get_profile();
   run_next_test();
 }
 
@@ -128,6 +174,20 @@ function promiseExecuteSoon()
 }
 
 /**
+ * Waits for a pending events to be processed after a timeout.
+ *
+ * @return {Promise}
+ * @resolves When pending events have been processed.
+ * @rejects Never.
+ */
+function promiseTimeout(aTime)
+{
+  let deferred = Promise.defer();
+  do_timeout(aTime, deferred.resolve);
+  return deferred.promise;
+}
+
+/**
  * Creates a new Download object, setting a temporary file as the target.
  *
  * @param aSourceURI
@@ -143,6 +203,32 @@ function promiseSimpleDownload(aSourceURI) {
     target: { file: getTempFile(TEST_TARGET_FILE_NAME) },
     saver: { type: "copy" },
   });
+}
+
+/**
+ * Returns a new public DownloadList object.
+ *
+ * @return {Promise}
+ * @resolves The newly created DownloadList object.
+ * @rejects JavaScript exception.
+ */
+function promiseNewDownloadList() {
+  // Force the creation of a new public download list.
+  Downloads._promisePublicDownloadList = null;
+  return Downloads.getPublicDownloadList();
+}
+
+/**
+ * Returns a new private DownloadList object.
+ *
+ * @return {Promise}
+ * @resolves The newly created DownloadList object.
+ * @rejects JavaScript exception.
+ */
+function promiseNewPrivateDownloadList() {
+  // Force the creation of a new public download list.
+  Downloads._privateDownloadList = null;
+  return Downloads.getPrivateDownloadList();
 }
 
 /**
@@ -177,6 +263,39 @@ function promiseVerifyContents(aFile, aExpectedContents)
 }
 
 /**
+ * Adds entry for download.
+ *
+ * @param aSourceURI
+ *        The nsIURI for the download source, or null to use TEST_SOURCE_URI.
+ *
+ * @return {Promise}
+ * @rejects JavaScript exception.
+ */
+function promiseAddDownloadToHistory(aSourceURI) {
+  let deferred = Promise.defer();
+  PlacesUtils.asyncHistory.updatePlaces(
+    {
+      uri: aSourceURI || TEST_SOURCE_URI,
+      visits: [{
+        transitionType: Ci.nsINavHistoryService.TRANSITION_DOWNLOAD,
+        visitDate:  Date.now()
+      }]
+    },
+    {
+      handleError: function handleError(aResultCode, aPlaceInfo) {
+        let ex = new Components.Exception("Unexpected error in adding visits.",
+                                          aResultCode);
+        deferred.reject(ex);
+      },
+      handleResult: function () {},
+      handleCompletion: function handleCompletion() {
+        deferred.resolve();
+      }
+    });
+  return deferred.promise;
+}
+
+/**
  * Starts a socket listener that closes each incoming connection.
  *
  * @returns nsIServerSocket that listens for connections.  Call its "close"
@@ -184,7 +303,8 @@ function promiseVerifyContents(aFile, aExpectedContents)
  */
 function startFakeServer()
 {
-  let serverSocket = new ServerSocket(FAKE_SERVER_PORT, true, -1);
+  let serverSocket = new ServerSocket(-1, true, -1);
+  gFakeServerPort = serverSocket.port;
   serverSocket.asyncListen({
     onSocketAccepted: function (aServ, aTransport) {
       aTransport.close(Cr.NS_BINDING_ABORTED);
@@ -296,17 +416,28 @@ function registerInterruptibleHandler(aPath, aFirstPartFn, aSecondPartFn)
   });
 }
 
+/**
+ * Ensure the given date object is valid.
+ *
+ * @param aDate
+ *        The date object to be checked. This value can be null.
+ */
+function isValidDate(aDate) {
+  return aDate && aDate.getTime && !isNaN(aDate.getTime());
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //// Initialization functions common to all tests
 
 let gHttpServer;
+let gFakeServerPort;
 
 add_task(function test_common_initialize()
 {
   // Start the HTTP server.
   gHttpServer = new HttpServer();
   gHttpServer.registerDirectory("/", do_get_file("../data"));
-  gHttpServer.start(HTTP_SERVER_PORT);
+  gHttpServer.start(-1);
 
   registerInterruptibleHandler(TEST_INTERRUPTIBLE_PATH,
     function firstPart(aRequest, aResponse) {
@@ -322,4 +453,25 @@ add_task(function test_common_initialize()
     function firstPart(aRequest, aResponse) {
       aResponse.setHeader("Content-Type", "text/plain", false);
     }, function secondPart(aRequest, aResponse) { });
+
+
+  registerInterruptibleHandler(TEST_INTERRUPTIBLE_GZIP_PATH,
+    function firstPart(aRequest, aResponse) {
+      aResponse.setHeader("Content-Type", "text/plain", false);
+      aResponse.setHeader("Content-Encoding", "gzip", false);
+      aResponse.setHeader("Content-Length", "" + TEST_DATA_SHORT_GZIP_ENCODED.length);
+
+      let bos =  new BinaryOutputStream(aResponse.bodyOutputStream);
+      bos.writeByteArray(TEST_DATA_SHORT_GZIP_ENCODED_FIRST,
+                         TEST_DATA_SHORT_GZIP_ENCODED_FIRST.length);
+    }, function secondPart(aRequest, aResponse) {
+      let bos =  new BinaryOutputStream(aResponse.bodyOutputStream);
+      bos.writeByteArray(TEST_DATA_SHORT_GZIP_ENCODED_SECOND,
+                         TEST_DATA_SHORT_GZIP_ENCODED_SECOND.length);
+    });
+
+  // Disable integration with the host application requiring profile access.
+  DownloadIntegration.dontLoad = true;
+  // Disable the parental controls checking.
+  DownloadIntegration.dontCheckParentalControls = true;
 });

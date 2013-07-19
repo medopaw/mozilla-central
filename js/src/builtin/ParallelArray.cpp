@@ -6,16 +6,12 @@
 
 #include "jsapi.h"
 #include "jsobj.h"
-#include "jsarray.h"
 
 #include "builtin/ParallelArray.h"
 
-#include "vm/ForkJoin.h"
 #include "vm/GlobalObject.h"
 #include "vm/String.h"
-#include "vm/ThreadPool.h"
 
-#include "jsinterpinlines.h"
 #include "jsobjinlines.h"
 
 using namespace js;
@@ -108,15 +104,15 @@ ParallelArrayObject::getConstructor(JSContext *cx, unsigned argc)
     RootedValue ctorValue(cx);
     if (!cx->global()->getIntrinsicValue(cx, ctorName, &ctorValue))
         return NULL;
-    JS_ASSERT(ctorValue.isObject() && ctorValue.toObject().isFunction());
-    return ctorValue.toObject().toFunction();
+    JS_ASSERT(ctorValue.isObject() && ctorValue.toObject().is<JSFunction>());
+    return &ctorValue.toObject().as<JSFunction>();
 }
 
 /*static*/ JSObject *
-ParallelArrayObject::newInstance(JSContext *cx)
+ParallelArrayObject::newInstance(JSContext *cx, NewObjectKind newKind /* = GenericObject */)
 {
     gc::AllocKind kind = gc::GetGCObjectKind(NumFixedSlots);
-    RootedObject result(cx, NewBuiltinClassInstance(cx, &class_, kind));
+    RootedObject result(cx, NewBuiltinClassInstance(cx, &class_, kind, newKind));
     if (!result)
         return NULL;
 
@@ -130,13 +126,13 @@ ParallelArrayObject::newInstance(JSContext *cx)
 /*static*/ JSBool
 ParallelArrayObject::constructHelper(JSContext *cx, MutableHandleFunction ctor, CallArgs &args0)
 {
-    RootedObject result(cx, newInstance(cx));
+    RootedObject result(cx, newInstance(cx, TenuredObject));
     if (!result)
         return false;
 
     if (cx->typeInferenceEnabled()) {
         jsbytecode *pc;
-        RootedScript script(cx, cx->stack.currentScript(&pc));
+        RootedScript script(cx, cx->currentScript(&pc));
         if (script) {
             if (ctor->nonLazyScript()->shouldCloneAtCallsite) {
                 ctor.set(CloneFunctionAtCallsite(cx, ctor, script, pc));
@@ -166,8 +162,8 @@ ParallelArrayObject::constructHelper(JSContext *cx, MutableHandleFunction ctor, 
         }
     }
 
-    InvokeArgsGuard args;
-    if (!cx->stack.pushInvokeArgs(cx, args0.length(), &args))
+    InvokeArgs args(cx);
+    if (!args.init(args0.length()))
         return false;
 
     args.setCallee(ObjectValue(*ctor));
@@ -202,7 +198,7 @@ ParallelArrayObject::initClass(JSContext *cx, HandleObject obj)
         }
     }
 
-    Rooted<GlobalObject *> global(cx, &obj->asGlobal());
+    Rooted<GlobalObject *> global(cx, &obj->as<GlobalObject>());
 
     RootedObject proto(cx, global->createBlankPrototype(cx, &protoClass));
     if (!proto)

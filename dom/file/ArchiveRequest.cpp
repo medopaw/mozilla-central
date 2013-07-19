@@ -8,9 +8,9 @@
 
 #include "mozilla/dom/ArchiveRequestBinding.h"
 #include "nsContentUtils.h"
+#include "nsCxPusher.h"
 #include "nsLayoutStatics.h"
 #include "nsEventDispatcher.h"
-#include "nsDOMClassInfoID.h"
 
 USING_FILE_NAMESPACE
 
@@ -130,7 +130,6 @@ ArchiveRequest::ReaderReady(nsTArray<nsCOMPtr<nsIDOMFile> >& aFileList,
     return NS_OK;
   }
 
-  JS::Value result;
   nsresult rv;
 
   nsIScriptContext* sc = GetContextForEventHandlers(&rv);
@@ -139,23 +138,23 @@ ArchiveRequest::ReaderReady(nsTArray<nsCOMPtr<nsIDOMFile> >& aFileList,
   AutoPushJSContext cx(sc->GetNativeContext());
   NS_ASSERTION(cx, "Failed to get a context!");
 
-  JSObject* global = sc->GetNativeGlobal();
+  JS::Rooted<JSObject*> global(cx, sc->GetNativeGlobal());
   NS_ASSERTION(global, "Failed to get global object!");
 
-  JSAutoRequest ar(cx);
   JSAutoCompartment ac(cx, global);
 
+  JS::Rooted<JS::Value> result(cx);
   switch (mOperation) {
     case GetFilenames:
-      rv = GetFilenamesResult(cx, &result, aFileList);
+      rv = GetFilenamesResult(cx, result.address(), aFileList);
       break;
 
     case GetFile:
-      rv = GetFileResult(cx, &result, aFileList);
+      rv = GetFileResult(cx, result.address(), aFileList);
       break;
 
       case GetFiles:
-        rv = GetFilesResult(cx, &result, aFileList);
+        rv = GetFilesResult(cx, result.address(), aFileList);
         break;
   }
 
@@ -178,7 +177,7 @@ ArchiveRequest::GetFilenamesResult(JSContext* aCx,
                                    JS::Value* aValue,
                                    nsTArray<nsCOMPtr<nsIDOMFile> >& aFileList)
 {
-  JSObject* array = JS_NewArrayObject(aCx, aFileList.Length(), nullptr);
+  JS::Rooted<JSObject*> array(aCx, JS_NewArrayObject(aCx, aFileList.Length(), nullptr));
   nsresult rv;
 
   if (!array) {
@@ -195,9 +194,9 @@ ArchiveRequest::GetFilenamesResult(JSContext* aCx,
     JSString* str = JS_NewUCStringCopyZ(aCx, filename.get());
     NS_ENSURE_TRUE(str, NS_ERROR_OUT_OF_MEMORY);
 
-    JS::Value item = STRING_TO_JSVAL(str);
+    JS::Rooted<JS::Value> item(aCx, STRING_TO_JSVAL(str));
 
-    if (NS_FAILED(rv) || !JS_SetElement(aCx, array, i, &item)) {
+    if (NS_FAILED(rv) || !JS_SetElement(aCx, array, i, item.address())) {
       return NS_ERROR_FAILURE;
     }
   }
@@ -223,10 +222,9 @@ ArchiveRequest::GetFileResult(JSContext* aCx,
     NS_ENSURE_SUCCESS(rv, rv);
 
     if (filename == mFilename) {
-      nsresult rv = nsContentUtils::WrapNative(
-                      aCx, JS_GetGlobalForScopeChain(aCx),
-                      file, &NS_GET_IID(nsIDOMFile), aValue);
-      return rv;
+      JS::Rooted<JSObject*> global(aCx, JS_GetGlobalForScopeChain(aCx));
+      return nsContentUtils::WrapNative(aCx, global, file,
+                                        &NS_GET_IID(nsIDOMFile), aValue);
     }
   }
 
@@ -238,7 +236,7 @@ ArchiveRequest::GetFilesResult(JSContext* aCx,
                                JS::Value* aValue,
                                nsTArray<nsCOMPtr<nsIDOMFile> >& aFileList)
 {
-  JSObject* array = JS_NewArrayObject(aCx, aFileList.Length(), nullptr);
+  JS::Rooted<JSObject*> array(aCx, JS_NewArrayObject(aCx, aFileList.Length(), nullptr));
   if (!array) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
@@ -246,10 +244,12 @@ ArchiveRequest::GetFilesResult(JSContext* aCx,
   for (uint32_t i = 0; i < aFileList.Length(); ++i) {
     nsCOMPtr<nsIDOMFile> file = aFileList[i];
 
-    JS::Value value;
-    nsresult rv = nsContentUtils::WrapNative(aCx, JS_GetGlobalForScopeChain(aCx),
-                                             file, &NS_GET_IID(nsIDOMFile), &value);
-    if (NS_FAILED(rv) || !JS_SetElement(aCx, array, i, &value)) {
+    JS::Rooted<JS::Value> value(aCx);
+    JS::Rooted<JSObject*> global(aCx, JS_GetGlobalForScopeChain(aCx));
+    nsresult rv = nsContentUtils::WrapNative(aCx, global, file,
+                                             &NS_GET_IID(nsIDOMFile),
+                                             value.address());
+    if (NS_FAILED(rv) || !JS_SetElement(aCx, array, i, value.address())) {
       return NS_ERROR_FAILURE;
     }
   }
@@ -278,5 +278,3 @@ NS_INTERFACE_MAP_END_INHERITING(DOMRequest)
 
 NS_IMPL_ADDREF_INHERITED(ArchiveRequest, DOMRequest)
 NS_IMPL_RELEASE_INHERITED(ArchiveRequest, DOMRequest)
-
-DOMCI_DATA(ArchiveRequest, ArchiveRequest)

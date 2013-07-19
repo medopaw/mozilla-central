@@ -56,6 +56,8 @@ struct SensorData {
 struct NetworkInformation {
   double bandwidth;
   bool   canBeMetered;
+  bool   isWifi;
+  uint32_t dhcpGateway;
 };
 
 struct SwitchEvent {
@@ -64,10 +66,10 @@ struct SwitchEvent {
 };
 
 struct WakeLockInformation {
+  nsString topic;
   uint32_t numLocks;
   uint32_t numHidden;
   uint64_t[] lockingProcesses;
-  nsString topic;
 };
 
 struct ScreenConfiguration {
@@ -172,8 +174,6 @@ parent:
     DisableSwitchNotifications(SwitchDevice aDevice);
     sync GetCurrentSwitchState(SwitchDevice aDevice)
       returns (SwitchState aState);
-
-    SetProcessPriority(int aPid, ProcessPriority aPriority);
 
     FactoryReset();
 

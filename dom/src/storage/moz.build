@@ -10,3 +10,15 @@ EXPORTS.mozilla.dom += [
     'DOMStorageIPC.h',
 ]
 
+CPP_SOURCES += [
+    'DOMStorage.cpp',
+    'DOMStorageCache.cpp',
+    'DOMStorageDBThread.cpp',
+    'DOMStorageIPC.cpp',
+    'DOMStorageManager.cpp',
+    'DOMStorageObserver.cpp',
+]
+
+IPDL_SOURCES += [
+    'PStorage.ipdl',
+]

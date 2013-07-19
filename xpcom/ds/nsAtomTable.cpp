@@ -7,6 +7,7 @@
 #include "mozilla/Assertions.h"
 #include "mozilla/Attributes.h"
 #include "mozilla/HashFunctions.h"
+#include "mozilla/MemoryReporting.h"
 
 #include "nsAtomTable.h"
 #include "nsStaticAtom.h"
@@ -96,7 +97,7 @@ public:
   // for |#ifdef NS_BUILD_REFCNT_LOGGING| access to reference count
   nsrefcnt GetRefCount() { return mRefCnt; }
 
-  size_t SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf) const;
+  size_t SizeOfIncludingThis(MallocSizeOf aMallocSizeOf) const;
 };
 
 /**
@@ -299,12 +300,10 @@ NS_PurgeAtomTable()
 AtomImpl::AtomImpl(const nsAString& aString, PLDHashNumber aKeyHash)
 {
   mLength = aString.Length();
-  nsStringBuffer* buf = nsStringBuffer::FromString(aString);
+  nsRefPtr<nsStringBuffer> buf = nsStringBuffer::FromString(aString);
   if (buf) {
-    buf->AddRef();
     mString = static_cast<PRUnichar*>(buf->Data());
-  }
-  else {
+  } else {
     buf = nsStringBuffer::Alloc((mLength + 1) * sizeof(PRUnichar));
     mString = static_cast<PRUnichar*>(buf->Data());
     CopyUnicodeTo(aString, 0, mString, mLength);
@@ -319,6 +318,9 @@ AtomImpl::AtomImpl(const nsAString& aString, PLDHashNumber aKeyHash)
   NS_ASSERTION(buf && buf->StorageSize() >= (mLength+1) * sizeof(PRUnichar),
                "enough storage");
   NS_ASSERTION(Equals(aString), "correct data");
+
+  // Take ownership of buffer
+  buf.forget();
 }
 
 AtomImpl::AtomImpl(nsStringBuffer* aStringBuffer, uint32_t aLength,
@@ -434,7 +436,7 @@ AtomImpl::IsStaticAtom()
 }
 
 size_t
-AtomImpl::SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf) const
+AtomImpl::SizeOfIncludingThis(MallocSizeOf aMallocSizeOf) const
 {
   return aMallocSizeOf(this) +
          nsStringBuffer::FromData(mString)->
@@ -445,7 +447,7 @@ AtomImpl::SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf) const
 
 static size_t
 SizeOfAtomTableEntryExcludingThis(PLDHashEntryHdr *aHdr,
-                                  nsMallocSizeOfFun aMallocSizeOf,
+                                  MallocSizeOf aMallocSizeOf,
                                   void *aArg)
 {
   AtomTableEntry* entry = static_cast<AtomTableEntry*>(aHdr);
@@ -455,14 +457,14 @@ SizeOfAtomTableEntryExcludingThis(PLDHashEntryHdr *aHdr,
 static size_t
 SizeOfStaticAtomTableEntryExcludingThis(const nsAString& aKey,
                                         nsIAtom* const& aData,
-                                        nsMallocSizeOfFun aMallocSizeOf,
+                                        MallocSizeOf aMallocSizeOf,
                                         void* aArg)
 {
   return aKey.SizeOfExcludingThisIfUnshared(aMallocSizeOf);
 }
 
 size_t
-NS_SizeOfAtomTablesIncludingThis(nsMallocSizeOfFun aMallocSizeOf) {
+NS_SizeOfAtomTablesIncludingThis(MallocSizeOf aMallocSizeOf) {
   size_t n = 0;
   if (gAtomTable.ops) {
       n += PL_DHashTableSizeOfExcludingThis(&gAtomTable,
@@ -482,7 +484,6 @@ static void HandleOOM()
 {
   fputs("Out of memory allocating atom hashtable.\n", stderr);
   MOZ_CRASH();
-  MOZ_NOT_REACHED();
 }
 
 static inline void

@@ -6,6 +6,7 @@
 #ifndef mozilla_dom_HTMLModElement_h
 #define mozilla_dom_HTMLModElement_h
 
+#include "mozilla/Attributes.h"
 #include "nsGenericHTMLElement.h"
 #include "nsIDOMHTMLModElement.h"
 #include "nsGkAtoms.h"
@@ -13,8 +14,8 @@
 namespace mozilla {
 namespace dom {
 
-class HTMLModElement : public nsGenericHTMLElement,
-                       public nsIDOMHTMLModElement
+class HTMLModElement MOZ_FINAL : public nsGenericHTMLElement,
+                                 public nsIDOMHTMLModElement
 {
 public:
   HTMLModElement(already_AddRefed<nsINodeInfo> aNodeInfo);
@@ -35,9 +36,9 @@ public:
   // nsIDOMHTMLModElement
   NS_DECL_NSIDOMHTMLMODELEMENT
 
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
 
-  virtual nsIDOMNode* AsDOMNode() { return this; }
+  virtual nsIDOMNode* AsDOMNode() MOZ_OVERRIDE { return this; }
 
   void GetCite(nsString& aCite)
   {

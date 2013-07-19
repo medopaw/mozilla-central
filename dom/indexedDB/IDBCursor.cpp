@@ -88,7 +88,7 @@ public:
                                   MOZ_OVERRIDE;
 
   virtual nsresult GetSuccessResult(JSContext* aCx,
-                                    jsval* aVal) MOZ_OVERRIDE;
+                                    JS::MutableHandle<JS::Value> aVal) MOZ_OVERRIDE;
 
   virtual void ReleaseMainThreadObjects() MOZ_OVERRIDE;
 
@@ -544,9 +544,7 @@ IDBCursor::GetKey(JSContext* aCx,
       mRooted = true;
     }
 
-    JSAutoRequest ar(aCx);
-
-    nsresult rv = mKey.ToJSVal(aCx, &mCachedKey);
+    nsresult rv = mKey.ToJSVal(aCx, mCachedKey);
     NS_ENSURE_SUCCESS(rv, rv);
 
     mHaveCachedKey = true;
@@ -580,7 +578,7 @@ IDBCursor::GetPrimaryKey(JSContext* aCx,
 
     const Key& key = mType == OBJECTSTORE ? mKey : mObjectKey;
 
-    nsresult rv = key.ToJSVal(aCx, &mCachedPrimaryKey);
+    nsresult rv = key.ToJSVal(aCx, mCachedPrimaryKey);
     NS_ENSURE_SUCCESS(rv, rv);
 
     mHaveCachedPrimaryKey = true;
@@ -608,7 +606,7 @@ IDBCursor::GetValue(JSContext* aCx,
       mRooted = true;
     }
 
-    jsval val;
+    JS::Rooted<JS::Value> val(aCx);
     if (!IDBObjectStore::DeserializeValue(aCx, mCloneReadInfo, &val)) {
       return NS_ERROR_DOM_DATA_CLONE_ERR;
     }
@@ -740,7 +738,7 @@ IDBCursor::Update(const jsval& aValue,
     }
   }
   else {
-    jsval keyVal;
+    JS::Rooted<JS::Value> keyVal(aCx);
     rv = objectKey.ToJSVal(aCx, &keyVal);
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -811,7 +809,7 @@ IDBCursor::Delete(JSContext* aCx,
 
   Key& objectKey = (mType == OBJECTSTORE) ? mKey : mObjectKey;
 
-  jsval key;
+  JS::Rooted<JS::Value> key(aCx);
   nsresult rv = objectKey.ToJSVal(aCx, &key);
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1006,12 +1004,12 @@ ContinueHelper::DoDatabaseWork(mozIStorageConnection* aConnection)
 
 nsresult
 ContinueHelper::GetSuccessResult(JSContext* aCx,
-                                 jsval* aVal)
+                                 JS::MutableHandle<JS::Value> aVal)
 {
   UpdateCursorState();
 
   if (mKey.IsUnset()) {
-    *aVal = JSVAL_NULL;
+    aVal.setNull();
   }
   else {
     nsresult rv = WrapNative(aCx, mCursor, aVal);

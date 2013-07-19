@@ -7,6 +7,7 @@
 
 #include "mozilla/layers/CompositorChild.h"
 #include "mozilla/layers/CompositorParent.h"
+#include "mozilla/layers/ImageBridgeChild.h"
 #include "nsBaseWidget.h"
 #include "nsDeviceContext.h"
 #include "nsCOMPtr.h"
@@ -37,6 +38,7 @@
 #include "mozilla/Attributes.h"
 #include "nsContentUtils.h"
 #include "gfxPlatform.h"
+#include "mozilla/gfx/2D.h"
 
 #ifdef ACCESSIBILITY
 #include "nsAccessibilityService.h"
@@ -47,7 +49,6 @@
 
 static void debug_RegisterPrefCallbacks();
 
-static bool debug_InSecureKeyboardInputMode = false;
 #endif
 
 #ifdef NOISY_WIDGET_LEAKS
@@ -119,8 +120,32 @@ nsBaseWidget::nsBaseWidget()
 #ifdef DEBUG
   debug_RegisterPrefCallbacks();
 #endif
+
+  mShutdownObserver = new WidgetShutdownObserver(this);
+  nsContentUtils::RegisterShutdownObserver(mShutdownObserver);
 }
 
+NS_IMPL_ISUPPORTS1(WidgetShutdownObserver, nsIObserver)
+
+NS_IMETHODIMP
+WidgetShutdownObserver::Observe(nsISupports *aSubject,
+                                const char *aTopic,
+                                const PRUnichar *aData)
+{
+  if (strcmp(aTopic, NS_XPCOM_SHUTDOWN_OBSERVER_ID) == 0 &&
+      mWidget) {
+    mWidget->Shutdown();
+    nsContentUtils::UnregisterShutdownObserver(this);
+  }
+ return NS_OK;
+}
+
+void
+nsBaseWidget::Shutdown()
+{
+  DestroyCompositor();
+  mShutdownObserver = nullptr;
+}
 
 static void DeferredDestroyCompositor(CompositorParent* aCompositorParent,
                               CompositorChild* aCompositorChild)
@@ -170,6 +195,15 @@ nsBaseWidget::~nsBaseWidget()
   if (mLayerManager) {
     mLayerManager->Destroy();
     mLayerManager = nullptr;
+  }
+
+  if (mShutdownObserver) {
+    // If the shutdown observer is currently processing observers,
+    // then UnregisterShutdownObserver won't stop our Observer
+    // function from being called. Make sure we don't try
+    // to reference the dead widget.
+    mShutdownObserver->mWidget = nullptr;
+    nsContentUtils::UnregisterShutdownObserver(mShutdownObserver);
   }
 
   DestroyCompositor();
@@ -442,7 +476,16 @@ void nsBaseWidget::AddChild(nsIWidget* aChild)
 //-------------------------------------------------------------------------
 void nsBaseWidget::RemoveChild(nsIWidget* aChild)
 {
+#ifdef DEBUG
+#ifdef XP_MACOSX
+  // nsCocoaWindow doesn't implement GetParent, so in that case parent will be
+  // null and we'll just have to do without this assertion.
+  nsIWidget* parent = aChild->GetParent();
+  NS_ASSERTION(!parent || parent == this, "Not one of our kids!");
+#else
   NS_ASSERTION(aChild->GetParent() == this, "Not one of our kids!");
+#endif
+#endif
 
   if (mLastChild == aChild) {
     mLastChild = mLastChild->GetPrevSibling();
@@ -875,8 +918,27 @@ void nsBaseWidget::CreateCompositor()
   CreateCompositor(rect.width, rect.height);
 }
 
+mozilla::layers::LayersBackend
+nsBaseWidget::GetPreferredCompositorBackend()
+{
+  if (mUseLayersAcceleration) {
+    return mozilla::layers::LAYERS_OPENGL;
+  }
+
+  return mozilla::layers::LAYERS_BASIC;
+}
+
 void nsBaseWidget::CreateCompositor(int aWidth, int aHeight)
 {
+  // Recreating this is tricky, as we may still have an old and we need
+  // to make sure it's properly destroyed by calling DestroyCompositor!
+
+  // If we've already received a shutdown notification, don't try
+  // create a new compositor.
+  if (!mShutdownObserver) {
+    return;
+  }
+
   mCompositorParent = NewCompositorParent(aWidth, aHeight);
   AsyncChannel *parentChannel = mCompositorParent->GetIPCChannel();
   LayerManager* lm = new ClientLayerManager(this);
@@ -887,12 +949,8 @@ void nsBaseWidget::CreateCompositor(int aWidth, int aHeight)
 
   TextureFactoryIdentifier textureFactoryIdentifier;
   PLayerTransactionChild* shadowManager;
-  mozilla::layers::LayersBackend backendHint;
-  if (mUseLayersAcceleration) {
-    backendHint = mozilla::layers::LAYERS_OPENGL;
-  } else {
-    backendHint = mozilla::layers::LAYERS_BASIC;
-  }
+  mozilla::layers::LayersBackend backendHint = GetPreferredCompositorBackend();
+
   shadowManager = mCompositorChild->SendPLayerTransactionConstructor(
     backendHint, 0, &textureFactoryIdentifier);
 
@@ -905,14 +963,17 @@ void nsBaseWidget::CreateCompositor(int aWidth, int aHeight)
     }
     lf->SetShadowManager(shadowManager);
     lf->IdentifyTextureHost(textureFactoryIdentifier);
+    ImageBridgeChild::IdentifyCompositorTextureHost(textureFactoryIdentifier);
 
     mLayerManager = lm;
-  } else {
-    // We don't currently want to support not having a LayersChild
-    NS_RUNTIMEABORT("failed to construct LayersChild");
-    delete lm;
-    mCompositorChild = nullptr;
+    return;
   }
+
+  // Failed to create a compositor!
+  NS_WARNING("Failed to create an OMT compositor.");
+  DestroyCompositor();
+  // Compositor child had the only reference to LayerManager and will have
+  // deallocated it when being freed.
 }
 
 bool nsBaseWidget::ShouldUseOffMainThreadCompositing()
@@ -978,6 +1039,11 @@ BasicLayerManager* nsBaseWidget::CreateBasicLayerManager()
 CompositorChild* nsBaseWidget::GetRemoteRenderer()
 {
   return mCompositorChild;
+}
+
+TemporaryRef<mozilla::gfx::DrawTarget> nsBaseWidget::StartRemoteDrawing()
+{
+  return nullptr;
 }
 
 //-------------------------------------------------------------------------
@@ -1154,26 +1220,6 @@ nsBaseWidget::HasPendingInputEvent()
 NS_IMETHODIMP
 nsBaseWidget::SetIcon(const nsAString&)
 {
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBaseWidget::BeginSecureKeyboardInput()
-{
-#ifdef DEBUG
-  NS_ASSERTION(!debug_InSecureKeyboardInputMode, "Attempting to nest call to BeginSecureKeyboardInput!");
-  debug_InSecureKeyboardInputMode = true;
-#endif
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBaseWidget::EndSecureKeyboardInput()
-{
-#ifdef DEBUG
-  NS_ASSERTION(debug_InSecureKeyboardInputMode, "Calling EndSecureKeyboardInput when it hasn't been enabled!");
-  debug_InSecureKeyboardInputMode = false;
-#endif
   return NS_OK;
 }
 
@@ -1452,7 +1498,7 @@ nsBaseWidget::NotifyUIStateChanged(UIStateChangeType aShowAccelerators,
 #ifdef ACCESSIBILITY
 
 a11y::Accessible*
-nsBaseWidget::GetAccessible()
+nsBaseWidget::GetRootAccessible()
 {
   NS_ENSURE_TRUE(mWidgetListener, nullptr);
 
@@ -1467,7 +1513,8 @@ nsBaseWidget::GetAccessible()
 
   // Accessible creation might be not safe so use IsSafeToRunScript to
   // make sure it's not created at unsafe times.
-  nsCOMPtr<nsIAccessibilityService> accService = services::GetAccessibilityService();
+  nsCOMPtr<nsIAccessibilityService> accService =
+    services::GetAccessibilityService();
   if (accService) {
     return accService->GetRootDocumentAccessible(presShell, nsContentUtils::IsSafeToRunScript());
   }

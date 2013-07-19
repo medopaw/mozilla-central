@@ -23,6 +23,10 @@
 #include "mozilla/DebugOnly.h"
 #include "mozilla/Preferences.h"
 
+#ifdef XP_MACOSX
+#include <CoreServices/CoreServices.h>
+#endif
+
 using namespace mozilla::gfx;
 
 namespace mozilla {
@@ -58,6 +62,7 @@ static const char *sExtensionNames[] = {
     "GL_ARB_pixel_buffer_object",
     "GL_ARB_ES2_compatibility",
     "GL_OES_texture_float",
+    "GL_OES_texture_float_linear",
     "GL_ARB_texture_float",
     "GL_EXT_unpack_subimage",
     "GL_OES_standard_derivatives",
@@ -80,6 +85,12 @@ static const char *sExtensionNames[] = {
     "GL_OES_EGL_sync",
     "GL_OES_EGL_image_external",
     "GL_EXT_packed_depth_stencil",
+    "GL_OES_element_index_uint",
+    "GL_OES_vertex_array_object",
+    "GL_ARB_vertex_array_object",
+    "GL_APPLE_vertex_array_object",
+    "GL_ARB_draw_buffers",
+    "GL_EXT_draw_buffers",
     nullptr
 };
 
@@ -351,9 +362,11 @@ GLContext::InitWithPrefix(const char *prefix, bool trygl)
         const char *rendererMatchStrings[RendererOther] = {
                 "Adreno 200",
                 "Adreno 205",
+                "Adreno (TM) 205",
                 "Adreno (TM) 320",
                 "PowerVR SGX 530",
-                "PowerVR SGX 540"
+                "PowerVR SGX 540",
+                "NVIDIA Tegra"
         };
 
         mRenderer = RendererOther;
@@ -403,6 +416,13 @@ GLContext::InitWithPrefix(const char *prefix, bool trygl)
 #endif
 
         InitExtensions();
+
+        // Disable extensions with partial or incorrect support.
+        if (WorkAroundDriverBugs()) {
+            if (Renderer() == RendererAdrenoTM320) {
+                MarkExtensionUnsupported(OES_standard_derivatives);
+            }
+        }
 
         NS_ASSERTION(!IsExtensionSupported(GLContext::ARB_pixel_buffer_object) ||
                      (mSymbols.fMapBuffer && mSymbols.fUnmapBuffer),
@@ -532,7 +552,53 @@ GLContext::InitWithPrefix(const char *prefix, bool trygl)
                 mSymbols.fEGLImageTargetRenderbufferStorage = nullptr;
             }
         }
-       
+
+        if (IsExtensionSupported(ARB_vertex_array_object) ||
+            IsExtensionSupported(OES_vertex_array_object)) {
+            SymLoadStruct vaoSymbols[] = {
+                { (PRFuncPtr*) &mSymbols.fIsVertexArray, { "IsVertexArray", "IsVertexArrayOES", nullptr } },
+                { (PRFuncPtr*) &mSymbols.fGenVertexArrays, { "GenVertexArrays", "GenVertexArraysOES", nullptr } },
+                { (PRFuncPtr*) &mSymbols.fBindVertexArray, { "BindVertexArray", "BindVertexArrayOES", nullptr } },
+                { (PRFuncPtr*) &mSymbols.fDeleteVertexArrays, { "DeleteVertexArrays", "DeleteVertexArraysOES", nullptr } },
+                { nullptr, { nullptr } },
+            };
+
+            if (!LoadSymbols(&vaoSymbols[0], trygl, prefix)) {
+                NS_ERROR("GL supports Vertex Array Object without supplying its functions.");
+
+                MarkExtensionUnsupported(ARB_vertex_array_object);
+                MarkExtensionUnsupported(OES_vertex_array_object);
+                MarkExtensionUnsupported(APPLE_vertex_array_object);
+                mSymbols.fIsVertexArray = nullptr;
+                mSymbols.fGenVertexArrays = nullptr;
+                mSymbols.fBindVertexArray = nullptr;
+                mSymbols.fDeleteVertexArrays = nullptr;
+            }
+        }
+        else if (IsExtensionSupported(APPLE_vertex_array_object)) {
+            /*
+             * separate call to LoadSymbols with APPLE_vertex_array_object to work around
+             * a driver bug : the IsVertexArray symbol (without suffix) can be present but unusable.
+             */
+            SymLoadStruct vaoSymbols[] = {
+                { (PRFuncPtr*) &mSymbols.fIsVertexArray, { "IsVertexArrayAPPLE", nullptr } },
+                { (PRFuncPtr*) &mSymbols.fGenVertexArrays, { "GenVertexArraysAPPLE", nullptr } },
+                { (PRFuncPtr*) &mSymbols.fBindVertexArray, { "BindVertexArrayAPPLE", nullptr } },
+                { (PRFuncPtr*) &mSymbols.fDeleteVertexArrays, { "DeleteVertexArraysAPPLE", nullptr } },
+                { nullptr, { nullptr } },
+            };
+
+            if (!LoadSymbols(&vaoSymbols[0], trygl, prefix)) {
+                NS_ERROR("GL supports Vertex Array Object without supplying its functions.");
+
+                MarkExtensionUnsupported(APPLE_vertex_array_object);
+                mSymbols.fIsVertexArray = nullptr;
+                mSymbols.fGenVertexArrays = nullptr;
+                mSymbols.fBindVertexArray = nullptr;
+                mSymbols.fDeleteVertexArrays = nullptr;
+            }
+        }
+
         // Load developer symbols, don't fail if we can't find them.
         SymLoadStruct auxSymbols[] = {
                 { (PRFuncPtr*) &mSymbols.fGetTexImage, { "GetTexImage", nullptr } },
@@ -557,14 +623,33 @@ GLContext::InitWithPrefix(const char *prefix, bool trygl)
         raw_fGetIntegerv(LOCAL_GL_MAX_RENDERBUFFER_SIZE, &mMaxRenderbufferSize);
 
 #ifdef XP_MACOSX
-        if (mWorkAroundDriverBugs &&
-            mVendor == VendorIntel) {
-            // see bug 737182 for 2D textures, bug 684882 for cube map textures.
-            mMaxTextureSize        = std::min(mMaxTextureSize,        4096);
-            mMaxCubeMapTextureSize = std::min(mMaxCubeMapTextureSize, 512);
-            // for good measure, we align renderbuffers on what we do for 2D textures
-            mMaxRenderbufferSize   = std::min(mMaxRenderbufferSize,   4096);
-            mNeedsTextureSizeChecks = true;
+        if (mWorkAroundDriverBugs) {
+            if (mVendor == VendorIntel) {
+                // see bug 737182 for 2D textures, bug 684882 for cube map textures.
+                mMaxTextureSize        = std::min(mMaxTextureSize,        4096);
+                mMaxCubeMapTextureSize = std::min(mMaxCubeMapTextureSize, 512);
+                // for good measure, we align renderbuffers on what we do for 2D textures
+                mMaxRenderbufferSize   = std::min(mMaxRenderbufferSize,   4096);
+                mNeedsTextureSizeChecks = true;
+            } else if (mVendor == VendorNVIDIA) {
+                SInt32 major, minor;
+                OSErr err1 = ::Gestalt(gestaltSystemVersionMajor, &major);
+                OSErr err2 = ::Gestalt(gestaltSystemVersionMinor, &minor);
+
+                if (err1 != noErr || err2 != noErr ||
+                    major < 10 || (major == 10 && minor < 8)) {
+                    // See bug 877949.
+                    mMaxTextureSize = std::min(mMaxTextureSize, 4096);
+                    mMaxRenderbufferSize = std::min(mMaxRenderbufferSize, 4096);
+                }
+                else {
+                    // See bug 879656.  8192 fails, 8191 works.
+                    mMaxTextureSize = std::min(mMaxTextureSize, 8191);
+                    mMaxRenderbufferSize = std::min(mMaxRenderbufferSize, 8191);
+                }
+                // Part of the bug 879656, but it also doesn't hurt the 877949
+                mNeedsTextureSizeChecks = true;
+            }
         }
 #endif
 #ifdef MOZ_X11
@@ -777,10 +862,10 @@ GLContext::ListHasExtension(const GLubyte *extensions, const char *extension)
     if (where || *extension == '\0')
         return false;
 
-    /* 
+    /*
      * It takes a bit of care to be fool-proof about parsing the
      * OpenGL extensions string. Don't be fooled by sub-strings,
-     * etc. 
+     * etc.
      */
     start = extensions;
     for (;;) {
@@ -876,8 +961,12 @@ GLContext::UpdatePixelFormat()
     MOZ_ASSERT(caps.color == !!format.blue);
 
     MOZ_ASSERT(caps.alpha == !!format.alpha);
-    MOZ_ASSERT(caps.depth == !!format.depth);
-    MOZ_ASSERT(caps.stencil == !!format.stencil);
+
+    // These we either must have if they're requested, or
+    // we can have if they're not.
+    MOZ_ASSERT(caps.depth == !!format.depth || !caps.depth);
+    MOZ_ASSERT(caps.stencil == !!format.stencil || !caps.stencil);
+
     MOZ_ASSERT(caps.antialias == (format.samples > 1));
 #endif
     mPixelFormat = new PixelBufferFormat(format);
@@ -1350,13 +1439,27 @@ GLContext::MarkDestroyed()
 
 static void SwapRAndBComponents(gfxImageSurface* surf)
 {
-    for (int j = 0; j < surf->Height(); ++j) {
-        uint32_t* row = (uint32_t*)(surf->Data() + surf->Stride() * j);
-        for (int i = 0; i < surf->Width(); ++i) {
-            *row = (*row & 0xff00ff00) | ((*row & 0xff) << 16) | ((*row & 0xff0000) >> 16);
-            row++;
-        }
+  uint8_t *row = surf->Data();
+
+  size_t rowBytes = surf->Width()*4;
+  size_t rowHole = surf->Stride() - rowBytes;
+
+  size_t rows = surf->Height();
+
+  while (rows) {
+
+    const uint8_t *rowEnd = row + rowBytes;
+
+    while (row != rowEnd) {
+      row[0] ^= row[2];
+      row[2] ^= row[0];
+      row[0] ^= row[2];
+      row += 4;
     }
+
+    row += rowHole;
+    --rows;
+  }
 }
 
 static already_AddRefed<gfxImageSurface> YInvertImageSurface(gfxImageSurface* aSurf)
@@ -1373,7 +1476,7 @@ static already_AddRefed<gfxImageSurface> YInvertImageSurface(gfxImageSurface* aS
 }
 
 already_AddRefed<gfxImageSurface>
-GLContext::GetTexImage(GLuint aTexture, bool aYInvert, ShaderProgramType aShader)
+GLContext::GetTexImage(GLuint aTexture, bool aYInvert, SurfaceFormat aFormat)
 {
     MakeCurrent();
     GuaranteeResolve();
@@ -1383,10 +1486,10 @@ GLContext::GetTexImage(GLuint aTexture, bool aYInvert, ShaderProgramType aShader
     gfxIntSize size;
     fGetTexLevelParameteriv(LOCAL_GL_TEXTURE_2D, 0, LOCAL_GL_TEXTURE_WIDTH, &size.width);
     fGetTexLevelParameteriv(LOCAL_GL_TEXTURE_2D, 0, LOCAL_GL_TEXTURE_HEIGHT, &size.height);
-    
+
     nsRefPtr<gfxImageSurface> surf = new gfxImageSurface(size, gfxASurface::ImageFormatARGB32);
     if (!surf || surf->CairoStatus()) {
-        return NULL;
+        return nullptr;
     }
 
     uint32_t currentPackAlignment = 0;
@@ -1398,8 +1501,8 @@ GLContext::GetTexImage(GLuint aTexture, bool aYInvert, ShaderProgramType aShader
     if (currentPackAlignment != 4) {
         fPixelStorei(LOCAL_GL_PACK_ALIGNMENT, currentPackAlignment);
     }
-   
-    if (aShader == RGBALayerProgramType || aShader == RGBXLayerProgramType) {
+
+    if (aFormat == FORMAT_R8G8B8A8 || aFormat == FORMAT_R8G8B8X8) {
       SwapRAndBComponents(surf);
     }
 
@@ -1643,8 +1746,7 @@ GLContext::ReadPixelsIntoImageSurface(gfxImageSurface* dest)
             break;
 
         default:
-            MOZ_NOT_REACHED("Bad format.");
-            return;
+            MOZ_CRASH("Bad format.");
     }
     MOZ_ASSERT(dest->Stride() == dest->Width() * destPixelSize);
 
@@ -1661,7 +1763,7 @@ GLContext::ReadPixelsIntoImageSurface(gfxImageSurface* dest)
         if (DebugMode()) {
             NS_WARNING("Needing intermediary surface for ReadPixels. This will be slow!");
         }
-        gfxASurface::gfxImageFormat readFormatGFX;
+        ImageFormat readFormatGFX;
 
         switch (readFormat) {
             case LOCAL_GL_RGBA:
@@ -1677,8 +1779,7 @@ GLContext::ReadPixelsIntoImageSurface(gfxImageSurface* dest)
                 break;
             }
             default: {
-                MOZ_NOT_REACHED("Bad read format.");
-                return;
+                MOZ_CRASH("Bad read format.");
             }
         }
 
@@ -1699,8 +1800,7 @@ GLContext::ReadPixelsIntoImageSurface(gfxImageSurface* dest)
                 break;
             }
             default: {
-                MOZ_NOT_REACHED("Bad read type.");
-                return;
+                MOZ_CRASH("Bad read type.");
             }
         }
 
@@ -1786,14 +1886,8 @@ GLContext::BlitTextureImage(TextureImage *aSrc, const nsIntRect& aSrcRect,
     if (aSrcRect.IsEmpty() || aDstRect.IsEmpty())
         return;
 
-    // only save/restore this stuff on Qualcomm Adreno, to work
-    // around an apparent bug
     int savedFb = 0;
-    if (mWorkAroundDriverBugs &&
-        mVendor == VendorQualcomm)
-    {
-        fGetIntegerv(LOCAL_GL_FRAMEBUFFER_BINDING, &savedFb);
-    }
+    fGetIntegerv(LOCAL_GL_FRAMEBUFFER_BINDING, &savedFb);
 
     fDisable(LOCAL_GL_SCISSOR_TEST);
     fDisable(LOCAL_GL_BLEND);
@@ -1842,8 +1936,8 @@ GLContext::BlitTextureImage(TextureImage *aSrc, const nsIntRect& aSrcRect,
             if (srcSubRect.IsEmpty()) {
                 continue;
             }
-            // We now have the intersection of 
-            //     the current source tile 
+            // We now have the intersection of
+            //     the current source tile
             // and the desired source rectangle
             // and the destination tile
             // and the desired destination rectange
@@ -1920,60 +2014,53 @@ GLContext::BlitTextureImage(TextureImage *aSrc, const nsIntRect& aSrcRect,
     // unbind the previous texture from the framebuffer
     SetBlitFramebufferForDestTexture(0);
 
-    // then put back the previous framebuffer, and don't
-    // enable stencil if it wasn't enabled on entry to work
-    // around Adreno 200 bug that causes us to crash if
-    // we enable scissor test while the current FBO is invalid
-    // (which it will be, once we assign texture 0 to the color
-    // attachment)
-    if (mWorkAroundDriverBugs &&
-        mVendor == VendorQualcomm) {
-        fBindFramebuffer(LOCAL_GL_FRAMEBUFFER, savedFb);
-    }
+    fBindFramebuffer(LOCAL_GL_FRAMEBUFFER, savedFb);
 
     fEnable(LOCAL_GL_SCISSOR_TEST);
     fEnable(LOCAL_GL_BLEND);
 }
 
-static unsigned int 
-DataOffset(gfxImageSurface *aSurf, const nsIntPoint &aPoint)
+static unsigned int
+DataOffset(const nsIntPoint &aPoint, int32_t aStride, gfxASurface::gfxImageFormat aFormat)
 {
-  unsigned int data = aPoint.y * aSurf->Stride();
-  data += aPoint.x * gfxASurface::BytePerPixelFromFormat(aSurf->Format());
+  unsigned int data = aPoint.y * aStride;
+  data += aPoint.x * gfxASurface::BytePerPixelFromFormat(aFormat);
   return data;
 }
 
-ShaderProgramType 
-GLContext::UploadSurfaceToTexture(gfxASurface *aSurface, 
-                                  const nsIntRegion& aDstRegion,
-                                  GLuint& aTexture,
-                                  bool aOverwrite,
-                                  const nsIntPoint& aSrcPoint,
-                                  bool aPixelBuffer,
-                                  GLenum aTextureUnit)
+GLContext::SurfaceFormat
+GLContext::UploadImageDataToTexture(unsigned char* aData,
+                                    int32_t aStride,
+                                    gfxASurface::gfxImageFormat aFormat,
+                                    const nsIntRegion& aDstRegion,
+                                    GLuint& aTexture,
+                                    bool aOverwrite,
+                                    bool aPixelBuffer,
+                                    GLenum aTextureUnit,
+                                    GLenum aTextureTarget)
 {
     bool textureInited = aOverwrite ? false : true;
     MakeCurrent();
     fActiveTexture(aTextureUnit);
-  
+
     if (!aTexture) {
         fGenTextures(1, &aTexture);
-        fBindTexture(LOCAL_GL_TEXTURE_2D, aTexture);
-        fTexParameteri(LOCAL_GL_TEXTURE_2D, 
-                       LOCAL_GL_TEXTURE_MIN_FILTER, 
+        fBindTexture(aTextureTarget, aTexture);
+        fTexParameteri(aTextureTarget,
+                       LOCAL_GL_TEXTURE_MIN_FILTER,
                        LOCAL_GL_LINEAR);
-        fTexParameteri(LOCAL_GL_TEXTURE_2D, 
-                       LOCAL_GL_TEXTURE_MAG_FILTER, 
+        fTexParameteri(aTextureTarget,
+                       LOCAL_GL_TEXTURE_MAG_FILTER,
                        LOCAL_GL_LINEAR);
-        fTexParameteri(LOCAL_GL_TEXTURE_2D, 
-                       LOCAL_GL_TEXTURE_WRAP_S, 
+        fTexParameteri(aTextureTarget,
+                       LOCAL_GL_TEXTURE_WRAP_S,
                        LOCAL_GL_CLAMP_TO_EDGE);
-        fTexParameteri(LOCAL_GL_TEXTURE_2D, 
-                       LOCAL_GL_TEXTURE_WRAP_T, 
+        fTexParameteri(aTextureTarget,
+                       LOCAL_GL_TEXTURE_WRAP_T,
                        LOCAL_GL_CLAMP_TO_EDGE);
         textureInited = false;
     } else {
-        fBindTexture(LOCAL_GL_TEXTURE_2D, aTexture);
+        fBindTexture(aTextureTarget, aTexture);
     }
 
     nsIntRegion paintRegion;
@@ -1983,20 +2070,131 @@ GLContext::UploadSurfaceToTexture(gfxASurface *aSurface,
         paintRegion = aDstRegion;
     }
 
+    GLenum format;
+    GLenum internalFormat;
+    GLenum type;
+    int32_t pixelSize = gfxASurface::BytePerPixelFromFormat(aFormat);
+    SurfaceFormat surfaceFormat;
+
+    MOZ_ASSERT(GetPreferredARGB32Format() == LOCAL_GL_BGRA ||
+               GetPreferredARGB32Format() == LOCAL_GL_RGBA);
+    switch (aFormat) {
+        case gfxASurface::ImageFormatARGB32:
+            if (GetPreferredARGB32Format() == LOCAL_GL_BGRA) {
+              format = LOCAL_GL_BGRA;
+              surfaceFormat = FORMAT_R8G8B8A8;
+              type = LOCAL_GL_UNSIGNED_INT_8_8_8_8_REV;
+            } else {
+              format = LOCAL_GL_RGBA;
+              surfaceFormat = FORMAT_B8G8R8A8;
+              type = LOCAL_GL_UNSIGNED_BYTE;
+            }
+            internalFormat = LOCAL_GL_RGBA;
+            break;
+        case gfxASurface::ImageFormatRGB24:
+            // Treat RGB24 surfaces as RGBA32 except for the surface
+            // format used.
+            if (GetPreferredARGB32Format() == LOCAL_GL_BGRA) {
+              format = LOCAL_GL_BGRA;
+              surfaceFormat = FORMAT_R8G8B8X8;
+              type = LOCAL_GL_UNSIGNED_INT_8_8_8_8_REV;
+            } else {
+              format = LOCAL_GL_RGBA;
+              surfaceFormat = FORMAT_B8G8R8X8;
+              type = LOCAL_GL_UNSIGNED_BYTE;
+            }
+            internalFormat = LOCAL_GL_RGBA;
+            break;
+        case gfxASurface::ImageFormatRGB16_565:
+            internalFormat = format = LOCAL_GL_RGB;
+            type = LOCAL_GL_UNSIGNED_SHORT_5_6_5;
+            surfaceFormat = FORMAT_R5G6B5;
+            break;
+        case gfxASurface::ImageFormatA8:
+            internalFormat = format = LOCAL_GL_LUMINANCE;
+            type = LOCAL_GL_UNSIGNED_BYTE;
+            // We don't have a specific luminance shader
+            surfaceFormat = FORMAT_A8;
+            break;
+        default:
+            NS_ASSERTION(false, "Unhandled image surface format!");
+            format = 0;
+            type = 0;
+            surfaceFormat = FORMAT_UNKNOWN;
+    }
+
+    nsIntRegionRectIterator iter(paintRegion);
+    const nsIntRect *iterRect;
+
+    // Top left point of the region's bounding rectangle.
+    nsIntPoint topLeft = paintRegion.GetBounds().TopLeft();
+
+    while ((iterRect = iter.Next())) {
+        // The inital data pointer is at the top left point of the region's
+        // bounding rectangle. We need to find the offset of this rect
+        // within the region and adjust the data pointer accordingly.
+        unsigned char *rectData =
+            aData + DataOffset(iterRect->TopLeft() - topLeft, aStride, aFormat);
+
+        NS_ASSERTION(textureInited || (iterRect->x == 0 && iterRect->y == 0),
+                     "Must be uploading to the origin when we don't have an existing texture");
+
+        if (textureInited && CanUploadSubTextures()) {
+            TexSubImage2D(aTextureTarget,
+                          0,
+                          iterRect->x,
+                          iterRect->y,
+                          iterRect->width,
+                          iterRect->height,
+                          aStride,
+                          pixelSize,
+                          format,
+                          type,
+                          rectData);
+        } else {
+            TexImage2D(aTextureTarget,
+                       0,
+                       internalFormat,
+                       iterRect->width,
+                       iterRect->height,
+                       aStride,
+                       pixelSize,
+                       0,
+                       format,
+                       type,
+                       rectData);
+        }
+
+    }
+
+    return surfaceFormat;
+}
+
+GLContext::SurfaceFormat
+GLContext::UploadSurfaceToTexture(gfxASurface *aSurface,
+                                  const nsIntRegion& aDstRegion,
+                                  GLuint& aTexture,
+                                  bool aOverwrite,
+                                  const nsIntPoint& aSrcPoint,
+                                  bool aPixelBuffer,
+                                  GLenum aTextureUnit,
+                                  GLenum aTextureTarget)
+{
+
     nsRefPtr<gfxImageSurface> imageSurface = aSurface->GetAsImageSurface();
     unsigned char* data = NULL;
 
-    if (!imageSurface || 
+    if (!imageSurface ||
         (imageSurface->Format() != gfxASurface::ImageFormatARGB32 &&
          imageSurface->Format() != gfxASurface::ImageFormatRGB24 &&
          imageSurface->Format() != gfxASurface::ImageFormatRGB16_565 &&
          imageSurface->Format() != gfxASurface::ImageFormatA8)) {
         // We can't get suitable pixel data for the surface, make a copy
         nsIntRect bounds = aDstRegion.GetBounds();
-        imageSurface = 
-          new gfxImageSurface(gfxIntSize(bounds.width, bounds.height), 
+        imageSurface =
+          new gfxImageSurface(gfxIntSize(bounds.width, bounds.height),
                               gfxASurface::ImageFormatARGB32);
-  
+
         nsRefPtr<gfxContext> context = new gfxContext(imageSurface);
 
         context->Translate(-gfxPoint(aSrcPoint.x, aSrcPoint.y));
@@ -2011,95 +2209,56 @@ GLContext::UploadSurfaceToTexture(gfxASurface *aSurface,
         if (!aPixelBuffer) {
               data = imageSurface->Data();
         }
-        data += DataOffset(imageSurface, aSrcPoint);
+        data += DataOffset(aSrcPoint, imageSurface->Stride(),
+                           imageSurface->Format());
     }
 
     MOZ_ASSERT(imageSurface);
     imageSurface->Flush();
 
-    GLenum format;
-    GLenum type;
-    int32_t pixelSize = gfxASurface::BytePerPixelFromFormat(imageSurface->Format());
-    ShaderProgramType shader;
+    return UploadImageDataToTexture(data,
+                                    imageSurface->Stride(),
+                                    imageSurface->Format(),
+                                    aDstRegion, aTexture, aOverwrite,
+                                    aPixelBuffer, aTextureUnit, aTextureTarget);
+}
 
-    switch (imageSurface->Format()) {
-        case gfxASurface::ImageFormatARGB32:
-            format = LOCAL_GL_RGBA;
-            type = LOCAL_GL_UNSIGNED_BYTE;
-            shader = BGRALayerProgramType;
-            break;
-        case gfxASurface::ImageFormatRGB24:
-            // Treat RGB24 surfaces as RGBA32 except for the shader
-            // program used.
-            format = LOCAL_GL_RGBA;
-            type = LOCAL_GL_UNSIGNED_BYTE;
-            shader = BGRXLayerProgramType;
-            break;
-        case gfxASurface::ImageFormatRGB16_565:
-            format = LOCAL_GL_RGB;
-            type = LOCAL_GL_UNSIGNED_SHORT_5_6_5;
-            shader = RGBALayerProgramType;
-            break;
-        case gfxASurface::ImageFormatA8:
-            format = LOCAL_GL_LUMINANCE;
-            type = LOCAL_GL_UNSIGNED_BYTE;
-            // We don't have a specific luminance shader
-            shader = ShaderProgramType(0);
-            break;
+static gfxASurface::gfxImageFormat
+ImageFormatForSurfaceFormat(gfx::SurfaceFormat aFormat)
+{
+    switch (aFormat) {
+        case gfx::FORMAT_B8G8R8A8:
+            return gfxASurface::ImageFormatARGB32;
+        case gfx::FORMAT_B8G8R8X8:
+            return gfxASurface::ImageFormatRGB24;
+        case gfx::FORMAT_R5G6B5:
+            return gfxASurface::ImageFormatRGB16_565;
+        case gfx::FORMAT_A8:
+            return gfxASurface::ImageFormatA8;
         default:
-            NS_ASSERTION(false, "Unhandled image surface format!");
-            format = 0;
-            type = 0;
-            shader = ShaderProgramType(0);
+            return gfxASurface::ImageFormatUnknown;
     }
+}
 
-    int32_t stride = imageSurface->Stride();
-
-    nsIntRegionRectIterator iter(paintRegion);
-    const nsIntRect *iterRect;
-
-    // Top left point of the region's bounding rectangle.
-    nsIntPoint topLeft = paintRegion.GetBounds().TopLeft();
-
-    while ((iterRect = iter.Next())) {
-        // The inital data pointer is at the top left point of the region's
-        // bounding rectangle. We need to find the offset of this rect
-        // within the region and adjust the data pointer accordingly.
-        unsigned char *rectData = 
-            data + DataOffset(imageSurface, iterRect->TopLeft() - topLeft);
-
-        NS_ASSERTION(textureInited || (iterRect->x == 0 && iterRect->y == 0), 
-                     "Must be uploading to the origin when we don't have an existing texture");
-
-        if (textureInited && CanUploadSubTextures()) {
-            TexSubImage2D(LOCAL_GL_TEXTURE_2D,
-                          0,
-                          iterRect->x,
-                          iterRect->y,
-                          iterRect->width,
-                          iterRect->height,
-                          stride,
-                          pixelSize,
-                          format,
-                          type,
-                          rectData);
-        } else {
-            TexImage2D(LOCAL_GL_TEXTURE_2D,
-                       0,
-                       format,
-                       iterRect->width,
-                       iterRect->height,
-                       stride,
-                       pixelSize,
-                       0,
-                       format,
-                       type,
-                       rectData);
-        }
-
-    }
-
-    return shader;
+GLContext::SurfaceFormat
+GLContext::UploadSurfaceToTexture(gfx::DataSourceSurface *aSurface,
+                                  const nsIntRegion& aDstRegion,
+                                  GLuint& aTexture,
+                                  bool aOverwrite,
+                                  const nsIntPoint& aSrcPoint,
+                                  bool aPixelBuffer,
+                                  GLenum aTextureUnit,
+                                  GLenum aTextureTarget)
+{
+    unsigned char* data = aPixelBuffer ? NULL : aSurface->GetData();
+    int32_t stride = aSurface->Stride();
+    gfxASurface::gfxImageFormat format =
+        ImageFormatForSurfaceFormat(aSurface->GetFormat());
+    data += DataOffset(aSrcPoint, stride, format);
+    return UploadImageDataToTexture(data, stride, format,
+                                    aDstRegion, aTexture, aOverwrite,
+                                    aPixelBuffer, aTextureUnit,
+                                    aTextureTarget);
 }
 
 static GLint GetAddressAlignment(ptrdiff_t aAddress)
@@ -2558,7 +2717,7 @@ GLContext::UseBlitProgram()
     shaders[0] = fCreateShader(LOCAL_GL_VERTEX_SHADER);
     shaders[1] = fCreateShader(LOCAL_GL_FRAGMENT_SHADER);
 
-    const char *blitVSSrc = 
+    const char *blitVSSrc =
         "attribute vec2 aVertex;"
         "attribute vec2 aTexCoord;"
         "varying vec2 vTexCoord;"
@@ -2831,8 +2990,10 @@ GLContext::ReportOutstandingNames()
 void
 GLContext::GuaranteeResolve()
 {
-   mScreen->AssureBlitted();
-   fFinish();
+    if (mScreen) {
+        mScreen->AssureBlitted();
+    }
+    fFinish();
 }
 
 const gfxIntSize&

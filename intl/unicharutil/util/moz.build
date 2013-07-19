@@ -11,7 +11,16 @@ MODULE = 'unicharutil'
 EXPORTS += [
     'nsBidiUtils.h',
     'nsSpecialCasingData.h',
+    'nsUnicharUtils.h',
     'nsUnicodeProperties.h',
     'nsUnicodeScriptCodes.h',
 ]
 
+CPP_SOURCES += [
+    'nsBidiUtils.cpp',
+    'nsSpecialCasingData.cpp',
+    'nsUnicharUtils.cpp',
+    'nsUnicodeProperties.cpp',
+]
+
+LIBRARY_NAME = 'unicharutil_external_s'

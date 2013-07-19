@@ -5,21 +5,26 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 "use strict";
 
-const Cc = Components.classes;
-const Ci = Components.interfaces;
-const Cu = Components.utils;
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
+let promise = Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js").Promise;
 Cu.import("resource:///modules/source-editor.jsm");
 Cu.import("resource:///modules/devtools/shared/event-emitter.js");
 Cu.import("resource:///modules/devtools/SideMenuWidget.jsm");
 Cu.import("resource:///modules/devtools/VariablesView.jsm");
 Cu.import("resource:///modules/devtools/ViewHelpers.jsm");
 
+XPCOMUtils.defineLazyModuleGetter(this, "PluralForm",
+  "resource://gre/modules/PluralForm.jsm");
+
 XPCOMUtils.defineLazyModuleGetter(this, "NetworkHelper",
   "resource://gre/modules/devtools/NetworkHelper.jsm");
+
+XPCOMUtils.defineLazyServiceGetter(this, "clipboardHelper",
+                                   "@mozilla.org/widget/clipboardhelper;1",
+                                   "nsIClipboardHelper");
 
 const NET_STRINGS_URI = "chrome://browser/locale/devtools/netmonitor.properties";
 const LISTENERS = [ "NetworkActivity" ];
@@ -36,19 +41,14 @@ let NetMonitorController = {
    *         A promise that is resolved when the monitor finishes startup.
    */
   startupNetMonitor: function() {
-    if (this._isInitialized) {
-      return this._startup.promise;
+    if (this._startup) {
+      return this._startup;
     }
-    this._isInitialized = true;
 
-    let deferred = this._startup = Promise.defer();
+    NetMonitorView.initialize();
 
-    NetMonitorView.initialize(() => {
-      NetMonitorView._isInitialized = true;
-      deferred.resolve();
-    });
-
-    return deferred.promise;
+    // Startup is synchronous, for now.
+    return this._startup = promise.resolve();
   },
 
   /**
@@ -58,24 +58,17 @@ let NetMonitorController = {
    *         A promise that is resolved when the monitor finishes shutdown.
    */
   shutdownNetMonitor: function() {
-    if (this._isDestroyed) {
-      return this._shutdown.promise;
+    if (this._shutdown) {
+      return this._shutdown;
     }
-    this._isDestroyed = true;
-    this._startup = null;
 
-    let deferred = this._shutdown = Promise.defer();
+    NetMonitorView.destroy();
+    this.TargetEventsHandler.disconnect();
+    this.NetworkEventsHandler.disconnect();
+    this.disconnect();
 
-    NetMonitorView.destroy(() => {
-      NetMonitorView._isDestroyed = true;
-      this.TargetEventsHandler.disconnect();
-      this.NetworkEventsHandler.disconnect();
-
-      this.disconnect();
-      deferred.resolve();
-    });
-
-    return deferred.promise;
+    // Shutdown is synchronous, for now.
+    return this._shutdown = promise.resolve();
   },
 
   /**
@@ -87,10 +80,11 @@ let NetMonitorController = {
    */
   connect: function() {
     if (this._connection) {
-      return this._connection.promise;
+      return this._connection;
     }
 
-    let deferred = this._connection = Promise.defer();
+    let deferred = promise.defer();
+    this._connection = deferred.promise;
 
     let target = this._target;
     let { client, form } = target;
@@ -191,8 +185,6 @@ let NetMonitorController = {
     });
   },
 
-  _isInitialized: false,
-  _isDestroyed: false,
   _startup: null,
   _shutdown: null,
   _connection: null,
@@ -245,13 +237,24 @@ TargetEventsHandler.prototype = {
    *        Packet received from the server.
    */
   _onTabNavigated: function(aType, aPacket) {
-    if (aType == "will-navigate") {
-      NetMonitorView.RequestsMenu.reset();
-      NetMonitorView.NetworkDetails.toggle(false);
-      window.emit("NetMonitor:TargetWillNavigate");
-    }
-    if (aType == "navigate") {
-      window.emit("NetMonitor:TargetNavigate");
+    switch (aType) {
+      case "will-navigate": {
+        // Reset UI.
+        NetMonitorView.RequestsMenu.reset();
+        NetMonitorView.Sidebar.reset();
+        NetMonitorView.NetworkDetails.reset();
+
+        // Reset global helpers cache.
+        nsIURL.store.clear();
+        drain.store.clear();
+
+        window.emit("NetMonitor:TargetWillNavigate");
+        break;
+      }
+      case "navigate": {
+        window.emit("NetMonitor:TargetNavigate");
+        break;
+      }
     }
   },
 
@@ -312,8 +315,8 @@ NetworkEventsHandler.prototype = {
    *        The message received from the server.
    */
   _onNetworkEvent: function(aType, aPacket) {
-    let { actor, startedDateTime, method, url } = aPacket.eventActor;
-    NetMonitorView.RequestsMenu.addRequest(actor, startedDateTime, method, url);
+    let { actor, startedDateTime, method, url, isXHR } = aPacket.eventActor;
+    NetMonitorView.RequestsMenu.addRequest(actor, startedDateTime, method, url, isXHR);
 
     window.emit("NetMonitor:NetworkEvent");
   },
@@ -461,7 +464,7 @@ NetworkEventsHandler.prototype = {
    * @param object aResponse
    *        The message received from the server.
    */
-  _onEventTimings: function NEH__onEventTimings(aResponse) {
+  _onEventTimings: function(aResponse) {
     NetMonitorView.RequestsMenu.updateRequest(aResponse.from, {
       eventTimings: aResponse
     });
@@ -479,21 +482,21 @@ NetworkEventsHandler.prototype = {
    *         A promise that is resolved when the full string contents
    *         are available, or rejected if something goes wrong.
    */
-  getString: function NEH_getString(aStringGrip) {
+  getString: function(aStringGrip) {
     // Make sure this is a long string.
     if (typeof aStringGrip != "object" || aStringGrip.type != "longString") {
-      return Promise.resolve(aStringGrip); // Go home string, you're drunk.
+      return promise.resolve(aStringGrip); // Go home string, you're drunk.
     }
     // Fetch the long string only once.
     if (aStringGrip._fullText) {
       return aStringGrip._fullText.promise;
     }
 
-    let deferred = aStringGrip._fullText = Promise.defer();
+    let deferred = aStringGrip._fullText = promise.defer();
     let { actor, initial, length } = aStringGrip;
     let longStringClient = this.webConsoleClient.longString(aStringGrip);
 
-    longStringClient.substring(initial.length, length, (aResponse) => {
+    longStringClient.substring(initial.length, length, aResponse => {
       if (aResponse.error) {
         Cu.reportError(aResponse.error + ": " + aResponse.message);
         deferred.reject(aResponse);
@@ -520,6 +523,14 @@ let Prefs = new ViewHelpers.Prefs("devtools.netmonitor", {
 });
 
 /**
+ * Returns true if this is document is in RTL mode.
+ * @return boolean
+ */
+XPCOMUtils.defineLazyGetter(window, "isRTL", function() {
+  return window.getComputedStyle(document.documentElement, null).direction == "rtl";
+});
+
+/**
  * Convenient way of emitting events from the panel window.
  */
 EventEmitter.decorate(this);
@@ -534,9 +545,6 @@ NetMonitorController.NetworkEventsHandler = new NetworkEventsHandler();
  * Export some properties to the global scope for easier access.
  */
 Object.defineProperties(window, {
-  "create": {
-    get: function() ViewHelpers.create
-  },
   "gNetwork": {
     get: function() NetMonitorController.NetworkEventsHandler
   }

@@ -3,11 +3,13 @@
  * file, You can obtain one at http:mozilla.org/MPL/2.0/. */
 
 #include "nsContentUtils.h"
+#include "nsCxPusher.h"
 #include "mozilla/net/Dashboard.h"
 #include "mozilla/net/HttpInfo.h"
 #include "mozilla/dom/NetDashboardBinding.h"
 #include "jsapi.h"
 
+using mozilla::AutoSafeJSContext;
 namespace mozilla {
 namespace net {
 
@@ -49,8 +51,7 @@ Dashboard::GetSocketsDispatch()
 nsresult
 Dashboard::GetSockets()
 {
-    JSContext* cx = nsContentUtils::GetSafeJSContext();
-    JSAutoRequest request(cx);
+    AutoSafeJSContext cx;
 
     mozilla::dom::SocketsDict dict;
     dict.mHost.Construct();
@@ -90,7 +91,7 @@ Dashboard::GetSockets()
         dict.mReceived += mSock.data[i].received;
     }
 
-    JS::Value val;
+    JS::RootedValue val(cx);
     if (!dict.ToObject(cx, JS::NullPtr(), &val)) {
         mSock.cb = nullptr;
         mSock.data.Clear();
@@ -128,8 +129,7 @@ Dashboard::GetHttpDispatch()
 nsresult
 Dashboard::GetHttpConnections()
 {
-    JSContext* cx = nsContentUtils::GetSafeJSContext();
-    JSAutoRequest request(cx);
+    AutoSafeJSContext cx;
 
     mozilla::dom::HttpConnDict dict;
     dict.mActive.Construct();
@@ -165,10 +165,13 @@ Dashboard::GetHttpConnections()
         HttpConnInfoDict &activeInfo = *active.AppendElement();
         activeInfo.mRtt.Construct();
         activeInfo.mTtl.Construct();
+        activeInfo.mProtocolVersion.Construct();
         Sequence<uint32_t> &active_rtt = activeInfo.mRtt.Value();
         Sequence<uint32_t> &active_ttl = activeInfo.mTtl.Value();
+        Sequence<nsString> &active_protocolVersion = activeInfo.mProtocolVersion.Value();
         if (!active_rtt.SetCapacity(mHttp.data[i].active.Length()) ||
-            !active_ttl.SetCapacity(mHttp.data[i].active.Length())) {
+            !active_ttl.SetCapacity(mHttp.data[i].active.Length()) ||
+            !active_protocolVersion.SetCapacity(mHttp.data[i].active.Length())) {
                 mHttp.cb = nullptr;
                 mHttp.data.Clear();
                 JS_ReportOutOfMemory(cx);
@@ -177,15 +180,19 @@ Dashboard::GetHttpConnections()
         for (uint32_t j = 0; j < mHttp.data[i].active.Length(); j++) {
             *active_rtt.AppendElement() = mHttp.data[i].active[j].rtt;
             *active_ttl.AppendElement() = mHttp.data[i].active[j].ttl;
+            *active_protocolVersion.AppendElement() = mHttp.data[i].active[j].protocolVersion;
         }
 
         HttpConnInfoDict &idleInfo = *idle.AppendElement();
         idleInfo.mRtt.Construct();
         idleInfo.mTtl.Construct();
+        idleInfo.mProtocolVersion.Construct();
         Sequence<uint32_t> &idle_rtt = idleInfo.mRtt.Value();
         Sequence<uint32_t> &idle_ttl = idleInfo.mTtl.Value();
+        Sequence<nsString> &idle_protocolVersion = idleInfo.mProtocolVersion.Value();
         if (!idle_rtt.SetCapacity(mHttp.data[i].idle.Length()) ||
-            !idle_ttl.SetCapacity(mHttp.data[i].idle.Length())) {
+            !idle_ttl.SetCapacity(mHttp.data[i].idle.Length()) ||
+            !idle_protocolVersion.SetCapacity(mHttp.data[i].idle.Length())) {
                 mHttp.cb = nullptr;
                 mHttp.data.Clear();
                 JS_ReportOutOfMemory(cx);
@@ -194,10 +201,11 @@ Dashboard::GetHttpConnections()
         for (uint32_t j = 0; j < mHttp.data[i].idle.Length(); j++) {
             *idle_rtt.AppendElement() = mHttp.data[i].idle[j].rtt;
             *idle_ttl.AppendElement() = mHttp.data[i].idle[j].ttl;
+            *idle_protocolVersion.AppendElement() = mHttp.data[i].idle[j].protocolVersion;
         }
     }
 
-    JS::Value val;
+    JS::RootedValue val(cx);
     if (!dict.ToObject(cx, JS::NullPtr(), &val)) {
         mHttp.cb = nullptr;
         mHttp.data.Clear();
@@ -299,8 +307,7 @@ Dashboard::RequestWebsocketConnections(NetDashboardCallback* cb)
 nsresult
 Dashboard::GetWebSocketConnections()
 {
-    JSContext* cx = nsContentUtils::GetSafeJSContext();
-    JSAutoRequest request(cx);
+    AutoSafeJSContext cx;
 
     mozilla::dom::WebSocketDict dict;
     dict.mEncrypted.Construct();
@@ -337,7 +344,7 @@ Dashboard::GetWebSocketConnections()
         *encrypted.AppendElement() = mWs.data[i].mEncrypted;
     }
 
-    JS::Value val;
+    JS::RootedValue val(cx);
     if (!dict.ToObject(cx, JS::NullPtr(), &val)) {
         mWs.cb = nullptr;
         mWs.data.Clear();
@@ -382,8 +389,7 @@ Dashboard::GetDnsInfoDispatch()
 nsresult
 Dashboard::GetDNSCacheEntries()
 {
-    JSContext* cx = nsContentUtils::GetSafeJSContext();
-    JSAutoRequest request(cx);
+    AutoSafeJSContext cx;
 
     mozilla::dom::DNSCacheDict dict;
     dict.mExpiration.Construct();
@@ -426,7 +432,7 @@ Dashboard::GetDNSCacheEntries()
             CopyASCIItoUTF16("ipv4", *family.AppendElement());
     }
 
-    JS::Value val;
+    JS::RootedValue val(cx);
     if (!dict.ToObject(cx, JS::NullPtr(), &val)) {
         mDns.cb = nullptr;
         mDns.data.Clear();
@@ -436,6 +442,33 @@ Dashboard::GetDNSCacheEntries()
     mDns.cb = nullptr;
 
     return NS_OK;
+}
+
+void
+HttpConnInfo::SetHTTP1ProtocolVersion(uint8_t pv)
+{
+    switch (pv) {
+    case NS_HTTP_VERSION_0_9:
+        protocolVersion.Assign(NS_LITERAL_STRING("http/0.9"));
+        break;
+    case NS_HTTP_VERSION_1_0:
+        protocolVersion.Assign(NS_LITERAL_STRING("http/1.0"));
+        break;
+    case NS_HTTP_VERSION_1_1:
+        protocolVersion.Assign(NS_LITERAL_STRING("http/1.1"));
+        break;
+    default:
+        protocolVersion.Assign(NS_LITERAL_STRING("unknown protocol version"));
+    }
+}
+
+void
+HttpConnInfo::SetHTTP2ProtocolVersion(uint8_t pv)
+{
+    if (pv == SPDY_VERSION_2)
+        protocolVersion.Assign(NS_LITERAL_STRING("spdy/2"));
+    else
+        protocolVersion.Assign(NS_LITERAL_STRING("spdy/3"));
 }
 
 } } // namespace mozilla::net

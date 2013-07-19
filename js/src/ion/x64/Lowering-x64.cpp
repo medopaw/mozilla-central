@@ -4,9 +4,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+#include "ion/x64/Lowering-x64.h"
+
 #include "ion/MIR.h"
-#include "Lowering-x64.h"
-#include "Assembler-x64.h"
+#include "ion/x64/Assembler-x64.h"
 #include "ion/shared/Lowering-shared-inl.h"
 
 using namespace js;
@@ -33,6 +34,12 @@ LIRGeneratorX64::useBoxFixed(LInstruction *lir, size_t n, MDefinition *mir, Regi
         return false;
     lir->setOperand(n, LUse(reg1, mir->virtualRegister()));
     return true;
+}
+
+LDefinition
+LIRGeneratorX64::tempToUnbox()
+{
+    return temp();
 }
 
 bool
@@ -76,44 +83,6 @@ LIRGeneratorX64::visitReturn(MReturn *ret)
     LReturn *ins = new LReturn;
     ins->setOperand(0, useFixed(opd, JSReturnReg));
     return add(ins);
-}
-
-bool
-LIRGeneratorX64::lowerForShift(LInstructionHelper<1, 2, 0> *ins, MDefinition *mir, MDefinition *lhs, MDefinition *rhs)
-{
-    ins->setOperand(0, useRegisterAtStart(lhs));
-
-    // shift operator should be constant or in register rcx
-    // x86 can't shift a non-ecx register
-    if (rhs->isConstant())
-        ins->setOperand(1, useOrConstant(rhs));
-    else
-        ins->setOperand(1, useFixed(rhs, rcx));
-
-    return defineReuseInput(ins, mir, 0);
-}
-
-bool
-LIRGeneratorX64::lowerForALU(LInstructionHelper<1, 1, 0> *ins, MDefinition *mir, MDefinition *input)
-{
-    ins->setOperand(0, useRegisterAtStart(input));
-    return defineReuseInput(ins, mir, 0);
-}
-
-bool
-LIRGeneratorX64::lowerForALU(LInstructionHelper<1, 2, 0> *ins, MDefinition *mir, MDefinition *lhs, MDefinition *rhs)
-{
-    ins->setOperand(0, useRegisterAtStart(lhs));
-    ins->setOperand(1, useOrConstant(rhs));
-    return defineReuseInput(ins, mir, 0);
-}
-
-bool
-LIRGeneratorX64::lowerForFPU(LMathD *ins, MDefinition *mir, MDefinition *lhs, MDefinition *rhs)
-{
-    ins->setOperand(0, useRegisterAtStart(lhs));
-    ins->setOperand(1, use(rhs));
-    return defineReuseInput(ins, mir, 0);
 }
 
 bool
@@ -188,7 +157,7 @@ LIRGeneratorX64::visitAsmJSStoreHeap(MAsmJSStoreHeap *ins)
         lir = new LAsmJSStoreHeap(useRegisterAtStart(ins->ptr()),
                                   useRegisterAtStart(ins->value()));
         break;
-      default: JS_NOT_REACHED("unexpected array type");
+      default: MOZ_ASSUME_UNREACHABLE("unexpected array type");
     }
 
     return add(lir, ins);
@@ -206,18 +175,16 @@ LIRGeneratorX64::newLGetPropertyCacheT(MGetPropertyCache *ins)
     return new LGetPropertyCacheT(useRegister(ins->object()), LDefinition::BogusTemp());
 }
 
-bool
-LIRGeneratorX64::lowerTruncateDToInt32(MTruncateToInt32 *ins)
+LGetElementCacheT *
+LIRGeneratorX64::newLGetElementCacheT(MGetElementCache *ins)
 {
-    MDefinition *opd = ins->input();
-    JS_ASSERT(opd->type() == MIRType_Double);
-
-    return define(new LTruncateDToInt32(useRegister(opd), LDefinition::BogusTemp()), ins);
+    return new LGetElementCacheT(useRegister(ins->object()),
+                                 useRegister(ins->index()),
+                                 LDefinition::BogusTemp());
 }
 
 bool
 LIRGeneratorX64::visitStoreTypedArrayElementStatic(MStoreTypedArrayElementStatic *ins)
 {
-    JS_NOT_REACHED("NYI");
-    return true;
+    MOZ_ASSUME_UNREACHABLE("NYI");
 }

@@ -56,7 +56,7 @@ ChannelMediaResource::ChannelMediaResource(MediaDecoder* aDecoder,
   : BaseMediaResource(aDecoder, aChannel, aURI, aContentType),
     mOffset(0), mSuspendCount(0),
     mReopenOnError(false), mIgnoreClose(false),
-    mCacheStream(this),
+    mCacheStream(MOZ_THIS_IN_INITIALIZER_LIST()),
     mLock("ChannelMediaResource.mLock"),
     mIgnoreResume(false),
     mSeekingForMetadata(false),
@@ -607,6 +607,20 @@ nsresult ChannelMediaResource::OpenChannel(nsIStreamListener** aStreamListener)
     *aStreamListener = nullptr;
   }
 
+  if (mByteRange.IsNull()) {
+    // We're not making a byte range request, so set the content length,
+    // if it's available as an HTTP header. This ensures that MediaResource
+    // wrapping objects for platform libraries that expect to know
+    // the length of a resource can get it before OnStartRequest() fires.
+    nsCOMPtr<nsIHttpChannel> hc = do_QueryInterface(mChannel);
+    if (hc) {
+      int64_t cl = -1;
+      if (NS_SUCCEEDED(hc->GetContentLength(&cl)) && cl != -1) {
+        mCacheStream.NotifyDataLength(cl);
+      }
+    }
+  }
+
   mListener = new Listener(this);
   NS_ENSURE_TRUE(mListener, NS_ERROR_OUT_OF_MEMORY);
 
@@ -713,15 +727,16 @@ bool ChannelMediaResource::CanClone()
   return mCacheStream.IsAvailableForSharing();
 }
 
-MediaResource* ChannelMediaResource::CloneData(MediaDecoder* aDecoder)
+already_AddRefed<MediaResource> ChannelMediaResource::CloneData(MediaDecoder* aDecoder)
 {
   NS_ASSERTION(NS_IsMainThread(), "Only call on main thread");
   NS_ASSERTION(mCacheStream.IsAvailableForSharing(), "Stream can't be cloned");
 
-  ChannelMediaResource* resource = new ChannelMediaResource(aDecoder,
-                                                            nullptr,
-                                                            mURI,
-                                                            GetContentType());
+  nsRefPtr<ChannelMediaResource> resource =
+    new ChannelMediaResource(aDecoder,
+                             nullptr,
+                             mURI,
+                             GetContentType());
   if (resource) {
     // Initially the clone is treated as suspended by the cache, because
     // we don't have a channel. If the cache needs to read data from the clone
@@ -734,7 +749,7 @@ MediaResource* ChannelMediaResource::CloneData(MediaDecoder* aDecoder)
     resource->mChannelStatistics = new MediaChannelStatistics(mChannelStatistics);
     resource->mChannelStatistics->Stop();
   }
-  return resource;
+  return resource.forget();
 }
 
 void ChannelMediaResource::CloseChannel()
@@ -782,6 +797,16 @@ nsresult ChannelMediaResource::Read(char* aBuffer,
   NS_ASSERTION(!NS_IsMainThread(), "Don't call on main thread");
 
   return mCacheStream.Read(aBuffer, aCount, aBytes);
+}
+
+nsresult ChannelMediaResource::ReadAt(int64_t aOffset,
+                                      char* aBuffer,
+                                      uint32_t aCount,
+                                      uint32_t* aBytes)
+{
+  NS_ASSERTION(!NS_IsMainThread(), "Don't call on main thread");
+
+  return mCacheStream.ReadAt(aOffset, aBuffer, aCount, aBytes);
 }
 
 nsresult ChannelMediaResource::Seek(int32_t aWhence, int64_t aOffset)
@@ -1187,9 +1212,9 @@ ChannelMediaResource::EnsureCacheUpToDate()
 }
 
 bool
-ChannelMediaResource::IsSuspendedByCache(MediaResource** aActiveResource)
+ChannelMediaResource::IsSuspendedByCache()
 {
-  return mCacheStream.AreAllStreamsForResourceSuspended(aActiveResource);
+  return mCacheStream.AreAllStreamsForResourceSuspended();
 }
 
 bool
@@ -1283,7 +1308,7 @@ public:
   virtual void     Resume() {}
   virtual already_AddRefed<nsIPrincipal> GetCurrentPrincipal();
   virtual bool     CanClone();
-  virtual MediaResource* CloneData(MediaDecoder* aDecoder);
+  virtual already_AddRefed<MediaResource> CloneData(MediaDecoder* aDecoder);
   virtual nsresult ReadFromCache(char* aBuffer, int64_t aOffset, uint32_t aCount);
 
   // These methods are called off the main thread.
@@ -1292,6 +1317,8 @@ public:
   virtual void     SetReadMode(MediaCacheStream::ReadMode aMode) {}
   virtual void     SetPlaybackRate(uint32_t aBytesPerSecond) {}
   virtual nsresult Read(char* aBuffer, uint32_t aCount, uint32_t* aBytes);
+  virtual nsresult ReadAt(int64_t aOffset, char* aBuffer,
+                          uint32_t aCount, uint32_t* aBytes);
   virtual nsresult Seek(int32_t aWhence, int64_t aOffset);
   virtual void     StartSeekingForMetadata() {};
   virtual void     EndSeekingForMetadata() {};
@@ -1326,18 +1353,19 @@ public:
     return std::max(aOffset, mSize);
   }
   virtual bool    IsDataCachedToEndOfResource(int64_t aOffset) { return true; }
-  virtual bool    IsSuspendedByCache(MediaResource** aActiveResource)
-  {
-    if (aActiveResource) {
-      *aActiveResource = nullptr;
-    }
-    return false;
-  }
+  virtual bool    IsSuspendedByCache() { return false; }
   virtual bool    IsSuspended() { return false; }
   virtual bool    IsTransportSeekable() MOZ_OVERRIDE { return true; }
 
   nsresult GetCachedRanges(nsTArray<MediaByteRange>& aRanges);
 
+protected:
+  // These Unsafe variants of Read and Seek perform their operations
+  // without acquiring mLock. The caller must obtain the lock before
+  // calling. The implmentation of Read, Seek and ReadAt obtains the
+  // lock before calling these Unsafe variants to read or seek.
+  nsresult UnsafeRead(char* aBuffer, uint32_t aCount, uint32_t* aBytes);
+  nsresult UnsafeSeek(int32_t aWhence, int64_t aOffset);
 private:
   // Ensures mSize is initialized, if it can be.
   // mLock must be held when this is called, and mInput must be non-null.
@@ -1504,7 +1532,7 @@ bool FileMediaResource::CanClone()
   return true;
 }
 
-MediaResource* FileMediaResource::CloneData(MediaDecoder* aDecoder)
+already_AddRefed<MediaResource> FileMediaResource::CloneData(MediaDecoder* aDecoder)
 {
   NS_ASSERTION(NS_IsMainThread(), "Only call on main thread");
 
@@ -1527,7 +1555,8 @@ MediaResource* FileMediaResource::CloneData(MediaDecoder* aDecoder)
   if (NS_FAILED(rv))
     return nullptr;
 
-  return new FileMediaResource(aDecoder, channel, mURI, GetContentType());
+  nsRefPtr<MediaResource> resource(new FileMediaResource(aDecoder, channel, mURI, GetContentType()));
+  return resource.forget();
 }
 
 nsresult FileMediaResource::ReadFromCache(char* aBuffer, int64_t aOffset, uint32_t aCount)
@@ -1562,9 +1591,24 @@ nsresult FileMediaResource::ReadFromCache(char* aBuffer, int64_t aOffset, uint32
 nsresult FileMediaResource::Read(char* aBuffer, uint32_t aCount, uint32_t* aBytes)
 {
   MutexAutoLock lock(mLock);
+  return UnsafeRead(aBuffer, aCount, aBytes);
+}
 
+nsresult FileMediaResource::UnsafeRead(char* aBuffer, uint32_t aCount, uint32_t* aBytes)
+{
   EnsureSizeInitialized();
   return mInput->Read(aBuffer, aCount, aBytes);
+}
+
+nsresult FileMediaResource::ReadAt(int64_t aOffset, char* aBuffer,
+                                   uint32_t aCount, uint32_t* aBytes)
+{
+  NS_ASSERTION(!NS_IsMainThread(), "Don't call on main thread");
+
+  MutexAutoLock lock(mLock);
+  nsresult rv = UnsafeSeek(nsISeekableStream::NS_SEEK_SET, aOffset);
+  if (NS_FAILED(rv)) return rv;
+  return UnsafeRead(aBuffer, aCount, aBytes);
 }
 
 nsresult FileMediaResource::Seek(int32_t aWhence, int64_t aOffset)
@@ -1572,6 +1616,13 @@ nsresult FileMediaResource::Seek(int32_t aWhence, int64_t aOffset)
   NS_ASSERTION(!NS_IsMainThread(), "Don't call on main thread");
 
   MutexAutoLock lock(mLock);
+  return UnsafeSeek(aWhence, aOffset);
+}
+
+nsresult FileMediaResource::UnsafeSeek(int32_t aWhence, int64_t aOffset)
+{
+  NS_ASSERTION(!NS_IsMainThread(), "Don't call on main thread");
+
   if (!mSeekable)
     return NS_ERROR_FAILURE;
   EnsureSizeInitialized();
@@ -1592,7 +1643,7 @@ int64_t FileMediaResource::Tell()
   return offset;
 }
 
-MediaResource*
+already_AddRefed<MediaResource>
 MediaResource::Create(MediaDecoder* aDecoder, nsIChannel* aChannel)
 {
   NS_ASSERTION(NS_IsMainThread(),
@@ -1609,10 +1660,13 @@ MediaResource::Create(MediaDecoder* aDecoder, nsIChannel* aChannel)
   aChannel->GetContentType(contentType);
 
   nsCOMPtr<nsIFileChannel> fc = do_QueryInterface(aChannel);
+  nsRefPtr<MediaResource> resource;
   if (fc || IsBlobURI(uri)) {
-    return new FileMediaResource(aDecoder, aChannel, uri, contentType);
+    resource = new FileMediaResource(aDecoder, aChannel, uri, contentType);
+  } else {
+    resource = new ChannelMediaResource(aDecoder, aChannel, uri, contentType);
   }
-  return new ChannelMediaResource(aDecoder, aChannel, uri, contentType);
+  return resource.forget();
 }
 
 void BaseMediaResource::MoveLoadsToBackground() {

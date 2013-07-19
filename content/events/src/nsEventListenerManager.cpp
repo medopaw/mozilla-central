@@ -24,6 +24,7 @@
 #include "nsLayoutUtils.h"
 #include "nsINameSpaceManager.h"
 #include "nsIContent.h"
+#include "mozilla/MemoryReporting.h"
 #include "mozilla/dom/Element.h"
 #include "nsIFrame.h"
 #include "nsView.h"
@@ -40,6 +41,7 @@
 #include "nsFocusManager.h"
 #include "nsIDOMElement.h"
 #include "nsContentUtils.h"
+#include "nsCxPusher.h"
 #include "nsJSUtils.h"
 #include "nsContentCID.h"
 #include "nsEventDispatcher.h"
@@ -98,9 +100,9 @@ MutationBitForEventType(uint32_t aEventType)
   return 0;
 }
 
-uint32_t nsEventListenerManager::sCreatedCount = 0;
+uint32_t nsEventListenerManager::sMainThreadCreatedCount = 0;
 
-nsEventListenerManager::nsEventListenerManager(nsISupports* aTarget) :
+nsEventListenerManager::nsEventListenerManager(EventTarget* aTarget) :
   mMayHavePaintEventListener(false),
   mMayHaveMutationListeners(false),
   mMayHaveCapturingListeners(false),
@@ -114,7 +116,9 @@ nsEventListenerManager::nsEventListenerManager(nsISupports* aTarget) :
 {
   NS_ASSERTION(aTarget, "unexpected null pointer");
 
-  ++sCreatedCount;
+  if (NS_IsMainThread()) {
+    ++sMainThreadCreatedCount;
+  }
 }
 
 nsEventListenerManager::~nsEventListenerManager() 
@@ -351,6 +355,9 @@ nsEventListenerManager::AddEventListenerInternal(
     }
 #endif
   }
+  if (aTypeAtom && mTarget) {
+    mTarget->EventListenerAdded(aTypeAtom);
+  }
 }
 
 bool
@@ -463,6 +470,9 @@ nsEventListenerManager::RemoveEventListenerInternal(
         --count;
         mNoListenerForEvent = NS_EVENT_TYPE_NULL;
         mNoListenerForEventAtom = nullptr;
+        if (mTarget && aUserType) {
+          mTarget->EventListenerRemoved(aUserType);
+        }
 
         if (!deviceType
 #ifdef MOZ_B2G
@@ -545,7 +555,7 @@ nsEventListenerManager::FindEventHandler(uint32_t aEventType,
 
 nsresult
 nsEventListenerManager::SetEventHandlerInternal(nsIScriptContext *aContext,
-                                                JSObject* aScopeObject,
+                                                JS::Handle<JSObject*> aScopeObject,
                                                 nsIAtom* aName,
                                                 const nsEventHandler& aHandler,
                                                 bool aPermitUntrustedEvents,
@@ -579,7 +589,13 @@ nsEventListenerManager::SetEventHandlerInternal(nsIScriptContext *aContext,
     MOZ_ASSERT(scriptListener,
                "How can we have an event handler with no nsIJSEventListener?");
 
+    bool same = scriptListener->GetHandler() == aHandler;
+    // Possibly the same listener, but update still the context and scope.
     scriptListener->SetHandler(aHandler, aContext, aScopeObject);
+    if (mTarget && !same) {
+      mTarget->EventListenerRemoved(aName);
+      mTarget->EventListenerAdded(aName);
+    }
   }
 
   if (NS_SUCCEEDED(rv) && ls) {
@@ -718,7 +734,9 @@ nsEventListenerManager::SetEventHandler(nsIAtom *aName,
   nsIScriptContext* context = global->GetScriptContext();
   NS_ENSURE_TRUE(context, NS_ERROR_FAILURE);
 
-  JSObject* scope = global->GetGlobalJSObject();
+  JSAutoRequest ar(context->GetNativeContext());
+  JS::Rooted<JSObject*> scope(context->GetNativeContext(),
+                              global->GetGlobalJSObject());
 
   nsListenerStruct *ls;
   rv = SetEventHandlerInternal(context, scope, aName, nsEventHandler(),
@@ -746,6 +764,9 @@ nsEventListenerManager::RemoveEventHandler(nsIAtom* aName)
     mListeners.RemoveElementAt(uint32_t(ls - &mListeners.ElementAt(0)));
     mNoListenerForEvent = NS_EVENT_TYPE_NULL;
     mNoListenerForEventAtom = nullptr;
+    if (mTarget) {
+      mTarget->EventListenerRemoved(aName);
+    }
   }
 }
 
@@ -851,17 +872,15 @@ nsEventListenerManager::CompileEventHandlerInternal(nsListenerStruct *aListenerS
                                      aListenerStruct->mTypeAtom,
                                      &argCount, &argNames);
 
-    JSAutoRequest ar(cx);
     JSAutoCompartment ac(cx, context->GetNativeGlobal());
     JS::CompileOptions options(cx);
     options.setFileAndLine(url.get(), lineNo)
            .setVersion(SCRIPTVERSION_DEFAULT);
 
-    JS::RootedObject rootedNull(cx, nullptr); // See bug 781070.
-    JSObject *handlerFun = nullptr;
-    result = nsJSUtils::CompileFunction(cx, rootedNull, options,
+    JS::Rooted<JSObject*> handlerFun(cx);
+    result = nsJSUtils::CompileFunction(cx, JS::NullPtr(), options,
                                         nsAtomCString(aListenerStruct->mTypeAtom),
-                                        argCount, argNames, *body, &handlerFun);
+                                        argCount, argNames, *body, handlerFun.address());
     NS_ENSURE_SUCCESS(result, result);
     handler = handlerFun;
     NS_ENSURE_TRUE(handler, NS_ERROR_FAILURE);
@@ -870,8 +889,8 @@ nsEventListenerManager::CompileEventHandlerInternal(nsListenerStruct *aListenerS
   if (handler) {
     // Bind it
     JS::Rooted<JSObject*> boundHandler(cx);
-    context->BindCompiledEventHandler(mTarget, listener->GetEventScope(),
-                                      handler, &boundHandler);
+    JS::Rooted<JSObject*> scope(cx, listener->GetEventScope());
+    context->BindCompiledEventHandler(mTarget, scope, handler, &boundHandler);
     if (listener->EventName() == nsGkAtoms::onerror && win) {
       nsRefPtr<OnErrorEventHandlerNonNull> handlerCallback =
         new OnErrorEventHandlerNonNull(boundHandler);
@@ -1152,8 +1171,12 @@ nsEventListenerManager::GetListenerInfo(nsCOMArray<nsIEventListenerInfo>* aList)
       CompileEventHandlerInternal(const_cast<nsListenerStruct*>(&ls),
                                   true, nullptr);
     }
-    const nsDependentSubstring& eventType =
-      Substring(nsDependentAtomString(ls.mTypeAtom), 2);
+    nsAutoString eventType;
+    if (ls.mAllEvents) {
+      eventType.SetIsVoid(true);
+    } else {
+      eventType.Assign(Substring(nsDependentAtomString(ls.mTypeAtom), 2));
+    }
     // EventListenerInfo is defined in XPCOM, so we have to go ahead
     // and convert to an XPCOM callback here...
     nsRefPtr<nsEventListenerInfo> info =
@@ -1193,7 +1216,7 @@ nsEventListenerManager::SetEventHandler(nsIAtom* aEventName,
   // Untrusted events are always permitted for non-chrome script
   // handlers.
   nsListenerStruct *ignored;
-  return SetEventHandlerInternal(nullptr, nullptr, aEventName,
+  return SetEventHandlerInternal(nullptr, JS::NullPtr(), aEventName,
                                  nsEventHandler(aHandler),
                                  !nsContentUtils::IsCallerChrome(), &ignored);
 }
@@ -1209,7 +1232,7 @@ nsEventListenerManager::SetEventHandler(OnErrorEventHandlerNonNull* aHandler)
   // Untrusted events are always permitted for non-chrome script
   // handlers.
   nsListenerStruct *ignored;
-  return SetEventHandlerInternal(nullptr, nullptr, nsGkAtoms::onerror,
+  return SetEventHandlerInternal(nullptr, JS::NullPtr(), nsGkAtoms::onerror,
                                  nsEventHandler(aHandler),
                                  !nsContentUtils::IsCallerChrome(), &ignored);
 }
@@ -1225,7 +1248,7 @@ nsEventListenerManager::SetEventHandler(BeforeUnloadEventHandlerNonNull* aHandle
   // Untrusted events are always permitted for non-chrome script
   // handlers.
   nsListenerStruct *ignored;
-  return SetEventHandlerInternal(nullptr, nullptr, nsGkAtoms::onbeforeunload,
+  return SetEventHandlerInternal(nullptr, JS::NullPtr(), nsGkAtoms::onbeforeunload,
                                  nsEventHandler(aHandler),
                                  !nsContentUtils::IsCallerChrome(), &ignored);
 }
@@ -1255,7 +1278,7 @@ nsEventListenerManager::GetEventHandlerInternal(nsIAtom *aEventName)
 }
 
 size_t
-nsEventListenerManager::SizeOfIncludingThis(nsMallocSizeOfFun aMallocSizeOf)
+nsEventListenerManager::SizeOfIncludingThis(MallocSizeOf aMallocSizeOf)
   const
 {
   size_t n = aMallocSizeOf(this);

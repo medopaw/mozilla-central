@@ -3,11 +3,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#define XPCOM_TRANSLATE_NSGM_ENTRY_POINT 1
-
 #include "mozilla/Module.h"
 #include "nsXPCOM.h"
-#include "nsStaticComponents.h"
 #include "nsMemory.h"
 
 #ifdef MOZ_AUTH_EXTENSION
@@ -52,12 +49,6 @@
 #define ICON_MODULE MODULE(nsIconDecoderModule)
 #else
 #define ICON_MODULE
-#endif
-
-#ifdef ACCESSIBILITY
-#define ACCESS_MODULES MODULE(nsAccessibilityModule)
-#else
-#define ACCESS_MODULES
 #endif
 
 #ifdef MOZ_ENABLE_XREMOTE
@@ -208,7 +199,6 @@
     MODULE(docshell_provider)                \
     MODULE(embedcomponents)                  \
     MODULE(Browser_Embedding_Module)         \
-    ACCESS_MODULES                           \
     MODULE(appshell)                         \
     MODULE(nsTransactionManagerModule)       \
     MODULE(nsComposerModule)                 \
@@ -242,6 +232,7 @@
     MODULE(jsdebugger)                       \
     PEERCONNECTION_MODULE                    \
     GIO_MODULE                               \
+    MODULE(DiskSpaceWatcherModule)           \
     /* end of list */
 
 #define MODULE(_name) \
@@ -254,7 +245,7 @@ XUL_MODULES
 #define MODULE(_name) \
     &NSMODULE_NAME(_name),
 
-const mozilla::Module *const *const kPStaticModules[] = {
+extern const mozilla::Module *const *const kPStaticModules[] = {
   XUL_MODULES
   NULL
 };

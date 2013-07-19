@@ -74,10 +74,10 @@ public:
   InitClass(JSContext* aCx, JSObject* aObj, JSObject* aParentProto,
             bool aMainRuntime)
   {
-    JSObject* proto =
+    JS::Rooted<JSObject*> proto(aCx,
       js::InitClassWithReserved(aCx, aObj, aParentProto, ProtoClass(),
                                 Construct, 0, sProperties, sFunctions,
-                                NULL, NULL);
+                                NULL, NULL));
     if (!proto) {
       return NULL;
     }
@@ -112,7 +112,7 @@ protected:
       return false;
     }
 
-    JSString* scriptURL = JS_ValueToString(aCx, JS_ARGV(aCx, aVp)[0]);
+    JS::Rooted<JSString*> scriptURL(aCx, JS_ValueToString(aCx, JS_ARGV(aCx, aVp)[0]));
     if (!scriptURL) {
       return false;
     }
@@ -137,7 +137,7 @@ protected:
       parent->AssertIsOnWorkerThread();
     }
 
-    JSObject* obj = JS_NewObject(aCx, aClass, nullptr, nullptr);
+    JS::Rooted<JSObject*> obj(aCx, JS_NewObject(aCx, aClass, nullptr, nullptr));
     if (!obj) {
       return false;
     }
@@ -175,7 +175,8 @@ private:
   ~Worker();
 
   static JSBool
-  GetEventListener(JSContext* aCx, JSHandleObject aObj, JSHandleId aIdval, JSMutableHandleValue aVp)
+  GetEventListener(JSContext* aCx, JS::Handle<JSObject*> aObj, JS::Handle<jsid> aIdval,
+                   JS::MutableHandle<JS::Value> aVp)
   {
     JS_ASSERT(JSID_IS_INT(aIdval));
     JS_ASSERT(JSID_TO_INT(aIdval) >= 0 && JSID_TO_INT(aIdval) < STRING_COUNT);
@@ -188,7 +189,7 @@ private:
 
     NS_ConvertASCIItoUTF16 nameStr(name + 2);
     ErrorResult rv;
-    JSObject* listener = worker->GetEventListener(nameStr, rv);
+    JS::Rooted<JSObject*> listener(aCx, worker->GetEventListener(nameStr, rv));
 
     if (rv.Failed()) {
       JS_ReportError(aCx, "Failed to get listener!");
@@ -199,8 +200,8 @@ private:
   }
 
   static JSBool
-  SetEventListener(JSContext* aCx, JSHandleObject aObj, JSHandleId aIdval, JSBool aStrict,
-                   JSMutableHandleValue aVp)
+  SetEventListener(JSContext* aCx, JS::Handle<JSObject*> aObj, JS::Handle<jsid> aIdval,
+                   JSBool aStrict, JS::MutableHandle<JS::Value> aVp)
   {
     JS_ASSERT(JSID_IS_INT(aIdval));
     JS_ASSERT(JSID_TO_INT(aIdval) >= 0 && JSID_TO_INT(aIdval) < STRING_COUNT);
@@ -211,8 +212,8 @@ private:
       return !JS_IsExceptionPending(aCx);
     }
 
-    JSObject* listener;
-    if (!JS_ValueToObject(aCx, aVp, &listener)) {
+    JS::Rooted<JSObject*> listener(aCx);
+    if (!JS_ValueToObject(aCx, aVp, listener.address())) {
       return false;
     }
 
@@ -285,10 +286,10 @@ private:
       return !JS_IsExceptionPending(aCx);
     }
 
-    jsval message;
-    jsval transferable = JSVAL_VOID;
+    JS::Rooted<JS::Value> message(aCx);
+    JS::Rooted<JS::Value> transferable(aCx, JS::UndefinedValue());
     if (!JS_ConvertArguments(aCx, aArgc, JS_ARGV(aCx, aVp), "v/v",
-                             &message, &transferable)) {
+                             message.address(), transferable.address())) {
       return false;
     }
 
@@ -389,9 +390,9 @@ public:
   InitClass(JSContext* aCx, JSObject* aObj, JSObject* aParentProto,
             bool aMainRuntime)
   {
-    JSObject* proto =
+    JS::Rooted<JSObject*> proto(aCx,
       js::InitClassWithReserved(aCx, aObj, aParentProto, ProtoClass(),
-                                Construct, 0, NULL, NULL, NULL, NULL);
+                                Construct, 0, NULL, NULL, NULL, NULL));
     if (!proto) {
       return NULL;
     }

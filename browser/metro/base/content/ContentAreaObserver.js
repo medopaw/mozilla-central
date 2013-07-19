@@ -5,7 +5,7 @@
  /*
   * ContentAreaObserver manages tracking the viewable area within the browser.
   * It also handles certain tasks like positioning of input elements within
-  * content when the viewable area changes. 
+  * content when the viewable area changes.
   *
   * ContentAreaObserver creates styles that content can apply and also fires
   * events when things change. The 'width' and 'height' properties of the
@@ -160,7 +160,30 @@ var ContentAreaObserver = {
     this.styles["viewable-width"].width = newWidth + "px";
     this.styles["viewable-width"].maxWidth = newWidth + "px";
 
+    this.updateAppBarPosition();
+
+    // Update the back/tab button states. If the keyboard is up
+    // these are hidden.
+    BrowserUI._updateButtons();
+
     this._disatchBrowserEvent("ViewableSizeChanged");
+  },
+
+  updateAppBarPosition: function updateAppBarPosition(aForceDown) {
+    // Adjust the app and find bar position above the soft keyboard
+    let keyboardHeight = aForceDown ? 0 : MetroUtils.keyboardHeight;
+    Elements.navbar.style.bottom = keyboardHeight + "px";
+    Elements.contextappbar.style.bottom = keyboardHeight + "px";
+    Elements.findbar.style.bottom = keyboardHeight + "px";
+  },
+
+  /*
+   * Called by BrowserUI right before we blur the nav bar edit. We use
+   * this to get a head start on shuffling app bars around before the
+   * soft keyboard transitions down.
+   */
+  navBarWillBlur: function navBarWillBlur() {
+    this.updateAppBarPosition(true);
   },
 
   onBrowserCreated: function onBrowserCreated(aBrowser) {
@@ -173,6 +196,12 @@ var ContentAreaObserver = {
    */
 
   _onKeyboardDisplayChanging: function _onKeyboardDisplayChanging(aNewState) {
+    if (aNewState) {
+      Elements.stack.setAttribute("keyboardVisible", true);
+    } else {
+      Elements.stack.removeAttribute("keyboardVisible");
+    }
+
     this.updateViewableArea();
 
     if (!aNewState) {
@@ -290,8 +319,7 @@ var ContentAreaObserver = {
   },
 
   _getContentHeightForWindow: function (windowHeight) {
-    let contextUIHeight = BrowserUI.isTabsOnly ? Elements.toolbar.getBoundingClientRect().bottom : 0;
-    return windowHeight - contextUIHeight;
+    return windowHeight;
   },
 
   _getViewableHeightForContent: function (contentHeight) {

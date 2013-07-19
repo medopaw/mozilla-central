@@ -17,7 +17,7 @@ const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
 #endif
 
-Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
+Cu.import("resource://gre/modules/Promise.jsm");
 Cu.import("resource://gre/modules/Preferences.jsm");
 Cu.import("resource://gre/modules/Task.jsm");
 Cu.import("resource://services-common/log4moz.js");
@@ -233,11 +233,13 @@ Measurement.prototype = Object.freeze({
    *        (string) The name of the field whose value to increment.
    * @param date
    *        (Date) Day on which to increment the counter.
+   * @param by
+   *        (integer) How much to increment by.
    * @return Promise<>
    */
-  incrementDailyCounter: function (field, date=new Date()) {
+  incrementDailyCounter: function (field, date=new Date(), by=1) {
     return this.storage.incrementDailyCounterFromFieldID(this.fieldID(field),
-                                                         date);
+                                                         date, by);
   },
 
   /**

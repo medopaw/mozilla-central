@@ -140,26 +140,6 @@ nsSimpleContentList::WrapObject(JSContext *cx, JS::Handle<JSObject*> scope)
   return NodeListBinding::Wrap(cx, scope, this);
 }
 
-// nsFormContentList
-
-nsFormContentList::nsFormContentList(nsIContent *aForm,
-                                     nsBaseContentList& aContentList)
-  : nsSimpleContentList(aForm)
-{
-
-  // move elements that belong to mForm into this content list
-
-  uint32_t i, length = 0;
-  aContentList.GetLength(&length);
-
-  for (i = 0; i < length; i++) {
-    nsIContent *c = aContentList.Item(i);
-    if (c && nsContentUtils::BelongsInForm(aForm, c)) {
-      AppendElement(c);
-    }
-  }
-}
-
 // Hashtable for storing nsContentLists
 static PLDHashTable gContentListHashTable;
 
@@ -532,7 +512,7 @@ nsIContent *
 nsContentList::NamedItem(const nsAString& aName, bool aDoFlush)
 {
   BringSelfUpToDate(aDoFlush);
-    
+
   uint32_t i, count = mElements.Length();
 
   // Typically IDs and names are atomized
@@ -675,7 +655,7 @@ nsContentList::NamedItem(JSContext* cx, const nsAString& name,
   }
   JS::Rooted<JSObject*> wrapper(cx, GetWrapper());
   JSAutoCompartment ac(cx, wrapper);
-  JS::Value v;
+  JS::Rooted<JS::Value> v(cx);
   if (!mozilla::dom::WrapObject(cx, wrapper, item, item, nullptr, &v)) {
     error.Throw(NS_ERROR_FAILURE);
     return nullptr;

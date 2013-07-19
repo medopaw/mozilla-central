@@ -19,7 +19,7 @@ namespace layers {
 
 class CairoImage;
 class PlanarYCbCrImage;
-class ShmemYCbCrImage;
+class BlobYCbCrSurface;
 
 /**
  * This class wraps a GL texture. It includes a GLContext reference
@@ -98,8 +98,8 @@ private:
   gfxIntSize mRecycledTextureSizes[2];
 };
 
-class THEBES_API ImageLayerOGL : public ImageLayer,
-                                 public LayerOGL
+class ImageLayerOGL : public ImageLayer,
+                      public LayerOGL
 {
 public:
   ImageLayerOGL(LayerManagerOGL *aManager);
@@ -122,7 +122,7 @@ protected:
   nsRefPtr<TextureRecycleBin> mTextureRecycleBin;
 };
 
-struct THEBES_API PlanarYCbCrOGLBackendData : public ImageBackendData
+struct PlanarYCbCrOGLBackendData : public ImageBackendData
 {
   ~PlanarYCbCrOGLBackendData()
   {
@@ -147,9 +147,9 @@ struct THEBES_API PlanarYCbCrOGLBackendData : public ImageBackendData
 
 struct CairoOGLBackendData : public ImageBackendData
 {
-  CairoOGLBackendData() : mLayerProgram(gl::RGBALayerProgramType) {}
+  CairoOGLBackendData() : mLayerProgram(RGBALayerProgramType) {}
   GLTexture mTexture;
-  gl::ShaderProgramType mLayerProgram;
+  ShaderProgramType mLayerProgram;
   gfxIntSize mTextureSize;
 };
 

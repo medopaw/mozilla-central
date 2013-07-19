@@ -9,8 +9,7 @@
 #include "nsIPresShell.h"
 #include "nsIDocument.h"
 #include "mozilla/dom/Element.h"
-
-DOMCI_DATA(SVGZoomEvent, mozilla::dom::SVGZoomEvent)
+#include "prtime.h"
 
 namespace mozilla {
 namespace dom {
@@ -26,8 +25,6 @@ SVGZoomEvent::SVGZoomEvent(EventTarget* aOwner,
   , mPreviousScale(0)
   , mNewScale(0)
 {
-  SetIsDOMBinding();
-
   if (aEvent) {
     mEventIsInternal = false;
   }

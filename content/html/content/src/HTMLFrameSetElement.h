@@ -6,6 +6,7 @@
 #ifndef HTMLFrameSetElement_h
 #define HTMLFrameSetElement_h
 
+#include "mozilla/Attributes.h"
 #include "nsIDOMHTMLFrameSetElement.h"
 #include "nsGenericHTMLElement.h"
 
@@ -41,8 +42,8 @@ namespace dom {
 
 class BeforeUnloadEventHandlerNonNull;
 
-class HTMLFrameSetElement : public nsGenericHTMLElement,
-                            public nsIDOMHTMLFrameSetElement
+class HTMLFrameSetElement MOZ_FINAL : public nsGenericHTMLElement,
+                                      public nsIDOMHTMLFrameSetElement
 {
 public:
   HTMLFrameSetElement(already_AddRefed<nsINodeInfo> aNodeInfo)
@@ -51,7 +52,6 @@ public:
       mNumCols(0),
       mCurrentRowColHint(NS_STYLE_HINT_REFLOW)
   {
-    SetIsDOMBinding();
   }
   virtual ~HTMLFrameSetElement();
 
@@ -120,7 +120,7 @@ public:
   }
   virtual nsresult SetAttr(int32_t aNameSpaceID, nsIAtom* aName,
                            nsIAtom* aPrefix, const nsAString& aValue,
-                           bool aNotify);
+                           bool aNotify) MOZ_OVERRIDE;
 
    /**
     * GetRowSpec is used to get the "rows" spec.
@@ -143,12 +143,12 @@ public:
   virtual bool ParseAttribute(int32_t aNamespaceID,
                                 nsIAtom* aAttribute,
                                 const nsAString& aValue,
-                                nsAttrValue& aResult);
+                                nsAttrValue& aResult) MOZ_OVERRIDE;
   virtual nsChangeHint GetAttributeChangeHint(const nsIAtom* aAttribute,
-                                              int32_t aModType) const;
+                                              int32_t aModType) const MOZ_OVERRIDE;
 
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
-  virtual nsIDOMNode* AsDOMNode() { return this; }
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
+  virtual nsIDOMNode* AsDOMNode() MOZ_OVERRIDE { return this; }
 
 protected:
   virtual JSObject* WrapNode(JSContext *aCx,

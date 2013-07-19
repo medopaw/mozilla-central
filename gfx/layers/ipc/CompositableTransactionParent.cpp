@@ -32,10 +32,23 @@ CompositableParentManager::ReceiveCompositableUpdate(const CompositableOperation
         static_cast<CompositableParent*>(op.compositableParent());
       CompositableHost* compositable = compositableParent->GetCompositableHost();
 
-      compositable->EnsureTextureHost(op.textureId(), op.descriptor(),
+      compositable->EnsureDeprecatedTextureHost(op.textureId(), op.descriptor(),
                                       compositableParent->GetCompositableManager(),
                                       op.textureInfo());
 
+      break;
+    }
+    case CompositableOperation::TOpCreatedIncrementalTexture: {
+      MOZ_LAYERS_LOG(("[ParentSide] Created texture"));
+      const OpCreatedIncrementalTexture& op = aEdit.get_OpCreatedIncrementalTexture();
+
+      CompositableParent* compositableParent =
+        static_cast<CompositableParent*>(op.compositableParent());
+      CompositableHost* compositable = compositableParent->GetCompositableHost();
+
+      compositable->EnsureDeprecatedTextureHostIncremental(compositableParent->GetCompositableManager(),
+                                                 op.textureInfo(),
+                                                 op.bufferRect());
       break;
     }
     case CompositableOperation::TOpDestroyThebesBuffer: {
@@ -64,7 +77,7 @@ CompositableParentManager::ReceiveCompositableUpdate(const CompositableOperation
         compositable->SetLayer(layer);
       } else {
         // if we reach this branch, it most likely means that async textures
-        // are coming in before we had time to attach the conmpositable to a
+        // are coming in before we had time to attach the compositable to a
         // layer. Don't panic, it is okay in this case. it should not be
         // happening continuously, though.
       }
@@ -75,11 +88,11 @@ CompositableParentManager::ReceiveCompositableUpdate(const CompositableOperation
 
       if (compositable) {
         const SurfaceDescriptor& descriptor = op.image();
-        compositable->EnsureTextureHost(op.textureId(),
+        compositable->EnsureDeprecatedTextureHost(op.textureId(),
                                         descriptor,
                                         compositableParent->GetCompositableManager(),
                                         TextureInfo());
-        MOZ_ASSERT(compositable->GetTextureHost());
+        MOZ_ASSERT(compositable->GetDeprecatedTextureHost());
 
         SurfaceDescriptor newBack;
         bool shouldRecomposite = compositable->Update(descriptor, &newBack);
@@ -126,6 +139,24 @@ CompositableParentManager::ReceiveCompositableUpdate(const CompositableOperation
         OpContentBufferSwap(compositableParent, nullptr, frontUpdatedRegion));
 
       RenderTraceInvalidateEnd(thebes, "FF00FF");
+      break;
+    }
+    case CompositableOperation::TOpPaintTextureIncremental: {
+      MOZ_LAYERS_LOG(("[ParentSide] Paint ThebesLayer"));
+
+      const OpPaintTextureIncremental& op = aEdit.get_OpPaintTextureIncremental();
+
+      CompositableParent* compositableParent = static_cast<CompositableParent*>(op.compositableParent());
+      CompositableHost* compositable =
+        compositableParent->GetCompositableHost();
+
+      SurfaceDescriptor desc = op.image();
+
+      compositable->UpdateIncremental(op.textureId(),
+                                      desc,
+                                      op.updatedRegion(),
+                                      op.bufferRect(),
+                                      op.bufferRotation());
       break;
     }
     case CompositableOperation::TOpUpdatePictureRect: {

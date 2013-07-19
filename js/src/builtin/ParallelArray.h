@@ -4,8 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef ParallelArray_h__
-#define ParallelArray_h__
+#ifndef builtin_ParallelArray_h
+#define builtin_ParallelArray_h
 
 #include "jsapi.h"
 #include "jscntxt.h"
@@ -43,7 +43,7 @@ class ParallelArrayObject : public JSObject
     // object for you, since ParallelArray type objects must be setup
     // in a rather particular way to interact well with the
     // self-hosted code.  See constructHelper() for details.
-    static JSObject *newInstance(JSContext *cx);
+    static JSObject *newInstance(JSContext *cx, NewObjectKind newKind = GenericObject);
 
     // Get the constructor function for argc number of arguments.
     static JSFunction *getConstructor(JSContext *cx, unsigned argc);
@@ -57,4 +57,4 @@ class ParallelArrayObject : public JSObject
 extern JSObject *
 js_InitParallelArrayClass(JSContext *cx, js::HandleObject obj);
 
-#endif // ParallelArray_h__
+#endif /* builtin_ParallelArray_h */

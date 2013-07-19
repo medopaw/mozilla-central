@@ -37,7 +37,8 @@ public:
   }
 
   static JSObject*
-  Create(JSContext* aCx, uint32_t aWidth, uint32_t aHeight, JSObject *aData)
+  Create(JSContext* aCx, uint32_t aWidth,
+         uint32_t aHeight, JS::Handle<JSObject*> aData)
   {
     MOZ_ASSERT(aData);
     MOZ_ASSERT(JS_IsTypedArrayObject(aData));
@@ -114,7 +115,8 @@ private:
   }
 
   static JSBool
-  GetProperty(JSContext* aCx, JSHandleObject aObj, JSHandleId aIdval, JSMutableHandleValue aVp)
+  GetProperty(JSContext* aCx, JS::Handle<JSObject*> aObj, JS::Handle<jsid> aIdval,
+              JS::MutableHandle<JS::Value> aVp)
   {
     JSClass* classPtr = JS_GetClass(aObj);
     if (classPtr != &sClass) {
@@ -167,7 +169,8 @@ InitClass(JSContext* aCx, JSObject* aGlobal)
 }
 
 JSObject*
-Create(JSContext* aCx, uint32_t aWidth, uint32_t aHeight, JSObject* aData)
+Create(JSContext* aCx, uint32_t aWidth,
+       uint32_t aHeight, JS::Handle<JSObject*> aData)
 {
   return ImageData::Create(aCx, aWidth, aHeight, aData);
 }

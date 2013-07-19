@@ -222,7 +222,7 @@ public:
 };
 
 NS_IMETHODIMP
-BlockingConnectionCloseCallback::Complete()
+BlockingConnectionCloseCallback::Complete(nsresult, nsISupports*)
 {
   mDone = true;
   nsCOMPtr<nsIObserverService> os = mozilla::services::GetObserverService();
@@ -733,7 +733,14 @@ Database::InitSchema(bool* aDatabaseMigrated)
         NS_ENSURE_SUCCESS(rv, rv);
       }
 
-      // Firefox 23 uses schema version 23.
+      // Firefox 24 uses schema version 23.
+
+      if (currentSchemaVersion < 24) {
+        rv = MigrateV24Up();
+        NS_ENSURE_SUCCESS(rv, rv);
+      }
+
+      // Firefox 25 uses schema version 24.
 
       // Schema Upgrades must add migration code here.
 
@@ -1891,19 +1898,6 @@ Database::MigrateV21Up()
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
-  // Update prefixes.
-  nsCOMPtr<mozIStorageAsyncStatement> updatePrefixesStmt;
-  rv = mMainConn->CreateAsyncStatement(NS_LITERAL_CSTRING(
-    "UPDATE moz_hosts SET prefix = ( "
-      HOSTS_PREFIX_PRIORITY_FRAGMENT
-    ") "
-  ), getter_AddRefs(updatePrefixesStmt));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  nsCOMPtr<mozIStoragePendingStatement> ps;
-  rv = updatePrefixesStmt->ExecuteAsync(nullptr, getter_AddRefs(ps));
-  NS_ENSURE_SUCCESS(rv, rv);
-
   return NS_OK;
 }
 
@@ -1924,6 +1918,25 @@ Database::MigrateV22Up()
 
 nsresult
 Database::MigrateV23Up()
+{
+  MOZ_ASSERT(NS_IsMainThread());
+
+  // Recalculate hosts prefixes.
+  nsCOMPtr<mozIStorageAsyncStatement> updatePrefixesStmt;
+  nsresult rv = mMainConn->CreateAsyncStatement(NS_LITERAL_CSTRING(
+    "UPDATE moz_hosts SET prefix = ( " HOSTS_PREFIX_PRIORITY_FRAGMENT ") "
+  ), getter_AddRefs(updatePrefixesStmt));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<mozIStoragePendingStatement> ps;
+  rv = updatePrefixesStmt->ExecuteAsync(nullptr, getter_AddRefs(ps));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return NS_OK;
+}
+
+nsresult
+Database::MigrateV24Up()
 {
   MOZ_ASSERT(NS_IsMainThread());
 

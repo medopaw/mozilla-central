@@ -8,6 +8,7 @@
 #include "mozilla/Attributes.h"
 #include "mozilla/DebugOnly.h"
 #include "mozilla/Likely.h"
+#include "mozilla/Poison.h"
 #include "nsIWidget.h"
 #include "nsViewManager.h"
 #include "nsIFrame.h"
@@ -31,7 +32,6 @@ nsView::nsView(nsViewManager* aViewManager, nsViewVisibility aVisibility)
   mViewManager = aViewManager;
   mDirtyRegion = nullptr;
   mWidgetIsTopLevel = false;
-  mInAlternatePaint = false;
 }
 
 void nsView::DropMouseGrabbing()
@@ -94,6 +94,24 @@ nsView::~nsView()
   delete mDirtyRegion;
 }
 
+class DestroyWidgetRunnable : public nsRunnable {
+public:
+  NS_DECL_NSIRUNNABLE
+
+  explicit DestroyWidgetRunnable(nsIWidget* aWidget) : mWidget(aWidget) {}
+
+private:
+  nsCOMPtr<nsIWidget> mWidget;
+};
+
+NS_IMETHODIMP DestroyWidgetRunnable::Run()
+{
+  mWidget->Destroy();
+  mWidget = nullptr;
+  return NS_OK;
+}
+
+
 void nsView::DestroyWidget()
 {
   if (mWindow)
@@ -107,7 +125,11 @@ void nsView::DestroyWidget()
     }
     else {
       mWindow->SetWidgetListener(nullptr);
-      mWindow->Destroy();
+
+      nsCOMPtr<nsIRunnable> widgetDestroyer =
+        new DestroyWidgetRunnable(mWindow);
+
+      NS_DispatchToMainThread(widgetDestroyer);
     }
 
     NS_RELEASE(mWindow);
@@ -132,14 +154,7 @@ nsView* nsView::GetViewFor(nsIWidget* aWidget)
 void nsView::Destroy()
 {
   this->~nsView();
-
-  const uintptr_t POISON = nsPresArena::GetPoisonValue();
-  char* p = reinterpret_cast<char*>(this);
-  char* limit = p + sizeof(*this);
-  for (; p < limit; p += sizeof(uintptr_t)) {
-    *reinterpret_cast<uintptr_t*>(p) = POISON;
-  }
-
+  mozWritePoison(this, sizeof(*this));
   nsView::operator delete(this);
 }
 
@@ -243,8 +258,7 @@ void nsView::DoResetWidgetBounds(bool aMoveOnly,
   // Stash a copy of these and use them so we can handle this being deleted (say
   // from sync painting/flushing from Show/Move/Resize on the widget).
   nsIntRect newBounds;
-  nsRefPtr<nsDeviceContext> dx;
-  mViewManager->GetDeviceContext(*getter_AddRefs(dx));
+  nsRefPtr<nsDeviceContext> dx = mViewManager->GetDeviceContext();
 
   nsWindowType type;
   widget->GetWindowType(type);
@@ -525,8 +539,7 @@ nsresult nsView::CreateWidget(nsWidgetInitData *aWidgetInitData,
 
   nsIntRect trect = CalcWidgetBounds(aWidgetInitData->mWindowType);
 
-  nsRefPtr<nsDeviceContext> dx;
-  mViewManager->GetDeviceContext(*getter_AddRefs(dx));
+  nsRefPtr<nsDeviceContext> dx = mViewManager->GetDeviceContext();
 
   nsIWidget* parentWidget =
     GetParent() ? GetParent()->GetNearestWidget(nullptr) : nullptr;
@@ -564,8 +577,7 @@ nsresult nsView::CreateWidgetForParent(nsIWidget* aParentWidget,
 
   nsIntRect trect = CalcWidgetBounds(aWidgetInitData->mWindowType);
 
-  nsRefPtr<nsDeviceContext> dx;
-  mViewManager->GetDeviceContext(*getter_AddRefs(dx));
+  nsRefPtr<nsDeviceContext> dx = mViewManager->GetDeviceContext();
 
   mWindow =
     aParentWidget->CreateChild(trect, dx, aWidgetInitData).get();
@@ -590,8 +602,7 @@ nsresult nsView::CreateWidgetForPopup(nsWidgetInitData *aWidgetInitData,
 
   nsIntRect trect = CalcWidgetBounds(aWidgetInitData->mWindowType);
 
-  nsRefPtr<nsDeviceContext> dx;
-  mViewManager->GetDeviceContext(*getter_AddRefs(dx));
+  nsRefPtr<nsDeviceContext> dx = mViewManager->GetDeviceContext();
 
   // XXX/cjones: having these two separate creation cases seems ... um
   // ... unnecessary, but it's the way the old code did it.  Please
@@ -659,8 +670,7 @@ nsresult nsView::AttachToTopLevelWidget(nsIWidget* aWidget)
     }
   }
 
-  nsRefPtr<nsDeviceContext> dx;
-  mViewManager->GetDeviceContext(*getter_AddRefs(dx));
+  nsRefPtr<nsDeviceContext> dx = mViewManager->GetDeviceContext();
 
   // Note, the previous device context will be released. Detaching
   // will not restore the old one.
@@ -958,8 +968,7 @@ nsView::WindowResized(nsIWidget* aWidget, int32_t aWidth, int32_t aHeight)
   // window creation
   SetForcedRepaint(true);
   if (this == mViewManager->GetRootView()) {
-    nsRefPtr<nsDeviceContext> devContext;
-    mViewManager->GetDeviceContext(*getter_AddRefs(devContext));
+    nsRefPtr<nsDeviceContext> devContext = mViewManager->GetDeviceContext();
     // ensure DPI is up-to-date, in case of window being opened and sized
     // on a non-default-dpi display (bug 829963)
     devContext->CheckDPIChange();
@@ -1002,19 +1011,12 @@ nsView::WillPaintWindow(nsIWidget* aWidget)
 }
 
 bool
-nsView::PaintWindow(nsIWidget* aWidget, nsIntRegion aRegion, uint32_t aFlags)
+nsView::PaintWindow(nsIWidget* aWidget, nsIntRegion aRegion)
 {
   NS_ASSERTION(this == nsView::GetViewFor(aWidget), "wrong view for widget?");
 
-  mInAlternatePaint = aFlags & PAINT_IS_ALTERNATE;
   nsRefPtr<nsViewManager> vm = mViewManager;
-  bool result = vm->PaintWindow(aWidget, aRegion, aFlags);
-  // PaintWindow can destroy this via WillPaintWindow notification, so we have
-  // to re-get the view from the widget.
-  nsView* view = nsView::GetViewFor(aWidget);
-  if (view) {
-    view->mInAlternatePaint = false;
-  }
+  bool result = vm->PaintWindow(aWidget, aRegion);
   return result;
 }
 

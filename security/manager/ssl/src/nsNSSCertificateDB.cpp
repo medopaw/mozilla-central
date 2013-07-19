@@ -123,7 +123,7 @@ nsNSSCertificateDB::FindCertByDBKey(const char *aDBkey, nsISupports *aToken,
   //unsigned long moduleID,slotID;
 
   dummy = NSSBase64_DecodeBuffer(nullptr, &keyItem, aDBkey,
-                                 (uint32_t)PL_strlen(aDBkey)); 
+                                 (uint32_t)strlen(aDBkey)); 
   if (!dummy || keyItem.len < NS_NSS_LONG*4) {
     PR_FREEIF(keyItem.data);
     return NS_ERROR_INVALID_ARG;
@@ -486,7 +486,6 @@ ImportCertsIntoPermanentStorage(const ScopedCERTCertList &certChain, const SECCe
                                const PRBool caOnly)
 {
   CERTCertDBHandle *certdb = CERT_GetDefaultCertDB();
-  const PRTime now = PR_Now();
 
   int chainLen = 0;
   for (CERTCertListNode *chainNode = CERT_LIST_HEAD(certChain);
@@ -745,7 +744,6 @@ nsNSSCertificateDB::ImportValidCACerts(int numCACerts, SECItem *CACerts, nsIInte
 nsresult
 nsNSSCertificateDB::ImportValidCACertsInList(CERTCertList *certList, nsIInterfaceRequestor *ctx)
 {
-  SECItem **rawArray;
   RefPtr<CertVerifier> certVerifier(GetDefaultCertVerifier());
   if (!certVerifier)
     return NS_ERROR_UNEXPECTED;
@@ -1330,7 +1328,7 @@ nsNSSCertificateDB::ConstructX509FromBase64(const char *base64,
 
   // sure would be nice to have a smart pointer class for PL_ allocations
   // unfortunately, we cannot distinguish out-of-memory from bad-input here
-  uint32_t len = PL_strlen(base64);
+  uint32_t len = base64 ? strlen(base64) : 0;
   char *certDER = PL_Base64Decode(base64, len, nullptr);
   if (!certDER)
     return NS_ERROR_ILLEGAL_VALUE;

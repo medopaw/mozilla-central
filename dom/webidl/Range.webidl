@@ -12,8 +12,7 @@
  * liability, trademark and document use rules apply.
  */
 
-interface ClientRect;
-
+[Constructor]
 interface Range {
   [Throws]
   readonly attribute Node startContainer;
@@ -39,7 +38,7 @@ interface Range {
   void setEndBefore(Node refNode);
   [Throws]
   void setEndAfter(Node refNode);
-  void collapse(boolean toStart);
+  void collapse(optional boolean toStart = false);
   [Throws]
   void selectNode(Node refNode);
   [Throws]

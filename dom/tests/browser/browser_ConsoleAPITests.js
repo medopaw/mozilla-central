@@ -34,7 +34,7 @@ function test() {
 }
 
 function testConsoleData(aMessageObject) {
-  let messageWindow = getWindowByWindowId(aMessageObject.ID);
+  let messageWindow = Services.wm.getOuterWindowWithId(aMessageObject.ID);
   is(messageWindow, gWindow, "found correct window by window ID");
 
   is(aMessageObject.level, gLevel, "expected level received");
@@ -48,7 +48,14 @@ function testConsoleData(aMessageObject) {
   else {
     is(aMessageObject.arguments.length, gArgs.length, "arguments.length matches");
     gArgs.forEach(function (a, i) {
-      is(aMessageObject.arguments[i], a, "correct arg " + i);
+      // Waive Xray so that we don't get messed up by Xray ToString.
+      //
+      // It'd be nice to just use XPCNativeWrapper.unwrap here, but there are
+      // a number of dumb reasons we can't. See bug 868675.
+      var arg = aMessageObject.arguments[i];
+      if (Components.utils.isXrayWrapper(arg))
+        arg = arg.wrappedJSObject;
+      is(arg, a, "correct arg " + i);
     });
   }
 
@@ -56,7 +63,7 @@ function testConsoleData(aMessageObject) {
 }
 
 function testLocationData(aMessageObject) {
-  let messageWindow = getWindowByWindowId(aMessageObject.ID);
+  let messageWindow = Services.wm.getOuterWindowWithId(aMessageObject.ID);
   is(messageWindow, gWindow, "found correct window by window ID");
 
   is(aMessageObject.level, gLevel, "expected level received");
@@ -90,7 +97,7 @@ function startGroupTest() {
 }
 
 function testConsoleGroup(aMessageObject) {
-  let messageWindow = getWindowByWindowId(aMessageObject.ID);
+  let messageWindow = Services.wm.getOuterWindowWithId(aMessageObject.ID);
   is(messageWindow, gWindow, "found correct window by window ID");
 
   ok(aMessageObject.level == "group" ||
@@ -166,11 +173,11 @@ function observeConsoleTest() {
   let win = XPCNativeWrapper.unwrap(gWindow);
   expect("log", "arg");
   win.console.log("arg");
-  yield;
+  yield undefined;
 
   expect("info", "arg", "extra arg");
   win.console.info("arg", "extra arg");
-  yield;
+  yield undefined;
 
   // We don't currently support width and precision qualifiers, but we don't
   // choke on them either.
@@ -179,53 +186,53 @@ function observeConsoleTest() {
                    1,
                    "PI",
                    3.14159);
-  yield;
+  yield undefined;
 
   expect("log", "%d, %s, %l");
   win.console.log("%d, %s, %l");
-  yield;
+  yield undefined;
 
   expect("log", "%a %b %c");
   win.console.log("%a %b %c");
-  yield;
+  yield undefined;
 
   expect("log", "%a %b %c", "a", "b");
   win.console.log("%a %b %c", "a", "b");
-  yield;
+  yield undefined;
 
   expect("log", "2, a, %l", 3);
   win.console.log("%d, %s, %l", 2, "a", 3);
-  yield;
+  yield undefined;
 
   // Bug #692550 handle null and undefined.
   expect("log", "null, undefined");
   win.console.log("%s, %s", null, undefined);
-  yield;
+  yield undefined;
 
   // Bug #696288 handle object as first argument.
   let obj = { a: 1 };
   expect("log", obj, "a");
   win.console.log(obj, "a");
-  yield;
+  yield undefined;
 
   expect("dir", win.toString());
   win.console.dir(win);
-  yield;
+  yield undefined;
 
   expect("error", "arg");
   win.console.error("arg");
-  yield;
+  yield undefined;
 
   let obj2 = { b: 2 };
   expect("log", "omg ", obj, " foo ", 4, obj2);
   win.console.log("omg %o foo %o", obj, 4, obj2);
-  yield;
+  yield undefined;
 
   startTraceTest();
-  yield;
+  yield undefined;
 
   startLocationTest();
-  yield;
+  yield undefined;
 }
 
 function consoleAPISanityTest() {
@@ -271,7 +278,7 @@ function startTimeTest() {
 }
 
 function testConsoleTime(aMessageObject) {
-  let messageWindow = getWindowByWindowId(aMessageObject.ID);
+  let messageWindow = Services.wm.getOuterWindowWithId(aMessageObject.ID);
   is(messageWindow, gWindow, "found correct window by window ID");
 
   is(aMessageObject.level, gLevel, "expected level received");
@@ -314,7 +321,7 @@ function startTimeEndTest() {
 }
 
 function testConsoleTimeEnd(aMessageObject) {
-  let messageWindow = getWindowByWindowId(aMessageObject.ID);
+  let messageWindow = Services.wm.getOuterWindowWithId(aMessageObject.ID);
   is(messageWindow, gWindow, "found correct window by window ID");
 
   is(aMessageObject.level, gLevel, "expected level received");
@@ -354,7 +361,7 @@ function startEmptyTimerTest() {
 }
 
 function testEmptyTimer(aMessageObject) {
-  let messageWindow = getWindowByWindowId(aMessageObject.ID);
+  let messageWindow = Services.wm.getOuterWindowWithId(aMessageObject.ID);
   is(messageWindow, gWindow, "found correct window by window ID");
 
   ok(aMessageObject.level == "time" || aMessageObject.level == "timeEnd",
@@ -397,14 +404,4 @@ function getWindowId(aWindow)
   return aWindow.QueryInterface(Ci.nsIInterfaceRequestor)
                 .getInterface(Ci.nsIDOMWindowUtils)
                 .outerWindowID;
-}
-
-function getWindowByWindowId(aId) {
-  let someWindow = Services.wm.getMostRecentWindow("navigator:browser");
-  if (someWindow) {
-    let windowUtils = someWindow.QueryInterface(Ci.nsIInterfaceRequestor)
-                                .getInterface(Ci.nsIDOMWindowUtils);
-    return windowUtils.getOuterWindowWithId(aId);
-  }
-  return null;
 }

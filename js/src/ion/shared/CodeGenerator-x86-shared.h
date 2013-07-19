@@ -4,8 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef jsion_codegen_x86_shared_h__
-#define jsion_codegen_x86_shared_h__
+#ifndef ion_shared_CodeGenerator_x86_shared_h
+#define ion_shared_CodeGenerator_x86_shared_h
 
 #include "ion/shared/CodeGenerator-shared.h"
 
@@ -30,8 +30,8 @@ class CodeGeneratorX86Shared : public CodeGeneratorShared
 
   protected:
     // Label for the common return path.
-    HeapLabel *returnLabel_;
-    HeapLabel *deoptLabel_;
+    NonAssertingLabel returnLabel_;
+    NonAssertingLabel deoptLabel_;
 
     inline Operand ToOperand(const LAllocation &a) {
         if (a.isGeneralReg())
@@ -50,6 +50,7 @@ class CodeGeneratorX86Shared : public CodeGeneratorShared
     MoveResolver::MoveOperand toMoveOperand(const LAllocation *a) const;
 
     bool bailoutIf(Assembler::Condition condition, LSnapshot *snapshot);
+    bool bailoutIf(Assembler::DoubleCondition condition, LSnapshot *snapshot);
     bool bailoutFrom(Label *label, LSnapshot *snapshot);
     bool bailout(LSnapshot *snapshot);
 
@@ -65,7 +66,7 @@ class CodeGeneratorX86Shared : public CodeGeneratorShared
     // Emits a branch that directs control flow to the true block if |cond| is
     // true, and the false block if |cond| is false.
     void emitBranch(Assembler::Condition cond, MBasicBlock *ifTrue, MBasicBlock *ifFalse,
-                    Assembler::NaNCond ifNaN = Assembler::NaN_Unexpected);
+                    Assembler::NaNCond ifNaN = Assembler::NaN_HandledByCond);
     void emitBranch(Assembler::DoubleCondition cond, MBasicBlock *ifTrue, MBasicBlock *ifFalse);
 
     bool emitTableSwitchDispatch(MTableSwitch *mir, const Register &index, const Register &base);
@@ -84,13 +85,13 @@ class CodeGeneratorX86Shared : public CodeGeneratorShared
     virtual bool visitSubI(LSubI *ins);
     virtual bool visitMulI(LMulI *ins);
     virtual bool visitDivI(LDivI *ins);
+    virtual bool visitDivPowTwoI(LDivPowTwoI *ins);
     virtual bool visitModI(LModI *ins);
     virtual bool visitModPowTwoI(LModPowTwoI *ins);
     virtual bool visitBitNotI(LBitNotI *ins);
     virtual bool visitBitOpI(LBitOpI *ins);
     virtual bool visitShiftI(LShiftI *ins);
     virtual bool visitUrshD(LUrshD *ins);
-    virtual bool visitMoveGroup(LMoveGroup *group);
     virtual bool visitTestIAndBranch(LTestIAndBranch *test);
     virtual bool visitTestDAndBranch(LTestDAndBranch *test);
     virtual bool visitCompare(LCompare *comp);
@@ -106,7 +107,7 @@ class CodeGeneratorX86Shared : public CodeGeneratorShared
     virtual bool visitGuardObjectType(LGuardObjectType *guard);
     virtual bool visitGuardClass(LGuardClass *guard);
     virtual bool visitEffectiveAddress(LEffectiveAddress *ins);
-    virtual bool visitAsmJSDivOrMod(LAsmJSDivOrMod *ins);
+    virtual bool visitUDivOrMod(LUDivOrMod *ins);
     virtual bool visitAsmJSPassStackArg(LAsmJSPassStackArg *ins);
 
     bool visitNegI(LNegI *lir);
@@ -140,5 +141,4 @@ class OutOfLineBailout : public OutOfLineCodeBase<CodeGeneratorX86Shared>
 } // namespace ion
 } // namespace js
 
-#endif // jsion_codegen_x86_shared_h__
-
+#endif /* ion_shared_CodeGenerator_x86_shared_h */

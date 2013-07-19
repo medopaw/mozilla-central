@@ -6,11 +6,11 @@
 
 #include "mozilla/DebugOnly.h"
 
-#include "CodeGenerator-shared.h"
+#include "ion/shared/CodeGenerator-shared.h"
 #include "ion/MIRGenerator.h"
 #include "ion/IonFrames-inl.h"
 #include "ion/MIR.h"
-#include "CodeGenerator-shared-inl.h"
+#include "ion/shared/CodeGenerator-shared-inl.h"
 #include "ion/IonSpewer.h"
 #include "ion/IonMacroAssembler.h"
 #include "ion/ParallelFunctions.h"
@@ -35,7 +35,6 @@ CodeGeneratorShared::ensureMasm(MacroAssembler *masmArg)
 
 CodeGeneratorShared::CodeGeneratorShared(MIRGenerator *gen, LIRGraph *graph, MacroAssembler *masmArg)
   : oolIns(NULL),
-    oolParallelAbort_(NULL),
     maybeMasm_(),
     masm(ensureMasm(masmArg)),
     gen(gen),
@@ -48,6 +47,7 @@ CodeGeneratorShared::CodeGeneratorShared(MIRGenerator *gen, LIRGraph *graph, Mac
     lastOsiPointOffset_(0),
     sps_(&gen->compartment->rt->spsProfiler, &lastPC_),
     osrEntryOffset_(0),
+    skipArgCheckEntryOffset_(0),
     frameDepth_(graph->localSlotCount() * sizeof(STACK_SLOT_SIZE) +
                 graph->argumentSlotCount() * sizeof(Value))
 {
@@ -135,7 +135,7 @@ CodeGeneratorShared::encodeSlots(LSnapshot *snapshot, MResumePoint *resumePoint,
 {
     IonSpew(IonSpew_Codegen, "Encoding %u of resume point %p's operands starting from %u",
             resumePoint->numOperands(), (void *) resumePoint, *startIndex);
-    for (uint32_t slotno = 0; slotno < resumePoint->numOperands(); slotno++) {
+    for (uint32_t slotno = 0, e = resumePoint->numOperands(); slotno < e; slotno++) {
         uint32_t i = slotno + *startIndex;
         MDefinition *mir = resumePoint->getOperand(slotno);
 
@@ -265,11 +265,23 @@ CodeGeneratorShared::encode(LSnapshot *snapshot)
         if (mir->mode() == MResumePoint::ResumeAfter)
           bailPC = GetNextPc(pc);
 
-        // For fun.apply({}, arguments) the reconstructStackDepth will have stackdepth 4,
-        // but it could be that we inlined the funapply. In that case exprStackSlots,
-        // will have the real arguments in the slots and not be 4.
-        JS_ASSERT_IF(GetIonContext()->cx && JSOp(*bailPC) != JSOP_FUNAPPLY,
-                     exprStack == js_ReconstructStackDepth(GetIonContext()->cx, script, bailPC));
+#ifdef DEBUG
+        if (GetIonContext()->cx) {
+            uint32_t stackDepth = js_ReconstructStackDepth(GetIonContext()->cx, script, bailPC);
+            if (JSOp(*bailPC) == JSOP_FUNCALL) {
+                // For fun.call(this, ...); the reconstructStackDepth will
+                // include the this. When inlining that is not included.
+                // So the exprStackSlots will be one less.
+                JS_ASSERT(stackDepth - exprStack <= 1);
+            } else if (JSOp(*bailPC) != JSOP_FUNAPPLY) {
+                // For fun.apply({}, arguments) the reconstructStackDepth will
+                // have stackdepth 4, but it could be that we inlined the
+                // funapply. In that case exprStackSlots, will have the real
+                // arguments in the slots and not be 4.
+                JS_ASSERT(exprStack == stackDepth);
+            }
+        }
+#endif
 
 #ifdef TRACK_SNAPSHOTS
         LInstruction *ins = instruction();
@@ -407,6 +419,9 @@ CodeGeneratorShared::markOsiPoint(LOsiPoint *ins, uint32_t *callPointOffset)
 bool
 CodeGeneratorShared::callVM(const VMFunction &fun, LInstruction *ins, const Register *dynStack)
 {
+    // Different execution modes have different sets of VM functions.
+    JS_ASSERT(fun.executionMode == gen->info().executionMode());
+
 #ifdef DEBUG
     if (ins->mirRaw()) {
         JS_ASSERT(ins->mirRaw()->isInstruction());
@@ -540,17 +555,40 @@ CodeGeneratorShared::markArgumentSlots(LSafepoint *safepoint)
     return true;
 }
 
-bool
-CodeGeneratorShared::ensureOutOfLineParallelAbort(Label **result)
+OutOfLineParallelAbort *
+CodeGeneratorShared::oolParallelAbort(ParallelBailoutCause cause,
+                                      MBasicBlock *basicBlock,
+                                      jsbytecode *bytecode)
 {
-    if (!oolParallelAbort_) {
-        oolParallelAbort_ = new OutOfLineParallelAbort();
-        if (!addOutOfLineCode(oolParallelAbort_))
-            return false;
-    }
+    OutOfLineParallelAbort *ool = new OutOfLineParallelAbort(cause, basicBlock, bytecode);
+    if (!ool || !addOutOfLineCode(ool))
+        return NULL;
+    return ool;
+}
 
-    *result = oolParallelAbort_->entry();
-    return true;
+OutOfLineParallelAbort *
+CodeGeneratorShared::oolParallelAbort(ParallelBailoutCause cause,
+                                      LInstruction *lir)
+{
+    MDefinition *mir = lir->mirRaw();
+    MBasicBlock *block = mir->block();
+    jsbytecode *pc = mir->trackedPc();
+    if (!pc) {
+        if (lir->snapshot())
+            pc = lir->snapshot()->mir()->pc();
+        else
+            pc = block->pc();
+    }
+    return oolParallelAbort(cause, block, pc);
+}
+
+OutOfLinePropagateParallelAbort *
+CodeGeneratorShared::oolPropagateParallelAbort(LInstruction *lir)
+{
+    OutOfLinePropagateParallelAbort *ool = new OutOfLinePropagateParallelAbort(lir);
+    if (!ool || !addOutOfLineCode(ool))
+        return NULL;
+    return ool;
 }
 
 bool
@@ -558,6 +596,13 @@ OutOfLineParallelAbort::generate(CodeGeneratorShared *codegen)
 {
     codegen->callTraceLIR(0xDEADBEEF, NULL, "ParallelBailout");
     return codegen->visitOutOfLineParallelAbort(this);
+}
+
+bool
+OutOfLinePropagateParallelAbort::generate(CodeGeneratorShared *codegen)
+{
+    codegen->callTraceLIR(0xDEADBEEF, NULL, "ParallelBailout");
+    return codegen->visitOutOfLinePropagateParallelAbort(this);
 }
 
 bool

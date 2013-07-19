@@ -15,7 +15,7 @@
 
 // This is the schema version. Update it at any schema change and add a
 // corresponding migrateVxx method below.
-#define DATABASE_SCHEMA_VERSION 23
+#define DATABASE_SCHEMA_VERSION 24
 
 // Fired after Places inited.
 #define TOPIC_PLACES_INIT_COMPLETE "places-init-complete"
@@ -274,6 +274,7 @@ protected:
   nsresult MigrateV21Up();
   nsresult MigrateV22Up();
   nsresult MigrateV23Up();
+  nsresult MigrateV24Up();
 
   nsresult UpdateBookmarkRootTitles();
   nsresult CheckAndUpdateGUIDs();
@@ -283,10 +284,8 @@ private:
 
   /**
    * Singleton getter, invoked by class instantiation.
-   *
-   * Note: does AddRef.
    */
-  static Database* GetSingleton();
+  static already_AddRefed<Database> GetSingleton();
 
   static Database* gDatabase;
 

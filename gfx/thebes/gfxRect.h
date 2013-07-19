@@ -56,7 +56,7 @@ static inline mozilla::css::Corner operator++(mozilla::css::Corner& corner, int)
     return corner;
 }
 
-struct THEBES_API gfxRect :
+struct gfxRect :
     public mozilla::gfx::BaseRect<gfxFloat, gfxRect, gfxPoint, gfxSize, gfxMargin> {
     typedef mozilla::gfx::BaseRect<gfxFloat, gfxRect, gfxPoint, gfxSize, gfxMargin> Super;
 
@@ -96,7 +96,7 @@ struct THEBES_API gfxRect :
             case NS_SIDE_BOTTOM: return BottomRight();
             case NS_SIDE_LEFT: return BottomLeft();
         }
-        MOZ_NOT_REACHED("Incomplet switch");
+        MOZ_CRASH("Incomplete switch");
     }
 
     gfxPoint CWCorner(mozilla::css::Side side) const {
@@ -106,7 +106,7 @@ struct THEBES_API gfxRect :
             case NS_SIDE_BOTTOM: return BottomLeft();
             case NS_SIDE_LEFT: return TopLeft();
         }
-        MOZ_NOT_REACHED("Incomplet switch");
+        MOZ_CRASH("Incomplete switch");
     }
 
     /* Conditions this border to Cairo's max coordinate space.
@@ -141,7 +141,7 @@ struct THEBES_API gfxRect :
     }
 };
 
-struct THEBES_API gfxCornerSizes {
+struct gfxCornerSizes {
     gfxSize sizes[NS_NUM_CORNERS];
 
     gfxCornerSizes () { }

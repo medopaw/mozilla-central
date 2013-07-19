@@ -5,6 +5,7 @@
 #ifndef HTMLDataListElement_h___
 #define HTMLDataListElement_h___
 
+#include "mozilla/Attributes.h"
 #include "nsGenericHTMLElement.h"
 #include "nsIDOMHTMLDataListElement.h"
 #include "nsContentList.h"
@@ -12,14 +13,13 @@
 namespace mozilla {
 namespace dom {
 
-class HTMLDataListElement : public nsGenericHTMLElement,
-                            public nsIDOMHTMLDataListElement
+class HTMLDataListElement MOZ_FINAL : public nsGenericHTMLElement,
+                                      public nsIDOMHTMLDataListElement
 {
 public:
   HTMLDataListElement(already_AddRefed<nsINodeInfo> aNodeInfo)
     : nsGenericHTMLElement(aNodeInfo)
   {
-    SetIsDOMBinding();
   }
   virtual ~HTMLDataListElement();
 
@@ -48,7 +48,7 @@ public:
   }
 
 
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
 
   // This function is used to generate the nsContentList (option elements).
   static bool MatchOptions(nsIContent* aContent, int32_t aNamespaceID,
@@ -57,7 +57,7 @@ public:
   NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED(HTMLDataListElement,
                                            nsGenericHTMLElement)
 
-  virtual nsIDOMNode* AsDOMNode() { return this; }
+  virtual nsIDOMNode* AsDOMNode() MOZ_OVERRIDE { return this; }
 protected:
   virtual JSObject* WrapNode(JSContext *aCx,
                              JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;

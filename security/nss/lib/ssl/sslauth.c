@@ -1,7 +1,6 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/* $Id$ */
 #include "cert.h"
 #include "secitem.h"
 #include "ssl.h"
@@ -61,7 +60,6 @@ SSL_SecurityStatus(PRFileDesc *fd, int *op, char **cp, int *kp0, int *kp1,
     sslSocket *ss;
     const char *cipherName;
     PRBool isDes = PR_FALSE;
-    PRBool enoughFirstHsDone = PR_FALSE;
 
     ss = ssl_FindSocket(fd);
     if (!ss) {
@@ -79,14 +77,7 @@ SSL_SecurityStatus(PRFileDesc *fd, int *op, char **cp, int *kp0, int *kp1,
 	*op = SSL_SECURITY_STATUS_OFF;
     }
 
-    if (ss->firstHsDone) {
-	enoughFirstHsDone = PR_TRUE;
-    } else if (ss->version >= SSL_LIBRARY_VERSION_3_0 &&
-	       ssl3_CanFalseStart(ss)) {
-	enoughFirstHsDone = PR_TRUE;
-    }
-
-    if (ss->opt.useSecurity && enoughFirstHsDone) {
+    if (ss->opt.useSecurity && ss->enoughFirstHsDone) {
 	if (ss->version < SSL_LIBRARY_VERSION_3_0) {
 	    cipherName = ssl_cipherName[ss->sec.cipherType];
 	} else {
@@ -214,10 +205,9 @@ SSL_AuthCertificate(void *arg, PRFileDesc *fd, PRBool checkSig, PRBool isServer)
     CERTCertDBHandle * handle;
     sslSocket *        ss;
     SECCertUsage       certUsage;
-    const char *             hostname    = NULL;
+    const char *       hostname    = NULL;
     PRTime             now = PR_Now();
-    SECItemArray *certStatusArray;
-    unsigned int i;
+    SECItemArray *     certStatusArray;
     
     ss = ssl_FindSocket(fd);
     PORT_Assert(ss != NULL);
@@ -228,9 +218,10 @@ SSL_AuthCertificate(void *arg, PRFileDesc *fd, PRBool checkSig, PRBool isServer)
     handle = (CERTCertDBHandle *)arg;
     certStatusArray = &ss->sec.ci.sid->peerCertStatus;
 
-    for (i = 0; i < certStatusArray->len; ++i) {
+    if (certStatusArray->len) {
         CERT_CacheOCSPResponseFromSideChannel(handle, ss->sec.peerCert,
-					now, &certStatusArray->items[i], arg);
+					now, &certStatusArray->items[0],
+					ss->pkcs11PinArg);
     }
 
     /* this may seem backwards, but isn't. */

@@ -6,8 +6,8 @@
 
 /* A higher-order macro for enumerating all cached property names. */
 
-#ifndef CommonPropertyNames_h__
-#define CommonPropertyNames_h__
+#ifndef vm_CommonPropertyNames_h
+#define vm_CommonPropertyNames_h
 
 #include "jsprototypes.h"
 #include "jsversion.h"
@@ -110,6 +110,7 @@
     macro(objectUndefined, objectUndefined, "[object Undefined]") \
     macro(of, of, "of") \
     macro(offset, offset, "offset") \
+    macro(outOfMemory, outOfMemory, "out of memory") \
     macro(parseFloat, parseFloat, "parseFloat") \
     macro(parseInt, parseInt, "parseInt") \
     macro(pattern, pattern, "pattern") \
@@ -158,4 +159,4 @@
     macro(boolean, boolean, "boolean") \
     macro(null, null, "null")
 
-#endif /* CommonPropertyNames_h__ */
+#endif /* vm_CommonPropertyNames_h */

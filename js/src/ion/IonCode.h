@@ -4,12 +4,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef jsion_coderef_h__
-#define jsion_coderef_h__
+#ifndef ion_IonCode_h
+#define ion_IonCode_h
 
+#include "mozilla/MemoryReporting.h"
 #include "mozilla/PodOperations.h"
 
-#include "IonTypes.h"
+#include "ion/IonTypes.h"
+#include "ion/AsmJS.h"
 #include "gc/Heap.h"
 
 // For RecompileInfo
@@ -46,8 +48,8 @@ class IonCode : public gc::Cell
     uint32_t jumpRelocTableBytes_;    // Size of the jump relocation table.
     uint32_t dataRelocTableBytes_;    // Size of the data relocation table.
     uint32_t preBarrierTableBytes_;   // Size of the prebarrier table.
-    JSBool invalidated_;            // Whether the code object has been invalidated.
-                                    // This is necessary to prevent GC tracing.
+    JSBool invalidated_;              // Whether the code object has been invalidated.
+                                      // This is necessary to prevent GC tracing.
 
 #if JS_BITS_PER_WORD == 32
     // Ensure IonCode is gc::Cell aligned.
@@ -134,7 +136,7 @@ class IonCode : public gc::Cell
     JS::Zone *zone() const { return tenuredZone(); }
     static void readBarrier(IonCode *code);
     static void writeBarrierPre(IonCode *code);
-    static void writeBarrierPost(IonCode *code, void *addr);
+    static void writeBarrierPost(IonCode *code, void *addr) {}
     static inline ThingRootKind rootKind() { return THING_ROOT_ION_CODE; }
 };
 
@@ -149,16 +151,19 @@ struct IonScript
 {
   private:
     // Code pointer containing the actual method.
-    HeapPtr<IonCode> method_;
+    EncapsulatedPtr<IonCode> method_;
 
     // Deoptimization table used by this method.
-    HeapPtr<IonCode> deoptTable_;
+    EncapsulatedPtr<IonCode> deoptTable_;
 
     // Entrypoint for OSR, or NULL.
     jsbytecode *osrPc_;
 
     // Offset to OSR entrypoint from method_->raw(), or 0.
     uint32_t osrEntryOffset_;
+
+    // Offset to entrypoint skipping type arg check from method_->raw().
+    uint32_t skipArgCheckEntryOffset_;
 
     // Offset of the invalidation epilogue (which pushes this IonScript
     // and calls the invalidation thunk).
@@ -173,9 +178,13 @@ struct IonScript
     // Number of times this script bailed out without invalidation.
     uint32_t numBailouts_;
 
-    // Flag set when we bailed out in parallel execution and should ensure its
-    // call targets are compiled.
-    bool hasInvalidatedCallTarget_;
+    // Flag set when it is likely that one of our (transitive) call
+    // targets is not compiled.  Used in ForkJoin.cpp to decide when
+    // we should add call targets to the worklist.
+    bool hasUncompiledCallTarget_;
+
+    // Flag set if IonScript was compiled with SPS profiling enabled.
+    bool hasSPSInstrumentation_;
 
     // Any kind of data needed by the runtime, these can be either cache
     // information or profiling info.
@@ -240,6 +249,10 @@ struct IonScript
     // a LOOPENTRY pc other than osrPc_.
     uint32_t osrPcMismatchCounter_;
 
+    // If non-null, the list of AsmJSModules
+    // that contain an optimized call directly into this IonScript.
+    Vector<DependentAsmJSModuleExit> *dependentAsmJSModules;
+
   private:
     inline uint8_t *bottomBuffer() {
         return reinterpret_cast<uint8_t *>(this);
@@ -252,8 +265,8 @@ struct IonScript
     SnapshotOffset *bailoutTable() {
         return (SnapshotOffset *) &bottomBuffer()[bailoutTable_];
     }
-    HeapValue *constants() {
-        return (HeapValue *) &bottomBuffer()[constantTable_];
+    EncapsulatedValue *constants() {
+        return (EncapsulatedValue *) &bottomBuffer()[constantTable_];
     }
     const SafepointIndex *safepointIndices() const {
         return const_cast<IonScript *>(this)->safepointIndices();
@@ -279,6 +292,19 @@ struct IonScript
     JSScript **callTargetList() {
         return (JSScript **) &bottomBuffer()[callTargetList_];
     }
+    bool addDependentAsmJSModule(JSContext *cx, DependentAsmJSModuleExit exit);
+    void removeDependentAsmJSModule(DependentAsmJSModuleExit exit) {
+        JS_ASSERT(dependentAsmJSModules);
+        for (size_t i = 0; i < dependentAsmJSModules->length(); i++) {
+            if (dependentAsmJSModules->begin()[i].module == exit.module &&
+                dependentAsmJSModules->begin()[i].exitIndex == exit.exitIndex)
+            {
+                dependentAsmJSModules->erase(dependentAsmJSModules->begin() + i);
+                break;
+            }
+        }
+    }
+    void detachDependentAsmJSModules(FreeOp *fop);
 
   private:
     void trace(JSTracer *trc);
@@ -301,6 +327,9 @@ struct IonScript
     }
     static inline size_t offsetOfOsrEntryOffset() {
         return offsetof(IonScript, osrEntryOffset_);
+    }
+    static inline size_t offsetOfSkipArgCheckEntryOffset() {
+        return offsetof(IonScript, skipArgCheckEntryOffset_);
     }
 
   public:
@@ -326,6 +355,13 @@ struct IonScript
     }
     uint32_t osrEntryOffset() const {
         return osrEntryOffset_;
+    }
+    void setSkipArgCheckEntryOffset(uint32_t offset) {
+        JS_ASSERT(!skipArgCheckEntryOffset_);
+        skipArgCheckEntryOffset_ = offset;
+    }
+    uint32_t getSkipArgCheckEntryOffset() const {
+        return skipArgCheckEntryOffset_;
     }
     bool containsCodeAddress(uint8_t *addr) const {
         return method()->raw() <= addr && addr <= method()->raw() + method()->instructionsSize();
@@ -360,14 +396,23 @@ struct IonScript
     bool bailoutExpected() const {
         return numBailouts_ > 0;
     }
-    void setHasInvalidatedCallTarget() {
-        hasInvalidatedCallTarget_ = true;
+    void setHasUncompiledCallTarget() {
+        hasUncompiledCallTarget_ = true;
     }
-    void clearHasInvalidatedCallTarget() {
-        hasInvalidatedCallTarget_ = false;
+    void clearHasUncompiledCallTarget() {
+        hasUncompiledCallTarget_ = false;
     }
-    bool hasInvalidatedCallTarget() const {
-        return hasInvalidatedCallTarget_;
+    bool hasUncompiledCallTarget() const {
+        return hasUncompiledCallTarget_;
+    }
+    void setHasSPSInstrumentation() {
+        hasSPSInstrumentation_ = true;
+    }
+    void clearHasSPSInstrumentation() {
+        hasSPSInstrumentation_ = false;
+    }
+    bool hasSPSInstrumentation() const {
+        return hasSPSInstrumentation_;
     }
     const uint8_t *snapshots() const {
         return reinterpret_cast<const uint8_t *>(this) + snapshots_;
@@ -391,10 +436,10 @@ struct IonScript
     size_t callTargetEntries() const {
         return callTargetEntries_;
     }
-    size_t sizeOfIncludingThis(JSMallocSizeOfFun mallocSizeOf) const {
+    size_t sizeOfIncludingThis(mozilla::MallocSizeOf mallocSizeOf) const {
         return mallocSizeOf(this);
     }
-    HeapValue &getConstant(size_t index) {
+    EncapsulatedValue &getConstant(size_t index) {
         JS_ASSERT(index < numConstants());
         return constants()[index];
     }
@@ -435,7 +480,7 @@ struct IonScript
     void destroyCaches();
     void copySnapshots(const SnapshotWriter *writer);
     void copyBailoutTable(const SnapshotOffset *table);
-    void copyConstants(const HeapValue *vp);
+    void copyConstants(const Value *vp);
     void copySafepointIndices(const SafepointIndex *firstSafepointIndex, MacroAssembler &masm);
     void copyOsiIndices(const OsiIndex *firstOsiIndex, MacroAssembler &masm);
     void copyRuntimeData(const uint8_t *data);
@@ -680,5 +725,4 @@ IsMarked(const ion::VMFunction *)
 
 } // namespace js
 
-#endif // jsion_coderef_h__
-
+#endif /* ion_IonCode_h */

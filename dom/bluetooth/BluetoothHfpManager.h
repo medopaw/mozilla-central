@@ -8,14 +8,14 @@
 #define mozilla_dom_bluetooth_bluetoothhfpmanager_h__
 
 #include "BluetoothCommon.h"
+#include "BluetoothProfileManagerBase.h"
 #include "BluetoothSocketObserver.h"
 #include "BluetoothTelephonyListener.h"
 #include "mozilla/ipc/UnixSocket.h"
-#include "nsIObserver.h"
+#include "mozilla/Hal.h"
 
 BEGIN_BLUETOOTH_NAMESPACE
 
-class BluetoothHfpManagerObserver;
 class BluetoothReplyRunnable;
 class BluetoothSocket;
 class Call;
@@ -51,8 +51,13 @@ enum BluetoothCmeError {
 };
 
 class BluetoothHfpManager : public BluetoothSocketObserver
+                          , public BluetoothProfileManagerBase
+                          , public BatteryObserver
 {
 public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIOBSERVER
+
   static BluetoothHfpManager* Get();
   ~BluetoothHfpManager();
 
@@ -62,50 +67,70 @@ public:
   virtual void OnConnectSuccess(BluetoothSocket* aSocket) MOZ_OVERRIDE;
   virtual void OnConnectError(BluetoothSocket* aSocket) MOZ_OVERRIDE;
   virtual void OnDisconnect(BluetoothSocket* aSocket) MOZ_OVERRIDE;
+  virtual void OnGetServiceChannel(const nsAString& aDeviceAddress,
+                                   const nsAString& aServiceUuid,
+                                   int aChannel) MOZ_OVERRIDE;
+  virtual void OnUpdateSdpRecords(const nsAString& aDeviceAddress) MOZ_OVERRIDE;
+  virtual void GetAddress(nsAString& aDeviceAddress) MOZ_OVERRIDE;
 
-  bool Connect(const nsAString& aDeviceObjectPath,
+  void Connect(const nsAString& aDeviceAddress,
                const bool aIsHandsfree,
                BluetoothReplyRunnable* aRunnable);
   void Disconnect();
   bool Listen();
+  bool ConnectSco(BluetoothReplyRunnable* aRunnable = nullptr);
+  bool DisconnectSco();
+  bool ListenSco();
 
   /**
    * @param aSend A boolean indicates whether we need to notify headset or not
    */
   void HandleCallStateChanged(uint32_t aCallIndex, uint16_t aCallState,
-                              const nsAString& aNumber, bool aSend);
+                              const nsAString& aError, const nsAString& aNumber,
+                              const bool aIsOutgoing, bool aSend);
+
   bool IsConnected();
-  void GetAddress(nsAString& aDeviceAddress);
+  bool IsScoConnected();
 
 private:
+  class CloseScoTask;
   class GetVolumeTask;
+  class RespondToBLDNTask;
   class SendRingIndicatorTask;
 
+  friend class CloseScoTask;
   friend class GetVolumeTask;
+  friend class RespondToBLDNTask;
   friend class SendRingIndicatorTask;
   friend class BluetoothHfpManagerObserver;
 
   BluetoothHfpManager();
-  nsresult HandleIccInfoChanged();
-  nsresult HandleShutdown();
-  nsresult HandleVolumeChanged(const nsAString& aData);
-  nsresult HandleVoiceConnectionChanged();
+  void HandleIccInfoChanged();
+  void HandleShutdown();
+  void HandleVolumeChanged(const nsAString& aData);
+  void HandleVoiceConnectionChanged();
 
   bool Init();
-  void Cleanup();
+  void Notify(const hal::BatteryInformation& aBatteryInfo);
   void Reset();
   void ResetCallArray();
+  uint32_t FindFirstCall(uint16_t aState);
+  uint32_t GetNumberOfCalls(uint16_t aState);
 
   void NotifyDialer(const nsAString& aCommand);
-  void NotifySettings();
+  void NotifyStatusChanged(const nsAString& aType);
+  void NotifyAudioManager(bool aStatus);
 
-  bool SendCommand(const char* aCommand, uint8_t aValue = 0);
+  bool SendCommand(const char* aCommand, uint32_t aValue = 0);
   bool SendLine(const char* aMessage);
-  void UpdateCIND(uint8_t aType, uint8_t aValue, bool aSend);
+  void UpdateCIND(uint8_t aType, uint8_t aValue, bool aSend = true);
+  void OnScoConnectSuccess();
+  void OnScoConnectError();
+  void OnScoDisconnect();
 
   int mCurrentVgs;
   int mCurrentVgm;
-  uint32_t mCurrentCallIndex;
+  bool mBSIR;
   bool mCCWA;
   bool mCLIP;
   bool mCMEE;
@@ -113,13 +138,17 @@ private:
   bool mFirstCKPD;
   int mNetworkSelectionMode;
   bool mReceiveVgsFlag;
-  nsString mDevicePath;
+  bool mDialingRequestProcessed;
+  bool mIsHandsfree;
+  bool mNeedsUpdatingSdpRecords;
+  nsString mDeviceAddress;
   nsString mMsisdn;
   nsString mOperatorName;
 
   nsTArray<Call> mCurrentCallArray;
   nsAutoPtr<BluetoothTelephonyListener> mListener;
   nsRefPtr<BluetoothReplyRunnable> mRunnable;
+  nsRefPtr<BluetoothReplyRunnable> mScoRunnable;
 
   // If a connection has been established, mSocket will be the socket
   // communicating with the remote socket. We maintain the invariant that if
@@ -132,6 +161,8 @@ private:
   // is called.
   nsRefPtr<BluetoothSocket> mHandsfreeSocket;
   nsRefPtr<BluetoothSocket> mHeadsetSocket;
+  nsRefPtr<BluetoothSocket> mScoSocket;
+  SocketConnectionStatus mScoSocketStatus;
 };
 
 END_BLUETOOTH_NAMESPACE

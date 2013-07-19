@@ -4,31 +4,31 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "BaselineJIT.h"
-#include "BaselineIC.h"
-#include "BaselineHelpers.h"
-#include "BaselineCompiler.h"
-#include "FixedList.h"
-#include "IonLinker.h"
-#include "IonSpewer.h"
-#include "VMFunctions.h"
-#include "IonFrames-inl.h"
+#include "ion/BaselineJIT.h"
+#include "ion/BaselineIC.h"
+#include "ion/BaselineHelpers.h"
+#include "ion/BaselineCompiler.h"
+#include "ion/FixedList.h"
+#include "ion/IonLinker.h"
+#include "ion/IonSpewer.h"
+#include "ion/VMFunctions.h"
 
-#include "jsinterpinlines.h"
-#include "jsopcodeinlines.h"
+#include "vm/Interpreter-inl.h"
 
 using namespace js;
 using namespace js::ion;
 
 BaselineCompiler::BaselineCompiler(JSContext *cx, HandleScript script)
-  : BaselineCompilerSpecific(cx, script),
-    return_(new HeapLabel())
+  : BaselineCompilerSpecific(cx, script)
 {
 }
 
 bool
 BaselineCompiler::init()
 {
+    if (!analysis_.init())
+        return false;
+
     if (!labels_.init(script->length))
         return false;
 
@@ -64,8 +64,15 @@ BaselineCompiler::compile()
     IonSpew(IonSpew_BaselineScripts, "Baseline compiling script %s:%d (%p)",
             script->filename(), script->lineno, script.get());
 
-    if (!script->ensureRanAnalysis(cx))
+    if (cx->typeInferenceEnabled() && !script->ensureHasBytecodeTypeMap(cx))
         return Method_Error;
+
+    // Only need to analyze scripts which are marked |argumensHasVarBinding|, to
+    // compute |needsArgsObj| flag.
+    if (script->argumentsHasVarBinding()) {
+        if (!script->ensureRanAnalysis(cx))
+            return Method_Error;
+    }
 
     // Pin analysis info during compilation.
     types::AutoEnterAnalysis autoEnterAnalysis(cx);
@@ -79,6 +86,11 @@ BaselineCompiler::compile()
 
     if (!emitEpilogue())
         return Method_Error;
+
+#ifdef JSGC_GENERATIONAL
+    if (!emitOutOfLinePostBarrierSlot())
+        return Method_Error;
+#endif
 
     if (masm.oom())
         return Method_Error;
@@ -177,28 +189,11 @@ BaselineCompiler::compile()
         baselineScript->toggleBarriers(true);
 
     // All SPS instrumentation is emitted toggled off.  Toggle them on if needed.
-    if (cx->runtime->spsProfiler.enabled())
+    if (cx->runtime()->spsProfiler.enabled())
         baselineScript->toggleSPS(true);
 
     return Method_Compiled;
 }
-
-#ifdef DEBUG
-#define SPEW_OPCODE()                                                         \
-    JS_BEGIN_MACRO                                                            \
-        if (IsJaegerSpewChannelActive(JSpew_JSOps)) {                         \
-            Sprinter sprinter(cx);                                            \
-            sprinter.init();                                                  \
-            RootedScript script_(cx, script);                                 \
-            js_Disassemble1(cx, script_, pc, pc - script_->code,              \
-                            JS_TRUE, &sprinter);                              \
-            JaegerSpew(JSpew_JSOps, "    %2u %s",                             \
-                       (unsigned)frame.stackDepth(), sprinter.string());      \
-        }                                                                     \
-    JS_END_MACRO;
-#else
-#define SPEW_OPCODE()
-#endif /* DEBUG */
 
 bool
 BaselineCompiler::emitPrologue()
@@ -259,7 +254,7 @@ BaselineCompiler::emitPrologue()
 bool
 BaselineCompiler::emitEpilogue()
 {
-    masm.bind(return_);
+    masm.bind(&return_);
 
     // Pop SPS frame if necessary
     emitSPSPop();
@@ -270,6 +265,40 @@ BaselineCompiler::emitEpilogue()
     masm.ret();
     return true;
 }
+
+#ifdef JSGC_GENERATIONAL
+// On input:
+//  R2.scratchReg() contains object being written to.
+//  R1.scratchReg() contains slot index being written to.
+//  Otherwise, baseline stack will be synced, so all other registers are usable as scratch.
+// This calls:
+//    void PostWriteBarrier(JSRuntime *rt, JSObject *obj);
+bool
+BaselineCompiler::emitOutOfLinePostBarrierSlot()
+{
+    masm.bind(&postBarrierSlot_);
+
+    Register objReg = R2.scratchReg();
+    GeneralRegisterSet regs(GeneralRegisterSet::All());
+    regs.take(objReg);
+    regs.take(BaselineFrameReg);
+    Register scratch = regs.takeAny();
+#if defined(JS_CPU_ARM)
+    // On ARM, save the link register before calling.  It contains the return
+    // address.  The |masm.ret()| later will pop this into |pc| to return.
+    masm.push(lr);
+#endif
+
+    masm.setupUnalignedABICall(2, scratch);
+    masm.movePtr(ImmWord(cx->runtime()), scratch);
+    masm.passABIArg(scratch);
+    masm.passABIArg(objReg);
+    masm.callWithABI(JS_FUNC_TO_DATA_PTR(void *, PostWriteBarrier));
+
+    masm.ret();
+    return true;
+}
+#endif // JSGC_GENERATIONAL
 
 bool
 BaselineCompiler::emitIC(ICStub *stub, bool isForOp)
@@ -310,7 +339,7 @@ BaselineCompiler::emitDebugPrologue()
     masm.branchTest32(Assembler::Zero, ReturnReg, ReturnReg, &done);
     {
         masm.loadValue(frame.addressOfReturnValue(), JSReturnOperand);
-        masm.jump(return_);
+        masm.jump(&return_);
     }
     masm.bind(&done);
     return true;
@@ -375,7 +404,7 @@ bool
 BaselineCompiler::emitStackCheck()
 {
     Label skipCall;
-    uintptr_t *limitAddr = &cx->runtime->mainThread.ionStackLimit;
+    uintptr_t *limitAddr = &cx->runtime()->mainThread.ionStackLimit;
     masm.loadPtr(AbsoluteAddress(limitAddr), R0.scratchReg());
     masm.branchPtr(Assembler::AboveOrEqual, BaselineStackReg, R0.scratchReg(), &skipCall);
 
@@ -393,8 +422,10 @@ static const VMFunction InterruptCheckInfo = FunctionInfo<InterruptCheckFn>(Inte
 bool
 BaselineCompiler::emitInterruptCheck()
 {
+    frame.syncStack(0);
+
     Label done;
-    void *interrupt = (void *)&cx->compartment->rt->interrupt;
+    void *interrupt = (void *)&cx->compartment()->rt->interrupt;
     masm.branch32(Assembler::Equal, AbsoluteAddress(interrupt), Imm32(0), &done);
 
     prepareVMCall();
@@ -476,7 +507,7 @@ BaselineCompiler::emitDebugTrap()
     bool enabled = script->stepModeEnabled() || script->hasBreakpointsAt(pc);
 
     // Emit patchable call to debug trap handler.
-    IonCode *handler = cx->compartment->ionCompartment()->debugTrapHandler(cx);
+    IonCode *handler = cx->compartment()->ionCompartment()->debugTrapHandler(cx);
     mozilla::DebugOnly<CodeOffsetLabel> offset = masm.toggledCall(handler, enabled);
 
 #ifdef DEBUG
@@ -519,7 +550,7 @@ BaselineCompiler::emitSPSPop()
     Label noPop;
     masm.branchTest32(Assembler::Zero, frame.addressOfFlags(),
                       Imm32(BaselineFrame::HAS_PUSHED_SPS_FRAME), &noPop);
-    masm.spsPopFrame(&cx->runtime->spsProfiler, R1.scratchReg());
+    masm.spsPopFrameSafe(&cx->runtime()->spsProfiler, R1.scratchReg());
     masm.bind(&noPop);
 }
 
@@ -532,15 +563,14 @@ BaselineCompiler::emitBody()
     uint32_t emittedOps = 0;
 
     while (true) {
-        SPEW_OPCODE();
         JSOp op = JSOp(*pc);
         IonSpew(IonSpew_BaselineOp, "Compiling op @ %d: %s",
                 int(pc - script->code), js_CodeName[op]);
 
-        analyze::Bytecode *code = script->analysis()->maybeCode(pc);
+        BytecodeInfo *info = analysis_.maybeInfo(pc);
 
         // Skip unreachable ops.
-        if (!code) {
+        if (!info) {
             if (op == JSOP_STOP)
                 break;
             pc += GetBytecodeLength(pc);
@@ -549,9 +579,9 @@ BaselineCompiler::emitBody()
         }
 
         // Fully sync the stack if there are incoming jumps.
-        if (code->jumpTarget) {
+        if (info->jumpTarget) {
             frame.syncStack(0);
-            frame.setStackDepth(code->stackDepth);
+            frame.setStackDepth(info->stackDepth);
         }
 
         // Always sync in debug mode.
@@ -562,7 +592,7 @@ BaselineCompiler::emitBody()
         if (frame.stackDepth() > 2)
             frame.syncStack(2);
 
-        frame.assertValidState(pc);
+        frame.assertValidState(*info);
 
         masm.bind(labelOf(pc));
 
@@ -582,9 +612,6 @@ BaselineCompiler::emitBody()
 
         switch (op) {
           default:
-            // Ignore fat opcodes, we compile the decomposed version instead.
-            if (js_CodeSpec[op].format & JOF_DECOMPOSE)
-                break;
             IonSpew(IonSpew_BaselineAbort, "Unhandled op: %s", js_CodeName[op]);
             return Method_CantCompile;
 
@@ -631,6 +658,13 @@ bool
 BaselineCompiler::emit_JSOP_POP()
 {
     frame.pop();
+    return true;
+}
+
+bool
+BaselineCompiler::emit_JSOP_POPN()
+{
+    frame.popn(GET_UINT16(pc));
     return true;
 }
 
@@ -1046,7 +1080,7 @@ BaselineCompiler::storeValue(const StackValue *source, const Address &dest,
         masm.storeValue(scratch, dest);
         break;
       default:
-        JS_NOT_REACHED("Invalid kind");
+        MOZ_ASSUME_UNREACHABLE("Invalid kind");
     }
 }
 
@@ -1376,7 +1410,7 @@ BaselineCompiler::emit_JSOP_NEWINIT()
         JS_ASSERT(key == JSProto_Object);
 
         RootedObject templateObject(cx);
-        templateObject = NewBuiltinClassInstance(cx, &ObjectClass, TenuredObject);
+        templateObject = NewBuiltinClassInstance(cx, &JSObject::class_, TenuredObject);
         if (!templateObject)
             return false;
 
@@ -1558,11 +1592,11 @@ BaselineCompiler::emit_JSOP_GETGNAME()
         return true;
     }
     if (name == cx->names().NaN) {
-        frame.push(cx->runtime->NaNValue);
+        frame.push(cx->runtime()->NaNValue);
         return true;
     }
     if (name == cx->names().Infinity) {
-        frame.push(cx->runtime->positiveInfinityValue);
+        frame.push(cx->runtime()->positiveInfinityValue);
         return true;
     }
 
@@ -1680,23 +1714,36 @@ BaselineCompiler::emit_JSOP_DELPROP()
     return true;
 }
 
-Address
-BaselineCompiler::getScopeCoordinateAddress(Register reg)
+void
+BaselineCompiler::getScopeCoordinateObject(Register reg)
 {
     ScopeCoordinate sc(pc);
 
     masm.loadPtr(frame.addressOfScopeChain(), reg);
     for (unsigned i = sc.hops; i; i--)
         masm.extractObject(Address(reg, ScopeObject::offsetOfEnclosingScope()), reg);
+}
 
+Address
+BaselineCompiler::getScopeCoordinateAddressFromObject(Register objReg, Register reg)
+{
+    ScopeCoordinate sc(pc);
     Shape *shape = ScopeCoordinateToStaticScopeShape(cx, script, pc);
+
     Address addr;
     if (shape->numFixedSlots() <= sc.slot) {
-        masm.loadPtr(Address(reg, JSObject::offsetOfSlots()), reg);
+        masm.loadPtr(Address(objReg, JSObject::offsetOfSlots()), reg);
         return Address(reg, (sc.slot - shape->numFixedSlots()) * sizeof(Value));
     }
 
-    return Address(reg, JSObject::getFixedSlotOffset(sc.slot));
+    return Address(objReg, JSObject::getFixedSlotOffset(sc.slot));
+}
+
+Address
+BaselineCompiler::getScopeCoordinateAddress(Register reg)
+{
+    getScopeCoordinateObject(reg);
+    return getScopeCoordinateAddressFromObject(reg, reg);
 }
 
 bool
@@ -1724,13 +1771,57 @@ BaselineCompiler::emit_JSOP_CALLALIASEDVAR()
 bool
 BaselineCompiler::emit_JSOP_SETALIASEDVAR()
 {
-    // Sync everything except the top value, so that we can use R0 as scratch
-    // (storeValue does not touch it if the top value is in R0).
-    frame.syncStack(1);
+    JSScript *outerScript = ScopeCoordinateFunctionScript(cx, script, pc);
+    if (outerScript && outerScript->treatAsRunOnce) {
+        // Type updates for this operation might need to be tracked, so treat
+        // this as a SETPROP.
 
-    Address address = getScopeCoordinateAddress(R2.scratchReg());
+        // Load rhs into R1.
+        frame.syncStack(1);
+        frame.popValue(R1);
+
+        // Load and box lhs into R0.
+        getScopeCoordinateObject(R2.scratchReg());
+        masm.tagValue(JSVAL_TYPE_OBJECT, R2.scratchReg(), R0);
+
+        // Call SETPROP IC.
+        ICSetProp_Fallback::Compiler compiler(cx);
+        if (!emitOpIC(compiler.getStub(&stubSpace_)))
+            return false;
+
+        // The IC will return the RHS value in R0, mark it as pushed value.
+        frame.push(R0);
+        return true;
+    }
+
+    // Keep rvalue in R0.
+    frame.popRegsAndSync(1);
+    Register objReg = R2.scratchReg();
+
+    getScopeCoordinateObject(objReg);
+    Address address = getScopeCoordinateAddressFromObject(objReg, R1.scratchReg());
     masm.patchableCallPreBarrier(address, MIRType_Value);
-    storeValue(frame.peek(-1), address, R0);
+    masm.storeValue(R0, address);
+    frame.push(R0);
+
+#ifdef JSGC_GENERATIONAL
+    // Fully sync the stack if post-barrier is needed.
+    // Scope coordinate object is already in R2.scratchReg().
+    frame.syncStack(0);
+
+    Nursery &nursery = cx->runtime()->gcNursery;
+    Label skipBarrier;
+    Label isTenured;
+    masm.branchTestObject(Assembler::NotEqual, R0, &skipBarrier);
+    masm.branchPtr(Assembler::Below, objReg, ImmWord(nursery.start()), &isTenured);
+    masm.branchPtr(Assembler::Below, objReg, ImmWord(nursery.heapEnd()), &skipBarrier);
+
+    masm.bind(&isTenured);
+    masm.call(&postBarrierSlot_);
+
+    masm.bind(&skipBarrier);
+#endif
+
     return true;
 }
 
@@ -1886,6 +1977,92 @@ BaselineCompiler::emit_JSOP_DEFFUN()
     pushArg(ImmGCPtr(script));
 
     return callVM(DefFunOperationInfo);
+}
+
+typedef bool (*InitPropGetterSetterFn)(JSContext *, jsbytecode *, HandleObject, HandlePropertyName,
+                                       HandleValue);
+static const VMFunction InitPropGetterSetterInfo =
+    FunctionInfo<InitPropGetterSetterFn>(InitGetterSetterOperation);
+
+bool
+BaselineCompiler::emitInitPropGetterSetter()
+{
+    JS_ASSERT(JSOp(*pc) == JSOP_INITPROP_GETTER ||
+              JSOp(*pc) == JSOP_INITPROP_SETTER);
+
+    // Load value in R0 but keep it on the stack for the decompiler.
+    frame.syncStack(0);
+    masm.loadValue(frame.addressOfStackValue(frame.peek(-1)), R0);
+
+    prepareVMCall();
+
+    pushArg(R0);
+    pushArg(ImmGCPtr(script->getName(pc)));
+    masm.extractObject(frame.addressOfStackValue(frame.peek(-2)), R0.scratchReg());
+    pushArg(R0.scratchReg());
+    pushArg(ImmWord(pc));
+
+    if (!callVM(InitPropGetterSetterInfo))
+        return false;
+
+    frame.pop();
+    return true;
+}
+
+bool
+BaselineCompiler::emit_JSOP_INITPROP_GETTER()
+{
+    return emitInitPropGetterSetter();
+}
+
+bool
+BaselineCompiler::emit_JSOP_INITPROP_SETTER()
+{
+    return emitInitPropGetterSetter();
+}
+
+typedef bool (*InitElemGetterSetterFn)(JSContext *, jsbytecode *, HandleObject, HandleValue,
+                                       HandleValue);
+static const VMFunction InitElemGetterSetterInfo =
+    FunctionInfo<InitElemGetterSetterFn>(InitGetterSetterOperation);
+
+bool
+BaselineCompiler::emitInitElemGetterSetter()
+{
+    JS_ASSERT(JSOp(*pc) == JSOP_INITELEM_GETTER ||
+              JSOp(*pc) == JSOP_INITELEM_SETTER);
+
+    // Load index and value in R0 and R1, but keep values on the stack for the
+    // decompiler.
+    frame.syncStack(0);
+    masm.loadValue(frame.addressOfStackValue(frame.peek(-2)), R0);
+    masm.loadValue(frame.addressOfStackValue(frame.peek(-1)), R1);
+
+    prepareVMCall();
+
+    pushArg(R1);
+    pushArg(R0);
+    masm.extractObject(frame.addressOfStackValue(frame.peek(-3)), R0.scratchReg());
+    pushArg(R0.scratchReg());
+    pushArg(ImmWord(pc));
+
+    if (!callVM(InitElemGetterSetterInfo))
+        return false;
+
+    frame.popn(2);
+    return true;
+}
+
+bool
+BaselineCompiler::emit_JSOP_INITELEM_GETTER()
+{
+    return emitInitElemGetterSetter();
+}
+
+bool
+BaselineCompiler::emit_JSOP_INITELEM_SETTER()
+{
+    return emitInitElemGetterSetter();
 }
 
 bool
@@ -2103,6 +2280,16 @@ BaselineCompiler::emit_JSOP_TYPEOFEXPR()
     return emit_JSOP_TYPEOF();
 }
 
+typedef bool (*SetCallFn)(JSContext *);
+static const VMFunction SetCallInfo = FunctionInfo<SetCallFn>(js::SetCallOperation);
+
+bool
+BaselineCompiler::emit_JSOP_SETCALL()
+{
+    prepareVMCall();
+    return callVM(SetCallInfo);
+}
+
 typedef bool (*ThrowFn)(JSContext *, HandleValue);
 static const VMFunction ThrowInfo = FunctionInfo<ThrowFn>(js::Throw);
 
@@ -2124,13 +2311,52 @@ BaselineCompiler::emit_JSOP_TRY()
     return true;
 }
 
+bool
+BaselineCompiler::emit_JSOP_FINALLY()
+{
+    // JSOP_FINALLY has a def count of 2, but these values are already on the
+    // stack (they're pushed by JSOP_GOSUB). Update the compiler's stack state.
+    frame.setStackDepth(frame.stackDepth() + 2);
+
+    // To match the interpreter, emit an interrupt check at the start of the
+    // finally block.
+    return emitInterruptCheck();
+}
+
+bool
+BaselineCompiler::emit_JSOP_GOSUB()
+{
+    // Push |false| so that RETSUB knows the value on top of the
+    // stack is not an exception but the offset to the op following
+    // this GOSUB.
+    frame.push(BooleanValue(false));
+
+    int32_t nextOffset = GetNextPc(pc) - script->code;
+    frame.push(Int32Value(nextOffset));
+
+    // Jump to the finally block.
+    frame.syncStack(0);
+    jsbytecode *target = pc + GET_JUMP_OFFSET(pc);
+    masm.jump(labelOf(target));
+    return true;
+}
+
+bool
+BaselineCompiler::emit_JSOP_RETSUB()
+{
+    frame.popRegsAndSync(2);
+
+    ICRetSub_Fallback::Compiler stubCompiler(cx);
+    return emitOpIC(stubCompiler.getStub(&stubSpace_));
+}
+
 typedef bool (*EnterBlockFn)(JSContext *, BaselineFrame *, Handle<StaticBlockObject *>);
 static const VMFunction EnterBlockInfo = FunctionInfo<EnterBlockFn>(ion::EnterBlock);
 
 bool
 BaselineCompiler::emitEnterBlock()
 {
-    StaticBlockObject &blockObj = script->getObject(pc)->asStaticBlock();
+    StaticBlockObject &blockObj = script->getObject(pc)->as<StaticBlockObject>();
 
     if (JSOp(*pc) == JSOP_ENTERBLOCK) {
         for (size_t i = 0; i < blockObj.slotCount(); i++)
@@ -2173,7 +2399,7 @@ typedef bool (*LeaveBlockFn)(JSContext *, BaselineFrame *);
 static const VMFunction LeaveBlockInfo = FunctionInfo<LeaveBlockFn>(ion::LeaveBlock);
 
 bool
-BaselineCompiler::emit_JSOP_LEAVEBLOCK()
+BaselineCompiler::emitLeaveBlock()
 {
     // Call a stub to pop the block from the block chain.
     prepareVMCall();
@@ -2181,12 +2407,41 @@ BaselineCompiler::emit_JSOP_LEAVEBLOCK()
     masm.loadBaselineFramePtr(BaselineFrameReg, R0.scratchReg());
     pushArg(R0.scratchReg());
 
-    if (!callVM(LeaveBlockInfo))
+    return callVM(LeaveBlockInfo);
+}
+
+bool
+BaselineCompiler::emit_JSOP_LEAVEBLOCK()
+{
+    if (!emitLeaveBlock())
         return false;
 
-    // Pop slots pushed by ENTERBLOCK.
-    size_t n = StackUses(script, pc);
-    frame.popn(n);
+    // Pop slots pushed by JSOP_ENTERBLOCK.
+    frame.popn(GET_UINT16(pc));
+    return true;
+}
+
+bool
+BaselineCompiler::emit_JSOP_LEAVEBLOCKEXPR()
+{
+    if (!emitLeaveBlock())
+        return false;
+
+    // Pop slots pushed by JSOP_ENTERBLOCK, but leave the topmost value
+    // on the stack.
+    frame.popRegsAndSync(1);
+    frame.popn(GET_UINT16(pc));
+    frame.push(R0);
+    return true;
+}
+
+bool
+BaselineCompiler::emit_JSOP_LEAVEFORLETIN()
+{
+    if (!emitLeaveBlock())
+        return false;
+
+    // Another op will pop the slots (after the enditer).
     return true;
 }
 
@@ -2227,7 +2482,7 @@ BaselineCompiler::emit_JSOP_DEBUGGER()
     masm.branchTest32(Assembler::Zero, ReturnReg, ReturnReg, &done);
     {
         masm.loadValue(frame.addressOfReturnValue(), JSReturnOperand);
-        masm.jump(return_);
+        masm.jump(&return_);
     }
     masm.bind(&done);
     return true;
@@ -2260,7 +2515,7 @@ BaselineCompiler::emitReturn()
     if (JSOp(*pc) != JSOP_STOP) {
         // JSOP_STOP is immediately followed by the return label, so we don't
         // need a jump.
-        masm.jump(return_);
+        masm.jump(&return_);
     }
 
     return true;
@@ -2404,6 +2659,17 @@ BaselineCompiler::emit_JSOP_SETRVAL()
 }
 
 bool
+BaselineCompiler::emit_JSOP_CALLEE()
+{
+    JS_ASSERT(function());
+    frame.syncStack(0);
+    masm.loadPtr(frame.addressOfCallee(), R0.scratchReg());
+    masm.tagValue(JSVAL_TYPE_OBJECT, R0.scratchReg(), R0);
+    frame.push(R0);
+    return true;
+}
+
+bool
 BaselineCompiler::emit_JSOP_POPV()
 {
     return emit_JSOP_SETRVAL();
@@ -2419,7 +2685,7 @@ BaselineCompiler::emit_JSOP_ARGUMENTS()
     frame.syncStack(0);
 
     Label done;
-    if (!script->needsArgsObj()) {
+    if (!script->argumentsHasVarBinding() || !script->needsArgsObj()) {
         // We assume the script does not need an arguments object. However, this
         // assumption can be invalidated later, see argumentsOptimizationFailed
         // in JSScript. Because we can't invalidate baseline JIT code, we set a
@@ -2445,6 +2711,36 @@ BaselineCompiler::emit_JSOP_ARGUMENTS()
         return false;
 
     masm.bind(&done);
+    frame.push(R0);
+    return true;
+}
+
+typedef bool (*RunOnceScriptPrologueFn)(JSContext *, HandleScript);
+static const VMFunction RunOnceScriptPrologueInfo =
+    FunctionInfo<RunOnceScriptPrologueFn>(js::RunOnceScriptPrologue);
+
+bool
+BaselineCompiler::emit_JSOP_RUNONCE()
+{
+    frame.syncStack(0);
+
+    prepareVMCall();
+
+    masm.movePtr(ImmGCPtr(script), R0.scratchReg());
+    pushArg(R0.scratchReg());
+
+    return callVM(RunOnceScriptPrologueInfo);
+}
+
+bool
+BaselineCompiler::emit_JSOP_REST()
+{
+    frame.syncStack(0);
+
+    ICRest_Fallback::Compiler stubCompiler(cx);
+    if (!emitOpIC(stubCompiler.getStub(&stubSpace_)))
+        return false;
+
     frame.push(R0);
     return true;
 }

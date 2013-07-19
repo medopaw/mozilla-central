@@ -1,69 +1,76 @@
-/* vim: set shiftwidth=2 tabstop=8 autoindent cindent expandtab: */
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim: set ts=8 sts=2 et sw=2 tw=80: */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "nsDOMTouchEvent.h"
 #include "nsGUIEvent.h"
-#include "nsDOMClassInfoID.h"
-#include "nsIClassInfo.h"
-#include "nsIXPCScriptable.h"
 #include "nsContentUtils.h"
 #include "mozilla/Preferences.h"
 #include "nsPresContext.h"
 #include "mozilla/dom/Touch.h"
+#include "mozilla/dom/TouchListBinding.h"
 
 using namespace mozilla;
 using namespace mozilla::dom;
 
 // TouchList
-nsDOMTouchList::nsDOMTouchList(nsTArray<nsCOMPtr<nsIDOMTouch> > &aTouches)
-{
-  mPoints.AppendElements(aTouches);
-  nsJSContext::LikelyShortLivingObjectCreated();
-}
-
-DOMCI_DATA(TouchList, nsDOMTouchList)
 
 NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsDOMTouchList)
+  NS_WRAPPERCACHE_INTERFACE_MAP_ENTRY
   NS_INTERFACE_MAP_ENTRY(nsISupports)
   NS_INTERFACE_MAP_ENTRY(nsIDOMTouchList)
-  NS_DOM_INTERFACE_MAP_ENTRY_CLASSINFO(TouchList)
 NS_INTERFACE_MAP_END
 
-NS_IMPL_CYCLE_COLLECTION_1(nsDOMTouchList, mPoints)
+NS_IMPL_CYCLE_COLLECTION_WRAPPERCACHE_2(nsDOMTouchList, mParent, mPoints)
 
 NS_IMPL_CYCLE_COLLECTING_ADDREF(nsDOMTouchList)
 NS_IMPL_CYCLE_COLLECTING_RELEASE(nsDOMTouchList)
 
+/* virtual */ JSObject*
+nsDOMTouchList::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope)
+{
+  return TouchListBinding::Wrap(aCx, aScope, this);
+}
+
+/* static */ bool
+nsDOMTouchList::PrefEnabled()
+{
+  return nsDOMTouchEvent::PrefEnabled();
+}
+
 NS_IMETHODIMP
 nsDOMTouchList::GetLength(uint32_t* aLength)
 {
-  *aLength = mPoints.Length();
+  *aLength = Length();
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsDOMTouchList::Item(uint32_t aIndex, nsIDOMTouch** aRetVal)
 {
-  NS_IF_ADDREF(*aRetVal = mPoints.SafeElementAt(aIndex, nullptr));
+  NS_IF_ADDREF(*aRetVal = Item(aIndex));
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsDOMTouchList::IdentifiedTouch(int32_t aIdentifier, nsIDOMTouch** aRetVal)
 {
-  *aRetVal = nullptr;
+  NS_IF_ADDREF(*aRetVal = IdentifiedTouch(aIdentifier));
+  return NS_OK;
+}
+
+Touch*
+nsDOMTouchList::IdentifiedTouch(int32_t aIdentifier) const
+{
   for (uint32_t i = 0; i < mPoints.Length(); ++i) {
-    nsCOMPtr<nsIDOMTouch> point = mPoints[i];
-    int32_t identifier;
-    if (point && NS_SUCCEEDED(point->GetIdentifier(&identifier)) &&
-        aIdentifier == identifier) {
-      point.swap(*aRetVal);
-      break;
+    Touch* point = mPoints[i];
+    if (point && point->Identifier() == aIdentifier) {
+      return point;
     }
   }
-  return NS_OK;
+  return nullptr;
 }
 
 // TouchEvent
@@ -86,7 +93,6 @@ nsDOMTouchEvent::nsDOMTouchEvent(mozilla::dom::EventTarget* aOwner,
     mEventIsInternal = true;
     mEvent->time = PR_Now();
   }
-  SetIsDOMBinding();
 }
 
 nsDOMTouchEvent::~nsDOMTouchEvent()
@@ -97,23 +103,13 @@ nsDOMTouchEvent::~nsDOMTouchEvent()
   }
 }
 
-NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN_INHERITED(nsDOMTouchEvent, nsDOMUIEvent)
-  NS_IMPL_CYCLE_COLLECTION_UNLINK(mTouches)
-  NS_IMPL_CYCLE_COLLECTION_UNLINK(mTargetTouches)
-  NS_IMPL_CYCLE_COLLECTION_UNLINK(mChangedTouches)
-NS_IMPL_CYCLE_COLLECTION_UNLINK_END
-
-NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsDOMTouchEvent, nsDOMUIEvent)
-  NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mTouches)
-  NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mTargetTouches)
-  NS_IMPL_CYCLE_COLLECTION_TRAVERSE(mChangedTouches)
-NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
-
-DOMCI_DATA(TouchEvent, nsDOMTouchEvent)
+NS_IMPL_CYCLE_COLLECTION_INHERITED_3(nsDOMTouchEvent, nsDOMUIEvent,
+                                     mTouches,
+                                     mTargetTouches,
+                                     mChangedTouches)
 
 NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION_INHERITED(nsDOMTouchEvent)
   NS_INTERFACE_MAP_ENTRY(nsIDOMTouchEvent)
-  NS_DOM_INTERFACE_MAP_ENTRY_CLASSINFO(TouchEvent)
 NS_INTERFACE_MAP_END_INHERITING(nsDOMUIEvent)
 
 NS_IMPL_ADDREF_INHERITED(nsDOMTouchEvent, nsDOMUIEvent)
@@ -164,16 +160,16 @@ nsDOMTouchEvent::Touches()
     nsTouchEvent* touchEvent = static_cast<nsTouchEvent*>(mEvent);
     if (mEvent->message == NS_TOUCH_END || mEvent->message == NS_TOUCH_CANCEL) {
       // for touchend events, remove any changed touches from the touches array
-      nsTArray<nsCOMPtr<nsIDOMTouch> > unchangedTouches;
-      const nsTArray<nsCOMPtr<nsIDOMTouch> >& touches = touchEvent->touches;
+      nsTArray< nsRefPtr<Touch> > unchangedTouches;
+      const nsTArray< nsRefPtr<Touch> >& touches = touchEvent->touches;
       for (uint32_t i = 0; i < touches.Length(); ++i) {
         if (!touches[i]->mChanged) {
           unchangedTouches.AppendElement(touches[i]);
         }
       }
-      mTouches = new nsDOMTouchList(unchangedTouches);
+      mTouches = new nsDOMTouchList(ToSupports(this), unchangedTouches);
     } else {
-      mTouches = new nsDOMTouchList(touchEvent->touches);
+      mTouches = new nsDOMTouchList(ToSupports(this), touchEvent->touches);
     }
   }
   return mTouches;
@@ -191,21 +187,20 @@ nsDOMTouchList*
 nsDOMTouchEvent::TargetTouches()
 {
   if (!mTargetTouches) {
-    nsTArray<nsCOMPtr<nsIDOMTouch> > targetTouches;
+    nsTArray< nsRefPtr<Touch> > targetTouches;
     nsTouchEvent* touchEvent = static_cast<nsTouchEvent*>(mEvent);
-    const nsTArray<nsCOMPtr<nsIDOMTouch> >& touches = touchEvent->touches;
+    const nsTArray< nsRefPtr<Touch> >& touches = touchEvent->touches;
     for (uint32_t i = 0; i < touches.Length(); ++i) {
       // for touchend/cancel events, don't append to the target list if this is a
       // touch that is ending
       if ((mEvent->message != NS_TOUCH_END &&
            mEvent->message != NS_TOUCH_CANCEL) || !touches[i]->mChanged) {
-        EventTarget* targetPtr = touches[i]->GetTarget();
-        if (targetPtr == mEvent->originalTarget) {
+        if (touches[i]->mTarget == mEvent->originalTarget) {
           targetTouches.AppendElement(touches[i]);
         }
       }
     }
-    mTargetTouches = new nsDOMTouchList(targetTouches);
+    mTargetTouches = new nsDOMTouchList(ToSupports(this), targetTouches);
   }
   return mTargetTouches;
 }
@@ -222,15 +217,15 @@ nsDOMTouchList*
 nsDOMTouchEvent::ChangedTouches()
 {
   if (!mChangedTouches) {
-    nsTArray<nsCOMPtr<nsIDOMTouch> > changedTouches;
+    nsTArray< nsRefPtr<Touch> > changedTouches;
     nsTouchEvent* touchEvent = static_cast<nsTouchEvent*>(mEvent);
-    const nsTArray<nsCOMPtr<nsIDOMTouch> >& touches = touchEvent->touches;
+    const nsTArray< nsRefPtr<Touch> >& touches = touchEvent->touches;
     for (uint32_t i = 0; i < touches.Length(); ++i) {
       if (touches[i]->mChanged) {
         changedTouches.AppendElement(touches[i]);
       }
     }
-    mChangedTouches = new nsDOMTouchList(changedTouches);
+    mChangedTouches = new nsDOMTouchList(ToSupports(this), changedTouches);
   }
   return mChangedTouches;
 }

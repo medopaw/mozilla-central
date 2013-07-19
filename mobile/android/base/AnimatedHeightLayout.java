@@ -4,6 +4,8 @@
 
 package org.mozilla.gecko;
 
+import org.mozilla.gecko.animation.HeightChangeAnimation;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
@@ -17,6 +19,10 @@ public class AnimatedHeightLayout extends RelativeLayout {
 
     public AnimatedHeightLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public AnimatedHeightLayout(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
     @Override

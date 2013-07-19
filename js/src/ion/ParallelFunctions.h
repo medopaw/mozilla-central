@@ -4,8 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef jsion_parallel_functions_h__
-#define jsion_parallel_functions_h__
+#ifndef ion_ParallelFunctions_h
+#define ion_ParallelFunctions_h
 
 #include "vm/ThreadPool.h"
 #include "vm/ForkJoin.h"
@@ -41,6 +41,13 @@ JSObject* ParPush(ParPushArgs *args);
 // generation.
 JSObject *ParExtendArray(ForkJoinSlice *slice, JSObject *array, uint32_t length);
 
+// String related parallel functions. These tend to call existing VM functions
+// that take a ThreadSafeContext.
+ParallelResult ParConcatStrings(ForkJoinSlice *slice, HandleString left, HandleString right,
+                                MutableHandleString out);
+ParallelResult ParIntToString(ForkJoinSlice *slice, int i, MutableHandleString out);
+ParallelResult ParDoubleToString(ForkJoinSlice *slice, double d, MutableHandleString out);
+
 // These parallel operations fail if they would be required to convert
 // to a string etc etc.
 ParallelResult ParStrictlyEqual(ForkJoinSlice *slice, MutableHandleValue v1, MutableHandleValue v2, JSBool *);
@@ -55,7 +62,17 @@ ParallelResult ParGreaterThanOrEqual(ForkJoinSlice *slice, MutableHandleValue v1
 ParallelResult ParStringsEqual(ForkJoinSlice *slice, HandleString v1, HandleString v2, JSBool *);
 ParallelResult ParStringsUnequal(ForkJoinSlice *slice, HandleString v1, HandleString v2, JSBool *);
 
-void ParallelAbort(JSScript *script);
+ParallelResult InitRestParameter(ForkJoinSlice *slice, uint32_t length, Value *rest,
+                                 HandleObject templateObj, HandleObject res,
+                                 MutableHandleObject out);
+
+void ParallelAbort(ParallelBailoutCause cause,
+                   JSScript *outermostScript,
+                   JSScript *currentScript,
+                   jsbytecode *bytecode);
+
+void PropagateParallelAbort(JSScript *outermostScript,
+                            JSScript *currentScript);
 
 void TraceLIR(uint32_t bblock, uint32_t lir, uint32_t execModeInt,
               const char *lirOpName, const char *mirOpName,
@@ -66,4 +83,4 @@ void ParCallToUncompiledScript(JSFunction *func);
 } // namespace ion
 } // namespace js
 
-#endif // jsion_parallel_functions_h__
+#endif /* ion_ParallelFunctions_h */

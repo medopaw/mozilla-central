@@ -13,6 +13,8 @@
 #include "AudioSegment.h"
 #include "nsIScriptError.h"
 #include "nsPIDOMWindow.h"
+#include "AudioChannelFormat.h"
+#include "mozilla/PodOperations.h"
 
 namespace mozilla {
 namespace dom {
@@ -36,12 +38,8 @@ NS_IMPL_CYCLE_COLLECTION_TRACE_BEGIN(AudioBuffer)
   }
 NS_IMPL_CYCLE_COLLECTION_TRACE_END
 
-NS_IMPL_CYCLE_COLLECTING_ADDREF(AudioBuffer)
-NS_IMPL_CYCLE_COLLECTING_RELEASE(AudioBuffer)
-NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(AudioBuffer)
-  NS_WRAPPERCACHE_INTERFACE_MAP_ENTRY
-  NS_INTERFACE_MAP_ENTRY(nsISupports)
-NS_INTERFACE_MAP_END
+NS_IMPL_CYCLE_COLLECTION_ROOT_NATIVE(AudioBuffer, AddRef)
+NS_IMPL_CYCLE_COLLECTION_UNROOT_NATIVE(AudioBuffer, Release)
 
 AudioBuffer::AudioBuffer(AudioContext* aContext, uint32_t aLength,
                          float aSampleRate)
@@ -51,7 +49,7 @@ AudioBuffer::AudioBuffer(AudioContext* aContext, uint32_t aLength,
 {
   SetIsDOMBinding();
 
-  NS_HOLD_JS_OBJECTS(this, AudioBuffer);
+  nsContentUtils::HoldJSObjects(this, NS_CYCLE_COLLECTION_PARTICIPANT(AudioBuffer));
 }
 
 AudioBuffer::~AudioBuffer()
@@ -63,7 +61,7 @@ void
 AudioBuffer::ClearJSChannels()
 {
   mJSChannels.Clear();
-  NS_DROP_JS_OBJECTS(this, AudioBuffer);
+  nsContentUtils::DropJSObjects(this);
 }
 
 bool
@@ -73,11 +71,11 @@ AudioBuffer::InitializeBuffers(uint32_t aNumberOfChannels, JSContext* aJSContext
     return false;
   }
   for (uint32_t i = 0; i < aNumberOfChannels; ++i) {
-    JSObject* array = JS_NewFloat32Array(aJSContext, mLength);
+    JS::RootedObject array(aJSContext, JS_NewFloat32Array(aJSContext, mLength));
     if (!array) {
       return false;
     }
-    mJSChannels.AppendElement(array);
+    mJSChannels.AppendElement(array.get());
   }
 
   return true;
@@ -89,7 +87,7 @@ AudioBuffer::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope)
   return AudioBufferBinding::Wrap(aCx, aScope, this);
 }
 
-void
+bool
 AudioBuffer::RestoreJSChannelData(JSContext* aJSContext)
 {
   if (mSharedChannels) {
@@ -98,20 +96,25 @@ AudioBuffer::RestoreJSChannelData(JSContext* aJSContext)
       // The following code first zeroes the array and then copies our data
       // into it. We could avoid this with additional JS APIs to construct
       // an array (or ArrayBuffer) containing initial data.
-      JSObject* array = JS_NewFloat32Array(aJSContext, mLength);
+      JS::RootedObject array(aJSContext, JS_NewFloat32Array(aJSContext, mLength));
+      if (!array) {
+        return false;
+      }
       memcpy(JS_GetFloat32ArrayData(array), data, sizeof(float)*mLength);
       mJSChannels[i] = array;
     }
 
     mSharedChannels = nullptr;
   }
+
+  return true;
 }
 
 void
 AudioBuffer::SetRawChannelContents(JSContext* aJSContext, uint32_t aChannel,
                                    float* aContents)
 {
-  memcpy(JS_GetFloat32ArrayData(mJSChannels[aChannel]), aContents, sizeof(float)*mLength);
+  PodCopy(JS_GetFloat32ArrayData(mJSChannels[aChannel]), aContents, mLength);
 }
 
 JSObject*
@@ -123,23 +126,12 @@ AudioBuffer::GetChannelData(JSContext* aJSContext, uint32_t aChannel,
     return nullptr;
   }
 
-  RestoreJSChannelData(aJSContext);
+  if (!RestoreJSChannelData(aJSContext)) {
+    aRv.Throw(NS_ERROR_OUT_OF_MEMORY);
+    return nullptr;
+  }
 
   return mJSChannels[aChannel];
-}
-
-void
-AudioBuffer::SetChannelDataFromArrayBufferContents(JSContext* aJSContext,
-                                                   uint32_t aChannel,
-                                                   void* aContents)
-{
-  RestoreJSChannelData(aJSContext);
-
-  MOZ_ASSERT(aChannel < NumberOfChannels());
-  JSObject* arrayBuffer = JS_NewArrayBufferWithContents(aJSContext, aContents);
-  mJSChannels[aChannel] = JS_NewFloat32ArrayWithBuffer(aJSContext, arrayBuffer,
-                                                       0, -1);
-  MOZ_ASSERT(mLength == JS_GetTypedArrayLength(mJSChannels[aChannel]));
 }
 
 static already_AddRefed<ThreadSharedFloatArrayBufferList>
@@ -149,7 +141,7 @@ StealJSArrayDataIntoThreadSharedFloatArrayBufferList(JSContext* aJSContext,
   nsRefPtr<ThreadSharedFloatArrayBufferList> result =
     new ThreadSharedFloatArrayBufferList(aJSArrays.Length());
   for (uint32_t i = 0; i < aJSArrays.Length(); ++i) {
-    JSObject* arrayBuffer = JS_GetArrayBufferViewBuffer(aJSArrays[i]);
+    JS::RootedObject arrayBuffer(aJSContext, JS_GetArrayBufferViewBuffer(aJSArrays[i]));
     void* dataToFree = nullptr;
     uint8_t* stolenData = nullptr;
     if (arrayBuffer &&
@@ -157,8 +149,7 @@ StealJSArrayDataIntoThreadSharedFloatArrayBufferList(JSContext* aJSContext,
                                     &stolenData)) {
       result->SetData(i, dataToFree, reinterpret_cast<float*>(stolenData));
     } else {
-      result->Clear();
-      return result.forget();
+      return nullptr;
     }
   }
   return result.forget();
@@ -168,12 +159,45 @@ ThreadSharedFloatArrayBufferList*
 AudioBuffer::GetThreadSharedChannelsForRate(JSContext* aJSContext)
 {
   if (!mSharedChannels) {
-    // Steal JS data
+    for (uint32_t i = 0; i < mJSChannels.Length(); ++i) {
+      if (mLength != JS_GetTypedArrayLength(mJSChannels[i])) {
+        // Probably one of the arrays was neutered
+        return nullptr;
+      }
+    }
+
     mSharedChannels =
       StealJSArrayDataIntoThreadSharedFloatArrayBufferList(aJSContext, mJSChannels);
   }
 
   return mSharedChannels;
+}
+
+void
+AudioBuffer::MixToMono(JSContext* aJSContext)
+{
+  if (mJSChannels.Length() == 1) {
+    // The buffer is already mono
+    return;
+  }
+
+  // Prepare the input channels
+  nsAutoTArray<const void*, GUESS_AUDIO_CHANNELS> channels;
+  channels.SetLength(mJSChannels.Length());
+  for (uint32_t i = 0; i < mJSChannels.Length(); ++i) {
+    channels[i] = JS_GetFloat32ArrayData(mJSChannels[i]);
+  }
+
+  // Prepare the output channels
+  float* downmixBuffer = new float[mLength];
+
+  // Perform the down-mix
+  AudioChannelsDownMix(channels, &downmixBuffer, 1, mLength);
+
+  // Truncate the shared channels and copy the downmixed data over
+  mJSChannels.SetLength(1);
+  SetRawChannelContents(aJSContext, 0, downmixBuffer);
+  delete[] downmixBuffer;
 }
 
 }

@@ -10,11 +10,13 @@ import java.util.EnumSet;
 import org.mozilla.gecko.GeckoApplication;
 import org.mozilla.gecko.LightweightTheme;
 import org.mozilla.gecko.R;
+import org.mozilla.gecko.ScrollAnimator;
 import org.mozilla.gecko.db.BrowserContract;
 
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -37,15 +39,13 @@ public class AboutHome extends Fragment {
     private LoadCompleteListener mLoadCompleteListener;
     private LightweightTheme mLightweightTheme;
     private ContentObserver mTabsContentObserver;
-    private int mPaddingLeft;
-    private int mPaddingRight;
-    private int mPaddingTop;
-    private int mPaddingBottom;
+    private int mTopPadding;
     private AboutHomeView mAboutHomeView;
     private AddonsSection mAddonsSection;
     private LastTabsSection mLastTabsSection;
     private RemoteTabsSection mRemoteTabsSection;
     private TopSitesView mTopSitesView;
+    private ScrollAnimator mScrollAnimator;
 
     public interface UriLoadListener {
         public void onAboutHomeUriLoad(String uriSpec);
@@ -106,6 +106,13 @@ public class AboutHome extends Fragment {
         mAboutHomeView.setLightweightTheme(mLightweightTheme);
         mLightweightTheme.addListener(mAboutHomeView);
 
+        // ScrollAnimator implements the View.OnGenericMotionListener
+        // interface, which was added in API level 12.
+        if (Build.VERSION.SDK_INT >= 12) {
+            mScrollAnimator = new ScrollAnimator();
+            mAboutHomeView.setOnGenericMotionListener(mScrollAnimator);
+        }
+
         return mAboutHomeView;
     }
 
@@ -113,7 +120,7 @@ public class AboutHome extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        view.setPadding(mPaddingLeft, mPaddingTop, mPaddingRight, mPaddingBottom);
+        view.setPadding(0, mTopPadding, 0, 0);
         ((PromoBox) view.findViewById(R.id.promo_box)).showRandomPromo();
         update(AboutHome.UpdateFlags.ALL);
 
@@ -139,6 +146,11 @@ public class AboutHome extends Fragment {
         mLightweightTheme.removeListener(mAboutHomeView);
         getActivity().getContentResolver().unregisterContentObserver(mTabsContentObserver);
         mTopSitesView.onDestroy();
+
+        if (mScrollAnimator != null) {
+            mScrollAnimator.cancel();
+        }
+        mScrollAnimator = null;
 
         mAboutHomeView = null;
         mAddonsSection = null;
@@ -242,18 +254,19 @@ public class AboutHome extends Fragment {
         }
     }
 
-    public void setPadding(int left, int top, int right, int bottom) {
+    public void setTopPadding(int topPadding) {
         View view = getView();
         if (view != null) {
-            view.setPadding(left, top, right, bottom);
+            view.setPadding(0, topPadding, 0, 0);
         }
 
         // If the padding has changed but the view hasn't been created yet,
         // store the padding values here; they will be used later in
         // onViewCreated().
-        mPaddingLeft = left;
-        mPaddingRight = right;
-        mPaddingTop = top;
-        mPaddingBottom = bottom;
+        mTopPadding = topPadding;
+    }
+
+    public int getTopPadding() {
+        return mTopPadding;
     }
 }

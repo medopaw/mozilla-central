@@ -100,7 +100,15 @@ nsThreadPool::PutEvent(nsIRunnable *event)
   }
   LOG(("THRD-P(%p) put [%p kill=%d]\n", this, thread.get(), killThread));
   if (killThread) {
-    thread->Shutdown();
+    // Pending events are processed on the current thread during
+    // nsIThread::Shutdown() execution, so if nsThreadPool::Dispatch() is called
+    // under caller's lock then deadlock could occur. This happens e.g. in case
+    // of nsStreamCopier. To prevent this situation, dispatch a shutdown event
+    // to the current thread instead of calling nsIThread::Shutdown() directly.
+
+    nsRefPtr<nsIRunnable> r = NS_NewRunnableMethod(thread,
+                                                   &nsIThread::Shutdown);
+    NS_DispatchToCurrentThread(r);
   } else {
     thread->Dispatch(this, NS_DISPATCH_NORMAL);
   }
@@ -285,7 +293,10 @@ nsThreadPool::SetThreadLimit(uint32_t value)
   mThreadLimit = value;
   if (mIdleThreadLimit > mThreadLimit)
     mIdleThreadLimit = mThreadLimit;
-  mon.NotifyAll();  // wake up threads so they observe this change
+
+  if (static_cast<uint32_t>(mThreads.Count()) > mThreadLimit) {
+    mon.NotifyAll();  // wake up threads so they observe this change
+  }
   return NS_OK;
 }
 
@@ -303,7 +314,11 @@ nsThreadPool::SetIdleThreadLimit(uint32_t value)
   mIdleThreadLimit = value;
   if (mIdleThreadLimit > mThreadLimit)
     mIdleThreadLimit = mThreadLimit;
-  mon.NotifyAll();  // wake up threads so they observe this change
+
+  // Do we need to kill some idle threads?
+  if (mIdleCount > mIdleThreadLimit) {
+    mon.NotifyAll();  // wake up threads so they observe this change
+  }
   return NS_OK;
 }
 
@@ -318,8 +333,13 @@ NS_IMETHODIMP
 nsThreadPool::SetIdleThreadTimeout(uint32_t value)
 {
   ReentrantMonitorAutoEnter mon(mEvents.GetReentrantMonitor());
+  uint32_t oldTimeout = mIdleThreadTimeout;
   mIdleThreadTimeout = value;
-  mon.NotifyAll();  // wake up threads so they observe this change
+
+  // Do we need to notify any idle threads that their sleep time has shortened?
+  if (mIdleThreadTimeout < oldTimeout && mIdleCount > 0) {
+    mon.NotifyAll();  // wake up threads so they observe this change
+  }
   return NS_OK;
 }
 

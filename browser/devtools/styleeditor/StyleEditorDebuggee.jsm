@@ -14,8 +14,8 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource:///modules/devtools/shared/event-emitter.js");
 
-XPCOMUtils.defineLazyModuleGetter(this, "Promise",
-    "resource://gre/modules/commonjs/sdk/core/promise.js");
+XPCOMUtils.defineLazyModuleGetter(this, "promise",
+    "resource://gre/modules/commonjs/sdk/core/promise.js", "Promise");
 
 /**
  * A StyleEditorDebuggee represents the document the style editor is debugging.
@@ -23,7 +23,7 @@ XPCOMUtils.defineLazyModuleGetter(this, "Promise",
  * the target's document. It wraps remote debugging protocol comunications.
  *
  * It emits these events:
- *   'stylesheet-added': A stylesheet has been added to the debuggee's document
+ *   'document-load': debuggee's document is loaded, style sheets are argument
  *   'stylesheets-cleared': The debuggee's stylesheets have been reset (e.g. the
  *                          page navigated)
  *
@@ -37,12 +37,12 @@ let StyleEditorDebuggee = function(target) {
 
   this.clear = this.clear.bind(this);
   this._onNewDocument = this._onNewDocument.bind(this);
-  this._onStyleSheetsAdded = this._onStyleSheetsAdded.bind(this);
+  this._onDocumentLoad = this._onDocumentLoad.bind(this);
 
   this._target = target;
   this._actor = this.target.form.styleEditorActor;
 
-  this.client.addListener("styleSheetsAdded", this._onStyleSheetsAdded);
+  this.client.addListener("documentLoad", this._onDocumentLoad);
   this._target.on("navigate", this._onNewDocument);
 
   this._onNewDocument();
@@ -128,18 +128,21 @@ StyleEditorDebuggee.prototype = {
   },
 
   /**
-   * Handle stylesheet-added event from the target
+   * Handler for document load, forward event with
+   * all the stylesheets available on load.
    *
-   * @param {string} type
-   *        Type of event
-   * @param {object} request
-   *        Event details
+   * @param  {string} type
+   *         Event type
+   * @param  {object} request
+   *         Object with 'styleSheets' array of actor forms
    */
-  _onStyleSheetsAdded: function(type, request) {
+  _onDocumentLoad: function(type, request) {
+    let sheets = [];
     for (let form of request.styleSheets) {
       let sheet = this._addStyleSheet(form);
-      this.emit("stylesheet-added", sheet);
+      sheets.push(sheet);
     }
+    this.emit("document-load", sheets);
   },
 
   /**
@@ -191,7 +194,6 @@ StyleEditorDebuggee.prototype = {
   destroy: function() {
     this.clear();
 
-    this._target.off("will-navigate", this.clear);
     this._target.off("navigate", this._onNewDocument);
   }
 }
@@ -220,13 +222,17 @@ let StyleSheet = function(form, debuggee) {
 
   this._onSourceLoad = this._onSourceLoad.bind(this);
   this._onPropertyChange = this._onPropertyChange.bind(this);
-  this._onError = this._onError.bind(this);
   this._onStyleApplied = this._onStyleApplied.bind(this);
 
+  this._client.addListener("sourceLoad", this._onSourceLoad);
+  this._client.addListener("propertyChange", this._onPropertyChange);
+  this._client.addListener("styleApplied", this._onStyleApplied);
+
+  // Backwards compatibility
   this._client.addListener("sourceLoad-" + this._actor, this._onSourceLoad);
   this._client.addListener("propertyChange-" + this._actor, this._onPropertyChange);
-  this._client.addListener("error-" + this._actor, this._onError);
   this._client.addListener("styleApplied-" + this._actor, this._onStyleApplied);
+
 
   // set initial property values
   for (let attr in form) {
@@ -272,7 +278,12 @@ StyleSheet.prototype = {
    *        Event details
    */
   _onSourceLoad: function(type, request) {
-    this.emit("source-load", request.source);
+    if (request.from == this._actor) {
+      if (request.error) {
+        return this.emit("error", request.error);
+      }
+      this.emit("source-load", request.source);
+    }
   },
 
   /**
@@ -284,27 +295,19 @@ StyleSheet.prototype = {
    *        Event details
    */
   _onPropertyChange: function(type, request) {
-    this[request.property] = request.value;
-    this.emit("property-change", request.property);
-  },
-
-  /**
-   * Propogate errors from the server that relate to this stylesheet.
-   *
-   * @param {string} type
-   *        Event type
-   * @param {object} request
-   *        Event details
-   */
-  _onError: function(type, request) {
-    this.emit("error", request.errorMessage);
+    if (request.from == this._actor) {
+      this[request.property] = request.value;
+      this.emit("property-change", request.property);
+    }
   },
 
   /**
    * Handle event when update has been successfully applied and propogate it.
    */
-  _onStyleApplied: function() {
-    this.emit("style-applied");
+  _onStyleApplied: function(type, request) {
+    if (request.from == this._actor) {
+      this.emit("style-applied");
+    }
   },
 
   /**
@@ -324,9 +327,12 @@ StyleSheet.prototype = {
    * Clean up and remove event listeners
    */
   destroy: function() {
+    this._client.removeListener("sourceLoad", this._onSourceLoad);
+    this._client.removeListener("propertyChange", this._onPropertyChange);
+    this._client.removeListener("styleApplied", this._onStyleApplied);
+
     this._client.removeListener("sourceLoad-" + this._actor, this._onSourceLoad);
     this._client.removeListener("propertyChange-" + this._actor, this._onPropertyChange);
-    this._client.removeListener("error-" + this._actor, this._onError);
     this._client.removeListener("styleApplied-" + this._actor, this._onStyleApplied);
   }
 }

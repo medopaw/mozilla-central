@@ -5,8 +5,6 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 // Original author: ekr@rtfm.com
-#include <prlog.h>
-
 #include "logging.h"
 #include "transportflow.h"
 #include "transportlayer.h"
@@ -34,7 +32,7 @@ nsresult TransportLayer::Init() {
 void TransportLayer::Inserted(TransportFlow *flow, TransportLayer *downward) {
   downward_ = downward;
   flow_id_ = flow->id();
-  MOZ_MTLOG(PR_LOG_DEBUG, LAYER_INFO << "Inserted: downward='" <<
+  MOZ_MTLOG(ML_DEBUG, LAYER_INFO << "Inserted: downward='" <<
     (downward ? downward->id(): "none") << "'");
 
   WasInserted();
@@ -42,7 +40,7 @@ void TransportLayer::Inserted(TransportFlow *flow, TransportLayer *downward) {
 
 void TransportLayer::SetState(State state) {
   if (state != state_) {
-    MOZ_MTLOG(PR_LOG_DEBUG, LAYER_INFO << "state " << state_ << "->" << state);
+    MOZ_MTLOG(ML_DEBUG, LAYER_INFO << "state " << state_ << "->" << state);
     state_ = state;
     SignalStateChange(this, state);
   }

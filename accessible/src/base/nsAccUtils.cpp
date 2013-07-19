@@ -130,7 +130,7 @@ nsAccUtils::SetLiveContainerAttributes(nsIPersistentProperties *aAttributes,
                                        nsIContent *aStartContent,
                                        nsIContent *aTopContent)
 {
-  nsAutoString atomic, live, relevant, busy;
+  nsAutoString live, relevant, busy;
   nsIContent *ancestor = aStartContent;
   while (ancestor) {
 
@@ -159,10 +159,11 @@ nsAccUtils::SetLiveContainerAttributes(nsIPersistentProperties *aAttributes,
     }
 
     // container-atomic attribute
-    if (atomic.IsEmpty() &&
-        HasDefinedARIAToken(ancestor, nsGkAtoms::aria_atomic) &&
-        ancestor->GetAttr(kNameSpaceID_None, nsGkAtoms::aria_atomic, atomic))
-      SetAccAttr(aAttributes, nsGkAtoms::containerAtomic, atomic);
+    if (ancestor->AttrValueIs(kNameSpaceID_None, nsGkAtoms::aria_atomic,
+                              nsGkAtoms::_true, eCaseMatters)) {
+      SetAccAttr(aAttributes, nsGkAtoms::containerAtomic,
+                 NS_LITERAL_STRING("true"));
+    }
 
     // container-busy attribute
     if (busy.IsEmpty() &&
@@ -439,18 +440,21 @@ nsAccUtils::MustPrune(Accessible* aAccessible)
 { 
   roles::Role role = aAccessible->Role();
 
-  // We don't prune buttons any more however AT don't expect children inside of
-  // button in general, we allow menu buttons to have children to make them
-  // accessible.
-  return role == roles::MENUITEM || 
-    role == roles::COMBOBOX_OPTION ||
-    role == roles::OPTION ||
-    role == roles::ENTRY ||
-    role == roles::FLAT_EQUATION ||
-    role == roles::PASSWORD_TEXT ||
-    role == roles::TOGGLE_BUTTON ||
-    role == roles::GRAPHIC ||
-    role == roles::SLIDER ||
-    role == roles::PROGRESSBAR ||
-    role == roles::SEPARATOR;
+  // Don't prune the tree for certain roles if the tree is more complex than
+  // a single text leaf.
+  return
+    (role == roles::MENUITEM ||
+     role == roles::COMBOBOX_OPTION ||
+     role == roles::OPTION ||
+     role == roles::ENTRY ||
+     role == roles::FLAT_EQUATION ||
+     role == roles::PASSWORD_TEXT ||
+     role == roles::PUSHBUTTON ||
+     role == roles::TOGGLE_BUTTON ||
+     role == roles::GRAPHIC ||
+     role == roles::SLIDER ||
+     role == roles::PROGRESSBAR ||
+     role == roles::SEPARATOR) &&
+    aAccessible->ContentChildCount() == 1 &&
+    aAccessible->ContentChildAt(0)->IsTextLeaf();
 }

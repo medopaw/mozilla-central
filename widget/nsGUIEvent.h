@@ -30,6 +30,7 @@
 #include "nsStyleConsts.h"
 #include "nsAutoPtr.h"
 #include "mozilla/dom/EventTarget.h"
+#include "mozilla/dom/Touch.h"
 
 namespace mozilla {
 namespace dom {
@@ -349,7 +350,9 @@ enum nsEventStructType {
 #define NS_SIMPLE_GESTURE_ROTATE         (NS_SIMPLE_GESTURE_EVENT_START+9)
 #define NS_SIMPLE_GESTURE_TAP            (NS_SIMPLE_GESTURE_EVENT_START+10)
 #define NS_SIMPLE_GESTURE_PRESSTAP       (NS_SIMPLE_GESTURE_EVENT_START+11)
-#define NS_SIMPLE_GESTURE_EDGEUI         (NS_SIMPLE_GESTURE_EVENT_START+12)
+#define NS_SIMPLE_GESTURE_EDGE_STARTED   (NS_SIMPLE_GESTURE_EVENT_START+12)
+#define NS_SIMPLE_GESTURE_EDGE_CANCELED  (NS_SIMPLE_GESTURE_EVENT_START+13)
+#define NS_SIMPLE_GESTURE_EDGE_COMPLETED (NS_SIMPLE_GESTURE_EVENT_START+14)
 
 // These are used to send native events to plugins.
 #define NS_PLUGIN_EVENT_START            3600
@@ -401,6 +404,7 @@ enum nsEventStructType {
 
 #define NS_WEBAUDIO_EVENT_START      4350
 #define NS_AUDIO_PROCESS             (NS_WEBAUDIO_EVENT_START)
+#define NS_AUDIO_COMPLETE            (NS_WEBAUDIO_EVENT_START + 1)
 
 // script notification events
 #define NS_NOTIFYSCRIPT_START        4500
@@ -457,6 +461,12 @@ enum nsEventStructType {
 #define NS_NETWORK_EVENT_START       5600
 #define NS_NETWORK_UPLOAD_EVENT      (NS_NETWORK_EVENT_START + 1)
 #define NS_NETWORK_DOWNLOAD_EVENT    (NS_NETWORK_EVENT_START + 2)
+
+// MediaRecorder events.
+#define NS_MEDIARECORDER_EVENT_START 5700
+#define NS_MEDIARECORDER_DATAAVAILABLE  (NS_MEDIARECORDER_EVENT_START + 1)
+#define NS_MEDIARECORDER_WARNING        (NS_MEDIARECORDER_EVENT_START + 2)
+#define NS_MEDIARECORDER_STOP           (NS_MEDIARECORDER_EVENT_START + 3)
 
 #ifdef MOZ_GAMEPAD
 // Gamepad input events
@@ -1066,7 +1076,8 @@ public:
     : nsInputEvent(isTrusted, msg, w, NS_KEY_EVENT),
       keyCode(0), charCode(0),
       location(nsIDOMKeyEvent::DOM_KEY_LOCATION_STANDARD), isChar(0),
-      mKeyNameIndex(mozilla::widget::KEY_NAME_INDEX_Unidentified)
+      mKeyNameIndex(mozilla::widget::KEY_NAME_INDEX_Unidentified),
+      mNativeKeyEvent(nullptr)
   {
   }
 
@@ -1083,6 +1094,8 @@ public:
   bool            isChar;
   // DOM KeyboardEvent.key
   mozilla::widget::KeyNameIndex mKeyNameIndex;
+  // OS-specific native event can optionally be preserved
+  void*           mNativeKeyEvent;
 
   void GetDOMKeyName(nsAString& aKeyName)
   {
@@ -1549,20 +1562,6 @@ public:
   };
 };
 
-class nsFocusEvent : public nsEvent
-{
-public:
-  nsFocusEvent(bool isTrusted, uint32_t msg)
-    : nsEvent(isTrusted, msg, NS_FOCUS_EVENT),
-      fromRaise(false),
-      isRefocus(false)
-  {
-  }
-
-  bool fromRaise;
-  bool isRefocus;
-};
-
 class nsSelectionEvent : public nsGUIEvent
 {
 private:
@@ -1656,7 +1655,7 @@ public:
     MOZ_COUNT_DTOR(nsTouchEvent);
   }
 
-  nsTArray<nsCOMPtr<nsIDOMTouch> > touches;
+  nsTArray< nsRefPtr<mozilla::dom::Touch> > touches;
 };
 
 /**
@@ -1715,16 +1714,34 @@ public:
 /**
  * DOM UIEvent
  */
-class nsUIEvent : public nsEvent
+class nsUIEvent : public nsGUIEvent
 {
 public:
   nsUIEvent(bool isTrusted, uint32_t msg, int32_t d)
-    : nsEvent(isTrusted, msg, NS_UI_EVENT),
+    : nsGUIEvent(isTrusted, msg, nullptr, NS_UI_EVENT),
       detail(d)
   {
   }
 
   int32_t detail;
+};
+
+class nsFocusEvent : public nsUIEvent
+{
+public:
+  nsFocusEvent(bool isTrusted, uint32_t msg)
+    : nsUIEvent(isTrusted, msg, 0),
+      fromRaise(false),
+      isRefocus(false)
+  {
+    eventStructType = NS_FOCUS_EVENT;
+  }
+
+  /// The possible related target
+  nsCOMPtr<mozilla::dom::EventTarget> relatedTarget;
+
+  bool fromRaise;
+  bool isRefocus;
 };
 
 /**
@@ -1758,28 +1775,34 @@ class nsTransitionEvent : public nsEvent
 {
 public:
   nsTransitionEvent(bool isTrusted, uint32_t msg,
-                    const nsString &propertyNameArg, float elapsedTimeArg)
+                    const nsAString& propertyNameArg, float elapsedTimeArg,
+                    const nsAString& pseudoElementArg)
     : nsEvent(isTrusted, msg, NS_TRANSITION_EVENT),
-      propertyName(propertyNameArg), elapsedTime(elapsedTimeArg)
+      propertyName(propertyNameArg), elapsedTime(elapsedTimeArg),
+      pseudoElement(pseudoElementArg)
   {
   }
 
   nsString propertyName;
   float elapsedTime;
+  nsString pseudoElement;
 };
 
 class nsAnimationEvent : public nsEvent
 {
 public:
   nsAnimationEvent(bool isTrusted, uint32_t msg,
-                   const nsString &animationNameArg, float elapsedTimeArg)
+                   const nsAString &animationNameArg, float elapsedTimeArg,
+                   const nsAString &pseudoElementArg)
     : nsEvent(isTrusted, msg, NS_ANIMATION_EVENT),
-      animationName(animationNameArg), elapsedTime(elapsedTimeArg)
+      animationName(animationNameArg), elapsedTime(elapsedTimeArg),
+      pseudoElement(pseudoElementArg)
   {
   }
 
   nsString animationName;
   float elapsedTime;
+  nsString pseudoElement;
 };
 
 /**

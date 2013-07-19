@@ -17,4 +17,5 @@
 #
 # Modifying this file will now automatically clobber the buildbot machines \o/
 #
-Bug 839855 - Android resource file changes (only affects Android builds)
+Bug 889503 - Move Settings API to WebIDL.
+Requires a clobber due to Bug 890744.

@@ -14,6 +14,8 @@
 #include "nsCoord.h"
 #include "nsPresContext.h"
 #include "mozilla/gfx/Point.h"
+#include "nsIScrollbarOwner.h"
+#include "Units.h"
 
 #define NS_DEFAULT_VERTICAL_SCROLL_DISTANCE   3
 #define NS_DEFAULT_HORIZONTAL_SCROLL_DISTANCE 5
@@ -27,9 +29,9 @@ class nsIFrame;
  * APIs for examining scroll state, observing changes to scroll state,
  * and triggering scrolling.
  */
-class nsIScrollableFrame : public nsQueryFrame {
+class nsIScrollableFrame : public nsIScrollbarOwner {
 public:
-  typedef mozilla::gfx::Point Point;
+  typedef mozilla::CSSIntPoint CSSIntPoint;
 
   NS_DECL_QUERYFRAME_TARGET(nsIScrollableFrame)
 
@@ -80,7 +82,11 @@ public:
    */
   virtual nsMargin GetDesiredScrollbarSizes(nsPresContext* aPresContext,
                                             nsRenderingContext* aRC) = 0;
-
+  /**
+   * Return the width for non-disappearing scrollbars.
+   */
+  virtual nscoord GetNondisappearingScrollbarWidth(nsPresContext* aPresContext,
+                                                   nsRenderingContext* aRC) = 0;
   /**
    * Get the area of the scrollport relative to the origin of this frame's
    * border-box.
@@ -152,7 +158,7 @@ public:
    * rounding to CSS pixels) will be exactly aScrollPosition.
    * The scroll mode is INSTANT.
    */
-  virtual void ScrollToCSSPixels(nsIntPoint aScrollPosition) = 0;
+  virtual void ScrollToCSSPixels(const CSSIntPoint& aScrollPosition) = 0;
   /**
    * Scrolls to a particular position in float CSS pixels.
    * This does not guarantee that GetScrollPositionCSSPixels equals
@@ -161,12 +167,13 @@ public:
    * number of layer pixels (so the operation is fast and looks clean).
    * The scroll mode is INSTANT.
    */
-  virtual void ScrollToCSSPixelsApproximate(const Point& aScrollPosition) = 0;
+  virtual void ScrollToCSSPixelsApproximate(const mozilla::CSSPoint& aScrollPosition) = 0;
+
   /**
    * Returns the scroll position in integer CSS pixels, rounded to the nearest
    * pixel.
    */
-  virtual nsIntPoint GetScrollPositionCSSPixels() = 0;
+  virtual CSSIntPoint GetScrollPositionCSSPixels() = 0;
   /**
    * When scrolling by a relative amount, we can choose various units.
    */
@@ -201,14 +208,6 @@ public:
    * Remove a scroll position listener.
    */
   virtual void RemoveScrollPositionListener(nsIScrollPositionListener* aListener) = 0;
-
-  /**
-   * Obtain the XUL box for the horizontal or vertical scrollbar, or null
-   * if there is no such box. Avoid using this, but may be useful for
-   * setting up a scrollbar mediator if you want to redirect scrollbar
-   * input.
-   */
-  virtual nsIFrame* GetScrollbarBox(bool aVertical) = 0;
 
   /**
    * Internal method used by scrollbars to notify their scrolling

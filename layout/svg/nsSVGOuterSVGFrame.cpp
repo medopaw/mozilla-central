@@ -161,12 +161,12 @@ nsSVGOuterSVGFrame::Init(nsIContent* aContent,
   // simply giving failing outer <svg> elements an nsSVGContainerFrame.
   // We don't create other SVG frames if PassesConditionalProcessingTests
   // returns false, but since we do create nsSVGOuterSVGFrame frames we
-  // prevent them from painting by [ab]use NS_STATE_SVG_NONDISPLAY_CHILD. The
+  // prevent them from painting by [ab]use NS_FRAME_IS_NONDISPLAY. The
   // frame will be recreated via an nsChangeHint_ReconstructFrame restyle if
   // the value returned by PassesConditionalProcessingTests changes.
   SVGSVGElement *svg = static_cast<SVGSVGElement*>(aContent);
   if (!svg->PassesConditionalProcessingTests()) {
-    AddStateBits(NS_STATE_SVG_NONDISPLAY_CHILD);
+    AddStateBits(NS_FRAME_IS_NONDISPLAY);
   }
 
   nsSVGOuterSVGFrameBase::Init(aContent, aParent, aPrevInFlow);
@@ -423,14 +423,27 @@ nsSVGOuterSVGFrame::Reflow(nsPresContext*           aPresContext,
 
   uint32_t changeBits = 0;
   if (newViewportSize != oldViewportSize) {
-    if (oldViewportSize.width <= 0.0f || oldViewportSize.height <= 0.0f) {
-      // The overflow rects of our child frames will be empty if we had a
-      // [synthetic] viewBox during our last reflow, since under
-      // FinishAndStoreOverflow() the nsDisplayTransform::TransformRect call
-      // will have ended up calling SVGSVGElement::GetViewBoxTransform()
-      // which will have returned the identity matrix due to our viewport
-      // having been zero-sized. Mark all our child frames as dirty so that we
-      // reflow them below and update their overflow rects:
+    // When our viewport size changes, we may need to update the overflow rects
+    // of our child frames. This is the case if:
+    //
+    //  * We have a real/synthetic viewBox (a children-only transform), since
+    //    the viewBox transform will change as the viewport dimensions change.
+    //
+    //  * We do not have a real/synthetic viewBox, but the last time we
+    //    reflowed (or the last time UpdateOverflow() was called) we did.
+    //
+    // We only handle the former case here, in which case we mark all our child
+    // frames as dirty so that we reflow them below and update their overflow
+    // rects.
+    //
+    // In the latter case, updating of overflow rects is handled for removal of
+    // real viewBox (the viewBox attribute) in AttributeChanged. Synthetic
+    // viewBox "removal" (e.g. a document references the same SVG via both an
+    // <svg:image> and then as a CSS background image (a synthetic viewBox is
+    // used when painting the former, but not when painting the latter)) is
+    // handled in SVGSVGElement::FlushImageTransformInvalidation.
+    //
+    if (svgElem->HasViewBoxOrSyntheticViewBox()) {
       nsIFrame* anonChild = GetFirstPrincipalChild();
       anonChild->AddStateBits(NS_FRAME_IS_DIRTY);
       for (nsIFrame* child = anonChild->GetFirstPrincipalChild(); child;
@@ -450,7 +463,7 @@ nsSVGOuterSVGFrame::Reflow(nsPresContext*           aPresContext,
   }
   mViewportInitialized = true;
 
-  if (!(GetStateBits() & NS_STATE_SVG_NONDISPLAY_CHILD)) {
+  if (!(GetStateBits() & NS_FRAME_IS_NONDISPLAY)) {
     // Now that we've marked the necessary children as dirty, call
     // ReflowSVG() on them:
 
@@ -466,13 +479,45 @@ nsSVGOuterSVGFrame::Reflow(nsPresContext*           aPresContext,
     mCallingReflowSVG = false;
   }
 
-  // Make sure we scroll if we're too big:
-  // XXX Use the bounding box of our descendants? (See bug 353460 comment 14.)
-  aDesiredSize.SetOverflowAreasToDesiredBounds();
-  FinishAndStoreOverflow(&aDesiredSize);
-
   // Set our anonymous kid's offset from our border box:
   anonKid->SetPosition(GetContentRectRelativeToSelf().TopLeft());
+
+  // Including our size in our overflow rects regardless of the value of
+  // 'background', 'border', etc. makes sure that we usually (when we clip to
+  // our content area) don't have to keep changing our overflow rects as our
+  // descendants move about (see perf comment below). Including our size in our
+  // scrollable overflow rect also makes sure that we scroll if we're too big
+  // for our viewport.
+  //
+  // <svg> never allows scrolling to anything outside its mRect (only panning),
+  // so we must always keep our scrollable overflow set to our size.
+  //
+  // With regards to visual overflow, we always clip root-<svg> (see our
+  // BuildDisplayList method) regardless of the value of the 'overflow'
+  // property since that is per-spec, even for the initial 'visible' value. For
+  // that reason there's no point in adding descendant visual overflow to our
+  // own when this frame is for a root-<svg>. That said, there's also a very
+  // good performance reason for us wanting to avoid doing so. If we did, then
+  // the frame's overflow would often change as descendants that are partially
+  // or fully outside its rect moved (think animation on/off screen), and that
+  // would cause us to do a full NS_FRAME_IS_DIRTY reflow and repaint of the
+  // entire document tree each such move (see bug 875175).
+  //
+  // So it's only non-root outer-<svg> that has the visual overflow of its
+  // descendants added to its own. (Note that the default user-agent style
+  // sheet makes 'hidden' the default value for :not(root(svg)), so usually
+  // FinishAndStoreOverflow will still clip this back to the frame's rect.)
+  //
+  // WARNING!! Keep UpdateBounds below in sync with whatever we do for our
+  // overflow rects here! (Again, see bug 875175.)
+  //
+  aDesiredSize.SetOverflowAreasToDesiredBounds();
+  if (!mIsRootContent) {
+    aDesiredSize.mOverflowAreas.VisualOverflow().UnionRect(
+      aDesiredSize.mOverflowAreas.VisualOverflow(),
+      anonKid->GetVisualOverflowRect() + anonKid->GetPosition());
+  }
+  FinishAndStoreOverflow(&aDesiredSize);
 
   NS_FRAME_TRACE(NS_FRAME_TRACE_CALLS,
                   ("exit nsSVGOuterSVGFrame::Reflow: size=%d,%d",
@@ -494,6 +539,27 @@ nsSVGOuterSVGFrame::DidReflow(nsPresContext*   aPresContext,
 
   return rv;
 }
+
+/* virtual */ bool
+nsSVGOuterSVGFrame::UpdateOverflow()
+{
+  // See the comments in Reflow above.
+
+  // WARNING!! Keep this in sync with Reflow above!
+
+  nsRect rect(nsPoint(0, 0), GetSize());
+  nsOverflowAreas overflowAreas(rect, rect);
+
+  if (!mIsRootContent) {
+    nsIFrame *anonKid = GetFirstPrincipalChild();
+    overflowAreas.VisualOverflow().UnionRect(
+      overflowAreas.VisualOverflow(),
+      anonKid->GetVisualOverflowRect() + anonKid->GetPosition());
+  }
+
+  return FinishAndStoreOverflow(overflowAreas, GetSize());
+}
+
 
 //----------------------------------------------------------------------
 // container methods
@@ -642,7 +708,7 @@ nsSVGOuterSVGFrame::AttributeChanged(int32_t  aNameSpaceID,
                                      int32_t  aModType)
 {
   if (aNameSpaceID == kNameSpaceID_None &&
-      !(GetStateBits() & (NS_FRAME_FIRST_REFLOW | NS_STATE_SVG_NONDISPLAY_CHILD))) {
+      !(GetStateBits() & (NS_FRAME_FIRST_REFLOW | NS_FRAME_IS_NONDISPLAY))) {
     if (aAttribute == nsGkAtoms::viewBox ||
         aAttribute == nsGkAtoms::preserveAspectRatio ||
         aAttribute == nsGkAtoms::transform) {
@@ -654,7 +720,9 @@ nsSVGOuterSVGFrame::AttributeChanged(int32_t  aNameSpaceID,
                 aAttribute == nsGkAtoms::viewBox ?
                   TRANSFORM_CHANGED | COORD_CONTEXT_CHANGED : TRANSFORM_CHANGED);
 
-      static_cast<SVGSVGElement*>(mContent)->ChildrenOnlyTransformChanged();
+      if (aAttribute != nsGkAtoms::transform) {
+        static_cast<SVGSVGElement*>(mContent)->ChildrenOnlyTransformChanged();
+      }
 
     } else if (aAttribute == nsGkAtoms::width ||
                aAttribute == nsGkAtoms::height) {
@@ -691,13 +759,19 @@ nsSVGOuterSVGFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                      const nsRect&           aDirtyRect,
                                      const nsDisplayListSet& aLists)
 {
-  if (GetStateBits() & NS_STATE_SVG_NONDISPLAY_CHILD) {
+  if (GetStateBits() & NS_FRAME_IS_NONDISPLAY) {
     return;
   }
 
   DisplayBorderBackgroundOutline(aBuilder, aLists);
 
-  DisplayListClipState::AutoClipContainingBlockDescendantsToContentBox clip(aBuilder, this);
+  // Per-spec, we always clip root-<svg> even when 'overflow' has its initial
+  // value of 'visible'. See also the "visual overflow" comments in Reflow.
+  DisplayListClipState::AutoSaveRestore autoSR(aBuilder);
+  if (mIsRootContent ||
+      StyleDisplay()->IsScrollableOverflow()) {
+    autoSR.ClipContainingBlockDescendantsToContentBox(aBuilder, this);
+  }
 
   if ((aBuilder->IsForEventDelivery() &&
        NS_SVGDisplayListHitTestingEnabled()) ||
@@ -776,7 +850,7 @@ nsSVGOuterSVGFrame::NotifyViewportOrTransformChanged(uint32_t aFlags)
     mCanvasTM = nullptr;
 
     if (haveNonFulLZoomTransformChange &&
-        !(mState & NS_STATE_SVG_NONDISPLAY_CHILD)) {
+        !(mState & NS_FRAME_IS_NONDISPLAY)) {
       uint32_t flags = (mState & NS_FRAME_IN_REFLOW) ?
                          SVGSVGElement::eDuringReflow : 0;
       content->ChildrenOnlyTransformChanged(flags);
@@ -823,7 +897,7 @@ nsSVGOuterSVGFrame::GetBBoxContribution(const gfxMatrix &aToBBoxUserspace,
 gfxMatrix
 nsSVGOuterSVGFrame::GetCanvasTM(uint32_t aFor)
 {
-  if (!(GetStateBits() & NS_STATE_SVG_NONDISPLAY_CHILD)) {
+  if (!(GetStateBits() & NS_FRAME_IS_NONDISPLAY)) {
     if ((aFor == FOR_PAINTING && NS_SVGDisplayListPaintingEnabled()) ||
         (aFor == FOR_HIT_TESTING && NS_SVGDisplayListHitTestingEnabled())) {
       return nsSVGIntegrationUtils::GetCSSPxToDevPxMatrix(this);

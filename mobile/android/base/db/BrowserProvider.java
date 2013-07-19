@@ -5,47 +5,37 @@
 
 package org.mozilla.gecko.db;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.lang.Class;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
+import org.mozilla.gecko.AppConstants;
 import org.mozilla.gecko.Distribution;
 import org.mozilla.gecko.GeckoProfile;
+import org.mozilla.gecko.ProfileMigrator;
 import org.mozilla.gecko.R;
 import org.mozilla.gecko.db.BrowserContract.Bookmarks;
 import org.mozilla.gecko.db.BrowserContract.Combined;
 import org.mozilla.gecko.db.BrowserContract.CommonColumns;
 import org.mozilla.gecko.db.BrowserContract.Control;
-import org.mozilla.gecko.db.BrowserContract.Favicons;
 import org.mozilla.gecko.db.BrowserContract.FaviconColumns;
+import org.mozilla.gecko.db.BrowserContract.Favicons;
 import org.mozilla.gecko.db.BrowserContract.History;
 import org.mozilla.gecko.db.BrowserContract.Schema;
 import org.mozilla.gecko.db.BrowserContract.SyncColumns;
 import org.mozilla.gecko.db.BrowserContract.Thumbnails;
 import org.mozilla.gecko.db.BrowserContract.URLColumns;
-import org.mozilla.gecko.db.BrowserContract;
-import org.mozilla.gecko.db.DBUtils;
 import org.mozilla.gecko.gfx.BitmapUtils;
-import org.mozilla.gecko.ProfileMigrator;
 import org.mozilla.gecko.sync.Utils;
 import org.mozilla.gecko.util.GeckoJarReader;
 import org.mozilla.gecko.util.ThreadUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.SearchManager;
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.ContentProviderResult;
-import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.UriMatcher;
@@ -56,16 +46,23 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BrowserProvider extends ContentProvider {
     private static final String LOGTAG = "GeckoBrowserProvider";
@@ -1233,7 +1230,7 @@ public class BrowserProvider extends ContentProvider {
 
                 String apkPath = mContext.getPackageResourcePath();
                 File apkFile = new File(apkPath);
-                String bitmapPath = "jar:jar:" + apkFile.toURI() + "!/omni.ja!/" + path;
+                String bitmapPath = "jar:jar:" + apkFile.toURI() + "!/" + AppConstants.OMNIJAR_NAME + "!/" + path;
                 return GeckoJarReader.getBitmap(mContext.getResources(), bitmapPath);
             } catch (java.lang.IllegalAccessException ex) {
                 Log.e(LOGTAG, "[Path] Can't create favicon " + name, ex);
@@ -1252,7 +1249,7 @@ public class BrowserProvider extends ContentProvider {
                     return null;
                 }
                 int faviconId = faviconField.getInt(null);
-                return BitmapFactory.decodeResource(mContext.getResources(), faviconId);
+                return BitmapUtils.decodeResource(mContext, faviconId);
             } catch (java.lang.IllegalAccessException ex) {
                 Log.e(LOGTAG, "[Drawable] Can't create favicon " + name, ex);
             } catch (java.lang.NoSuchFieldException ex) {
@@ -2152,17 +2149,6 @@ public class BrowserProvider extends ContentProvider {
     public boolean onCreate() {
         debug("Creating BrowserProvider");
 
-        ThreadUtils.postToBackgroundThread(new Runnable() {
-            @Override
-            public void run() {
-                // Kick this off early. It is synchronized so that other callers will wait
-                try {
-                    GeckoProfile.get(getContext()).getDir();
-                } catch (Exception ex) {
-                    Log.e(LOGTAG, "Error getting profile dir", ex);
-                }
-            }
-        });
         synchronized (this) {
             mContext = getContext();
             mDatabasePerProfile = new HashMap<String, DatabaseHelper>();

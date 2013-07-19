@@ -73,6 +73,7 @@
 #include "nsIEditorObserver.h"          // for nsIEditorObserver
 #include "nsIEditorSpellCheck.h"        // for nsIEditorSpellCheck
 #include "nsIFrame.h"                   // for nsIFrame
+#include "nsIHTMLDocument.h"            // for nsIHTMLDocument
 #include "nsIInlineSpellChecker.h"      // for nsIInlineSpellChecker, etc
 #include "nsIMEStateManager.h"          // for nsIMEStateManager
 #include "nsINameSpaceManager.h"        // for kNameSpaceID_None, etc
@@ -399,6 +400,8 @@ nsEditor::GetDesiredSpellCheckState()
     return false;
   }
 
+  // For plaintext editors, we just want to check whether the textarea/input
+  // itself is editable.
   if (content->IsRootOfNativeAnonymousSubtree()) {
     content = content->GetParent();
   }
@@ -406,6 +409,14 @@ nsEditor::GetDesiredSpellCheckState()
   nsCOMPtr<nsIDOMHTMLElement> element = do_QueryInterface(content);
   if (!element) {
     return false;
+  }
+
+  if (!IsPlaintextEditor()) {
+    // Some of the page content might be editable and some not, if spellcheck=
+    // is explicitly set anywhere, so if there's anything editable on the page,
+    // return true and let the spellchecker figure it out.
+    nsCOMPtr<nsIHTMLDocument> doc = do_QueryInterface(content->GetCurrentDoc());
+    return doc && doc->IsEditingOn();
   }
 
   bool enable;
@@ -1723,52 +1734,57 @@ nsEditor::InsertContainerAbove(nsIContent* aNode,
 ///////////////////////////////////////////////////////////////////////////
 // MoveNode:  move aNode to {aParent,aOffset}
 nsresult
-nsEditor::MoveNode(nsIContent* aNode, nsINode* aParent, int32_t aOffset)
+nsEditor::MoveNode(nsIDOMNode* aNode, nsIDOMNode* aParent, int32_t aOffset)
 {
-  MOZ_ASSERT(aNode && aParent);
-  MOZ_ASSERT(aOffset == -1 || (0 <= aOffset &&
-                               aOffset <= (int32_t)aParent->Length()));
-  nsresult res = MoveNode(aNode->AsDOMNode(), aParent->AsDOMNode(), aOffset);
-  NS_ASSERTION(NS_SUCCEEDED(res), "MoveNode failed");
-  NS_ENSURE_SUCCESS(res, res);
-  return NS_OK;
+  nsCOMPtr<nsINode> node = do_QueryInterface(aNode);
+  NS_ENSURE_STATE(node);
+
+  nsCOMPtr<nsINode> parent = do_QueryInterface(aParent);
+  NS_ENSURE_STATE(parent);
+
+  return MoveNode(node, parent, aOffset);
 }
 
 nsresult
-nsEditor::MoveNode(nsIDOMNode *aNode, nsIDOMNode *aParent, int32_t aOffset)
+nsEditor::MoveNode(nsINode* aNode, nsINode* aParent, int32_t aOffset)
 {
-  NS_ENSURE_TRUE(aNode && aParent, NS_ERROR_NULL_POINTER);
-  nsresult res;
+  MOZ_ASSERT(aNode);
+  MOZ_ASSERT(aParent);
+  MOZ_ASSERT(aOffset == -1 ||
+             (0 <= aOffset && SafeCast<uint32_t>(aOffset) <= aParent->Length()));
 
   int32_t oldOffset;
-  nsCOMPtr<nsIDOMNode> oldParent = GetNodeLocation(aNode, &oldOffset);
+  nsCOMPtr<nsINode> oldParent = GetNodeLocation(aNode, &oldOffset);
   
-  if (aOffset == -1)
-  {
-    uint32_t unsignedOffset;
-    // magic value meaning "move to end of aParent"
-    res = GetLengthOfDOMNode(aParent, unsignedOffset);
-    NS_ENSURE_SUCCESS(res, res);
-    aOffset = (int32_t)unsignedOffset;
+  if (aOffset == -1) {
+    // Magic value meaning "move to end of aParent".
+    aOffset = SafeCast<int32_t>(aParent->Length());
   }
   
-  // don't do anything if it's already in right place
-  if ((aParent == oldParent.get()) && (oldOffset == aOffset)) return NS_OK;
+  // Don't do anything if it's already in right place.
+  if (aParent == oldParent && aOffset == oldOffset) {
+    return NS_OK;
+  }
   
-  // notify our internal selection state listener
-  nsAutoMoveNodeSelNotify selNotify(mRangeUpdater, oldParent, oldOffset, aParent, aOffset);
+  // Notify our internal selection state listener.
+  nsAutoMoveNodeSelNotify selNotify(mRangeUpdater, oldParent, oldOffset,
+                                    aParent, aOffset);
   
-  // need to adjust aOffset if we are moving aNode further along in its current parent
-  if ((aParent == oldParent.get()) && (oldOffset < aOffset)) 
-  {
-    aOffset--;  // this is because when we delete aNode, it will make the offsets after it off by one
+  // Need to adjust aOffset if we are moving aNode further along in its current
+  // parent.
+  if (aParent == oldParent && oldOffset < aOffset) {
+    // This is because when we delete aNode, it will make the offsets after it
+    // off by one.
+    aOffset--;
   }
 
-  // Hold a reference so aNode doesn't go away when we remove it (bug 772282)
-  nsCOMPtr<nsIDOMNode> node = aNode;
-  res = DeleteNode(node);
-  NS_ENSURE_SUCCESS(res, res);
-  return InsertNode(node, aParent, aOffset);
+  // Hold a reference so aNode doesn't go away when we remove it (bug 772282).
+  nsCOMPtr<nsINode> kungFuDeathGrip = aNode;
+
+  nsresult rv = DeleteNode(aNode);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return InsertNode(aNode->AsDOMNode(), aParent->AsDOMNode(), aOffset);
 }
 
 
@@ -3060,6 +3076,22 @@ nsEditor::GetNodeLocation(nsIDOMNode* aChild, int32_t* outOffset)
   }
 
   return parent.forget();
+}
+
+nsINode*
+nsEditor::GetNodeLocation(nsINode* aChild, int32_t* aOffset)
+{
+  MOZ_ASSERT(aChild);
+  MOZ_ASSERT(aOffset);
+
+  nsINode* parent = aChild->GetParentNode();
+  if (parent) {
+    *aOffset = parent->IndexOf(aChild);
+    MOZ_ASSERT(*aOffset != -1);
+  } else {
+    *aOffset = -1;
+  }
+  return parent;
 }
 
 // returns the number of things inside aNode.  
@@ -4955,6 +4987,62 @@ nsEditor::InitializeSelection(nsIDOMEventTarget* aFocusEventTarget)
   }
 
   return NS_OK;
+}
+
+void
+nsEditor::FinalizeSelection()
+{
+  nsCOMPtr<nsISelectionController> selCon;
+  nsresult rv = GetSelectionController(getter_AddRefs(selCon));
+  NS_ENSURE_SUCCESS_VOID(rv);
+
+  nsCOMPtr<nsISelection> selection;
+  rv = selCon->GetSelection(nsISelectionController::SELECTION_NORMAL,
+                            getter_AddRefs(selection));
+  NS_ENSURE_SUCCESS_VOID(rv);
+
+  nsCOMPtr<nsISelectionPrivate> selectionPrivate = do_QueryInterface(selection);
+  NS_ENSURE_TRUE_VOID(selectionPrivate);
+
+  selectionPrivate->SetAncestorLimiter(nullptr);
+
+  nsCOMPtr<nsIPresShell> presShell = GetPresShell();
+  NS_ENSURE_TRUE_VOID(presShell);
+
+  selCon->SetCaretEnabled(false);
+
+  nsFocusManager* fm = nsFocusManager::GetFocusManager();
+  NS_ENSURE_TRUE_VOID(fm);
+  fm->UpdateCaretForCaretBrowsingMode();
+
+  if (!HasIndependentSelection()) {
+    // If this editor doesn't have an independent selection, i.e., it must
+    // mean that it is an HTML editor, the selection controller is shared with
+    // presShell.  So, even this editor loses focus, other part of the document
+    // may still have focus.
+    nsCOMPtr<nsIDocument> doc = GetDocument();
+    ErrorResult ret;
+    if (!doc || !doc->HasFocus(ret)) {
+      // If the document already lost focus, mark the selection as disabled.
+      selCon->SetDisplaySelection(nsISelectionController::SELECTION_DISABLED);
+    } else {
+      // Otherwise, mark selection as normal because outside of a
+      // contenteditable element should be selected with normal selection
+      // color after here.
+      selCon->SetDisplaySelection(nsISelectionController::SELECTION_ON);
+    }
+  } else if (IsFormWidget() || IsPasswordEditor() ||
+             IsReadonly() || IsDisabled() || IsInputFiltered()) {
+    // In <input> or <textarea>, the independent selection should be hidden
+    // while this editor doesn't have focus.
+    selCon->SetDisplaySelection(nsISelectionController::SELECTION_HIDDEN);
+  } else {
+    // Otherwise, although we're not sure how this case happens, the
+    // independent selection should be marked as disabled.
+    selCon->SetDisplaySelection(nsISelectionController::SELECTION_DISABLED);
+  }
+
+  selCon->RepaintSelection(nsISelectionController::SELECTION_NORMAL);
 }
 
 dom::Element *

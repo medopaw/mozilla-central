@@ -34,22 +34,22 @@ protected:
 
 public:
   virtual bool AttributeAffectsRendering(
-          int32_t aNameSpaceID, nsIAtom* aAttribute) const;
+          int32_t aNameSpaceID, nsIAtom* aAttribute) const MOZ_OVERRIDE;
 
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const MOZ_OVERRIDE;
 
   // WebIDL
-  already_AddRefed<nsIDOMSVGAnimatedNumber> X();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> Y();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> Z();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> PointsAtX();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> PointsAtY();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> PointsAtZ();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> SpecularExponent();
-  already_AddRefed<nsIDOMSVGAnimatedNumber> LimitingConeAngle();
+  already_AddRefed<SVGAnimatedNumber> X();
+  already_AddRefed<SVGAnimatedNumber> Y();
+  already_AddRefed<SVGAnimatedNumber> Z();
+  already_AddRefed<SVGAnimatedNumber> PointsAtX();
+  already_AddRefed<SVGAnimatedNumber> PointsAtY();
+  already_AddRefed<SVGAnimatedNumber> PointsAtZ();
+  already_AddRefed<SVGAnimatedNumber> SpecularExponent();
+  already_AddRefed<SVGAnimatedNumber> LimitingConeAngle();
 
 protected:
-  virtual NumberAttributesInfo GetNumberInfo();
+  virtual NumberAttributesInfo GetNumberInfo() MOZ_OVERRIDE;
 
   enum { ATTR_X, ATTR_Y, ATTR_Z, POINTS_AT_X, POINTS_AT_Y, POINTS_AT_Z,
          SPECULAR_EXPONENT, LIMITING_CONE_ANGLE };

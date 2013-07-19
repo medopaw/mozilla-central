@@ -30,6 +30,7 @@
 #include "nsIDOMHTMLScriptElement.h"
 #include "nsIDocShell.h"
 #include "nsContentUtils.h"
+#include "nsCxPusher.h"
 #include "nsUnicharUtils.h"
 #include "nsAutoPtr.h"
 #include "nsIXPConnect.h"
@@ -272,7 +273,7 @@ nsScriptLoader::StartLoad(nsScriptLoadRequest *aRequest, const nsAString &aType,
 
   nsCOMPtr<nsILoadGroup> loadGroup = mDocument->GetDocumentLoadGroup();
 
-  nsCOMPtr<nsPIDOMWindow> window(do_QueryInterface(mDocument->GetScriptGlobalObject()));
+  nsCOMPtr<nsPIDOMWindow> window(do_QueryInterface(mDocument->GetWindow()));
   if (!window) {
     return NS_ERROR_NULL_POINTER;
   }
@@ -429,7 +430,8 @@ nsScriptLoader::ProcessScriptElement(nsIScriptElement *aElement)
   // For now though, if JS is disabled we assume every language is
   // disabled.
   // XXX is this different from the mDocument->IsScriptEnabled() call?
-  nsIScriptGlobalObject *globalObject = mDocument->GetScriptGlobalObject();
+  nsCOMPtr<nsIScriptGlobalObject> globalObject =
+    do_QueryInterface(mDocument->GetWindow());
   if (!globalObject) {
     return false;
   }
@@ -726,11 +728,16 @@ nsScriptLoader::ProcessRequest(nsScriptLoadRequest* aRequest)
 
   FireScriptAvailable(NS_OK, aRequest);
 
-  bool runScript = true;
-  nsContentUtils::DispatchTrustedEvent(scriptElem->OwnerDoc(),
-                                       scriptElem,
-                                       NS_LITERAL_STRING("beforescriptexecute"),
-                                       true, true, &runScript);
+  // The window may have gone away by this point, in which case there's no point
+  // in trying to run the script.
+  nsPIDOMWindow *pwin = mDocument->GetInnerWindow();
+  bool runScript = !!pwin;
+  if (runScript) {
+    nsContentUtils::DispatchTrustedEvent(scriptElem->OwnerDoc(),
+                                         scriptElem,
+                                         NS_LITERAL_STRING("beforescriptexecute"),
+                                         true, true, &runScript);
+  }
 
   nsresult rv = NS_OK;
   if (runScript) {
@@ -805,9 +812,8 @@ nsScriptLoader::EvaluateScript(nsScriptLoadRequest* aRequest,
   }
 
   nsPIDOMWindow *pwin = mDocument->GetInnerWindow();
-  if (!pwin) {
-    return NS_ERROR_FAILURE;
-  }
+  NS_ASSERTION(pwin, "shouldn't be called with a null inner window");
+
   nsCOMPtr<nsIScriptGlobalObject> globalObject = do_QueryInterface(pwin);
   NS_ASSERTION(globalObject, "windows must be global objects");
 
@@ -848,14 +854,14 @@ nsScriptLoader::EvaluateScript(nsScriptLoadRequest* aRequest,
     if (aRequest->mOriginPrincipal) {
       options.setOriginPrincipals(nsJSPrincipals::get(aRequest->mOriginPrincipal));
     }
-    rv = context->EvaluateString(aScript, *globalObject->GetGlobalJSObject(),
+    JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+    rv = context->EvaluateString(aScript, global,
                                  options, /* aCoerceToString = */ false, nullptr);
   }
 
   // Put the old script back in case it wants to do anything else.
   mCurrentScript = oldCurrent;
 
-  JSAutoRequest ar(cx);
   context->SetProcessingScriptTag(oldProcessingScriptTag);
   return rv;
 }
@@ -1062,7 +1068,7 @@ nsScriptLoader::ConvertToUTF16(nsIChannel* aChannel, const uint8_t* aData,
                                  aLength, &unicodeLength);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  if (!EnsureStringLength(aString, unicodeLength)) {
+  if (!aString.SetLength(unicodeLength, fallible_t())) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
 

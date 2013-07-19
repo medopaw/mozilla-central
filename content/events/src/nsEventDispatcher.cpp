@@ -9,9 +9,10 @@
 #include "nsPresContext.h"
 #include "nsEventListenerManager.h"
 #include "nsContentUtils.h"
+#include "nsCxPusher.h"
 #include "nsError.h"
 #include "nsMutationEvent.h"
-#include NEW_H
+#include <new>
 #include "nsINode.h"
 #include "nsPIDOMWindow.h"
 #include "nsFrameLoader.h"
@@ -22,6 +23,26 @@
 
 using namespace mozilla;
 using namespace mozilla::dom;
+
+class ELMCreationDetector
+{
+public:
+  ELMCreationDetector() :
+    // We can do this optimization only in the main thread.
+    mDefault(!NS_IsMainThread()),
+    mInitialCount(mDefault ? 0 : nsEventListenerManager::sMainThreadCreatedCount)
+  {
+  }
+
+  bool MayHaveNewListenerManager()
+  {
+    return mDefault ||
+           mInitialCount != nsEventListenerManager::sMainThreadCreatedCount;
+  }
+private:
+  bool mDefault;
+  uint32_t mInitialCount;
+};
 
 #define NS_TARGET_CHAIN_FORCE_CONTENT_DISPATCH  (1 << 0)
 #define NS_TARGET_CHAIN_WANTS_WILL_HANDLE_EVENT (1 << 1)
@@ -162,7 +183,7 @@ public:
    */
   nsresult HandleEventTargetChain(nsEventChainPostVisitor& aVisitor,
                                   nsDispatchingCallback* aCallback,
-                                  bool aMayHaveNewListenerManagers,
+                                  ELMCreationDetector& aCd,
                                   nsCxPusher* aPusher);
 
   /**
@@ -176,7 +197,7 @@ public:
    * manager, this method calls nsEventListenerManager::HandleEvent().
    */
   nsresult HandleEvent(nsEventChainPostVisitor& aVisitor,
-                       bool aMayHaveNewListenerManagers,
+                       ELMCreationDetector& aCd,
                        nsCxPusher* aPusher)
   {
     if (WantsWillHandleEvent()) {
@@ -186,7 +207,7 @@ public:
       return NS_OK;
     }
     if (!mManager) {
-      if (!MayHaveListenerManager() && !aMayHaveNewListenerManagers) {
+      if (!MayHaveListenerManager() && !aCd.MayHaveNewListenerManager()) {
         return NS_OK;
       }
       mManager =
@@ -280,10 +301,9 @@ nsresult
 nsEventTargetChainItem::HandleEventTargetChain(
                           nsEventChainPostVisitor& aVisitor,
                           nsDispatchingCallback* aCallback,
-                          bool aMayHaveNewListenerManagers,
+                          ELMCreationDetector& aCd,
                           nsCxPusher* aPusher)
 {
-  uint32_t createdELMs = nsEventListenerManager::sCreatedCount;
   // Save the target so that it can be restored later.
   nsCOMPtr<EventTarget> firstTarget = aVisitor.mEvent->target;
 
@@ -295,10 +315,7 @@ nsEventTargetChainItem::HandleEventTargetChain(
     if ((!aVisitor.mEvent->mFlags.mNoContentDispatch ||
          item->ForceContentDispatch()) &&
         !aVisitor.mEvent->mFlags.mPropagationStopped) {
-      item->HandleEvent(aVisitor,
-                        aMayHaveNewListenerManagers ||
-                        createdELMs != nsEventListenerManager::sCreatedCount,
-                        aPusher);
+      item->HandleEvent(aVisitor, aCd, aPusher);
     }
 
     if (item->GetNewTarget()) {
@@ -322,10 +339,7 @@ nsEventTargetChainItem::HandleEventTargetChain(
   if (!aVisitor.mEvent->mFlags.mPropagationStopped &&
       (!aVisitor.mEvent->mFlags.mNoContentDispatch ||
        item->ForceContentDispatch())) {
-    item->HandleEvent(aVisitor,
-                      aMayHaveNewListenerManagers ||
-                      createdELMs != nsEventListenerManager::sCreatedCount,
-                      aPusher);
+    item->HandleEvent(aVisitor, aCd, aPusher);
   }
   if (aVisitor.mEvent->mFlags.mInSystemGroup) {
     item->PostHandleEvent(aVisitor, aPusher);
@@ -346,9 +360,7 @@ nsEventTargetChainItem::HandleEventTargetChain(
       if ((!aVisitor.mEvent->mFlags.mNoContentDispatch ||
            item->ForceContentDispatch()) &&
           !aVisitor.mEvent->mFlags.mPropagationStopped) {
-        item->HandleEvent(aVisitor,
-                          createdELMs != nsEventListenerManager::sCreatedCount,
-                          aPusher);
+        item->HandleEvent(aVisitor, aCd, aPusher);
       }
       if (aVisitor.mEvent->mFlags.mInSystemGroup) {
         item->PostHandleEvent(aVisitor, aPusher);
@@ -380,7 +392,7 @@ nsEventTargetChainItem::HandleEventTargetChain(
     aVisitor.mEvent->mFlags.mInSystemGroup = true;
     HandleEventTargetChain(aVisitor,
                            aCallback,
-                           createdELMs != nsEventListenerManager::sCreatedCount,
+                           aCd,
                            aPusher);
     aVisitor.mEvent->mFlags.mInSystemGroup = false;
 
@@ -628,9 +640,10 @@ nsEventDispatcher::Dispatch(nsISupports* aTarget,
         // Event target chain is created. Handle the chain.
         nsEventChainPostVisitor postVisitor(preVisitor);
         nsCxPusher pusher;
+        ELMCreationDetector cd;
         rv = topEtci->HandleEventTargetChain(postVisitor,
                                              aCallback,
-                                             false,
+                                             cd,
                                              &pusher);
 
         preVisitor.mEventStatus = postVisitor.mEventStatus;
@@ -729,6 +742,9 @@ nsEventDispatcher::CreateEvent(mozilla::dom::EventTarget* aOwner,
     case NS_MOUSE_EVENT:
       return NS_NewDOMMouseEvent(aDOMEvent, aOwner, aPresContext,
                                  static_cast<nsInputEvent*>(aEvent));
+    case NS_FOCUS_EVENT:
+      return NS_NewDOMFocusEvent(aDOMEvent, aOwner, aPresContext,
+                                 static_cast<nsFocusEvent*>(aEvent));
     case NS_MOUSE_SCROLL_EVENT:
       return NS_NewDOMMouseScrollEvent(aDOMEvent, aOwner, aPresContext,
                                  static_cast<nsInputEvent*>(aEvent));
@@ -839,12 +855,6 @@ nsEventDispatcher::CreateEvent(mozilla::dom::EventTarget* aOwner,
     return NS_NewDOMDOMTransactionEvent(aDOMEvent, aOwner, aPresContext, nullptr);
   if (aEventType.LowerCaseEqualsLiteral("scrollareaevent"))
     return NS_NewDOMScrollAreaEvent(aDOMEvent, aOwner, aPresContext, nullptr);
-  // FIXME: Should get spec to say what the right string is here!  This
-  // is probably wrong!
-  if (aEventType.LowerCaseEqualsLiteral("transitionevent"))
-    return NS_NewDOMTransitionEvent(aDOMEvent, aOwner, aPresContext, nullptr);
-  if (aEventType.LowerCaseEqualsLiteral("animationevent"))
-    return NS_NewDOMAnimationEvent(aDOMEvent, aOwner, aPresContext, nullptr);
   if (aEventType.LowerCaseEqualsLiteral("popstateevent"))
     return NS_NewDOMPopStateEvent(aDOMEvent, aOwner, aPresContext, nullptr);
   if (aEventType.LowerCaseEqualsLiteral("mozaudioavailableevent"))
@@ -865,6 +875,8 @@ nsEventDispatcher::CreateEvent(mozilla::dom::EventTarget* aOwner,
   if (aEventType.LowerCaseEqualsLiteral("storageevent")) {
     return NS_NewDOMStorageEvent(aDOMEvent, aOwner, aPresContext, nullptr);
   }
+  // NEW EVENT TYPES SHOULD NOT BE ADDED HERE; THEY SHOULD USE ONLY EVENT
+  // CONSTRUCTORS
 
   return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
 }

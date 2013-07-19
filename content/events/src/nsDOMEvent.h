@@ -6,6 +6,7 @@
 #ifndef nsDOMEvent_h__
 #define nsDOMEvent_h__
 
+#include "mozilla/Attributes.h"
 #include "nsIDOMEvent.h"
 #include "nsISupports.h"
 #include "nsCOMPtr.h"
@@ -15,10 +16,10 @@
 #include "nsGUIEvent.h"
 #include "nsCycleCollectionParticipant.h"
 #include "nsAutoPtr.h"
-#include "nsIJSNativeInitializer.h"
 #include "mozilla/dom/EventTarget.h"
 #include "mozilla/dom/EventBinding.h"
 #include "nsIScriptGlobalObject.h"
+#include "Units.h"
 
 class nsIContent;
 class nsPresContext;
@@ -32,13 +33,16 @@ class nsDOMEventBase : public nsIDOMEvent
 };
 
 class nsDOMEvent : public nsDOMEventBase,
-                   public nsIJSNativeInitializer,
                    public nsWrapperCache
 {
-protected:
+public:
   nsDOMEvent(mozilla::dom::EventTarget* aOwner, nsPresContext* aPresContext,
              nsEvent* aEvent);
+  nsDOMEvent(nsPIDOMWindow* aWindow);
   virtual ~nsDOMEvent();
+private:
+  void ConstructorInit(mozilla::dom::EventTarget* aOwner,
+                       nsPresContext* aPresContext, nsEvent* aEvent);
 public:
   void GetParentObject(nsIScriptGlobalObject** aParentObject)
   {
@@ -67,17 +71,8 @@ public:
     return static_cast<nsDOMEvent*>(event);
   }
 
-  static already_AddRefed<nsDOMEvent> CreateEvent(mozilla::dom::EventTarget* aOwner,
-                                                  nsPresContext* aPresContext,
-                                                  nsEvent* aEvent)
-  {
-    nsRefPtr<nsDOMEvent> e = new nsDOMEvent(aOwner, aPresContext, aEvent);
-    e->SetIsDOMBinding();
-    return e.forget();
-  }
-
   NS_DECL_CYCLE_COLLECTING_ISUPPORTS
-  NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS_AMBIGUOUS(nsDOMEvent, nsIDOMEvent)
+  NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(nsDOMEvent)
 
   nsISupports* GetParentObject()
   {
@@ -93,13 +88,6 @@ public:
   // nsIDOMEvent Interface
   NS_DECL_NSIDOMEVENT
 
-  // nsIJSNativeInitializer
-  NS_IMETHOD Initialize(nsISupports* aOwner, JSContext* aCx, JSObject* aObj,
-                        uint32_t aArgc, JS::Value* aArgv);
-
-  virtual nsresult InitFromCtor(const nsAString& aType,
-                                JSContext* aCx, JS::Value* aVal);
-
   void InitPresContextData(nsPresContext* aPresContext);
 
   // Returns true if the event should be trusted.
@@ -112,14 +100,12 @@ public:
   static void Shutdown();
 
   static const char* GetEventName(uint32_t aEventType);
-  static nsIntPoint GetClientCoords(nsPresContext* aPresContext,
-                                    nsEvent* aEvent,
-                                    nsIntPoint aPoint,
-                                    nsIntPoint aDefaultPoint);
-  static nsIntPoint GetPageCoords(nsPresContext* aPresContext,
-                                  nsEvent* aEvent,
-                                  nsIntPoint aPoint,
-                                  nsIntPoint aDefaultPoint);
+  static mozilla::CSSIntPoint
+  GetClientCoords(nsPresContext* aPresContext, nsEvent* aEvent,
+                  nsIntPoint aPoint, mozilla::CSSIntPoint aDefaultPoint);
+  static mozilla::CSSIntPoint
+  GetPageCoords(nsPresContext* aPresContext, nsEvent* aEvent, nsIntPoint aPoint,
+                mozilla::CSSIntPoint aDefaultPoint);
   static nsIntPoint GetScreenCoords(nsPresContext* aPresContext,
                                     nsEvent* aEvent,
                                     nsIntPoint aPoint);
@@ -185,10 +171,7 @@ public:
   mozilla::dom::EventTarget* GetOriginalTarget() const;
   mozilla::dom::EventTarget* GetExplicitOriginalTarget() const;
 
-  bool GetPreventDefault() const
-  {
-    return DefaultPrevented();
-  }
+  bool GetPreventDefault() const;
 
 protected:
 
@@ -223,8 +206,6 @@ protected:
   NS_IMETHOD StopImmediatePropagation(void) { return _to StopImmediatePropagation(); } \
   NS_IMETHOD GetOriginalTarget(nsIDOMEventTarget** aOriginalTarget) { return _to GetOriginalTarget(aOriginalTarget); } \
   NS_IMETHOD GetExplicitOriginalTarget(nsIDOMEventTarget** aExplicitOriginalTarget) { return _to GetExplicitOriginalTarget(aExplicitOriginalTarget); } \
-  NS_IMETHOD PreventBubble() { return _to PreventBubble(); } \
-  NS_IMETHOD PreventCapture() { return _to PreventCapture(); } \
   NS_IMETHOD GetPreventDefault(bool* aRetval) { return _to GetPreventDefault(aRetval); } \
   NS_IMETHOD GetIsTrusted(bool* aIsTrusted) { return _to GetIsTrusted(aIsTrusted); } \
   NS_IMETHOD SetTarget(nsIDOMEventTarget *aTarget) { return _to SetTarget(aTarget); } \

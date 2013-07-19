@@ -6,12 +6,15 @@
 
 MODULE = 'accessibility'
 
-EXPORTS += [
-    'nsAccessNodeWrap.h',
-]
-
 EXPORTS.mozilla.a11y += [
     'AccessibleWrap.h',
     'HyperTextAccessibleWrap.h',
 ]
+
+CPP_SOURCES += [
+    'AccessibleWrap.cpp',
+    'Platform.cpp',
+]
+
+LIBRARY_NAME = 'accessibility_toolkit_s'
 

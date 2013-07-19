@@ -4,7 +4,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "BacktrackingAllocator.h"
+#include "ion/BacktrackingAllocator.h"
+
+#include "jsprf.h"
 
 using namespace js;
 using namespace js::ion;
@@ -1093,7 +1095,7 @@ BacktrackingAllocator::populateSafepoints()
     for (uint32_t i = 0; i < vregs.numVirtualRegisters(); i++) {
         BacktrackingVirtualRegister *reg = &vregs[i];
 
-        if (!reg->def() || (!IsTraceable(reg) && !IsNunbox(reg)))
+        if (!reg->def() || (!IsTraceable(reg) && !IsSlotsOrElements(reg) && !IsNunbox(reg)))
             continue;
 
         firstSafepoint = findFirstSafepoint(reg->getInterval(0), firstSafepoint);
@@ -1138,6 +1140,9 @@ BacktrackingAllocator::populateSafepoints()
                   case LDefinition::OBJECT:
                     safepoint->addGcPointer(*a);
                     break;
+                  case LDefinition::SLOTS:
+                    safepoint->addSlotsOrElementsPointer(*a);
+                    break;
 #ifdef JS_NUNBOX32
                   case LDefinition::TYPE:
                     safepoint->addNunboxType(i, *a);
@@ -1151,7 +1156,7 @@ BacktrackingAllocator::populateSafepoints()
                     break;
 #endif
                   default:
-                    JS_NOT_REACHED("Bad register type");
+                    MOZ_ASSUME_UNREACHABLE("Bad register type");
                 }
             }
         }
@@ -1373,26 +1378,33 @@ BacktrackingAllocator::minimalInterval(const LiveInterval *interval, bool *pfixe
         return minimalDef(interval, reg.ins());
     }
 
+    bool fixed = false, minimal = false;
+
     for (UsePositionIterator iter = interval->usesBegin(); iter != interval->usesEnd(); iter++) {
         LUse *use = iter->use;
 
         switch (use->policy()) {
           case LUse::FIXED:
-            if (pfixed)
-                *pfixed = true;
-            return minimalUse(interval, insData[iter->pos].ins());
+            if (fixed)
+                return false;
+            fixed = true;
+            if (minimalUse(interval, insData[iter->pos].ins()))
+                minimal = true;
+            break;
 
           case LUse::REGISTER:
-            if (pfixed)
-                *pfixed = false;
-            return minimalUse(interval, insData[iter->pos].ins());
+            if (minimalUse(interval, insData[iter->pos].ins()))
+                minimal = true;
+            break;
 
           default:
             break;
         }
     }
 
-    return false;
+    if (pfixed)
+        *pfixed = fixed;
+    return minimal;
 }
 
 size_t
@@ -1432,7 +1444,7 @@ BacktrackingAllocator::computeSpillWeight(const LiveInterval *interval)
 
           default:
             // Note: RECOVERED_INPUT will not appear in UsePositionIterator.
-            JS_NOT_REACHED("Bad use");
+            MOZ_ASSUME_UNREACHABLE("Bad use");
         }
     }
 
@@ -1648,8 +1660,9 @@ BacktrackingAllocator::splitAtAllRegisterUses(LiveInterval *interval)
             CodePosition from = inputOf(ins);
             CodePosition to = iter->pos.next();
 
-            // Watch for duplicate register use positions.
-            if (newIntervals.empty() || newIntervals.back()->end() != to) {
+            // Use the same interval for duplicate use positions, except when
+            // the uses are fixed (they may require incompatible registers).
+            if (newIntervals.empty() || newIntervals.back()->end() != to || iter->use->policy() == LUse::FIXED) {
                 if (!addLiveInterval(newIntervals, vreg, from, to))
                     return false;
             }

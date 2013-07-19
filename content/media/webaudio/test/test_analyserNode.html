@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Test GainNode</title>
+  <title>Test AnalyserNode</title>
   <script type="text/javascript" src="/tests/SimpleTest/SimpleTest.js"></script>
   <script type="text/javascript" src="webaudio.js"></script>
   <link rel="stylesheet" type="text/css" href="/tests/SimpleTest/test.css" />
@@ -12,7 +12,6 @@
 
 SimpleTest.waitForExplicitFinish();
 addLoadEvent(function() {
-  SpecialPowers.setBoolPref("media.webaudio.enabled", true);
 
   var context = new AudioContext();
   var buffer = context.createBuffer(1, 2048, context.sampleRate);
@@ -83,7 +82,6 @@ addLoadEvent(function() {
   analyser.smoothingTimeConstant = 0;
   analyser.smoothingTimeConstant = 1;
 
-  SpecialPowers.clearUserPref("media.webaudio.enabled");
   SimpleTest.finish();
 });
 

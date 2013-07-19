@@ -7,9 +7,11 @@
 
 #include "mozilla/DebugOnly.h"
 
+#include "mozilla/layers/AsyncPanZoomController.h"
 #include "mozilla/layers/PLayerTransaction.h"
 #include "mozilla/layers/LayerManagerComposite.h"
 #include "mozilla/Telemetry.h"
+#include "CompositableHost.h"
 
 #include "ImageLayers.h"
 #include "ImageContainer.h"
@@ -284,14 +286,21 @@ CreateCSSValueList(const InfallibleTArray<TransformFunction>& aFunctions)
       {
         float x = aFunctions[i].get_SkewX().x();
         arr = nsStyleAnimation::AppendTransformFunction(eCSSKeyword_skewx, resultTail);
-        arr->Item(1).SetFloatValue(x, eCSSUnit_Number);
+        arr->Item(1).SetFloatValue(x, eCSSUnit_Radian);
         break;
       }
       case TransformFunction::TSkewY:
       {
         float y = aFunctions[i].get_SkewY().y();
         arr = nsStyleAnimation::AppendTransformFunction(eCSSKeyword_skewy, resultTail);
-        arr->Item(1).SetFloatValue(y, eCSSUnit_Number);
+        arr->Item(1).SetFloatValue(y, eCSSUnit_Radian);
+        break;
+      }
+      case TransformFunction::TSkew:
+      {
+        arr = nsStyleAnimation::AppendTransformFunction(eCSSKeyword_skew, resultTail);
+        arr->Item(1).SetFloatValue(aFunctions[i].get_Skew().x(), eCSSUnit_Radian);
+        arr->Item(2).SetFloatValue(aFunctions[i].get_Skew().y(), eCSSUnit_Radian);
         break;
       }
       case TransformFunction::TTransformMatrix:
@@ -398,36 +407,21 @@ Layer::SetAnimations(const AnimationArray& aAnimations)
   Mutated();
 }
 
-static uint8_t sPanZoomUserDataKey;
-struct PanZoomUserData : public LayerUserData {
-  PanZoomUserData(AsyncPanZoomController* aController)
-    : mController(aController)
-  { }
-
-  // We don't keep a strong ref here because PanZoomUserData is only
-  // set transiently, and APZC is thread-safe refcounted so
-  // AddRef/Release is expensive.
-  AsyncPanZoomController* mController;
-};
-
 void
-Layer::SetAsyncPanZoomController(AsyncPanZoomController *controller)
+ContainerLayer::SetAsyncPanZoomController(AsyncPanZoomController *controller)
 {
-  if (controller) {
-    SetUserData(&sPanZoomUserDataKey, new PanZoomUserData(controller));
-  } else {
-    RemoveUserData(&sPanZoomUserDataKey);
-  }
+  mAPZC = controller;
 }
 
 AsyncPanZoomController*
-Layer::GetAsyncPanZoomController()
+ContainerLayer::GetAsyncPanZoomController() const
 {
-  LayerUserData* data = GetUserData(&sPanZoomUserDataKey);
-  if (!data) {
-    return nullptr;
+#ifdef DEBUG
+  if (mAPZC) {
+    MOZ_ASSERT(GetFrameMetrics().IsScrollable());
   }
-  return static_cast<PanZoomUserData*>(data)->mController;
+#endif
+  return mAPZC;
 }
 
 void
@@ -485,8 +479,7 @@ Layer::SnapTransformTranslation(const gfx3DMatrix& aTransform,
 
   gfxMatrix matrix2D;
   gfx3DMatrix result;
-  if (!(mContentFlags & CONTENT_DISABLE_TRANSFORM_SNAPPING) &&
-      mManager->IsSnappingEffectiveTransforms() &&
+  if (mManager->IsSnappingEffectiveTransforms() &&
       aTransform.Is2D(&matrix2D) &&
       !matrix2D.HasNonTranslation() &&
       matrix2D.HasNonIntegerTranslation()) {
@@ -518,8 +511,7 @@ Layer::SnapTransform(const gfx3DMatrix& aTransform,
 
   gfxMatrix matrix2D;
   gfx3DMatrix result;
-  if (!(mContentFlags & CONTENT_DISABLE_TRANSFORM_SNAPPING) &&
-      mManager->IsSnappingEffectiveTransforms() &&
+  if (mManager->IsSnappingEffectiveTransforms() &&
       aTransform.Is2D(&matrix2D) &&
       gfxSize(1.0, 1.0) <= aSnapRect.Size() &&
       matrix2D.PreservesAxisAlignedRectangles()) {
@@ -626,10 +618,10 @@ Layer::CalculateScissorRect(const nsIntRect& aCurrentScissorRect,
 }
 
 const gfx3DMatrix
-Layer::GetTransform()
+Layer::GetTransform() const
 {
   gfx3DMatrix transform = mTransform;
-  if (ContainerLayer* c = AsContainerLayer()) {
+  if (const ContainerLayer* c = AsContainerLayer()) {
     transform.Scale(c->GetPreXScale(), c->GetPreYScale(), 1.0f);
   }
   transform.ScalePost(mPostXScale, mPostYScale, 1.0f);
@@ -695,6 +687,23 @@ Layer::ComputeEffectiveTransformForMaskLayer(const gfx3DMatrix& aTransformToSurf
     mMaskLayer->mEffectiveTransform.PreMultiply(mMaskLayer->GetTransform());
   }
 }
+
+ContainerLayer::ContainerLayer(LayerManager* aManager, void* aImplData)
+  : Layer(aManager, aImplData),
+    mFirstChild(nullptr),
+    mLastChild(nullptr),
+    mPreXScale(1.0f),
+    mPreYScale(1.0f),
+    mInheritedXScale(1.0f),
+    mInheritedYScale(1.0f),
+    mUseIntermediateSurface(false),
+    mSupportsComponentAlphaChildren(false),
+    mMayHaveReadbackChild(false)
+{
+  mContentFlags = 0; // Clear NO_TEXT, NO_TEXT_OVER_TRANSPARENT
+}
+
+ContainerLayer::~ContainerLayer() {}
 
 void
 ContainerLayer::FillSpecificAttributes(SpecificLayerAttributes& aAttrs)
@@ -981,6 +990,9 @@ static nsACString& PrintInfo(nsACString& aTo, LayerComposite* aLayerComposite);
 template <typename T>
 void WriteSnapshotLinkToDumpFile(T* aObj, FILE* aFile)
 {
+  if (!aObj) {
+    return;
+  }
   nsCString string(aObj->Name());
   string.Append("-");
   string.AppendInt((uint64_t)aObj);
@@ -1029,6 +1041,9 @@ Layer::Dump(FILE* aFile, const char* aPrefix, bool aDumpHtml)
     fprintf(aFile, ">");
   }
   DumpSelf(aFile, aPrefix);
+  if (AsLayerComposite() && AsLayerComposite()->GetCompositableHost()) {
+    AsLayerComposite()->GetCompositableHost()->Dump(aFile, aPrefix, aDumpHtml);
+  }
   if (aDumpHtml) {
     fprintf(aFile, "</a>");
   }
@@ -1036,7 +1051,7 @@ Layer::Dump(FILE* aFile, const char* aPrefix, bool aDumpHtml)
   if (Layer* mask = GetMaskLayer()) {
     nsAutoCString pfx(aPrefix);
     pfx += "  Mask layer: ";
-    mask->Dump(aFile, pfx.get());
+    mask->Dump(aFile, pfx.get(), aDumpHtml);
   }
 
   if (Layer* kid = GetFirstChild()) {
@@ -1045,7 +1060,7 @@ Layer::Dump(FILE* aFile, const char* aPrefix, bool aDumpHtml)
     if (aDumpHtml) {
       fprintf(aFile, "<ul>");
     }
-    kid->Dump(aFile, pfx.get());
+    kid->Dump(aFile, pfx.get(), aDumpHtml);
     if (aDumpHtml) {
       fprintf(aFile, "</ul>");
     }

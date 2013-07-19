@@ -6,7 +6,7 @@
 
 const {Cc, Ci, Cu} = require("chrome");
 
-var Promise = require("sdk/core/promise");
+var promise = require("sdk/core/promise");
 var EventEmitter = require("devtools/shared/event-emitter");
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
@@ -14,6 +14,8 @@ XPCOMUtils.defineLazyModuleGetter(this, "DebuggerServer",
   "resource://gre/modules/devtools/dbg-server.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "DebuggerClient",
   "resource://gre/modules/devtools/dbg-client.jsm");
+
+loader.lazyGetter(this, "InspectorFront", () => require("devtools/server/actors/inspector").InspectorFront);
 
 const targets = new WeakMap();
 const promiseTargets = new WeakMap();
@@ -51,13 +53,13 @@ exports.TargetFactory = {
    * @return A promise of a target object
    */
   forRemoteTab: function TF_forRemoteTab(options) {
-    let promise = promiseTargets.get(options);
-    if (promise == null) {
+    let targetPromise = promiseTargets.get(options);
+    if (targetPromise == null) {
       let target = new TabTarget(options);
-      promise = target.makeRemote().then(() => target);
-      promiseTargets.set(options, promise);
+      targetPromise = target.makeRemote().then(() => target);
+      promiseTargets.set(options, targetPromise);
     }
-    return promise;
+    return targetPromise;
   },
 
   /**
@@ -207,6 +209,10 @@ TabTarget.prototype = {
     return this._form;
   },
 
+  get root() {
+    return this._root;
+  },
+
   get client() {
     return this._client;
   },
@@ -221,6 +227,7 @@ TabTarget.prototype = {
     if (this._tab && this._tab.linkedBrowser) {
       return this._tab.linkedBrowser.contentWindow;
     }
+    return null;
   },
 
   get name() {
@@ -245,6 +252,17 @@ TabTarget.prototype = {
     return !!this._isThreadPaused;
   },
 
+  get inspector() {
+    if (!this.form) {
+      throw new Error("Target.inspector requires an initialized remote actor.");
+    }
+    if (this._inspector) {
+      return this._inspector;
+    }
+    this._inspector = InspectorFront(this.client, this.form);
+    return this._inspector;
+  },
+
   /**
    * Adds remote protocol capabilities to the target, so that it can be used
    * for tools that support the Remote Debugging Protocol even for local
@@ -255,7 +273,7 @@ TabTarget.prototype = {
       return this._remote.promise;
     }
 
-    this._remote = Promise.defer();
+    this._remote = promise.defer();
 
     if (this.isLocalTab) {
       // Since a remote protocol connection will be made, let's start the
@@ -286,6 +304,7 @@ TabTarget.prototype = {
     if (this.isLocalTab) {
       this._client.connect((aType, aTraits) => {
         this._client.listTabs(aResponse => {
+          this._root = aResponse;
           this._form = aResponse.tabs[aResponse.selected];
           attachTab();
         });
@@ -382,7 +401,7 @@ TabTarget.prototype = {
       return this._destroyer.promise;
     }
 
-    this._destroyer = Promise.defer();
+    this._destroyer = promise.defer();
 
     // Before taking any action, notify listeners that destruction is imminent.
     this.emit("close");
@@ -586,7 +605,7 @@ WindowTarget.prototype = {
       this._window = null;
     }
 
-    return Promise.resolve(null);
+    return promise.resolve(null);
   },
 
   toString: function() {

@@ -6,6 +6,7 @@
 #ifndef NS_SVGTEXTFRAME2_H
 #define NS_SVGTEXTFRAME2_H
 
+#include "mozilla/Attributes.h"
 #include "gfxFont.h"
 #include "gfxMatrix.h"
 #include "gfxRect.h"
@@ -23,6 +24,7 @@ typedef nsSVGDisplayContainerFrame nsSVGTextFrame2Base;
 
 namespace mozilla {
 
+class CharIterator;
 class TextFrameIterator;
 class TextNodeCorrespondenceRecorder;
 struct TextRenderedRun;
@@ -174,12 +176,12 @@ class nsSVGTextFrame2 : public nsSVGTextFrame2Base
   friend nsIFrame*
   NS_NewSVGTextFrame2(nsIPresShell* aPresShell, nsStyleContext* aContext);
 
+  friend class mozilla::CharIterator;
   friend class mozilla::GlyphMetricsUpdater;
   friend class mozilla::TextFrameIterator;
   friend class mozilla::TextNodeCorrespondenceRecorder;
   friend struct mozilla::TextRenderedRun;
   friend class mozilla::TextRenderedRunIterator;
-  friend class AutoCanvasTMForMarker;
   friend class MutationObserver;
   friend class nsDisplaySVGText;
 
@@ -187,9 +189,10 @@ protected:
   nsSVGTextFrame2(nsStyleContext* aContext)
     : nsSVGTextFrame2Base(aContext),
       mFontSizeScaleFactor(1.0f),
-      mGetCanvasTMForFlag(FOR_OUTERSVG_TM),
-      mPositioningDirty(true)
+      mLastContextScale(1.0f),
+      mLengthAdjustScaleFactor(1.0f)
   {
+    AddStateBits(NS_STATE_SVG_POSITIONING_DIRTY);
   }
 
 public:
@@ -202,21 +205,14 @@ public:
                     nsIFrame*   aParent,
                     nsIFrame*   aPrevInFlow) MOZ_OVERRIDE;
 
-  virtual void DestroyFrom(nsIFrame* aDestructRoot) MOZ_OVERRIDE;
-
   NS_IMETHOD AttributeChanged(int32_t aNamespaceID,
                               nsIAtom* aAttribute,
-                              int32_t aModType);
+                              int32_t aModType) MOZ_OVERRIDE;
 
-  virtual nsIFrame* GetContentInsertionFrame()
+  virtual nsIFrame* GetContentInsertionFrame() MOZ_OVERRIDE
   {
     return GetFirstPrincipalChild()->GetContentInsertionFrame();
   }
-
-  NS_IMETHOD Reflow(nsPresContext*           aPresContext,
-                    nsHTMLReflowMetrics&     aDesiredSize,
-                    const nsHTMLReflowState& aReflowState,
-                    nsReflowStatus&          aStatus);
 
   virtual void BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                 const nsRect&           aDirtyRect,
@@ -227,34 +223,37 @@ public:
    *
    * @see nsGkAtoms::svgTextFrame2
    */
-  virtual nsIAtom* GetType() const;
+  virtual nsIAtom* GetType() const MOZ_OVERRIDE;
 
 #ifdef DEBUG
-  NS_IMETHOD GetFrameName(nsAString& aResult) const
+  NS_IMETHOD GetFrameName(nsAString& aResult) const MOZ_OVERRIDE
   {
     return MakeFrameName(NS_LITERAL_STRING("SVGText2"), aResult);
   }
 #endif
 
+  virtual void DidSetStyleContext(nsStyleContext* aOldStyleContext) MOZ_OVERRIDE;
+
   /**
    * Finds the nsTextFrame for the closest rendered run to the specified point.
    */
   virtual void FindCloserFrameForSelection(nsPoint aPoint,
-                                          FrameWithDistance* aCurrentBestFrame);
+                                          FrameWithDistance* aCurrentBestFrame) MOZ_OVERRIDE;
+
 
 
   // nsISVGChildFrame interface:
-  virtual void NotifySVGChanged(uint32_t aFlags);
+  virtual void NotifySVGChanged(uint32_t aFlags) MOZ_OVERRIDE;
   NS_IMETHOD PaintSVG(nsRenderingContext* aContext,
-                      const nsIntRect* aDirtyRect);
-  NS_IMETHOD_(nsIFrame*) GetFrameForPoint(const nsPoint& aPoint);
-  virtual void ReflowSVG();
-  NS_IMETHOD_(nsRect) GetCoveredRegion();
+                      const nsIntRect* aDirtyRect) MOZ_OVERRIDE;
+  NS_IMETHOD_(nsIFrame*) GetFrameForPoint(const nsPoint& aPoint) MOZ_OVERRIDE;
+  virtual void ReflowSVG() MOZ_OVERRIDE;
+  NS_IMETHOD_(nsRect) GetCoveredRegion() MOZ_OVERRIDE;
   virtual SVGBBox GetBBoxContribution(const gfxMatrix& aToBBoxUserspace,
-                                      uint32_t aFlags);
+                                      uint32_t aFlags) MOZ_OVERRIDE;
 
   // nsSVGContainerFrame methods:
-  virtual gfxMatrix GetCanvasTM(uint32_t aFor);
+  virtual gfxMatrix GetCanvasTM(uint32_t aFor) MOZ_OVERRIDE;
   
   // SVG DOM text methods:
   uint32_t GetNumberOfChars(nsIContent* aContent);
@@ -277,22 +276,51 @@ public:
 
   /**
    * Schedules mPositions to be recomputed and the covered region to be
-   * updated.  The aFlags argument can take the ePositioningDirtyDueToMutation
-   * value to indicate that glyph metrics need to be recomputed due to
-   * a DOM mutation in the <text> element on one of its descendants.
+   * updated.
    */
-  void NotifyGlyphMetricsChange(uint32_t aFlags = 0);
+  void NotifyGlyphMetricsChange();
 
   /**
-   * Enum for NotifyGlyphMetricsChange's aFlags argument.
+   * Calls ScheduleReflowSVGNonDisplayText if this is a non-display frame,
+   * and nsSVGUtils::ScheduleReflowSVG otherwise.
    */
-  enum { ePositioningDirtyDueToMutation = 1 };
+  void ScheduleReflowSVG();
+
+  /**
+   * Reflows the anonymous block frame of this non-display nsSVGTextFrame2.
+   *
+   * When we are under nsSVGDisplayContainerFrame::ReflowSVG, we need to
+   * reflow any nsSVGTextFrame2 frames in the subtree in case they are
+   * being observed (by being for example in a <mask>) and the change
+   * that caused the reflow would not already have caused a reflow.
+   *
+   * Note that displayed nsSVGTextFrame2s are reflowed as needed, when PaintSVG
+   * is called or some SVG DOM method is called on the element.
+   */
+  void ReflowSVGNonDisplayText();
+
+  /**
+   * This is a function that behaves similarly to nsSVGUtils::ScheduleReflowSVG,
+   * but which will skip over any ancestor non-display container frames on the
+   * way to the nsSVGOuterSVGFrame.  It exists for the situation where a
+   * non-display <text> element has changed and needs to ensure ReflowSVG will
+   * be called on its closest display container frame, so that
+   * nsSVGDisplayContainerFrame::ReflowSVG will call ReflowSVGNonDisplayText on
+   * it.
+   *
+   * The only case where we have to do this is in response to a style change on
+   * a non-display <text>; the only caller of ScheduleReflowSVGNonDisplayText
+   * currently is nsSVGTextFrame2::DidSetStyleContext.
+   */
+  void ScheduleReflowSVGNonDisplayText();
 
   /**
    * Updates the mFontSizeScaleFactor value by looking at the range of
    * font-sizes used within the <text>.
+   *
+   * @return Whether mFontSizeScaleFactor changed.
    */
-  void UpdateFontSizeScaleFactor(bool aForceGlobalTransform);
+  bool UpdateFontSizeScaleFactor();
 
   double GetFontSizeScaleFactor() const;
 
@@ -323,29 +351,6 @@ public:
                                           nsIFrame* aChildFrame);
 
 private:
-  /**
-   * This class exists purely because it would be too messy to pass the "for"
-   * flag for GetCanvasTM through the call chains to the GetCanvasTM() call in
-   * UpdateFontSizeScaleFactor.
-   */
-  class AutoCanvasTMForMarker {
-  public:
-    AutoCanvasTMForMarker(nsSVGTextFrame2* aFrame, uint32_t aFor)
-      : mFrame(aFrame)
-    {
-      mOldFor = mFrame->mGetCanvasTMForFlag;
-      mFrame->mGetCanvasTMForFlag = aFor;
-    }
-    ~AutoCanvasTMForMarker()
-    {
-      // Default
-      mFrame->mGetCanvasTMForFlag = mOldFor;
-    }
-  private:
-    nsSVGTextFrame2* mFrame;
-    uint32_t mOldFor;
-  };
-
   /**
    * Mutation observer used to watch for text positioning attribute changes
    * on descendent text content elements (like <tspan>s).
@@ -378,6 +383,7 @@ private:
     NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED
     NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
     NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
+    NS_DECL_NSIMUTATIONOBSERVER_CHARACTERDATACHANGED
     NS_DECL_NSIMUTATIONOBSERVER_ATTRIBUTECHANGED
 
   private:
@@ -385,23 +391,21 @@ private:
   };
 
   /**
-   * Reflows the anonymous block child.
+   * Reflows the anonymous block child if it is dirty or has dirty
+   * children, or if the nsSVGTextFrame2 itself is dirty.
    */
-  void DoReflow(bool aForceGlobalTransform);
+  void MaybeReflowAnonymousBlockChild();
 
   /**
-   * Calls FrameNeedsReflow on the anonymous block child.
+   * Performs the actual work of reflowing the anonymous block child.
    */
-  void RequestReflow(nsIPresShell::IntrinsicDirty aType, uint32_t aBit);
+  void DoReflow();
 
   /**
-   * Reflows the anonymous block child and recomputes mPositions if needed.
-   *
-   * @param aForceGlobalTransform passed down to UpdateFontSizeScaleFactor to
-   * control whether it should use the global transform even when
-   * NS_STATE_NONDISPLAY_CHILD
+   * Recomputes mPositions by calling DoGlyphPositioning if this information
+   * is out of date.
    */
-  void UpdateGlyphPositioning(bool aForceGlobalTransform);
+  void UpdateGlyphPositioning();
 
   /**
    * Populates mPositions with positioning information for each character
@@ -445,9 +449,11 @@ private:
    * was not given for that character.  Also fills aDeltas with values based on
    * dx/dy attributes.
    *
+   * @param aRunPerGlyph Whether mPositions should record that a new run begins
+   *   at each glyph.
    * @return True if we recorded any positions.
    */
-  bool ResolvePositions(nsTArray<gfxPoint>& aDeltas);
+  bool ResolvePositions(nsTArray<gfxPoint>& aDeltas, bool aRunPerGlyph);
 
   /**
    * Determines the position, in app units, of each character in the <text> as
@@ -571,12 +577,6 @@ private:
   MutationObserver mMutationObserver;
 
   /**
-   * The runnable we have dispatched to perform the work of
-   * NotifyGlyphMetricsChange.
-   */
-  nsRefPtr<GlyphMetricsUpdater> mGlyphMetricsUpdater;
-
-  /**
    * Cached canvasTM value.
    */
   nsAutoPtr<gfxMatrix> mCanvasTM;
@@ -621,23 +621,17 @@ private:
   float mFontSizeScaleFactor;
 
   /**
-   * The flag to pass to GetCanvasTM from UpdateFontSizeScaleFactor.  This is
-   * normally FOR_OUTERSVG_TM, but while painting or hit testing a pattern or
-   * marker, we set it to FOR_PAINTING or FOR_HIT_TESTING appropriately.
+   * The scale of the context that we last used to compute mFontSizeScaleFactor.
+   * We record this so that we can tell when our scale transform has changed
+   * enough to warrant reflowing the text.
    */
-  uint32_t mGetCanvasTMForFlag;
+  float mLastContextScale;
 
   /**
-   * The NS_FRAME_IS_DIRTY and NS_FRAME_HAS_DIRTY_CHILDREN bits indicate
-   * that our anonymous block child needs to be reflowed, and that mPositions
-   * will likely need to be updated as a consequence. These are set, for
-   * example, when the font-family changes. Sometimes we only need to
-   * update mPositions though. For example if the x/y attributes change.
-   * mPositioningDirty is used to indicate this latter "things are dirty" case
-   * to allow us to avoid reflowing the anonymous block when it is not
-   * necessary.
+   * The amount that we need to scale each rendered run to account for
+   * lengthAdjust="spacingAndGlyphs".
    */
-  bool mPositioningDirty;
+  float mLengthAdjustScaleFactor;
 };
 
 #endif

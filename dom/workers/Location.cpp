@@ -45,9 +45,10 @@ public:
   }
 
   static JSObject*
-  Create(JSContext* aCx, JSString* aHref, JSString* aProtocol, JSString* aHost,
-         JSString* aHostname, JSString* aPort, JSString* aPathname,
-         JSString* aSearch, JSString* aHash)
+  Create(JSContext* aCx, JS::Handle<JSString*> aHref, JS::Handle<JSString*> aProtocol,
+         JS::Handle<JSString*> aHost, JS::Handle<JSString*> aHostname,
+         JS::Handle<JSString*> aPort, JS::Handle<JSString*> aPathname,
+         JS::Handle<JSString*> aSearch, JS::Handle<JSString*> aHash)
   {
     JSObject* obj = JS_NewObject(aCx, &sClass, NULL, NULL);
     if (!obj) {
@@ -128,7 +129,8 @@ private:
   }
 
   static JSBool
-  GetProperty(JSContext* aCx, JSHandleObject aObj, JSHandleId aIdval, JSMutableHandleValue aVp)
+  GetProperty(JSContext* aCx, JS::Handle<JSObject*> aObj, JS::Handle<jsid> aIdval,
+              JS::MutableHandle<JS::Value> aVp)
   {
     JSClass* classPtr = JS_GetClass(aObj);
     if (classPtr != &sClass) {
@@ -191,9 +193,11 @@ InitClass(JSContext* aCx, JSObject* aGlobal)
 }
 
 JSObject*
-Create(JSContext* aCx, JSString* aHref, JSString* aProtocol, JSString* aHost,
-       JSString* aHostname, JSString* aPort, JSString* aPathname,
-       JSString* aSearch, JSString* aHash)
+Create(JSContext* aCx,
+       JS::Handle<JSString*> aHref, JS::Handle<JSString*> aProtocol,
+       JS::Handle<JSString*> aHost, JS::Handle<JSString*> aHostname,
+       JS::Handle<JSString*> aPort, JS::Handle<JSString*> aPathname,
+       JS::Handle<JSString*> aSearch, JS::Handle<JSString*> aHash)
 {
   return Location::Create(aCx, aHref, aProtocol, aHost, aHostname, aPort,
                           aPathname, aSearch, aHash);

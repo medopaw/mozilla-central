@@ -54,6 +54,8 @@ const Cr = Components.results;
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
+XPCOMUtils.defineLazyModuleGetter(this, "DownloadIntegration",
+                                  "resource://gre/modules/DownloadIntegration.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "NetUtil",
                                   "resource://gre/modules/NetUtil.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "OS",
@@ -127,6 +129,13 @@ Download.prototype = {
    * null when a failed download is restarted.
    */
   error: null,
+
+  /**
+   * Indicates the start time of the download.  When the download starts,
+   * this property is set to a valid Date object.  The default value is null
+   * before the download starts.
+   */
+  startTime: null,
 
   /**
    * Indicates whether this download's "progress" property is able to report
@@ -237,6 +246,7 @@ Download.prototype = {
     this.progress = 0;
     this.totalBytes = 0;
     this.currentBytes = 0;
+    this.startTime = new Date();
 
     // Create a new deferred object and an associated promise before starting
     // the actual download.  We store it on the download as the current attempt.
@@ -259,6 +269,14 @@ Download.prototype = {
       // Wait upon any pending cancellation request.
       if (this._promiseCanceled) {
         yield this._promiseCanceled;
+      }
+
+      // Disallow download if parental controls service restricts it.
+      if (yield DownloadIntegration.shouldBlockForParentalControls(this)) {
+        let error = new DownloadError(Cr.NS_ERROR_FAILURE, "Download blocked.");
+        error.becauseBlocked = true;
+        error.becauseBlockedByParentalControls = true;
+        throw error;
       }
 
       try {
@@ -419,6 +437,36 @@ DownloadSource.prototype = {
    * The nsIURI for the download source.
    */
   uri: null,
+
+  /**
+   * Indicates whether the download originated from a private window.  This
+   * determines the context of the network request that is made to retrieve the 
+   * resource.
+   */
+  isPrivate: false,
+
+  /**
+   * The nsIURI for the referrer of the download source, or null if no referrer
+   * should be sent or the download source is not HTTP.
+   */
+  referrer: null,
+
+  /**
+   * Returns a static representation of the current object state.
+   *
+   * @return A JavaScript object that can be serialized to JSON.
+   */
+  serialize: function DS_serialize()
+  {
+    let serialized = { uri: this.uri.spec };
+    if (this.isPrivate) {
+      serialized.isPrivate = true;
+    }
+    if (this.referrer) {
+      serialized.referrer = this.referrer.spec;
+    }
+    return serialized;
+  },
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -435,6 +483,16 @@ DownloadTarget.prototype = {
    * The nsIFile for the download target.
    */
   file: null,
+
+  /**
+   * Returns a static representation of the current object state.
+   *
+   * @return A JavaScript object that can be serialized to JSON.
+   */
+  serialize: function DT_serialize()
+  {
+    return { file: this.file.path };
+  },
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -493,6 +551,18 @@ DownloadError.prototype = {
    * Indicates an error occurred while writing to the local target.
    */
   becauseTargetFailed: false,
+
+  /**
+   * Indicates the download failed because it was blocked.  If the reason for
+   * blocking is known, the corresponding property will be also set.
+   */
+  becauseBlocked: false,
+
+  /**
+   * Indicates the download was blocked because downloads are globally
+   * disallowed by the Parental Controls or Family Safety features on Windows.
+   */
+  becauseBlockedByParentalControls: false,
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -531,6 +601,16 @@ DownloadSaver.prototype = {
    * Cancels the download.
    */
   cancel: function DS_cancel()
+  {
+    throw new Error("Not implemented.");
+  },
+
+  /**
+   * Returns a static representation of the current object state.
+   *
+   * @return A JavaScript object that can be serialized to JSON.
+   */
+  serialize: function DS_serialize()
   {
     throw new Error("Not implemented.");
   },
@@ -588,8 +668,14 @@ DownloadCopySaver.prototype = {
       backgroundFileSaver.setTarget(download.target.file, false);
 
       // Create a channel from the source, and listen to progress notifications.
-      // TODO: Handle downloads initiated from private browsing windows.
       let channel = NetUtil.newChannel(download.source.uri);
+      if (channel instanceof Ci.nsIPrivateBrowsingChannel) {
+        channel.setPrivate(download.source.isPrivate);
+      }
+      if (channel instanceof Ci.nsIHttpChannel) {
+        channel.referrer = download.source.referrer;
+      }
+
       channel.notificationCallbacks = {
         QueryInterface: XPCOMUtils.generateQI([Ci.nsIInterfaceRequestor]),
         getInterface: XPCOMUtils.generateQI([Ci.nsIProgressEventSink]),
@@ -658,6 +744,14 @@ DownloadCopySaver.prototype = {
       this._backgroundFileSaver.finish(Cr.NS_ERROR_FAILURE);
       this._backgroundFileSaver = null;
     }
+  },
+
+  /**
+   * Implements "DownloadSaver.serialize".
+   */
+  serialize: function DCS_serialize()
+  {
+    return { type: "copy" };
   },
 };
 

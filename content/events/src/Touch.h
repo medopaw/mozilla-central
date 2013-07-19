@@ -6,12 +6,14 @@
 #ifndef mozilla_dom_Touch_h
 #define mozilla_dom_Touch_h
 
-#include "nsDOMUIEvent.h"
 #include "nsIDOMTouchEvent.h"
 #include "nsString.h"
 #include "nsTArray.h"
 #include "mozilla/Attributes.h"
 #include "nsJSEnvironment.h"
+#include "nsWrapperCache.h"
+#include "mozilla/dom/EventTarget.h"
+#include "Units.h"
 
 namespace mozilla {
 namespace dom {
@@ -38,9 +40,9 @@ public:
       SetIsDOMBinding();
       mTarget = aTarget;
       mIdentifier = aIdentifier;
-      mPagePoint = nsIntPoint(aPageX, aPageY);
+      mPagePoint = CSSIntPoint(aPageX, aPageY);
       mScreenPoint = nsIntPoint(aScreenX, aScreenY);
-      mClientPoint = nsIntPoint(aClientX, aClientY);
+      mClientPoint = CSSIntPoint(aClientX, aClientY);
       mRefPoint = nsIntPoint(0, 0);
       mPointsInitialized = true;
       mRadius.x = aRadiusX;
@@ -60,9 +62,9 @@ public:
     {
       SetIsDOMBinding();
       mIdentifier = aIdentifier;
-      mPagePoint = nsIntPoint(0, 0);
+      mPagePoint = CSSIntPoint(0, 0);
       mScreenPoint = nsIntPoint(0, 0);
-      mClientPoint = nsIntPoint(0, 0);
+      mClientPoint = CSSIntPoint(0, 0);
       mRefPoint = aPoint;
       mPointsInitialized = false;
       mRadius = aRadius;
@@ -76,22 +78,9 @@ public:
   NS_DECL_CYCLE_COLLECTING_ISUPPORTS
   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(Touch)
   NS_DECL_NSIDOMTOUCH
-  void InitializePoints(nsPresContext* aPresContext, nsEvent* aEvent)
-  {
-    if (mPointsInitialized) {
-      return;
-    }
-    mClientPoint = nsDOMEvent::GetClientCoords(aPresContext,
-                                               aEvent,
-                                               mRefPoint,
-                                               mClientPoint);
-    mPagePoint = nsDOMEvent::GetPageCoords(aPresContext,
-                                           aEvent,
-                                           mRefPoint,
-                                           mClientPoint);
-    mScreenPoint = nsDOMEvent::GetScreenCoords(aPresContext, aEvent, mRefPoint);
-    mPointsInitialized = true;
-  }
+
+  void InitializePoints(nsPresContext* aPresContext, nsEvent* aEvent);
+
   void SetTarget(mozilla::dom::EventTarget *aTarget)
   {
     mTarget = aTarget;
@@ -99,7 +88,7 @@ public:
   bool Equals(nsIDOMTouch* aTouch);
 
   virtual JSObject* WrapObject(JSContext* aCx,
-			       JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
+                               JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
   EventTarget* GetParentObject() { return mTarget; }
 
   // WebIDL
@@ -117,8 +106,8 @@ public:
   float Force() const { return mForce; }
 
   int32_t mIdentifier;
-  nsIntPoint mPagePoint;
-  nsIntPoint mClientPoint;
+  CSSIntPoint mPagePoint;
+  CSSIntPoint mClientPoint;
   nsIntPoint mScreenPoint;
   nsIntPoint mRadius;
   float mRotationAngle;

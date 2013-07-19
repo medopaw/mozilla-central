@@ -53,6 +53,7 @@
 #include <sys/stat.h>   // open
 #include <fcntl.h>      // open
 #include <unistd.h>     // sysconf
+#include <semaphore.h>
 #ifdef __GLIBC__
 #include <execinfo.h>   // backtrace, backtrace_symbols
 #endif  // def __GLIBC__
@@ -62,9 +63,11 @@
 #include "platform.h"
 #include "GeckoProfilerImpl.h"
 #include "mozilla/Mutex.h"
+#include "mozilla/Atomics.h"
 #include "ProfileEntry.h"
 #include "nsThreadUtils.h"
 #include "TableTicker.h"
+#include "UnwinderThread2.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -139,7 +142,8 @@ struct SamplerRegistry {
 
 Sampler *SamplerRegistry::sampler = NULL;
 
-static ThreadProfile* sCurrentThreadProfile = NULL;
+static mozilla::Atomic<ThreadProfile*> sCurrentThreadProfile;
+static sem_t sSignalHandlingDone;
 
 static void ProfilerSaveSignalHandler(int signal, siginfo_t* info, void* context) {
   Sampler::GetActiveSampler()->RequestSave();
@@ -203,6 +207,7 @@ static void ProfilerSignalHandler(int signal, siginfo_t* info, void* context) {
   Sampler::GetActiveSampler()->Tick(sample);
 
   sCurrentThreadProfile = NULL;
+  sem_post(&sSignalHandlingDone);
 }
 
 int tgkill(pid_t tgid, pid_t tid, int signalno) {
@@ -269,8 +274,7 @@ static void* SignalSender(void* arg) {
         }
 
         // Wait for the signal handler to run before moving on to the next one
-        while (sCurrentThreadProfile)
-          sched_yield();
+        sem_wait(&sSignalHandlingDone);
       }
     }
 
@@ -302,6 +306,13 @@ void Sampler::Start() {
   LOG("Sampler started");
 
   SamplerRegistry::AddActiveSampler(this);
+
+  // Initialize signal handler communication
+  sCurrentThreadProfile = NULL;
+  if (sem_init(&sSignalHandlingDone, /* pshared: */ 0, /* value: */ 0) != 0) {
+    LOG("Error initializing semaphore");
+    return;
+  }
 
   // Request profiling signals.
   LOG("Request signal");
@@ -358,7 +369,9 @@ void Sampler::Stop() {
   }
 }
 
-bool Sampler::RegisterCurrentThread(const char* aName, PseudoStack* aPseudoStack, bool aIsMainThread)
+bool Sampler::RegisterCurrentThread(const char* aName,
+                                    PseudoStack* aPseudoStack,
+                                    bool aIsMainThread, void* stackTop)
 {
   if (!Sampler::sRegisteredThreadsMutex)
     return false;
@@ -368,23 +381,13 @@ bool Sampler::RegisterCurrentThread(const char* aName, PseudoStack* aPseudoStack
   ThreadInfo* info = new ThreadInfo(aName, gettid(),
     aIsMainThread, aPseudoStack);
 
-  bool profileThread = sActiveSampler &&
-    (aIsMainThread || sActiveSampler->ProfileThreads());
-
-  if (profileThread) {
-    // We need to create the ThreadProfile now
-    info->SetProfile(new ThreadProfile(info->Name(),
-                                       sActiveSampler->EntrySize(),
-                                       info->Stack(),
-                                       info->ThreadId(),
-                                       info->GetPlatformData(),
-                                       aIsMainThread));
-    if (sActiveSampler->ProfileJS()) {
-      info->Profile()->GetPseudoStack()->enableJSSampling();
-    }
+  if (sActiveSampler) {
+    sActiveSampler->RegisterThread(info);
   }
 
   sRegisteredThreads->push_back(info);
+
+  uwt__register_thread_for_profiling(stackTop);
   return true;
 }
 
@@ -405,6 +408,8 @@ void Sampler::UnregisterCurrentThread()
       break;
     }
   }
+
+  uwt__unregister_thread_for_profiling();
 }
 
 #ifdef ANDROID
@@ -413,7 +418,8 @@ const int SIGSTART = SIGUSR1;
 
 static void StartSignalHandler(int signal, siginfo_t* info, void* context) {
   profiler_start(PROFILE_DEFAULT_ENTRY, PROFILE_DEFAULT_INTERVAL,
-                 PROFILE_DEFAULT_FEATURES, PROFILE_DEFAULT_FEATURE_COUNT);
+                 PROFILE_DEFAULT_FEATURES, PROFILE_DEFAULT_FEATURE_COUNT,
+                 NULL, 0);
 }
 
 void OS::RegisterStartHandler()

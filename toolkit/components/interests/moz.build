@@ -12,4 +12,14 @@ if CONFIG['MOZ_PLACES']:
         'mozIInterestsWebAPI.idl',
     ]
 
+    EXTRA_JS_MODULES = [
+        'PlacesInterestsStorage.jsm',
+    ]
+
 MODULE = 'interests'
+
+if CONFIG['MOZ_PLACES']:
+    EXTRA_COMPONENTS += [
+        'Interests.js',
+        'toolkitinterests.manifest',
+    ]

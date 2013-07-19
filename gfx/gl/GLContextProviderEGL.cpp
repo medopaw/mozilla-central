@@ -20,6 +20,7 @@
 #elif defined(MOZ_WIDGET_GONK)
 #define GET_NATIVE_WINDOW(aWidget) ((EGLNativeWindowType)aWidget->GetNativeData(NS_NATIVE_WINDOW))
 #include "HwcComposer2D.h"
+#include "libdisplay/GonkDisplay.h"
 #endif
 
 #if defined(MOZ_X11)
@@ -119,6 +120,7 @@ public:
 
 #include "gfxCrashReporterUtils.h"
 
+using namespace mozilla::gfx;
 
 #if defined(MOZ_PLATFORM_MAEMO) || defined(MOZ_WIDGET_GONK)
 static bool gUseBackingSurface = true;
@@ -273,7 +275,7 @@ public:
 #ifdef DEBUG
         printf_stderr("Initializing context %p surface %p on display %p\n", mContext, mSurface, EGL_DISPLAY());
 #endif
-#ifdef MOZ_WIDGET_GONK
+#if defined(MOZ_WIDGET_GONK) && ANDROID_VERSION <= 15
         if (!mIsOffscreen) {
             mHwc = HwcComposer2D::GetInstance();
             MOZ_ASSERT(!mHwc->Initialized());
@@ -593,9 +595,8 @@ public:
     {
         if (mSurface && !mPlatformContext) {
 #ifdef MOZ_WIDGET_GONK
-            if (mHwc)
-                return !mHwc->swapBuffers((hwc_display_t)EGL_DISPLAY(),
-                                          (hwc_surface_t)mSurface);
+            if (!mIsOffscreen)
+                return GetGonkDisplay()->SwapBuffers(EGL_DISPLAY(), mSurface);
             else
 #endif
                 return sEGLLibrary.fSwapBuffers(EGL_DISPLAY(), mSurface);
@@ -614,7 +615,7 @@ public:
     virtual already_AddRefed<TextureImage>
     TileGenFunc(const nsIntSize& aSize,
                 TextureImage::ContentType aContentType,
-                TextureImage::Flags aFlags = TextureImage::NoFlags);
+                TextureImage::Flags aFlags = TextureImage::NoFlags) MOZ_OVERRIDE;
     // hold a reference to the given surface
     // for the lifetime of this context.
     void HoldSurface(gfxASurface *aSurf) {
@@ -981,7 +982,7 @@ bool GLContextEGL::GetSharedHandleDetails(SharedTextureShareType shareType,
         SurfaceTextureWrapper* surfaceWrapper = reinterpret_cast<SurfaceTextureWrapper*>(wrapper);
 
         details.mTarget = LOCAL_GL_TEXTURE_EXTERNAL;
-        details.mProgramType = RGBALayerExternalProgramType;
+        details.mTextureFormat = FORMAT_R8G8B8A8;
         surfaceWrapper->SurfaceTexture()->GetTransformMatrix(details.mTextureTransform);
         break;
     }
@@ -989,7 +990,7 @@ bool GLContextEGL::GetSharedHandleDetails(SharedTextureShareType shareType,
 
     case SharedHandleType::Image:
         details.mTarget = LOCAL_GL_TEXTURE_2D;
-        details.mProgramType = RGBALayerProgramType;
+        details.mTextureFormat = FORMAT_R8G8B8A8;
         break;
 
     default:
@@ -1117,21 +1118,21 @@ public:
 
         if (gUseBackingSurface) {
             if (mUpdateFormat != gfxASurface::ImageFormatARGB32) {
-                mShaderType = RGBXLayerProgramType;
+                mTextureFormat = FORMAT_R8G8B8X8;
             } else {
-                mShaderType = RGBALayerProgramType;
+                mTextureFormat = FORMAT_R8G8B8A8;
             }
             Resize(aSize);
         } else {
             if (mUpdateFormat == gfxASurface::ImageFormatRGB16_565) {
-                mShaderType = RGBXLayerProgramType;
+                mTextureFormat = FORMAT_R8G8B8X8;
             } else if (mUpdateFormat == gfxASurface::ImageFormatRGB24) {
                 // RGB24 means really RGBX for Thebes, which means we have to
                 // use the right shader and ignore the uninitialized alpha
                 // value.
-                mShaderType = BGRXLayerProgramType;
+                mTextureFormat = FORMAT_B8G8R8X8;
             } else {
-                mShaderType = BGRALayerProgramType;
+                mTextureFormat = FORMAT_B8G8R8A8;
             }
         }
     }
@@ -1296,7 +1297,7 @@ public:
             region = aRegion;
         }
 
-        mShaderType =
+        mTextureFormat =
           mGLContext->UploadSurfaceToTexture(aSurf,
                                               region,
                                               mTexture,
@@ -1536,8 +1537,8 @@ GLContextEGL::CreateTextureImage(const nsIntSize& aSize,
 
 already_AddRefed<TextureImage>
 GLContextEGL::TileGenFunc(const nsIntSize& aSize,
-                                 TextureImage::ContentType aContentType,
-                                 TextureImage::Flags aFlags)
+                          TextureImage::ContentType aContentType,
+                          TextureImage::Flags aFlags)
 {
   MakeCurrent();
 
@@ -1593,6 +1594,9 @@ static const EGLint kEGLConfigAttribsRGBA32[] = {
     LOCAL_EGL_GREEN_SIZE,      8,
     LOCAL_EGL_BLUE_SIZE,       8,
     LOCAL_EGL_ALPHA_SIZE,      8,
+#if defined(MOZ_WIDGET_GONK) && ANDROID_VERSION >= 17
+    LOCAL_EGL_FRAMEBUFFER_TARGET_ANDROID, LOCAL_EGL_TRUE,
+#endif
     LOCAL_EGL_NONE
 };
 

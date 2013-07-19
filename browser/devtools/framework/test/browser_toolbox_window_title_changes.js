@@ -16,7 +16,7 @@ function test() {
   const TOOL_ID_1 = "webconsole";
   const TOOL_ID_2 = "jsdebugger";
 
-  const LABEL_1 = "Web Console";
+  const LABEL_1 = "Console";
   const LABEL_2 = "Debugger";
 
   let toolbox;
@@ -37,7 +37,7 @@ function test() {
 
     // navigate to different url and check title
       .then(function () {
-        let deferred = Promise.defer();
+        let deferred = promise.defer();
         target.once("navigate", function () deferred.resolve());
         gBrowser.loadURI(URL_2);
         return deferred.promise;

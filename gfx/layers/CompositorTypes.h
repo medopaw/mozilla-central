@@ -36,17 +36,20 @@ const TextureFlags NewTile            = 0x10;
 const TextureFlags HostRelease        = 0x20;
 // The texture is part of a component-alpha pair
 const TextureFlags ComponentAlpha     = 0x40;
+// The shared resources are owned by client
+const TextureFlags OwnByClient        = 0x80;
+
 
 /**
  * The kind of memory held by the texture client/host pair. This will
  * determine how the texture client is drawn into and how the memory
  * is shared between client and host.
  */
-enum TextureClientType
+enum DeprecatedTextureClientType
 {
   TEXTURE_CONTENT,            // dynamically drawn content
   TEXTURE_SHMEM,              // shared memory
-  TEXTURE_YCBCR,              // ShmemYCbCrImage
+  TEXTURE_YCBCR,              // YCbCr in a shmem
   TEXTURE_SHARED_GL,          // GLContext::SharedTextureHandle
   TEXTURE_SHARED_GL_EXTERNAL, // GLContext::SharedTextureHandle, the ownership of
                               // the SurfaceDescriptor passed to the texture
@@ -65,6 +68,8 @@ enum CompositableType
   BUFFER_BRIDGE,          // image bridge protocol
   BUFFER_CONTENT,         // thebes layer interface, single buffering
   BUFFER_CONTENT_DIRECT,  // thebes layer interface, double buffering
+  BUFFER_CONTENT_INC,     // thebes layer interface, only sends incremental
+                          // updates to a texture on the compositor side.
   BUFFER_TILED,           // tiled thebes layer
   BUFFER_COUNT
 };
@@ -72,11 +77,13 @@ enum CompositableType
 /**
  * How the texture host is used for composition,
  */
-enum TextureHostFlags
+enum DeprecatedTextureHostFlags
 {
   TEXTURE_HOST_DEFAULT = 0,       // The default texture host for the given
                                   // SurfaceDescriptor
-  TEXTURE_HOST_TILED = 1 << 0     // A texture host that supports tiling
+  TEXTURE_HOST_TILED = 1 << 0,    // A texture host that supports tiling
+  TEXTURE_HOST_COPY_PREVIOUS = 1 << 1 // Texture contents should be initialized
+                                      // from the previous texture.
 };
 
 /**
@@ -88,11 +95,17 @@ struct TextureFactoryIdentifier
 {
   LayersBackend mParentBackend;
   int32_t mMaxTextureSize;
+  bool mSupportsTextureBlitting;
+  bool mSupportsPartialUploads;
 
   TextureFactoryIdentifier(LayersBackend aLayersBackend = LAYERS_NONE,
-                           int32_t aMaxTextureSize = 0)
+                           int32_t aMaxTextureSize = 0,
+                           bool aSupportsTextureBlitting = false,
+                           bool aSupportsPartialUploads = false)
     : mParentBackend(aLayersBackend)
     , mMaxTextureSize(aMaxTextureSize)
+    , mSupportsTextureBlitting(aSupportsTextureBlitting)
+    , mSupportsPartialUploads(aSupportsPartialUploads)
   {}
 };
 
@@ -113,25 +126,25 @@ const TextureIdentifier TextureOnWhiteBack = 4;
 struct TextureInfo
 {
   CompositableType mCompositableType;
-  uint32_t mTextureHostFlags;
+  uint32_t mDeprecatedTextureHostFlags;
   uint32_t mTextureFlags;
 
   TextureInfo()
     : mCompositableType(BUFFER_UNKNOWN)
-    , mTextureHostFlags(0)
+    , mDeprecatedTextureHostFlags(0)
     , mTextureFlags(0)
   {}
 
   TextureInfo(CompositableType aType)
     : mCompositableType(aType)
-    , mTextureHostFlags(0)
+    , mDeprecatedTextureHostFlags(0)
     , mTextureFlags(0)
   {}
 
   bool operator==(const TextureInfo& aOther) const
   {
     return mCompositableType == aOther.mCompositableType &&
-           mTextureHostFlags == aOther.mTextureHostFlags &&
+           mDeprecatedTextureHostFlags == aOther.mDeprecatedTextureHostFlags &&
            mTextureFlags == aOther.mTextureFlags;
   }
 };
@@ -144,6 +157,15 @@ struct TextureInfo
 enum OpenMode {
   OPEN_READ_ONLY,
   OPEN_READ_WRITE
+};
+
+// The kinds of mask texture a shader can support
+// We rely on the items in this enum being sequential
+enum MaskType {
+  MaskNone = 0,   // no mask layer
+  Mask2d,         // mask layer for layers with 2D transforms
+  Mask3d,         // mask layer for layers with 3D transforms
+  NumMaskTypes
 };
 
 } // namespace layers

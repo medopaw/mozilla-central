@@ -698,11 +698,10 @@ nsDocumentViewer::InitPresentationStuff(bool aDoInitialReflow)
   NS_ENSURE_SUCCESS(rv, rv);
 
   // Now make the shell for the document
-  rv = mDocument->CreateShell(mPresContext, mViewManager, styleSet,
-                              getter_AddRefs(mPresShell));
-  if (NS_FAILED(rv)) {
+  mPresShell = mDocument->CreateShell(mPresContext, mViewManager, styleSet);
+  if (!mPresShell) {
     delete styleSet;
-    return rv;
+    return NS_ERROR_FAILURE;
   }
 
   // We're done creating the style set
@@ -1542,12 +1541,6 @@ nsDocumentViewer::Destroy()
         nsView *rootView = vm->GetRootView();
 
         if (rootView) {
-          // The invalidate that removing this view causes is dropped because
-          // the Freeze call above sets painting to be suppressed for our
-          // document. So we do it ourselves and make it happen.
-          vm->InvalidateViewNoSuppression(rootView,
-            rootView->GetBounds() - rootView->GetPosition());
-
           nsView *rootViewParent = rootView->GetParent();
           if (rootViewParent) {
             nsViewManager *parentVM = rootViewParent->GetViewManager();
@@ -2793,6 +2786,11 @@ SetExtResourceFullZoom(nsIDocument* aDocument, void* aClosure)
 NS_IMETHODIMP
 nsDocumentViewer::SetTextZoom(float aTextZoom)
 {
+  // If we don't have a document, then we need to bail.
+  if (!mDocument) {
+    return NS_ERROR_FAILURE;
+  }
+
   if (GetIsPrintPreview()) {
     return NS_OK;
   }
@@ -2830,6 +2828,11 @@ nsDocumentViewer::GetTextZoom(float* aTextZoom)
 NS_IMETHODIMP
 nsDocumentViewer::SetMinFontSize(int32_t aMinFontSize)
 {
+  // If we don't have a document, then we need to bail.
+  if (!mDocument) {
+    return NS_ERROR_FAILURE;
+  }
+
   if (GetIsPrintPreview()) {
     return NS_OK;
   }
@@ -2894,6 +2897,11 @@ nsDocumentViewer::SetFullZoom(float aFullZoom)
     return NS_OK;
   }
 #endif
+
+  // If we don't have a document, then we need to bail.
+  if (!mDocument) {
+    return NS_ERROR_FAILURE;
+  }
 
   mPageZoom = aFullZoom;
 

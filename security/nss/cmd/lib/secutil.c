@@ -494,7 +494,8 @@ SECU_GetClientAuthData(void *arg, PRFileDesc *fd,
 }
 
 SECStatus
-SECU_ReadDERFromFile(SECItem *der, PRFileDesc *inFile, PRBool ascii)
+SECU_ReadDERFromFile(SECItem *der, PRFileDesc *inFile, PRBool ascii,
+		     PRBool warnOnPrivateKeyInAsciiFile)
 {
     SECStatus rv;
     if (ascii) {
@@ -512,6 +513,11 @@ SECU_ReadDERFromFile(SECItem *der, PRFileDesc *inFile, PRBool ascii)
 	    return SECFailure;
 	}
 
+	if (warnOnPrivateKeyInAsciiFile && strstr(asc, "PRIVATE KEY")) {
+	    fprintf(stderr, "Warning: ignoring private key. Consider to use "
+	                    "pk12util.\n");
+	}
+
 	/* check for headers and trailers and remove them */
 	if ((body = strstr(asc, "-----BEGIN")) != NULL) {
 	    char *trailer = NULL;
@@ -521,16 +527,16 @@ SECU_ReadDERFromFile(SECItem *der, PRFileDesc *inFile, PRBool ascii)
 		body = PORT_Strchr(asc, '\r'); /* maybe this is a MAC file */
 	    if (body)
 		trailer = strstr(++body, "-----END");
-	    if (trailer != NULL)
+	    if (trailer != NULL) {
 		*trailer = '\0';
-	    if (!body || !trailer) {
+	    } else {
 		fprintf(stderr, "input has header but no trailer\n");
 		PORT_Free(filedata.data);
 		return SECFailure;
 	    }
 	} else {
 	    /* need one additional byte for zero terminator */
-	    rv = SECITEM_ReallocItem(NULL, &filedata, filedata.len, filedata.len+1);
+	    rv = SECITEM_ReallocItemV2(NULL, &filedata, filedata.len+1);
 	    if (rv != SECSuccess) {
 		PORT_Free(filedata.data);
 		return rv;
@@ -694,7 +700,7 @@ secu_PrintTime(FILE *out, const PRTime time, const char *m, int level)
 void
 SECU_PrintUTCTime(FILE *out, const SECItem *t, const char *m, int level)
 {
-    int64 time;
+    PRTime time;
     SECStatus rv;
 
     rv = DER_UTCTimeToTime(&time, t);
@@ -712,7 +718,7 @@ SECU_PrintUTCTime(FILE *out, const SECItem *t, const char *m, int level)
 void
 SECU_PrintGeneralizedTime(FILE *out, const SECItem *t, const char *m, int level)
 {
-    int64 time;
+    PRTime time;
     SECStatus rv;
 
 
@@ -1132,7 +1138,7 @@ const SEC_ASN1Template secuPBEV2Params[] =
 void
 secu_PrintRSAPSSParams(FILE *out, SECItem *value, char *m, int level)
 {
-    PRArenaPool *pool = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *pool = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     SECStatus rv;
     SECKEYRSAPSSParams param;
     SECAlgorithmID maskHashAlg;
@@ -1196,7 +1202,7 @@ secu_PrintRSAPSSParams(FILE *out, SECItem *value, char *m, int level)
 void
 secu_PrintKDF2Params(FILE *out, SECItem *value, char *m, int level)
 {
-    PRArenaPool *pool = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *pool = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     SECStatus rv;
     secuPBEParams param;
 
@@ -1226,7 +1232,7 @@ secu_PrintKDF2Params(FILE *out, SECItem *value, char *m, int level)
 void
 secu_PrintPKCS5V2Params(FILE *out, SECItem *value, char *m, int level)
 {
-    PRArenaPool *pool = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *pool = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     SECStatus rv;
     secuPBEParams param;
 
@@ -1253,7 +1259,7 @@ secu_PrintPKCS5V2Params(FILE *out, SECItem *value, char *m, int level)
 void
 secu_PrintPBEParams(FILE *out, SECItem *value, char *m, int level)
 {
-    PRArenaPool *pool = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *pool = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     SECStatus rv;
     secuPBEParams param;
 
@@ -1401,7 +1407,7 @@ SECU_PrintDSAPublicKey(FILE *out, SECKEYPublicKey *pk, char *m, int level)
 }
 
 static void
-secu_PrintSubjectPublicKeyInfo(FILE *out, PRArenaPool *arena,
+secu_PrintSubjectPublicKeyInfo(FILE *out, PLArenaPool *arena,
 		       CERTSubjectPublicKeyInfo *i,  char *msg, int level)
 {
     SECKEYPublicKey *pk;
@@ -1451,7 +1457,7 @@ int
 SECU_PrintDumpDerIssuerAndSerial(FILE *out, SECItem *der, char *m,
                                  int level)
 {
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     CERTCertificate *c;
     int rv = SEC_ERROR_NO_MEMORY;
     char *derIssuerB64;
@@ -1508,7 +1514,7 @@ secu_PrintX509InvalidDate(FILE *out, SECItem *value, char *msg, int level)
 {
     SECItem decodedValue;
     SECStatus rv;
-    int64 invalidTime;
+    PRTime invalidTime;
     char *formattedTime = NULL;
 
     decodedValue.data = NULL;
@@ -2192,7 +2198,7 @@ int
 SECU_DecodeAndPrintExtensions(FILE *out, SECItem *any, char *m, int level)
 {
     CERTCertExtension **extensions = NULL;
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     int rv = 0;
 
     if (!arena) 
@@ -2266,7 +2272,7 @@ SECU_PrintCertAttributes(FILE *out, CERTAttribute **attrs, char *m, int level)
 int  /* sometimes a PRErrorCode, other times a SECStatus.  Sigh. */
 SECU_PrintCertificateRequest(FILE *out, SECItem *der, char *m, int level)
 {
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     CERTCertificateRequest *cr;
     int rv = SEC_ERROR_NO_MEMORY;
 
@@ -2300,7 +2306,7 @@ loser:
 int
 SECU_PrintCertificate(FILE *out, const SECItem *der, const char *m, int level)
 {
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     CERTCertificate *c;
     int rv = SEC_ERROR_NO_MEMORY;
     int iv;
@@ -2346,7 +2352,7 @@ loser:
 int
 SECU_PrintSubjectPublicKeyInfo(FILE *out, SECItem *der, char *m, int level)
 {
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     int          rv    = SEC_ERROR_NO_MEMORY;
     CERTSubjectPublicKeyInfo spki;
 
@@ -2373,7 +2379,7 @@ SECU_PrintSubjectPublicKeyInfo(FILE *out, SECItem *der, char *m, int level)
 int
 SECU_PrintPrivateKey(FILE *out, SECItem *der, char *m, int level)
 {
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     SECKEYEncryptedPrivateKeyInfo key;
     int rv = SEC_ERROR_NO_MEMORY;
 
@@ -2795,7 +2801,7 @@ secu_PrintPKCS7SignedAndEnveloped(FILE *out,
 int
 SECU_PrintCrl (FILE *out, SECItem *der, char *m, int level)
 {
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     CERTCrl *c = NULL;
     int rv = SEC_ERROR_NO_MEMORY;
 
@@ -2988,7 +2994,7 @@ SECU_PrintTrustFlags(FILE *out, CERTCertTrust *trust, char *m, int level)
 
 int SECU_PrintDERName(FILE *out, SECItem *der, const char *m, int level)
 {
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     CERTName *name;
     int rv = SEC_ERROR_NO_MEMORY;
 
@@ -3019,7 +3025,7 @@ secu_PrintSignedDataSigOpt(FILE *out, SECItem *der, const char *m,
 			   int level, SECU_PPFunc inner,
                            SignatureOptionType withSignature)
 {
-    PRArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    PLArenaPool *arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     CERTSignedData *sd;
     int rv = SEC_ERROR_NO_MEMORY;
 
@@ -3282,7 +3288,7 @@ SECU_SignAndEncodeCRL(CERTCertificate *issuer, CERTSignedCrl *signCrl,
     SECItem der;
     SECKEYPrivateKey *caPrivateKey = NULL;    
     SECStatus rv;
-    PRArenaPool *arena;
+    PLArenaPool *arena;
     SECOidTag algID;
     void *dummy;
 
@@ -3360,7 +3366,7 @@ done:
 
 
 SECStatus
-SECU_CopyCRL(PRArenaPool *destArena, CERTCrl *destCrl, CERTCrl *srcCrl)
+SECU_CopyCRL(PLArenaPool *destArena, CERTCrl *destCrl, CERTCrl *srcCrl)
 {
     void *dummy;
     SECStatus rv = SECSuccess;
@@ -3392,7 +3398,7 @@ SECU_CopyCRL(PRArenaPool *destArena, CERTCrl *destCrl, CERTCrl *srcCrl)
 }
 
 SECStatus
-SECU_DerSignDataCRL(PRArenaPool *arena, CERTSignedData *sd,
+SECU_DerSignDataCRL(PLArenaPool *arena, CERTSignedData *sd,
                     unsigned char *buf, int len, SECKEYPrivateKey *pk,
                     SECOidTag algID)
 {
@@ -3430,7 +3436,7 @@ SECU_DerSignDataCRL(PRArenaPool *arena, CERTSignedData *sd,
 /* we need access to the private function cert_FindExtension for this code to work */
 
 CERTAuthKeyID *
-SECU_FindCRLAuthKeyIDExten (PRArenaPool *arena, CERTSignedCrl *scrl)
+SECU_FindCRLAuthKeyIDExten (PLArenaPool *arena, CERTSignedCrl *scrl)
 {
     SECItem encodedExtenValue;
     SECStatus rv;
@@ -3508,7 +3514,7 @@ SECU_FindCrlIssuer(CERTCertDBHandle *dbhandle, SECItem* subject,
 
 /* Encodes and adds extensions to the CRL or CRL entries. */
 SECStatus 
-SECU_EncodeAndAddExtensionValue(PRArenaPool *arena, void *extHandle, 
+SECU_EncodeAndAddExtensionValue(PLArenaPool *arena, void *extHandle, 
                                 void *value, PRBool criticality, int extenType, 
                                 EXTEN_EXT_VALUE_ENCODER EncodeValueFn)
 {
@@ -3551,7 +3557,7 @@ SECU_FindCertByNicknameOrFilename(CERTCertDBHandle *handle,
         if (!fd) {
             return NULL;
         }
-        rv = SECU_ReadDERFromFile(&item, fd, ascii);
+        rv = SECU_ReadDERFromFile(&item, fd, ascii, PR_FALSE);
         PR_Close(fd);
         if (rv != SECSuccess || !item.len) {
             PORT_Free(item.data);
@@ -3594,6 +3600,10 @@ SECU_GetSSLVersionFromName(const char *buf, size_t bufLen, PRUint16 *version)
     }
     if (!PL_strncasecmp(buf, "tls1.1", bufLen)) {
         *version = SSL_LIBRARY_VERSION_TLS_1_1;
+        return SECSuccess;
+    }
+    if (!PL_strncasecmp(buf, "tls1.2", bufLen)) {
+        *version = SSL_LIBRARY_VERSION_TLS_1_2;
         return SECSuccess;
     }
     PORT_SetError(SEC_ERROR_INVALID_ARGS);

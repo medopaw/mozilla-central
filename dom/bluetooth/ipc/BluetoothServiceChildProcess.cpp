@@ -103,14 +103,6 @@ BluetoothServiceChildProcess::GetDefaultAdapterPathInternal(
 }
 
 nsresult
-BluetoothServiceChildProcess::GetDevicePropertiesInternal(
-                                                 const BluetoothSignal& aSignal)
-{
-  MOZ_NOT_REACHED("Should never be called from child");
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-nsresult
 BluetoothServiceChildProcess::GetConnectedDevicePropertiesInternal(
                                               uint16_t aProfileId,
                                               BluetoothReplyRunnable* aRunnable)
@@ -202,22 +194,22 @@ BluetoothServiceChildProcess::GetScoSocket(
                                     bool aEncrypt,
                                     mozilla::ipc::UnixSocketConsumer* aConsumer)
 {
-  MOZ_NOT_REACHED("This should never be called!");
-  return NS_ERROR_FAILURE;
+  MOZ_CRASH("This should never be called!");
 }
 
 nsresult
-BluetoothServiceChildProcess::GetSocketViaService(
-                                       const nsAString& aObjectPath,
-                                       const nsAString& aService,
-                                       BluetoothSocketType aType,
-                                       bool aAuth,
-                                       bool aEncrypt,
-                                       mozilla::ipc::UnixSocketConsumer* aConsumer,
-                                       BluetoothReplyRunnable* aRunnable)
+BluetoothServiceChildProcess::GetServiceChannel(const nsAString& aDeviceAddress,
+                                                const nsAString& aServiceUuid,
+                                                BluetoothProfileManagerBase* aManager)
 {
-  MOZ_NOT_REACHED("This should never be called!");
-  return NS_ERROR_FAILURE;
+  MOZ_CRASH("This should never be called!");
+}
+
+bool
+BluetoothServiceChildProcess::UpdateSdpRecords(const nsAString& aDeviceAddress,
+                                               BluetoothProfileManagerBase* aManager)
+{
+  MOZ_CRASH("This should never be called!");
 }
 
 bool
@@ -272,13 +264,6 @@ BluetoothServiceChildProcess::SetAuthorizationInternal(
                 DenyAuthorizationRequest(nsString(aDeviceAddress)));
   }
   return true;
-}
-
-nsresult
-BluetoothServiceChildProcess::PrepareAdapterInternal()
-{
-  MOZ_NOT_REACHED("Should never be called from child");
-  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 void
@@ -336,6 +321,24 @@ BluetoothServiceChildProcess::ConfirmReceivingFile(
               DenyReceivingFileRequest(nsString(aDeviceAddress)));
 }
 
+void
+BluetoothServiceChildProcess::ConnectSco(BluetoothReplyRunnable* aRunnable)
+{
+  SendRequest(aRunnable, ConnectScoRequest());
+}
+
+void
+BluetoothServiceChildProcess::DisconnectSco(BluetoothReplyRunnable* aRunnable)
+{
+  SendRequest(aRunnable, DisconnectScoRequest());
+}
+
+void
+BluetoothServiceChildProcess::IsScoConnected(BluetoothReplyRunnable* aRunnable)
+{
+  SendRequest(aRunnable, IsScoConnectedRequest());
+}
+
 nsresult
 BluetoothServiceChildProcess::HandleStartup()
 {
@@ -358,27 +361,30 @@ BluetoothServiceChildProcess::HandleShutdown()
 nsresult
 BluetoothServiceChildProcess::StartInternal()
 {
-  MOZ_NOT_REACHED("This should never be called!");
-  return NS_ERROR_FAILURE;
+  MOZ_CRASH("This should never be called!");
 }
 
 nsresult
 BluetoothServiceChildProcess::StopInternal()
 {
-  MOZ_NOT_REACHED("This should never be called!");
-  return NS_ERROR_FAILURE;
+  MOZ_CRASH("This should never be called!");
 }
 
 bool
 BluetoothServiceChildProcess::IsEnabledInternal()
 {
-  MOZ_NOT_REACHED("This should never be called!");
-  return false;
+  MOZ_CRASH("This should never be called!");
 }
 
 bool
 BluetoothServiceChildProcess::IsConnected(uint16_t aProfileId)
 {
-  MOZ_NOT_REACHED("This should never be called!");
-  return false;
+  MOZ_CRASH("This should never be called!");
+}
+
+nsresult
+BluetoothServiceChildProcess::SendSinkMessage(const nsAString& aDeviceAddresses,
+                                              const nsAString& aMessage)
+{
+  MOZ_CRASH("This should never be called!");
 }

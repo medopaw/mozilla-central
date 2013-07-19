@@ -38,7 +38,7 @@ template <typename T> class FallibleTArray;
  * Note that the gfxContext takes coordinates in device pixels,
  * as opposed to app units.
  */
-class THEBES_API gfxContext {
+class gfxContext {
     NS_INLINE_DECL_REFCOUNTING(gfxContext)
 
 public:
@@ -204,6 +204,7 @@ public:
      * @param snapToPixels ?
      */
     void Rectangle(const gfxRect& rect, bool snapToPixels = false);
+    void SnappedRectangle(const gfxRect& rect) { return Rectangle(rect, true); }
 
     /**
      * Draw an ellipse at the center corner with the given dimensions.
@@ -800,7 +801,7 @@ private:
  * call Save() on a gfxContext and have Restore() called automatically on the
  * gfxContext before they return.
  */
-class THEBES_API gfxContextAutoSaveRestore
+class gfxContextAutoSaveRestore
 {
 public:
   gfxContextAutoSaveRestore() : mContext(nullptr) {}
@@ -842,7 +843,7 @@ private:
  * be the same when Save and Restore are called. The calling function must
  * ensure that this is the case or the path will be copied incorrectly.
  */
-class THEBES_API gfxContextPathAutoSaveRestore
+class gfxContextPathAutoSaveRestore
 {
 public:
     gfxContextPathAutoSaveRestore() : mContext(nullptr) {}
@@ -900,7 +901,7 @@ private:
  * back up the current matrix of a context and have it automatically restored
  * before they return.
  */
-class THEBES_API gfxContextMatrixAutoSaveRestore
+class gfxContextMatrixAutoSaveRestore
 {
 public:
     gfxContextMatrixAutoSaveRestore(gfxContext *aContext) :
@@ -924,7 +925,7 @@ private:
 };
 
 
-class THEBES_API gfxContextAutoDisableSubpixelAntialiasing {
+class gfxContextAutoDisableSubpixelAntialiasing {
 public:
     gfxContextAutoDisableSubpixelAntialiasing(gfxContext *aContext, bool aDisable)
     {

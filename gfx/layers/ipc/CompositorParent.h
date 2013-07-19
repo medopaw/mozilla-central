@@ -55,6 +55,7 @@ public:
   virtual bool RecvResume() MOZ_OVERRIDE;
   virtual bool RecvMakeSnapshot(const SurfaceDescriptor& aInSnapshot,
                                 SurfaceDescriptor* aOutSnapshot);
+  virtual bool RecvFlushRendering() MOZ_OVERRIDE;
 
   virtual void ActorDestroy(ActorDestroyReason why) MOZ_OVERRIDE;
 
@@ -72,8 +73,6 @@ public:
   void Destroy();
 
   LayerManagerComposite* GetLayerManager() { return mLayerManager; }
-
-  void SetTransformation(float aScale, nsIntPoint aScrollOffset);
 
   void AsyncRender();
 
@@ -163,12 +162,21 @@ public:
    */
   static const LayerTreeState* GetIndirectShadowTree(uint64_t aId);
 
+  /**
+   * Tell all CompositorParents to update their last refresh to aTime and sample
+   * animations at this time stamp.  If aIsTesting is true, the
+   * CompositorParents will become "paused" and continue sampling animations at
+   * this time stamp until this function is called again with aIsTesting set to
+   * false.
+   */
+  static void SetTimeAndSampleAnimations(TimeStamp aTime, bool aIsTesting);
+
 protected:
   virtual PLayerTransactionParent*
-    AllocPLayerTransaction(const LayersBackend& aBackendHint,
-                           const uint64_t& aId,
-                           TextureFactoryIdentifier* aTextureFactoryIdentifier);
-  virtual bool DeallocPLayerTransaction(PLayerTransactionParent* aLayers);
+    AllocPLayerTransactionParent(const LayersBackend& aBackendHint,
+                                 const uint64_t& aId,
+                                 TextureFactoryIdentifier* aTextureFactoryIdentifier);
+  virtual bool DeallocPLayerTransactionParent(PLayerTransactionParent* aLayers);
   virtual void ScheduleTask(CancelableTask*, int);
   virtual void Composite();
   virtual void ComposeToTarget(gfxContext* aTarget);
@@ -233,6 +241,8 @@ private:
   nsIWidget* mWidget;
   CancelableTask *mCurrentCompositeTask;
   TimeStamp mLastCompose;
+  TimeStamp mTestTime;
+  bool mIsTesting;
 #ifdef COMPOSITOR_PERFORMANCE_WARNING
   TimeStamp mExpectedComposeTime;
 #endif

@@ -9,7 +9,7 @@
 #define xptiprivate_h___
 
 #include "nscore.h"
-#include NEW_H
+#include <new>
 #include "nsISupports.h"
 
 // this after nsISupports, to pick up IID
@@ -199,7 +199,7 @@ public:
     bool EnsureResolved()
         {return IsFullyResolved() ? true : Resolve();}
 
-    nsresult GetInterfaceInfo(xptiInterfaceInfo** info);
+    already_AddRefed<xptiInterfaceInfo> InterfaceInfo();
     bool     InterfaceInfoEquals(const xptiInterfaceInfo* info) const 
         {return info == mInfo;}
     
