@@ -5,17 +5,14 @@
 function test() {
 
   waitForExplicitFinish();
-  Services.prefs.setBoolPref("interests.navigator.enabled", true);
-  Services.prefs.setBoolPref("interests.enabled", true);
   Services.prefs.setCharPref("interests.userDomainWhitelist", "mochi.test");
-
 
   let windowsToClose = [];
   let tabsToClose = [];
   let unPrivilegedPage =
-    "http://example.com/tests/toolkit/components/places/tests/browser/video-games.html";
+    "http://example.com/tests/toolkit/components/interests/tests/browser/video-games.html";
   let whitelistedPage =
-    "http://mochi.test:8888/tests/toolkit/components/places/tests/browser/cars.html";
+    "http://mochi.test:8888/tests/toolkit/components/interests/tests/browser/cars.html";
 
   registerCleanupFunction(function() {
     windowsToClose.forEach(function(aWin) {
@@ -55,10 +52,10 @@ function test() {
         ok(error != null, "correctly see error when accessing getInterests from an unprivileged page");
       });
       aWindow.content.navigator.interests.getTopInterests(5).then(ints => {
-        // we should see two interest - "cars" and "technology"
-        is(ints.length,5,"array of ints must be 2 ints");
-        ok(ints[0].name == "cars" ||  ints[0].name == "technology", "first interest must be cars or technology please");
-        ok(ints[1].name == "cars" ||  ints[1].name == "technology", "second interest must be cars or technology please");
+        // we should see two interest - "cars" and "games"
+        is(ints.length,5,"array must be of size 5");
+        ok(ints[0].name == "cars" ||  ints[0].name == "games", "first interest must be cars or games please, not " + ints[0].name);
+        ok(ints[1].name == "cars" ||  ints[1].name == "games", "second interest must be cars or games please, not " + ints[1].name);
         promiseClearHistoryAndInterests().then(finish);
       },
       error => {
@@ -78,7 +75,7 @@ function test() {
       windowsToClose.push(aWindow);
       is(aWindow.content.location.href, whitelistedPage, "must be a whitelisted page");
       aWindow.content.navigator.interests.getInterests(["cars"]).then(ints => {
-        is(ints.length,1,"array of ints must be 1 int");
+        is(ints.length,1,"array must be of size 1");
         ok(ints[0].name == "cars", "interest must be cars");
         promiseClearHistoryAndInterests().then(finish);
       },
@@ -86,10 +83,10 @@ function test() {
         of(false, "interests must be accessible in whitelisted page");
       });
       aWindow.content.navigator.interests.getTopInterests(6).then(ints => {
-        // we should see two interest - "technology" and "cars"
-        is(ints.length,6,"array of ints must be 2 ints");
-        ok(ints[0].name == "cars" || ints[0].name == "technology", "first interest must be cars or technology please");
-        ok(ints[1].name == "cars" ||  ints[1].name == "technology", "second interest must be cars or technology please");
+        // we should see two interest - "games" and "cars"
+        is(ints.length,6,"array must be of size 6");
+        ok(ints[0].name == "cars" || ints[0].name == "games", "first interest must be cars or games please, not " + ints[0].name);
+        ok(ints[1].name == "cars" ||  ints[1].name == "games", "second interest must be cars or games please, not " + ints[1].name);
         promiseClearHistoryAndInterests().then(finish);
       },
       error => {
@@ -153,10 +150,11 @@ function test() {
   Services.obs.addObserver(observer, "interest-visit-saved", false);
 
   // load two tabs with initial and final urls in them
-  promiseAddInterest("video_games").then(() =>
-    promiseAddInterest("cars").then(() => {
-      tabsToClose.push(gBrowser.addTab(unPrivilegedPage));
-      tabsToClose.push(gBrowser.addTab(whitelistedPage));
-    }) // end of "cars" then
-  ); // end of "video_games then
+  Task.spawn(function() {
+    yield iServiceObject._initInterestMeta();
+    yield promiseAddInterest("games");
+    yield promiseAddInterest("cars");
+    tabsToClose.push(gBrowser.addTab(unPrivilegedPage));
+    tabsToClose.push(gBrowser.addTab(whitelistedPage));
+  });
 } // end of test
