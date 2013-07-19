@@ -10,9 +10,9 @@ function test() {
 
   let windowsToClose = [];
   let initialURL =
-    "http://example.com/tests/toolkit/components/places/tests/browser/video-games.html";
+    "http://example.com/tests/toolkit/components/interests/tests/browser/video-games.html";
   let finalURL =
-    "http://example.com/tests/toolkit/components/places/tests/browser/cars.html";
+    "http://example.com/tests/toolkit/components/interests/tests/browser/cars.html";
 
   // This function is called after calling finish() on the test.
   registerCleanupFunction(function() {
