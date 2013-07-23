@@ -11,7 +11,7 @@ Cu.import("resource://gre/modules/Preferences.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 
-const interestService = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
+const interestService = Cc["@mozilla.org/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 const prefs = new Preferences("interests.");
 const kPrefEnabled = "interests.enabled";
 const kPermChanged = "perm-changed";

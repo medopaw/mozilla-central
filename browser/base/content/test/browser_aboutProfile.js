@@ -84,7 +84,7 @@ function test()
       test.setup();
 
       // initialize interest metadata
-      let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
+      let iServiceObject = Cc["@mozilla.org/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
       yield iServiceObject._initInterestMeta();
       yield promiseWaitForMetadataInit();
 

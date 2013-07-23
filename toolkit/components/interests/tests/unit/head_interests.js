@@ -20,7 +20,7 @@ let (commonFile = do_get_file("../../../places/tests/head_common.js", false)) {
   Services.scriptloader.loadSubScript(uri.spec, this);
 }
 
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
+let iServiceObject = Cc["@mozilla.org/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 
 // Put any other stuff relative to this test folder below.
 
