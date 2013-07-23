@@ -16,6 +16,19 @@ EXPORT_LIBRARY = 1
 
 LOCAL_INCLUDES += -I$(srcdir)/../build
 
+EXTRA_COMPONENTS = \
+  toolkitinterests.manifest \
+  Interests.js \
+  $(NULL)
+
+EXTRA_JS_MODULES = \
+  PlacesInterestsStorage.jsm \
+  InterestsDatabase.jsm \
+  $(NULL)
+
+EXTRA_PP_JS_MODULES = \
+  $(NULL)
+
 include $(topsrcdir)/config/config.mk
 
 endif

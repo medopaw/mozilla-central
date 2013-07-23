@@ -13,7 +13,7 @@ const {classes: Cc, interfaces: Ci, results: Cr, utils: Cu} = Components;
 
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
+Cu.import("resource://gre/modules/InterestsDatabase.jsm");
 
 const MS_PER_DAY = 86400000;
 
@@ -504,31 +504,6 @@ let PlacesInterestsStorage = {
         sql = sql.replace(":" + listName, listIdentifiers, "g");
       });
     }
-
-    // Initialize the statement cache and the callback to clean it up
-    if (this._cachedStatements == null) {
-      this._cachedStatements = {};
-      PlacesUtils.registerShutdownFunction(() => {
-        Object.keys(this._cachedStatements).forEach(key => {
-          this._cachedStatements[key].finalize();
-        });
-      });
-    }
-
-    // Use a cached version of the statement if handy; otherwise created it
-    let statement = this._cachedStatements[sql];
-    if (statement == null) {
-      statement = this._db.createAsyncStatement(sql);
-      this._cachedStatements[sql] = statement;
-    }
-
-    // Bind params if we have any
-    if (params != null) {
-      Object.keys(params).forEach(param => {
-        statement.bindByName(param, params[param]);
-      });
-    }
-
     // Determine the type of result as nothing, a keyed object or array of columns
     let results;
     if (onRow != null) {}
@@ -538,54 +513,42 @@ let PlacesInterestsStorage = {
     else if (columns != null) {
       results = [];
     }
-
-    // Execute the statement and update the promise accordingly
-    let deferred = Promise.defer();
-    statement.executeAsync({
-      handleCompletion: reason => {
-        deferred.resolve(results);
-      },
-
-      handleError: error => {
-        deferred.reject(new Error(error.message));
-      },
-
-      handleResult: resultSet => {
-        let row;
-        while (row = resultSet.getNextRow()) {
-          // Read out the desired columns from the row into an object
-          let result;
-          if (columns != null) {
-            // For just a single column, make the result that column
-            if (columns.length == 1) {
-              result = row.getResultByName(columns[0]);
-            }
-            // For multiple columns, put as valyes on an object
-            else {
-              result = {};
-              columns.forEach(column => {
-                result[column] = row.getResultByName(column);
-              });
-            }
+    // get a hold of interests database connection (it's Sqlite.jsm connection)
+    return InterestsDatabase.DBConnectionPromise.then(connection => {
+      // execute cached sql statement
+      return connection.executeCached(sql, params, function (row) {
+        // Read out the desired columns from the row into an object
+        let result;
+        if (columns != null) {
+          // For just a single column, make the result that column
+          if (columns.length == 1) {
+            result = row.getResultByName(columns[0]);
           }
-
-          // Give the packaged result to the handler
-          if (onRow != null) {
-            onRow(result);
-          }
-          // Store the result keyed on the result key
-          else if (key != null) {
-            results[row.getResultByName(key)] = result;
-          }
-          // Append the result in order
-          else if (columns != null) {
-            results.push(result);
+          // For multiple columns, put as valyes on an object
+          else {
+            result = {};
+            columns.forEach(column => {
+              result[column] = row.getResultByName(column);
+            });
           }
         }
-      }
-    });
 
-    return deferred.promise;
+        // Give the packaged result to the handler
+        if (onRow != null) {
+          onRow(result);
+        }
+        // Store the result keyed on the result key
+        else if (key != null) {
+          results[row.getResultByName(key)] = result;
+        }
+        // Append the result in order
+        else if (columns != null) {
+          results.push(result);
+        }
+      }).then(() => {
+        return results;
+      });
+    });
   },
 
   /**
@@ -607,6 +570,3 @@ let PlacesInterestsStorage = {
   },
 }
 
-XPCOMUtils.defineLazyGetter(PlacesInterestsStorage, "_db", function() {
-  return PlacesUtils.history.QueryInterface(Ci.nsPIPlacesDatabase).DBConnection;
-});

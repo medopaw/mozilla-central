@@ -23,23 +23,10 @@ add_task(function checkSequentialIds() {
   yield addInterest("shopping");
 
   // Explicitly query for the id because it's not exposed through APIs
-  let stmt = PlacesInterestsStorage._db.createStatement(
-    "SELECT id, interest FROM moz_interests ORDER BY id ASC");
-
-  try {
-    stmt.executeStep();
-    do_check_eq(stmt.row.id, 1);
-    do_check_eq(stmt.row.interest, "cars");
-
-    stmt.executeStep();
-    do_check_eq(stmt.row.id, 2);
-    do_check_eq(stmt.row.interest, "sports");
-
-    stmt.executeStep();
-    do_check_eq(stmt.row.id, 3);
-    do_check_eq(stmt.row.interest, "shopping");
-  }
-  finally {
-    stmt.finalize();
-  }
+  yield PlacesInterestsStorage._execute(
+    "SELECT id, interest FROM moz_interests ORDER BY id ASC",
+    {columns: ["id", "interest"]}
+  ).then(results => {
+    isIdentical([{"id":1,"interest":"cars"},{"id":2,"interest":"sports"},{"id":3,"interest":"shopping"}], results);
+  });
 });
