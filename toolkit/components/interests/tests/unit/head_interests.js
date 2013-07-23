@@ -146,6 +146,19 @@ function addInterestVisitsToSite(site,interest,count) {
   return Promise.promised(Array)(promises).then();
 }
 
+function bulkAddInterestVisitsToSite(data) {
+  let visitObjects = [];
+  data.forEach(object => {
+    visitObjects.push({
+      url: object.url,
+      interests: object.interests,
+      count: object.count || 1,
+      daysAgo: object.daysAgo || 0
+    });
+  });
+  return promiseAddMultipleUrlInterestsVisits(visitObjects);
+}
+
 function promiseAddVisitsWithRefresh(urls) {
   let uriArray = urls.map(url => {
     return promiseAddVisits(NetUtil.newURI(url));

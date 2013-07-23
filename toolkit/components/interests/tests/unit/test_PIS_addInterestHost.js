@@ -61,11 +61,23 @@ add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
   yield promiseClearHistory();
   yield clearInterestsHosts();
 
+  let sitesData = [];
+  function pushSite(site,interest,count) {
+    for (let i=0; i<count; i++) {
+      sitesData.push({
+        url: site,
+        interests: interest,
+      });
+    }
+  };
+
   for (let i = 1; i <= 210; i++) {
     let site = "http://" + i + ".site.com";
-    if (i<=200) yield addInterestVisitsToSite(site,"cars",2);
-    else        yield addInterestVisitsToSite(site,"cars",1);
+    if (i<=200) pushSite(site,"cars",2);
+    else        pushSite(site,"cars",1);
   }
+
+  yield bulkAddInterestVisitsToSite(sitesData);
 
   // moz_hosts table now looks like this
   // id|name|frecency
