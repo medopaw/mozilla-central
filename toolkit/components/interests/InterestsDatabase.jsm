@@ -144,11 +144,12 @@ let InterestsDatabase = {
    * @returns Promise of the task completion
    */
   _dbInit : function ID__dbInit(connection) {
-    let version = connection.schemaVersion;
-    if (version == 0)
-      return this._dbCreate(connection);
-    else if(version != DB_VERSION)
-      return this._dbMigrate(connection,version);
+    return connection.getSchemaVersion().then(version => {
+      if (version == 0)
+        return this._dbCreate(connection);
+      else if(version != DB_VERSION)
+        return this._dbMigrate(connection,version);
+    });
   },
 
   /*
@@ -171,7 +172,7 @@ let InterestsDatabase = {
               "(" + index.columns.join(", ") + ")";
       promises.push(connection.execute(statement));
     }
-    connection.schemaVersion = DB_VERSION;
+    promises.push(connection.setSchemaVersion(DB_VERSION));
     return Promise.promised(Array)(promises).then();
   },
 
