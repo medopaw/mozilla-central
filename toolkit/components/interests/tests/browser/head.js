@@ -7,7 +7,7 @@ const Ci = Components.interfaces;
 const Cc = Components.classes;
 const Cr = Components.results;
 const Cu = Components.utils;
-let iServiceObject = Cc["@mozilla.org/places/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
+let iServiceObject = Cc["@mozilla.org/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 Services.prefs.setBoolPref("interests.enabled", true);
 Services.prefs.setBoolPref("interests.navigator.enabled", true);
 
