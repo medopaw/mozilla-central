@@ -13,6 +13,7 @@ if CONFIG['MOZ_PLACES']:
     ]
 
     EXTRA_JS_MODULES = [
+        'InterestsDatabase.jsm',
         'PlacesInterestsStorage.jsm',
     ]
 
