@@ -245,6 +245,7 @@
 @BINPATH@/components/imglib2.xpt
 @BINPATH@/components/imgicon.xpt
 @BINPATH@/components/inspector.xpt
+@BINPATH@/components/interests.xpt
 @BINPATH@/components/intl.xpt
 @BINPATH@/components/jar.xpt
 #ifdef MOZ_JSDEBUGGER

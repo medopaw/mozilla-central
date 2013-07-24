@@ -4,23 +4,20 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-if CONFIG['MOZ_PLACES']:
-    TEST_DIRS += ['tests']
+EXTRA_COMPONENTS += [
+    'Interests.js',
+    'toolkitinterests.manifest',
+]
 
-if CONFIG['MOZ_PLACES']:
-    XPIDL_SOURCES += [
-        'mozIInterestsWebAPI.idl',
-    ]
-
-    EXTRA_JS_MODULES = [
-        'InterestsDatabase.jsm',
-        'PlacesInterestsStorage.jsm',
-    ]
+EXTRA_JS_MODULES = [
+    'InterestsDatabase.jsm',
+    'PlacesInterestsStorage.jsm',
+]
 
 MODULE = 'interests'
 
-if CONFIG['MOZ_PLACES']:
-    EXTRA_COMPONENTS += [
-        'Interests.js',
-        'toolkitinterests.manifest',
-    ]
+TEST_DIRS += ['tests']
+
+XPIDL_SOURCES += [
+    'mozIInterestsWebAPI.idl',
+]
