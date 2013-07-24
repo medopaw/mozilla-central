@@ -13,7 +13,7 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsUtils.jsm");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
@@ -79,7 +79,7 @@ Interests.prototype = {
    * @returns Promise with interests sorted by score
    */
   getInterestsByNames: function I_getInterestsByNames(names, options={}) {
-    return this._packageInterests(PlacesInterestsStorage.
+    return this._packageInterests(InterestsStorage.
       getScoresForInterests(names, options), options);
   },
 
@@ -91,7 +91,7 @@ Interests.prototype = {
    * @returns Promise with interests sorted by score
    */
   getInterestsByNamespace: function I_getInterestsByNamespace(namespace, options={}) {
-    return this._packageInterests(PlacesInterestsStorage.
+    return this._packageInterests(InterestsStorage.
       getScoresForNamespace(namespace, options), options);
   },
 
@@ -104,7 +104,7 @@ Interests.prototype = {
     this._ResubmitRecentHistoryDeferred = Promise.defer();
     this._ResubmitRecentHistoryUrlCount = 0;
     // clean interest tables first
-    PlacesInterestsStorage.clearRecentVisits(daysBack).then(() => {
+    InterestsStorage.clearRecentVisits(daysBack).then(() => {
       // read moz_places data and massage it
       PlacesInterestsUtils.getRecentHistory(daysBack, item => {
         try {
@@ -151,7 +151,7 @@ Interests.prototype = {
    * @returns Promise with domains + corresponding interests
    */
   getRequestingHosts: function I_getRequestingHosts(daysBack) {
-    return PlacesInterestsStorage.getPersonalizedHosts(daysBack).then(results => {
+    return InterestsStorage.getPersonalizedHosts(daysBack).then(results => {
       let hostsData = {};
       let hostsList = [];
       // hosts come in order
@@ -263,8 +263,8 @@ Interests.prototype = {
     let addVisitPromises = [];
     for (let interest of aInterests) {
       // we need to wait until interest is added to the inerestes table
-      addVisitPromises.push(PlacesInterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
-      addVisitPromises.push(PlacesInterestsStorage.addInterestHost(interest, aHost));
+      addVisitPromises.push(InterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
+      addVisitPromises.push(InterestsStorage.addInterestHost(interest, aHost));
     }
     Promise.promised(Array)(addVisitPromises).then(results => {
       deferred.resolve(results);
@@ -291,9 +291,9 @@ Interests.prototype = {
       // Pass on the scores and add on interest, diversity and bucket data
       return [
         sortedInterests,
-        PlacesInterestsStorage.getInterests(names),
-        PlacesInterestsStorage.getDiversityForInterests(names, options),
-        PlacesInterestsStorage.getBucketsForInterests(names, options),
+        InterestsStorage.getInterests(names),
+        InterestsStorage.getDiversityForInterests(names, options),
+        InterestsStorage.getBucketsForInterests(names, options),
       ];
     // Wait for all the promises to finish then combine the data
     }).then(gatherPromises).then(([interests, meta, diversity, buckets]) => {
@@ -347,7 +347,7 @@ Interests.prototype = {
       // call setSharedInterest for each interest being returned to caller
       let promises = [];
       interests.forEach(interest => {
-        promises.push(PlacesInterestsStorage.setSharedInterest(interest.name,requestingHost));
+        promises.push(InterestsStorage.setSharedInterest(interest.name,requestingHost));
       });
 
       // return promise to wait until insertions complete, and resolve it to the interests
@@ -358,13 +358,13 @@ Interests.prototype = {
   },
 
   _setIgnoredForInterest: function I__setIgnoredForInterest(interest) {
-    return PlacesInterestsStorage.setInterest(interest, {
+    return InterestsStorage.setInterest(interest, {
       sharable: false
     });
   },
 
   _unsetIgnoredForInterest: function I__setIgnoredForInterest(interest) {
-    return PlacesInterestsStorage.setInterest(interest, {
+    return InterestsStorage.setInterest(interest, {
       sharable: true
     });
   },
@@ -423,7 +423,7 @@ Interests.prototype = {
     let promises = [];
 
     kInterests.forEach(item => {
-      promises.push(PlacesInterestsStorage.setInterest(item, {
+      promises.push(InterestsStorage.setInterest(item, {
         duration: 14,
         threshold: 100,
       }));
@@ -449,7 +449,7 @@ Interests.prototype = {
     return PlacesInterestsUtils.getMostFrecentHosts().then(results => {
       let promises = [];
       results.forEach(item => {
-        promises.push(PlacesInterestsStorage.addFrecentHost(item.id,item.host,item.frecency));
+        promises.push(InterestsStorage.addFrecentHost(item.id,item.host,item.frecency));
       });
       return gatherPromises(promises).then();
     });
@@ -496,7 +496,7 @@ Interests.prototype = {
     }
     else if (aTopic == kPlacesInitComplete) {
       // initialize interest metadata if need be
-      PlacesInterestsStorage.getInterests(["arts"]).then(results => {
+      InterestsStorage.getInterests(["arts"]).then(results => {
         if (Object.keys(results).length == 0) {
           this._initInterestMeta();
         }
@@ -575,7 +575,7 @@ Interests.prototype = {
         interestList.push(interests[i].name);
       }
 
-      return PlacesInterestsStorage.getRecentHostsForInterests(interestList, 14);
+      return InterestsStorage.getRecentHostsForInterests(interestList, 14);
     });
 
     // gather and package the data promises
@@ -604,7 +604,7 @@ Interests.prototype = {
   // Set Interest Sharability metadata
   setInterestSharable: function I_setInterestSharable(interest, value) {
     value = value ? 1 : 0;
-    return PlacesInterestsStorage.setInterest(interest, {sharable: value});
+    return InterestsStorage.setInterest(interest, {sharable: value});
   },
 
   //////////////////////////////////////////////////////////////////////////////

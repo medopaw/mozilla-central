@@ -11,7 +11,7 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/NetUtil.jsm");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 
 // Import common head.
@@ -39,20 +39,20 @@ const MICROS_PER_DAY = 86400000000;
 const DEFAULT_DURATION = 14;
 const DEFAULT_THRESHOLD = 5;
 function addInterest(interest) {
-  return PlacesInterestsStorage.setInterest(interest, {
+  return InterestsStorage.setInterest(interest, {
     duration: DEFAULT_DURATION,
     threshold: DEFAULT_THRESHOLD,
   });
 }
 
 function clearInterestsHosts() {
-  return PlacesInterestsStorage._execute(
+  return InterestsStorage._execute(
     "DELETE FROM moz_interests_hosts"
   );
 }
 
 function getHostsForInterest(interest) {
-  return PlacesInterestsStorage._execute(
+  return InterestsStorage._execute(
     "SELECT h.host AS host FROM moz_interests_frecent_hosts h, moz_interests i, moz_interests_hosts ih " +
     "WHERE i.interest = :interest AND h.id = ih.host_id AND i.id = ih.interest_id", {
     columns: ["host"],
@@ -63,7 +63,7 @@ function getHostsForInterest(interest) {
 }
 
 function getInterestsForHost(host) {
-  return PlacesInterestsStorage._execute(
+  return InterestsStorage._execute(
     "SELECT interest FROM moz_interests i, moz_interests_hosts ih, moz_interests_frecent_hosts h " +
     "WHERE h.host = :host AND h.id = ih.host_id AND i.id = ih.interest_id", {
     columns: ["interest"],
@@ -75,9 +75,9 @@ function getInterestsForHost(host) {
 
 function promiseClearHistoryAndVisits() {
   let promises = [];
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests"));
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests_hosts"));
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests_visits"));
+  promises.push(InterestsStorage._execute("DELETE FROM moz_interests"));
+  promises.push(InterestsStorage._execute("DELETE FROM moz_interests_hosts"));
+  promises.push(InterestsStorage._execute("DELETE FROM moz_interests_visits"));
   promises.push(promiseClearHistory());
   return Promise.promised(Array)(promises).then();
 }
@@ -112,8 +112,8 @@ function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
 
         interests.forEach(function(interest) {
           visitPromises.push(addInterest(interest));
-          visitPromises.push(PlacesInterestsStorage.addInterestVisit(interest, {visitTime: visitTime, visitCount: visitCount}));
-          visitPromises.push(PlacesInterestsStorage.addInterestHost(interest, host));
+          visitPromises.push(InterestsStorage.addInterestVisit(interest, {visitTime: visitTime, visitCount: visitCount}));
+          visitPromises.push(InterestsStorage.addInterestHost(interest, host));
         });
       });
       return Promise.promised(Array)(visitPromises).then();
@@ -134,7 +134,7 @@ function promiseAddInterestVisits(interest,count,daysAgo) {
   let visitPromises = [];
   let now = Date.now();
   visitPromises.push(addInterest(interest));
-  visitPromises.push(PlacesInterestsStorage.addInterestVisit(interest, {visitTime: now - MS_PER_DAY*(daysAgo || 0), visitCount: count || 1}));
+  visitPromises.push(InterestsStorage.addInterestVisit(interest, {visitTime: now - MS_PER_DAY*(daysAgo || 0), visitCount: count || 1}));
   return Promise.promised(Array)(visitPromises).then();
 }
 

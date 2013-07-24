@@ -6,7 +6,7 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
@@ -36,7 +36,7 @@ add_task(function test_AddInterestForHost() {
   });
 
   // attmept to add non-existent site
-  yield PlacesInterestsStorage.addInterestHost("cars","nosuchsite.com").then(function(results) {
+  yield InterestsStorage.addInterestHost("cars","nosuchsite.com").then(function(results) {
     // we should do not have any results
     do_check_true(results == null);
   },
@@ -46,7 +46,7 @@ add_task(function test_AddInterestForHost() {
   });
 
   // attmept to add non-existent interest
-  yield PlacesInterestsStorage.addInterestHost("foobar","cars.com").then(function(results) {
+  yield InterestsStorage.addInterestHost("foobar","cars.com").then(function(results) {
     // we should do not have any results
     do_check_true(results == null);
   },
@@ -57,7 +57,7 @@ add_task(function test_AddInterestForHost() {
 
 });
 
-add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
+add_task(function test_InterestsStorageMostFrecentHosts() {
   yield promiseClearHistory();
   yield clearInterestsHosts();
 
@@ -96,7 +96,7 @@ add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
   });
 
   // attempt to directly add a host that is IN 200 most frrecent
-  yield PlacesInterestsStorage.addInterestHost("cars","1.site.com").then(function(results) {
+  yield InterestsStorage.addInterestHost("cars","1.site.com").then(function(results) {
     // we should do not have any results
     do_check_true(results == null);
   },
@@ -111,7 +111,7 @@ add_task(function test_PlacesInterestsStorageMostFrecentHosts() {
   });
 
   // attempt to directly add a host that is NOT IN 200 most frrecent
-  yield PlacesInterestsStorage.addInterestHost("cars","209.site.com").then(function(results) {
+  yield InterestsStorage.addInterestHost("cars","209.site.com").then(function(results) {
     // we should do not have any results
     do_check_true(results == null);
   },

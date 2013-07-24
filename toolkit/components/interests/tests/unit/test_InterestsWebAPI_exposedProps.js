@@ -6,7 +6,7 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI);
 
@@ -16,8 +16,8 @@ function run_test() {
 
 add_task(function test_getTopInterests_exposedProps() {
   yield addInterest("cars");
-  yield PlacesInterestsStorage.setInterest("cars", {threshold: 1});
-  yield PlacesInterestsStorage.addInterestVisit("cars");
+  yield InterestsStorage.setInterest("cars", {threshold: 1});
+  yield InterestsStorage.addInterestVisit("cars");
 
   // Create a content sandbox and a helper to evaluate in the sandbox
   let sandbox = Cu.Sandbox("http://www.example.com");

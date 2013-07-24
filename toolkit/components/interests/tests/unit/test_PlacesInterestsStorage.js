@@ -6,13 +6,13 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
 }
 
-add_task(function test_PlacesInterestsStorage()
+add_task(function test_InterestsStorage()
 {
   yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","movies","shopping"], 2);
   yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "consumer-electronics");
@@ -32,11 +32,11 @@ add_task(function test_PlacesInterestsStorage()
   });
 
   // make sure we are getting correct counts in the buckets
-  yield PlacesInterestsStorage.getBucketsForInterests(["computers"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["computers"]).then(function(results) {
     do_check_eq(results.computers.immediate , 1);
   });
 
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate, 2);
   });
 

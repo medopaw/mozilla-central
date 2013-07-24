@@ -6,7 +6,7 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
@@ -18,17 +18,17 @@ add_task(function test_checkSharable()
   yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
 
   // Sanity check that diversity is computed for both
-  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"]).then(function(results) {
+  yield InterestsStorage.getDiversityForInterests(["computers","movies"]).then(function(results) {
     do_check_eq(results["computers"] , 50);
     do_check_eq(results["movies"] , 50);
   });
-  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"], {
+  yield InterestsStorage.getDiversityForInterests(["computers","movies"], {
     checkSharable: true,
   }).then(function(results) {
     do_check_eq(results["computers"] , 50);
     do_check_eq(results["movies"] , 50);
   });
-  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"], {
+  yield InterestsStorage.getDiversityForInterests(["computers","movies"], {
     checkSharable: false,
   }).then(function(results) {
     do_check_eq(results["computers"] , 50);
@@ -36,14 +36,14 @@ add_task(function test_checkSharable()
   });
 
   // Unshare one interest with no change
-  yield PlacesInterestsStorage.setInterest("movies", {sharable: false});
-  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"]).then(function(results) {
+  yield InterestsStorage.setInterest("movies", {sharable: false});
+  yield InterestsStorage.getDiversityForInterests(["computers","movies"]).then(function(results) {
     do_check_eq(results["computers"] , 50);
     do_check_eq(results["movies"] , 50);
   });
 
   // Explicitly factor in the sharability
-  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"], {
+  yield InterestsStorage.getDiversityForInterests(["computers","movies"], {
     checkSharable: true,
   }).then(function(results) {
     do_check_eq(results["computers"] , 50);
@@ -51,7 +51,7 @@ add_task(function test_checkSharable()
   });
 
   // Sanity check with explicit false check
-  yield PlacesInterestsStorage.getDiversityForInterests(["computers","movies"], {
+  yield InterestsStorage.getDiversityForInterests(["computers","movies"], {
     checkSharable: false,
   }).then(function(results) {
     do_check_eq(results["computers"] , 50);
@@ -59,7 +59,7 @@ add_task(function test_checkSharable()
   });
 });
 
-add_task(function test_PlacesInterestsStorageGetDiversity()
+add_task(function test_InterestsStorageGetDiversity()
 {
   yield promiseClearHistory();
   yield clearInterestsHosts();
@@ -69,19 +69,19 @@ add_task(function test_PlacesInterestsStorageGetDiversity()
   yield promiseAddUrlInterestsVisit("http://www.mozilla.org/", ["cars","computers"]);
   yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
 
-  yield PlacesInterestsStorage.getDiversityForInterests(["cars","computers","movies","shopping"]).then(function(results) {
+  yield InterestsStorage.getDiversityForInterests(["cars","computers","movies","shopping"]).then(function(results) {
     do_check_eq(results["cars"] , 50);
     do_check_eq(results["computers"] , 50);
     do_check_eq(results["movies"] , 25);
     do_check_eq(results["shopping"] , 25);
   });
 
-  yield PlacesInterestsStorage.getDiversityForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getDiversityForInterests(["cars"]).then(function(results) {
     do_check_eq(results["cars"] , 50);
   });
 });
 
-add_task(function test_PlacesInterestsStorageGetDiversityForManyHosts()
+add_task(function test_InterestsStorageGetDiversityForManyHosts()
 {
   yield promiseClearHistory();
   yield clearInterestsHosts();
@@ -109,7 +109,7 @@ add_task(function test_PlacesInterestsStorageGetDiversityForManyHosts()
   // however, shopping should have no entry, since it's sites frecencies will lower
   // 200 previous sites.  Diversity for cars must be = diversity for movies = 50
   // shopping diversity must be 0
-  yield PlacesInterestsStorage.getDiversityForInterests(["cars","computers","movies","shopping"]).then(function(results) {
+  yield InterestsStorage.getDiversityForInterests(["cars","computers","movies","shopping"]).then(function(results) {
     do_check_eq(Object.keys(results).length, 4);
     do_check_eq(results["cars"] , 50);
     do_check_eq(results["movies"] , 50);

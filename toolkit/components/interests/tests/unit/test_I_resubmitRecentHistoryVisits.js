@@ -6,7 +6,7 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
 let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
@@ -20,9 +20,9 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","movies","computers"]);
 
   let myDef = Promise.defer();
-  yield PlacesInterestsStorage.clearRecentVisits(100).then(data => {
+  yield InterestsStorage.clearRecentVisits(100).then(data => {
     // test that interests are all empty
-    PlacesInterestsStorage.getBucketsForInterests(["cars" , "computers","movies"]).then(function(data) {
+    InterestsStorage.getBucketsForInterests(["cars" , "computers","movies"]).then(function(data) {
       myDef.resolve(data);
     });
   });
@@ -55,7 +55,7 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promise1;
 
   // so we have processed the history, let's make sure we get interests back
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(data => {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(data => {
         do_check_eq(data["cars"]["immediate"], 1);
         do_check_eq(data["cars"]["recent"], 2);
         do_check_eq(data["cars"]["past"], 3);
@@ -77,7 +77,7 @@ add_task(function test_ResubmitLocalHostFailure() {
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
   yield iServiceObject.resubmitRecentHistoryVisits(60);
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(data => {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(data => {
         do_check_true(data["cars"] != null);
         do_check_eq(data["cars"]["immediate"], 2);
         do_check_eq(data["cars"]["recent"], 2);

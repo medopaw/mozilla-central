@@ -7,7 +7,7 @@
 "use strict";
 
 //Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 XPCOMUtils.defineLazyServiceGetter(this, "gHistory", "@mozilla.org/browser/history;1", "mozIAsyncHistory");
 
 function run_test() {
@@ -25,21 +25,21 @@ add_task(function test_GetRecentHostsForInterests()
 
   let results;
 
-  results = yield PlacesInterestsStorage.getRecentHostsForInterests(["computers"], 7);
+  results = yield InterestsStorage.getRecentHostsForInterests(["computers"], 7);
   isIdentical([{"interest":"computers","host":"techmeme.com","frecency":100}], results);
   
   /** testing bounds **/
-  results = yield PlacesInterestsStorage.getRecentHostsForInterests(["real-estate"], 13);
+  results = yield InterestsStorage.getRecentHostsForInterests(["real-estate"], 13);
   isIdentical([], results);
  
-  results = yield PlacesInterestsStorage.getRecentHostsForInterests(["real-estate"], 14);
+  results = yield InterestsStorage.getRecentHostsForInterests(["real-estate"], 14);
   isIdentical([{"interest":"real-estate","host":"realtor.com","frecency":100}], results);
 
   /** multi-result **/
-  results = yield PlacesInterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], 7);
+  results = yield InterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], 7);
   isIdentical([{"interest":"computers","host":"techmeme.com","frecency":100}], results);
 
-  results = yield PlacesInterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], 14);
+  results = yield InterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], 14);
   isIdentical([{"interest":"computers","host":"techmeme.com","frecency":100},{"interest":"real-estate","host":"realtor.com","frecency":100}], results);
   
   //TODO: test frecency. need to find a way to update freecency. promiseAsyncUpdates doesn't do it

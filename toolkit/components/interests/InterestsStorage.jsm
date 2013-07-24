@@ -6,7 +6,7 @@
 "use strict";
 
 this.EXPORTED_SYMBOLS = [
-  "PlacesInterestsStorage",
+  "InterestsStorage",
 ];
 
 const {classes: Cc, interfaces: Ci, results: Cr, utils: Cu} = Components;
@@ -171,9 +171,9 @@ const SQL = {
 
 };
 
-let PlacesInterestsStorage = {
+let InterestsStorage = {
   //////////////////////////////////////////////////////////////////////////////
-  //// PlacesInterestsStorage
+  //// InterestsStorage
 
   /**
    * Insert a frecent host (a host among 200 most frecent hosts)
@@ -458,7 +458,7 @@ let PlacesInterestsStorage = {
   },
 
   //////////////////////////////////////////////////////////////////////////////
-  //// PlacesInterestsStorage Helpers
+  //// InterestsStorage Helpers
 
   /**
    * Convert a date to days since epoch

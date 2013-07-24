@@ -6,7 +6,7 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
 let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
@@ -30,7 +30,7 @@ add_task(function test_Interests() {
     do_check_true(itemsHave(data,"computers"));
   });
 
-  thePromise = PlacesInterestsStorage.getBucketsForInterests(["cars" , "computers"]);
+  thePromise = InterestsStorage.getBucketsForInterests(["cars" , "computers"]);
   yield thePromise.then(function(data) {
     do_check_eq(data["cars"]["immediate"], 2);
     do_check_eq(data["computers"]["immediate"], 1);

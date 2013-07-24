@@ -18,7 +18,7 @@ function test() {
 
   Task.spawn(function() {
     yield iServiceObject._initInterestMeta();
-    yield PlacesInterestsStorage.getInterests(kInterests).then(results => {
+    yield InterestsStorage.getInterests(kInterests).then(results => {
       is(Object.keys(results).length, kInterests.length, "obtained incorrect number of interest metadata");
     });
   }).then(finish);

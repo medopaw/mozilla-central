@@ -6,7 +6,7 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
@@ -23,7 +23,7 @@ add_task(function checkSequentialIds() {
   yield addInterest("shopping");
 
   // Explicitly query for the id because it's not exposed through APIs
-  yield PlacesInterestsStorage._execute(
+  yield InterestsStorage._execute(
     "SELECT id, interest FROM moz_interests ORDER BY id ASC",
     {columns: ["id", "interest"]}
   ).then(results => {

@@ -6,9 +6,9 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   // test_Interests_metadata.js
-  // test_PlacesInterestsStorage_addInterest_duplicates.js
+  // test_InterestsStorage_addInterest_duplicates.js
 }

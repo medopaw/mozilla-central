@@ -6,7 +6,7 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
@@ -44,10 +44,10 @@ add_task(function test_getEmptyNamespace()
   yield addInterest("video-games");
   yield addInterest("history");
 
-  yield PlacesInterestsStorage.addInterestHost("technology", "samsung.com");
-  yield PlacesInterestsStorage.addInterestHost("cars", "cars.com");
-  yield PlacesInterestsStorage.addInterestHost("movies", "netflix.com");
-  yield PlacesInterestsStorage.addInterestHost("computers", "mozilla.org");
+  yield InterestsStorage.addInterestHost("technology", "samsung.com");
+  yield InterestsStorage.addInterestHost("cars", "cars.com");
+  yield InterestsStorage.addInterestHost("movies", "netflix.com");
+  yield InterestsStorage.addInterestHost("computers", "mozilla.org");
 
   // make a bunch of insertions for a number of days
   let now = Date.now();
@@ -61,7 +61,7 @@ add_task(function test_getEmptyNamespace()
   checkScores([], 5, results);
 
   // add visit
-  yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
@@ -71,8 +71,8 @@ add_task(function test_getEmptyNamespace()
   ], 4, results);
 
   // add another visit for the same category, same day
-  yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  yield PlacesInterestsStorage.addInterestHost("technology", "mozilla.org");
+  yield InterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestHost("technology", "mozilla.org");
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
@@ -82,7 +82,7 @@ add_task(function test_getEmptyNamespace()
   ], 4, results);
 
   // add 3 visits for another category, same day, new top interest
-  yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
+  yield InterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
@@ -93,7 +93,7 @@ add_task(function test_getEmptyNamespace()
   ], 3, results);
 
   // add visits for another category, one day ago
-  yield PlacesInterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
+  yield InterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
@@ -116,9 +116,9 @@ add_task(function test_getEmptyNamespace()
   ], 0, results);
 
   // add visits to the same category over multiple days
-  yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
-  yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*1), visitCount: 2});
-  yield PlacesInterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*2), visitCount: 1});
+  yield InterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
+  yield InterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*1), visitCount: 2});
+  yield InterestsStorage.addInterestVisit("video-games", {visitTime: (now - MS_PER_DAY*2), visitCount: 1});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
@@ -155,10 +155,10 @@ add_task(function test_getEmptyNamespace()
       {"name":"technology","score":2,"diversity":50,"recency":{"immediate":2,"recent":0,"past":0}},
   ], 1, results);
 
-  yield PlacesInterestsStorage.clearRecentVisits(100);
+  yield InterestsStorage.clearRecentVisits(100);
   // add visits to a category beyond test threshold, i.e. 29 days and beyond
   // the category should not show up
-  yield PlacesInterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*29), visitCount: 2});
+  yield InterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*29), visitCount: 2});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
@@ -167,7 +167,7 @@ add_task(function test_getEmptyNamespace()
 
   // add visits within test-threshold, modifying buckets
   // assuming recent is: 14-28 days, past is > 28 days
-  yield PlacesInterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*15), visitCount: 3});
+  yield InterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*15), visitCount: 3});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,

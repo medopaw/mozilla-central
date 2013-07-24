@@ -8,40 +8,40 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
 }
 
-add_task(function test_PlacesInterestsStorage_sharedInterests()
+add_task(function test_InterestsStorage_sharedInterests()
 {
   yield addInterest("cars");
   yield addInterest("movies");
   yield addInterest("technology");
 
   let now = Date.now();
-  let today = PlacesInterestsStorage._convertDateToDays(now);
+  let today = InterestsStorage._convertDateToDays(now);
   let results;
 
   // nothig was shared - results are empty
-  yield PlacesInterestsStorage.getHostsForSharedInterests(["cars"]).then(results => {
+  yield InterestsStorage.getHostsForSharedInterests(["cars"]).then(results => {
     do_check_eq(results.length, 0);
   });
 
-  yield PlacesInterestsStorage.getPersonalizedHosts().then(results => {
+  yield InterestsStorage.getPersonalizedHosts().then(results => {
     do_check_eq(results.length, 0);
   });
 
   //make a bunch of insertions
-  yield PlacesInterestsStorage.setSharedInterest("movies","foo.com");
-  yield PlacesInterestsStorage.setSharedInterest("movies","baz.com",now - MS_PER_DAY*2);
-  yield PlacesInterestsStorage.setSharedInterest("movies","bar.com",now - MS_PER_DAY);
-  yield PlacesInterestsStorage.setSharedInterest("cars","foo.com");
-  yield PlacesInterestsStorage.setSharedInterest("cars","baz.com",now - MS_PER_DAY*2);
-  yield PlacesInterestsStorage.setSharedInterest("cars","bar.com",now - MS_PER_DAY);
+  yield InterestsStorage.setSharedInterest("movies","foo.com");
+  yield InterestsStorage.setSharedInterest("movies","baz.com",now - MS_PER_DAY*2);
+  yield InterestsStorage.setSharedInterest("movies","bar.com",now - MS_PER_DAY);
+  yield InterestsStorage.setSharedInterest("cars","foo.com");
+  yield InterestsStorage.setSharedInterest("cars","baz.com",now - MS_PER_DAY*2);
+  yield InterestsStorage.setSharedInterest("cars","bar.com",now - MS_PER_DAY);
 
-  yield PlacesInterestsStorage.getHostsForSharedInterests(["cars","movies"]).then(results => {
+  yield InterestsStorage.getHostsForSharedInterests(["cars","movies"]).then(results => {
     isIdentical(results,[
                           {"interest":"cars","host":"foo.com","day":today},
                           {"interest":"cars","host":"bar.com","day":today-1},
@@ -52,7 +52,7 @@ add_task(function test_PlacesInterestsStorage_sharedInterests()
                         ]);
   });
 
-  yield PlacesInterestsStorage.getPersonalizedHosts().then(results => {
+  yield InterestsStorage.getPersonalizedHosts().then(results => {
     isIdentical(results,[
                           {"interest":"movies","host":"foo.com","day":today},
                           {"interest":"cars","host":"foo.com","day":today},

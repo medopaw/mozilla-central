@@ -6,7 +6,7 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
@@ -18,8 +18,8 @@ add_task(function addGoingOlder() {
   yield addInterest(interest);
 
   // Add one visit for now and make sure there's only one
-  yield PlacesInterestsStorage.addInterestVisit(interest);
-  yield PlacesInterestsStorage.getBucketsForInterests([interest]).then(function(result) {
+  yield InterestsStorage.addInterestVisit(interest);
+  yield InterestsStorage.getBucketsForInterests([interest]).then(function(result) {
     do_check_eq(result.cars.immediate, 1);
     do_check_eq(result.cars.recent, 0);
     do_check_eq(result.cars.past, 0);
@@ -27,10 +27,10 @@ add_task(function addGoingOlder() {
 
   // Add a couple visits from 3 weeks ago for recent
   let recentTime = Date.now() - 3 * 7 * 24 * 60 * 60 * 1000;
-  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
-  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
+  yield InterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
+  yield InterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
 
-  yield PlacesInterestsStorage.getBucketsForInterests([interest]).then(function(result) {
+  yield InterestsStorage.getBucketsForInterests([interest]).then(function(result) {
     do_check_eq(result.cars.immediate, 1);
     do_check_eq(result.cars.recent, 2);
     do_check_eq(result.cars.past, 0);
@@ -38,11 +38,11 @@ add_task(function addGoingOlder() {
 
   // Add a few visits from 5 weeks ago for past
   let pastTime = Date.now() - 5 * 7 * 24 * 60 * 60 * 1000;
-  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
-  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
-  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
+  yield InterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
+  yield InterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
+  yield InterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
 
-  yield PlacesInterestsStorage.getBucketsForInterests([interest]).then(function(result) {
+  yield InterestsStorage.getBucketsForInterests([interest]).then(function(result) {
     do_check_eq(result.cars.immediate, 1);
     do_check_eq(result.cars.recent, 2);
     do_check_eq(result.cars.past, 3);
@@ -56,9 +56,9 @@ add_task(function addGoingNewer() {
 
   // Add a visit from 5 weeks ago for past
   let pastTime = Date.now() - 5 * 7 * 24 * 60 * 60 * 1000;
-  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
+  yield InterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
 
-  yield PlacesInterestsStorage.getBucketsForInterests([interest]).then(function(result) {
+  yield InterestsStorage.getBucketsForInterests([interest]).then(function(result) {
     do_check_eq(result.sports.immediate, 0);
     do_check_eq(result.sports.recent, 0);
     do_check_eq(result.sports.past, 1);
@@ -66,20 +66,20 @@ add_task(function addGoingNewer() {
 
   // Add a couple visits from 3 weeks ago for recent
   let recentTime = Date.now() - 3 * 7 * 24 * 60 * 60 * 1000;
-  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
-  yield PlacesInterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
+  yield InterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
+  yield InterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
 
-  yield PlacesInterestsStorage.getBucketsForInterests([interest]).then(function(result) {
+  yield InterestsStorage.getBucketsForInterests([interest]).then(function(result) {
     do_check_eq(result.sports.immediate, 0);
     do_check_eq(result.sports.recent, 2);
     do_check_eq(result.sports.past, 1);
   });
 
   // Add a few visits for now
-  yield PlacesInterestsStorage.addInterestVisit(interest);
-  yield PlacesInterestsStorage.addInterestVisit(interest);
-  yield PlacesInterestsStorage.addInterestVisit(interest);
-  yield PlacesInterestsStorage.getBucketsForInterests([interest]).then(function(result) {
+  yield InterestsStorage.addInterestVisit(interest);
+  yield InterestsStorage.addInterestVisit(interest);
+  yield InterestsStorage.addInterestVisit(interest);
+  yield InterestsStorage.getBucketsForInterests([interest]).then(function(result) {
     do_check_eq(result.sports.immediate, 3);
     do_check_eq(result.sports.recent, 2);
     do_check_eq(result.sports.past, 1);

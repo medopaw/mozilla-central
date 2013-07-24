@@ -20,8 +20,8 @@ XPCOMUtils.defineLazyModuleGetter(this, "Promise",
                                   "resource://gre/modules/commonjs/sdk/core/promise.js");
 XPCOMUtils.defineLazyModuleGetter(this, "Task",
                                   "resource://gre/modules/Task.jsm");
-XPCOMUtils.defineLazyModuleGetter(this, "PlacesInterestsStorage",
-                                  "resource://gre/modules/PlacesInterestsStorage.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "InterestsStorage",
+                                  "resource://gre/modules/InterestsStorage.jsm");
 
 /**
  * Allows waiting for an observer notification once.
@@ -427,7 +427,7 @@ function promiseIsURIVisited(aURI, aExpectedValue) {
  * @rejects JavaScript exception.
  */
 function promiseAddInterest(aInterest) {
-  return PlacesInterestsStorage.setInterest(aInterest, {
+  return InterestsStorage.setInterest(aInterest, {
     duration: 14,
     threshold: 5,
   });
@@ -440,9 +440,9 @@ function promiseAddInterest(aInterest) {
  */
 function promiseClearInterests() {
   let promises = [];
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests"));
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests_hosts"));
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests_visits"));
+  promises.push(InterestsStorage._execute("DELETE FROM moz_interests"));
+  promises.push(InterestsStorage._execute("DELETE FROM moz_interests_hosts"));
+  promises.push(InterestsStorage._execute("DELETE FROM moz_interests_visits"));
   return Promise.promised(Array)(promises).then();
 }
 

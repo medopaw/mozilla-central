@@ -6,7 +6,7 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
@@ -19,17 +19,17 @@ add_task(function test_ClearRecentVisits()
   yield promiseAddUrlInterestsVisit("http://www.mozilla.org/", "computers");
 
   // cleanup the tables
-  yield PlacesInterestsStorage.clearRecentVisits(100);
+  yield InterestsStorage.clearRecentVisits(100);
   yield clearInterestsHosts();
 
   // check that tables are empty
-  yield PlacesInterestsStorage.getBucketsForInterests(["computers"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["computers"]).then(function(results) {
     do_check_eq(results.computers.immediate , 0);
     do_check_eq(results.computers.past , 0);
     do_check_eq(results.computers.recent , 0);
   });
 
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 0);
     do_check_eq(results.cars.past , 0);
     do_check_eq(results.cars.recent , 0);
@@ -44,7 +44,7 @@ add_task(function test_ClearRecentVisits()
     yield promiseAddUrlInterestsVisit("http://www.cars.com/", "cars", 1, i);
   }
 
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 14);
     do_check_eq(results.cars.recent , 14);
     do_check_eq(results.cars.past , 72);
@@ -56,9 +56,9 @@ add_task(function test_ClearRecentVisits()
   });
 
   // test deletions
-  yield PlacesInterestsStorage.clearRecentVisits(14);
+  yield InterestsStorage.clearRecentVisits(14);
 
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 0);
     do_check_eq(results.cars.recent , 14);
     do_check_eq(results.cars.past , 72);
@@ -69,37 +69,37 @@ add_task(function test_ClearRecentVisits()
     do_check_eq(results[0] , "cars.com");
   });
 
-  yield PlacesInterestsStorage.clearRecentVisits(28);
+  yield InterestsStorage.clearRecentVisits(28);
 
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 0);
     do_check_eq(results.cars.recent , 0);
     do_check_eq(results.cars.past , 72);
   });
 
-  yield PlacesInterestsStorage.clearRecentVisits(50);
+  yield InterestsStorage.clearRecentVisits(50);
 
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 0);
     do_check_eq(results.cars.recent , 0);
     do_check_eq(results.cars.past , 50);
   });
 
-  yield PlacesInterestsStorage.clearRecentVisits(100);
+  yield InterestsStorage.clearRecentVisits(100);
 
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 0);
     do_check_eq(results.cars.recent , 0);
     do_check_eq(results.cars.past , 0);
   });
 
-  yield PlacesInterestsStorage.clearRecentVisits(100);
+  yield InterestsStorage.clearRecentVisits(100);
 
   // test visitCounts when adding visits
 
   // add one today
   yield promiseAddInterestVisits("cars");
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 1);
     do_check_eq(results.cars.recent , 0);
     do_check_eq(results.cars.past , 0);
@@ -107,7 +107,7 @@ add_task(function test_ClearRecentVisits()
 
   // add a couple more yesterday
   yield promiseAddInterestVisits("cars", 4, 1);
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 5);
     do_check_eq(results.cars.recent , 0);
     do_check_eq(results.cars.past , 0);
@@ -117,7 +117,7 @@ add_task(function test_ClearRecentVisits()
   // recent assumed to be 14-28 days ago, past > 28 days
   yield promiseAddInterestVisits("cars", 3, 15);
   yield promiseAddInterestVisits("cars", 10, 31);
-  yield PlacesInterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
+  yield InterestsStorage.getBucketsForInterests(["cars"]).then(function(results) {
     do_check_eq(results.cars.immediate , 5);
     do_check_eq(results.cars.recent , 3);
     do_check_eq(results.cars.past , 10);

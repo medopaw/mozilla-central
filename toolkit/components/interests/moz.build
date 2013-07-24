@@ -11,7 +11,7 @@ EXTRA_COMPONENTS += [
 
 EXTRA_JS_MODULES = [
     'InterestsDatabase.jsm',
-    'PlacesInterestsStorage.jsm',
+    'InterestsStorage.jsm',
 ]
 
 MODULE = 'interests'

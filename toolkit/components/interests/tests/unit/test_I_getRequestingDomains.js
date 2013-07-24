@@ -6,7 +6,7 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/PlacesInterestsStorage.jsm");
+Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 function run_test() {
   run_next_test();
@@ -25,19 +25,19 @@ add_task(function test_I_getRequestingHosts()
   yield addInterest("video-games");
   yield addInterest("history");
 
-  yield PlacesInterestsStorage.addInterestHost("technology", "samsung.com");
-  yield PlacesInterestsStorage.addInterestHost("cars", "cars.com");
-  yield PlacesInterestsStorage.addInterestHost("movies", "netflix.com");
-  yield PlacesInterestsStorage.addInterestHost("computers", "mozilla.org");
+  yield InterestsStorage.addInterestHost("technology", "samsung.com");
+  yield InterestsStorage.addInterestHost("cars", "cars.com");
+  yield InterestsStorage.addInterestHost("movies", "netflix.com");
+  yield InterestsStorage.addInterestHost("computers", "mozilla.org");
 
   // make a bunch of insertions for a number of days
   let now = Date.now();
-  let today = PlacesInterestsStorage._convertDateToDays(now);
+  let today = InterestsStorage._convertDateToDays(now);
 
   // add visit
-  yield PlacesInterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  yield PlacesInterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
-  yield PlacesInterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
+  yield InterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
+  yield InterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
 
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
