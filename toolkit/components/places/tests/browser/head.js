@@ -9,8 +9,6 @@ XPCOMUtils.defineLazyModuleGetter(this, "Promise",
                                   "resource://gre/modules/commonjs/sdk/core/promise.js");
 XPCOMUtils.defineLazyModuleGetter(this, "Task",
                                   "resource://gre/modules/Task.jsm");
-XPCOMUtils.defineLazyModuleGetter(this, "PlacesInterestsStorage",
-                                  "resource://gre/modules/PlacesInterestsStorage.jsm");
 
 /**
  * Allows waiting for an observer notification once.
@@ -407,42 +405,3 @@ function promiseIsURIVisited(aURI, aExpectedValue) {
   return deferred.promise;
 }
 
-/**
- * adds an interest to the database
- *
- * @param aInterest The interest.
- * @return {Promise}
- * @resolves When the added successfully.
- * @rejects JavaScript exception.
- */
-function promiseAddInterest(aInterest) {
-  return PlacesInterestsStorage.setInterest(aInterest, {
-    duration: 14,
-    threshold: 5,
-  });
-}
-
-/**
- * clears all interests related tables
- *
- * @return {Promise}
- */
-function promiseClearInterests() {
-  let promises = [];
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests"));
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests_hosts"));
-  promises.push(PlacesInterestsStorage._execute("DELETE FROM moz_interests_visits"));
-  return Promise.promised(Array)(promises).then();
-}
-
-/**
- * clears all interests and history
- *
- * @return {Promise}
- */
-function promiseClearHistoryAndInterests() {
-  let promises = [];
-  promises.push(promiseClearHistory());
-  promises.push(promiseClearInterests());
-  return Promise.promised(Array)(promises).then();
-}
