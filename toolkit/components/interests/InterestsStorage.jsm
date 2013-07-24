@@ -186,7 +186,7 @@ let InterestsStorage = {
    *          host frecency
    * @returns Promise for when the row is added
    */
-  addFrecentHost: function PIS_addFrecentHost(id, host, frecency) {
+  addFrecentHost: function IS_addFrecentHost(id, host, frecency) {
     return this._execute(SQL.addFrecentHost, {
       params: {
         id: id,
@@ -205,7 +205,7 @@ let InterestsStorage = {
    *          The host string to associate with the interest
    * @returns Promise for when the row is added
    */
-  addInterestHost: function PIS_addInterestHost(interest, host) {
+  addInterestHost: function IS_addInterestHost(interest, host) {
     return this._execute(SQL.addInterestHost, {
       params: {
         host: host,
@@ -224,7 +224,7 @@ let InterestsStorage = {
    *          visitTime: Date/time to associate with the visit defaulting to now
    * @returns Promise for when the row is added/updated
    */
-  addInterestVisit: function PIS_addInterestVisit(interest, visitData={}) {
+  addInterestVisit: function IS_addInterestVisit(interest, visitData={}) {
     let {visitCount, visitTime} = visitData;
     return this._execute(SQL.addInterestVisit, {
       params: {
@@ -242,7 +242,7 @@ let InterestsStorage = {
    *          Number of recent days to be cleared
    * @returns Promise for when the visits are deleted
    */
-  clearRecentVisits: function PIS_clearRecentVisits(daysAgo) {
+  clearRecentVisits: function IS_clearRecentVisits(daysAgo) {
     return this._execute(SQL.clearRecentVisits, {
       params: {
         dayCutoff: this._convertDateToDays() - daysAgo,
@@ -259,7 +259,7 @@ let InterestsStorage = {
    *          checkSharable: Boolean for 0-buckets for unshared defaulting false
    * @returns Promise with each interest as keys on an object with bucket data
    */
-  getBucketsForInterests: function PIS_getBucketsForInterests(interests, options={}) {
+  getBucketsForInterests: function IS_getBucketsForInterests(interests, options={}) {
     let {checkSharable} = options;
     return this._execute(SQL.getBucketsForInterests, {
       columns: ["immediate", "recent", "past"],
@@ -283,7 +283,7 @@ let InterestsStorage = {
    *          checkSharable: Boolean for 0-diversity for unshared defaulting false
    * @returns Promise with each interest as keys on an object with diversity
    */
-  getDiversityForInterests: function PIS_getDiversityForInterests(interests, options={}) {
+  getDiversityForInterests: function IS_getDiversityForInterests(interests, options={}) {
     let {checkSharable} = options;
     return this._execute(SQL.getDiversityForInterests, {
       columns: ["diversity"],
@@ -303,7 +303,7 @@ let InterestsStorage = {
               An array of interest names
    * @returns A promise with the interest metadata for each interest
    */
-  getInterests: function PIS_getInterests(interests) {
+  getInterests: function IS_getInterests(interests) {
     return this._execute(SQL.getInterests, {
       columns: ["duration", "sharable", "threshold"],
       key: "interest",
@@ -322,7 +322,7 @@ let InterestsStorage = {
    *          Number of days of recent history to fetch
    * @returns Promise with hostname/last day visited as results
    */
-  getRecentHostsForInterests: function PIS_getRecentHostsForInterests(interests, daysAgo) {
+  getRecentHostsForInterests: function IS_getRecentHostsForInterests(interests, daysAgo) {
     return this._execute(SQL.getRecentHostsForInterests, {
       columns: ["interest", "host", "frecency"],
       listParams: {
@@ -343,7 +343,7 @@ let InterestsStorage = {
    *          checkSharable: Boolean for 0-score for unshared defaulting false
    * @returns Promise with the array of interest names and scores
    */
-  getScoresForInterests: function PIS_getScoresForInterests(interests, options={}) {
+  getScoresForInterests: function IS_getScoresForInterests(interests, options={}) {
     let {checkSharable} = options;
     return this._execute(SQL.getScoresForInterests, {
       columns: ["name", "score"],
@@ -367,7 +367,7 @@ let InterestsStorage = {
    *          interestLimit: Number of top interests to select defaulting to 5
    * @returns Promise with the array of interest names and scores
    */
-  getScoresForNamespace: function PIS_getScoresForNamespace(namespace, options={}) {
+  getScoresForNamespace: function IS_getScoresForNamespace(namespace, options={}) {
     let {checkSharable, interestLimit} = options;
     return this._execute(SQL.getScoresForNamespace, {
       columns: ["name", "score"],
@@ -391,7 +391,7 @@ let InterestsStorage = {
    *          threshold: Number of visits in a bucket to signal recency interest
    * @returns Promise for when the interest data is set
    */
-  setInterest: function PIS_setInterest(interest, metadata={}) {
+  setInterest: function IS_setInterest(interest, metadata={}) {
     let {duration, sharable, threshold} = metadata;
     return this._execute(SQL.setInterest, {
       params: {
@@ -415,7 +415,7 @@ let InterestsStorage = {
    *          time when an interest was shared with the site
    * @returns Promise for when the interest,domain pair is set
    */
-  setSharedInterest: function PIS_setSharedInterest(interest, host, visitTime) {
+  setSharedInterest: function IS_setSharedInterest(interest, host, visitTime) {
     return this._execute(SQL.setSharedInterest, {
       params: {
         interest: interest,
@@ -432,7 +432,7 @@ let InterestsStorage = {
    *          interests that were shared
    * @returns Promise with an array of {intrest,domains,day} objects
    */
-  getHostsForSharedInterests: function PIS_getHostsForSharedInterests(interests) {
+  getHostsForSharedInterests: function IS_getHostsForSharedInterests(interests) {
     return this._execute(SQL.getHostsForSharedInterests, {
       columns: ["interest","host", "day"],
       listParams: {
@@ -448,7 +448,7 @@ let InterestsStorage = {
    *          Number of days of history to fetch
    * @returns Promise with an array of {intrest,domains,day} objects
    */
-  getPersonalizedHosts: function PIS_getPersonalizedDomains(daysAgo) {
+  getPersonalizedHosts: function IS_getPersonalizedDomains(daysAgo) {
     return this._execute(SQL.getPersonalizedHosts, {
       columns: ["interest","host", "day"],
       params: {
@@ -467,7 +467,7 @@ let InterestsStorage = {
    *          Reference date/time defaulting to today
    * @returns Number of days since epoch to beginning of today UTC
    */
-  _convertDateToDays: function PIS__convertDateToDays(time=null) {
+  _convertDateToDays: function IS__convertDateToDays(time=null) {
     // Default to today and truncate to an integer number of days
     return Math.floor((time || Date.now()) / MS_PER_DAY);
   },
@@ -486,7 +486,7 @@ let InterestsStorage = {
    * @returns Promise for when the statement completes with value dependant on
    *          the optional values passed in.
    */
-  _execute: function PIS__execute(sql, optional={}) {
+  _execute: function IS__execute(sql, optional={}) {
     let {columns, key, listParams, onRow, params} = optional;
 
     // Convert listParams into params and the desired number of identifiers
@@ -558,7 +558,7 @@ let InterestsStorage = {
    *          Interest string in the namespace/name format
    * @returns [Namespace or empty string, interest name]
    */
-  _splitInterestName: function PIS__splitInterestName(interest) {
+  _splitInterestName: function IS__splitInterestName(interest) {
     let tokens = interest.split(":", 2);
 
     // Add an empty namespace if there was no ":"
