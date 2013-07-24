@@ -21,13 +21,13 @@ Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 const gatherPromises = Promise.promised(Array);
 
 // observer event topics
-const kStartup = "app-startup";
 const kDOMLoaded = "DOMContentLoaded";
-const kShutdown = "xpcom-shutdown";
-const kPrefChanged = "nsPref:changed";
-const kWindowReady = "toplevel-window-ready";
-const kPlacesInitComplete = "places-init-complete";
 const kIdleDaily = "idle-daily";
+const kPlacesInitComplete = "places-init-complete";
+const kPrefChanged = "nsPref:changed";
+const kShutdown = "xpcom-shutdown";
+const kStartup = "app-startup";
+const kWindowReady = "toplevel-window-ready";
 
 // prefs
 const kPrefEnabled = "interests.enabled";
@@ -64,7 +64,6 @@ function exposeAll(obj) {
 
 function Interests() {
   gInterestsService = this;
-  Services.prefs.addObserver("interests.", this, false);
 }
 
 Interests.prototype = {
@@ -485,10 +484,11 @@ Interests.prototype = {
 
   observe: function I_observe(aSubject, aTopic, aData) {
     if (aTopic == kStartup) {
-      Services.obs.addObserver(this, kWindowReady, false);
-      Services.obs.addObserver(this, kShutdown, false);
-      Services.obs.addObserver(this, kPlacesInitComplete, false);
       Services.obs.addObserver(this, kIdleDaily, false);
+      Services.obs.addObserver(this, kPlacesInitComplete, false);
+      Services.obs.addObserver(this, kShutdown, false);
+      Services.obs.addObserver(this, kWindowReady, false);
+      Services.prefs.addObserver("interests.", this, false);
     }
     else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
@@ -512,10 +512,11 @@ Interests.prototype = {
       }
     }
     else if (aTopic == kShutdown) {
-      Services.obs.removeObserver(this, kStartup);
-      Services.obs.removeObserver(this, kShutdown);
       Services.obs.removeObserver(this, kIdleDaily);
-      Servies.prefs.removeObserver("interests.", this);
+      Services.obs.removeObserver(this, kPlacesInitComplete);
+      Services.obs.removeObserver(this, kShutdown);
+      Services.obs.removeObserver(this, kWindowReady);
+      Services.prefs.removeObserver("interests.", this);
     }
     else if (aTopic == kIdleDaily) {
       this._refreshFrecentHosts();
