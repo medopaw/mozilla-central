@@ -11,6 +11,8 @@ XPIDL_MODULE = 'dom_sdcard'
 
 MODULE = 'dom'
 
+TEST_DIRS += ['test']
+
 XPIDL_FLAGS += [
      '-I$(topsrcdir)/dom/interfaces/base/'
 ]
