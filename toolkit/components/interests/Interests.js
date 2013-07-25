@@ -64,6 +64,7 @@ function exposeAll(obj) {
 
 function Interests() {
   gInterestsService = this;
+  Services.prefs.addObserver("interests.", this, false);
 }
 
 Interests.prototype = {
@@ -488,7 +489,6 @@ Interests.prototype = {
       Services.obs.addObserver(this, kPlacesInitComplete, false);
       Services.obs.addObserver(this, kShutdown, false);
       Services.obs.addObserver(this, kWindowReady, false);
-      Services.prefs.addObserver("interests.", this, false);
     }
     else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
