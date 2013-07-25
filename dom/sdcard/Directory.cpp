@@ -60,7 +60,7 @@ Directory::CreateReader()
 }
 
 void
-Directory::MakeDirectory(const nsAString& name,
+Directory::CreateDirectory(const nsAString& name,
   const Optional< OwningNonNull<EntryCallback> >& successCallback,
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
@@ -142,7 +142,7 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
 }
 
 void
-Directory::MoveTo(const nsAString& entry, const nsAString& newName,
+Directory::Move(const nsAString& entry, const nsAString& newName,
       const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
@@ -158,7 +158,7 @@ Directory::MoveTo(const nsAString& entry, const nsAString& newName,
 }
 
 void
-Directory::MoveTo(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
+Directory::Move(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
       const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)

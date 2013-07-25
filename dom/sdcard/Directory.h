@@ -37,7 +37,7 @@ public:
 
   already_AddRefed<DirectoryReader> CreateReader();
 
-  void MakeDirectory(const nsAString& name,
+  void CreateDirectory(const nsAString& name,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
@@ -45,12 +45,12 @@ public:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void MoveTo(const nsAString& entry, const nsAString& newName,
+  void Move(const nsAString& entry, const nsAString& newName,
       const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void MoveTo(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
+  void Move(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
       const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
