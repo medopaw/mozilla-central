@@ -147,7 +147,7 @@ Directory::Move(const nsAString& entry, const nsAString& newName,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in Directory.MoveTo()");
+  SDCARD_LOG("in Directory.Move()");
 
   // Check if name is valid.
   nsString entryRelpath;
@@ -163,11 +163,40 @@ Directory::Move(mozilla::dom::sdcard::Directory& entry, const nsAString& newName
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in Directory.MoveTo()");
+  SDCARD_LOG("in Directory.Move()");
   nsString entryRelpath;
   entry.GetRelpath(entryRelpath);
   CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
       successCallback, errorCallback, false);
+}
+
+void
+Directory::Copy(const nsAString& entry, const nsAString& newName,
+      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
+
+  // Check if name is valid.
+  nsString entryRelpath;
+  Path::Absolutize(entry, mRelpath, entryRelpath);
+
+  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
+      successCallback, errorCallback, true);
+}
+
+void
+Directory::Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
+      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
+  nsString entryRelpath;
+  entry.GetRelpath(entryRelpath);
+  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
+      successCallback, errorCallback, true);
 }
 
 already_AddRefed<mozilla::dom::Future>

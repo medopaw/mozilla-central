@@ -55,6 +55,16 @@ public:
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
+  void Copy(const nsAString& entry, const nsAString& newName,
+      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
+  void Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
+      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
   void GetFile(const nsAString& path, const FileSystemFlags& options,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);

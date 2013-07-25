@@ -30,6 +30,8 @@ interface Directory : Entry {
     void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            copy (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            copy (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     Future          getFile (DOMString path, optional FileSystemFlags options);
     void            getDirectory (DOMString path, optional FileSystemFlags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            removeRecursively (VoidCallback successCallback, optional ErrorCallback errorCallback);
