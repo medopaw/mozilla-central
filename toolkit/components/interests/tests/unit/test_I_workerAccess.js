@@ -15,30 +15,7 @@ function run_test() {
   run_next_test();
 }
 
-add_task(function test_Interests() {
-
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","movies","computers"]);
-  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "cars");
-
-  // check insertions
-  let thePromise = getInterestsForHost("cars.com");
-  yield thePromise.then(function(data) {
-    // recheck the items
-    do_check_eq(data.length , 3);
-    do_check_true(itemsHave(data,"cars"));
-    do_check_true(itemsHave(data,"movies"));
-    do_check_true(itemsHave(data,"computers"));
-  });
-
-  thePromise = InterestsStorage.getBucketsForInterests(["cars" , "computers"]);
-  yield thePromise.then(function(data) {
-    do_check_eq(data["cars"]["immediate"], 2);
-    do_check_eq(data["computers"]["immediate"], 1);
-  });
-
-});
-
-add_task(function test_Interests_Service() {
+add_task(function test_I_workerAccess() {
   // verify that worker is removed when the feature is disabled
   Services.prefs.setBoolPref("interests.enabled", false);
   do_check_true(iServiceObject.__worker == undefined)

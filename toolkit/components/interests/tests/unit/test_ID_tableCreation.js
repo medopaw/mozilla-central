@@ -12,7 +12,7 @@ function run_test() {
   run_next_test();
 }
 
-add_task(function test_InterestsDatabase()
+add_task(function test_ID_tableCreation()
 {
  let db = yield InterestsDatabase.DBConnectionPromise;
  do_check_true(yield db.tableExists("moz_interests"));

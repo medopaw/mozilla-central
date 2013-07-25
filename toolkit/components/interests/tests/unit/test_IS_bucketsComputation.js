@@ -12,7 +12,7 @@ function run_test() {
   run_next_test();
 }
 
-add_task(function test_InterestsStorage()
+add_task(function test_IS_bucketsComputation()
 {
   yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","movies","shopping"], 2);
   yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "consumer-electronics");

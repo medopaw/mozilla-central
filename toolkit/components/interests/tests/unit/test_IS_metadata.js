@@ -12,7 +12,7 @@ function run_test() {
   run_next_test();
 }
 
-add_task(function test_InterestsStorage_getInterests()
+add_task(function test_IS_metadata()
 {
   yield addInterest("cars");
   yield addInterest("movies");
