@@ -30,8 +30,7 @@ const SQL = {
             "FROM moz_interests " +
             "WHERE interest = :interest), " +
            "(SELECT id " +
-            "FROM (SELECT id, host " +
-                  "FROM moz_interests_frecent_hosts) " +
+            "FROM moz_interests_frecent_hosts " +
             "WHERE host = :host))",
 
   addInterestVisit:
