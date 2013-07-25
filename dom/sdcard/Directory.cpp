@@ -60,11 +60,52 @@ Directory::CreateReader()
 }
 
 void
+Directory::CreateFile(const nsAString& name,
+  const Optional< OwningNonNull<EntryCallback> >& successCallback,
+  const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.createFile()");
+  // Assign callback nullptr if not passed
+  EntryCallback* pSuccessCallback = nullptr;
+  ErrorCallback* pErrorCallback = nullptr;
+  if (successCallback.WasPassed()) {
+    pSuccessCallback = &(successCallback.Value());
+  }
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
+
+  // Check if name is valid.
+  if (!Path::IsValidName(name)) {
+    SDCARD_LOG("Invalid name!");
+    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return;
+  }
+
+  // Get absolute real path.
+  nsString realPath;
+  Path::Absolutize(name, mRelpath, realPath);
+
+  if (XRE_GetProcessType() == GeckoProcessType_Default) {
+    SDCARD_LOG("in b2g process");
+    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath, true, true,
+        true, pCaller);
+    r->Start();
+  } else {
+    SDCARD_LOG("in app process");
+    SDCardGetParams params(realPath, true, true, true);
+    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
+  }
+}
+
+void
 Directory::CreateDirectory(const nsAString& name,
   const Optional< OwningNonNull<EntryCallback> >& successCallback,
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in Directory.makeDirectory()");
+  SDCARD_LOG("in Directory.createDirectory()");
   // Assign callback nullptr if not passed
   EntryCallback* pSuccessCallback = nullptr;
   ErrorCallback* pErrorCallback = nullptr;

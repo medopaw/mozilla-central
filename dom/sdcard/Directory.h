@@ -37,6 +37,10 @@ public:
 
   already_AddRefed<DirectoryReader> CreateReader();
 
+  void CreateFile(const nsAString& name,
+      const Optional< OwningNonNull<EntryCallback> >& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
+
   void CreateDirectory(const nsAString& name,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
