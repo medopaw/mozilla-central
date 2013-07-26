@@ -54,7 +54,7 @@ function clearInterestsHosts() {
 function getHostsForInterest(interest) {
   return InterestsStorage._execute(
     "SELECT h.host AS host FROM moz_interests_frecent_hosts h, moz_interests i, moz_interests_hosts ih " +
-    "WHERE i.interest = :interest AND h.id = ih.host_id AND i.id = ih.interest_id", {
+    "WHERE i.interest = :interest AND h.host = ih.host AND i.id = ih.interest_id", {
     columns: ["host"],
     params: {
       interest: interest,
@@ -65,7 +65,7 @@ function getHostsForInterest(interest) {
 function getInterestsForHost(host) {
   return InterestsStorage._execute(
     "SELECT interest FROM moz_interests i, moz_interests_hosts ih, moz_interests_frecent_hosts h " +
-    "WHERE h.host = :host AND h.id = ih.host_id AND i.id = ih.interest_id", {
+    "WHERE h.host = :host AND h.host = ih.host AND i.id = ih.interest_id", {
     columns: ["interest"],
     params: {
       host: host,

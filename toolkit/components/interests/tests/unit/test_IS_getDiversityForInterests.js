@@ -96,10 +96,10 @@ add_task(function test_InterestsStorageGetDiversityForManyHosts()
     }
   };
 
-  for (let i = 1; i <= 210; i++) {
+  for (let i = 1; i <= 200; i++) {
     let site = "http://" + i + ".site.com";
-    if (i<=100)      pushSite(site,"cars",2);
-    else if (i<=200) pushSite(site,"movies",2);
+    if (i<=50)      pushSite(site,"cars",1);
+    else if (i<=100) pushSite(site,"movies",1);
     else             pushSite(site,"shopping",1);
   }
 
@@ -110,11 +110,12 @@ add_task(function test_InterestsStorageGetDiversityForManyHosts()
   // 200 previous sites.  Diversity for cars must be = diversity for movies = 50
   // shopping diversity must be 0
   yield InterestsStorage.getDiversityForInterests(["cars","computers","movies","shopping"]).then(function(results) {
+    dump(JSON.stringify(results) + " <<<<<<<<<\n");
     do_check_eq(Object.keys(results).length, 4);
-    do_check_eq(results["cars"] , 50);
-    do_check_eq(results["movies"] , 50);
+    do_check_eq(results["cars"] , 25);
+    do_check_eq(results["movies"] , 25);
+    do_check_eq(results["shopping"], 50);
     do_check_eq(results["computers"], 0);
-    do_check_eq(results["shopping"], 0);
   });
 
 });

@@ -25,13 +25,11 @@ const SQL = {
     "REPLACE INTO moz_interests_frecent_hosts VALUES(:id, :host, :frecency)",
 
   addInterestHost:
-    "INSERT OR IGNORE INTO moz_interests_hosts (interest_id, host_id) " +
+    "INSERT OR IGNORE INTO moz_interests_hosts (interest_id, host) " +
     "VALUES((SELECT id " +
             "FROM moz_interests " +
             "WHERE interest = :interest), " +
-           "(SELECT id " +
-            "FROM moz_interests_frecent_hosts " +
-            "WHERE host = :host))",
+           ":host) ",
 
   addInterestVisit:
     "REPLACE INTO moz_interests_visits " +
@@ -69,7 +67,7 @@ const SQL = {
   getDiversityForInterests:
     "SELECT interest, " +
            "COUNT(interest_id) * 100.0 / " +
-             "(SELECT COUNT(DISTINCT host_id) " +
+             "(SELECT COUNT(DISTINCT host) " +
               "FROM moz_interests_hosts) * " +
              "(NOT IFNULL(:checkSharable, 0) OR sharable) diversity " +
     "FROM moz_interests " +
@@ -90,7 +88,7 @@ const SQL = {
       ", moz_interests_hosts ih " +
       ", moz_interests_visits iv " +
     "WHERE i.interest IN (:interests) " +
-      "AND ih.host_id = h.id " +
+      "AND ih.host = h.host " +
       "AND ih.interest_id = i.id " +
       "AND iv.interest_id = i.id " +
       "AND iv.day > :dayCutoff " +
