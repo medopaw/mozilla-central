@@ -69,6 +69,10 @@ function Interests() {
 
 Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
+  //// Fields
+  _topHosts: {},
+
+  //////////////////////////////////////////////////////////////////////////////
   //// Interests API
 
   /**
@@ -215,6 +219,12 @@ Interests.prototype = {
       return;
     }
 
+    // if there's room add new host to the topHosts object
+    if (Object.keys(this._topHosts).length < 200) {
+      // assume default frecency 100
+      this._topHosts[host] = 100;
+    }
+
     this._callMatchingWorker({
       message: "getInterestsForDocument",
       url: aDocument.documentURI,
@@ -264,7 +274,9 @@ Interests.prototype = {
     for (let interest of aInterests) {
       // we need to wait until interest is added to the inerestes table
       addVisitPromises.push(InterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
-      addVisitPromises.push(InterestsStorage.addInterestHost(interest, aHost));
+      if (this._isTopHost(aHost)) {
+        addVisitPromises.push(InterestsStorage.addInterestHost(interest, aHost));
+      }
     }
     Promise.promised(Array)(addVisitPromises).then(results => {
       deferred.resolve(results);
@@ -441,15 +453,28 @@ Interests.prototype = {
   },
 
   /**
+   * checks if a host belongs to top hosts
+   *
+   * @param   host
+   *          host to check
+   * @returns true of host is in the tops, false otherwise
+   */
+  _isTopHost: function I__isTopHost(host) {
+    return this._topHosts[host] != null;
+  },
+
+  /**
    * updates moz_interests_frecent_hosts with fresh select from places.moz_hosts
    *
    * @returns promise for update complete
    */
   _refreshFrecentHosts: function I__refreshFrecentHosts() {
+    this._topHosts = {};
     return PlacesInterestsUtils.getMostFrecentHosts().then(results => {
       let promises = [];
       results.forEach(item => {
         promises.push(InterestsStorage.addFrecentHost(item.id,item.host,item.frecency));
+        this._topHosts[item.host] = item.frecency;
       });
       return gatherPromises(promises).then();
     });
