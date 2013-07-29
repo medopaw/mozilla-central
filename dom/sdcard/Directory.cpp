@@ -240,6 +240,24 @@ Directory::Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName
       successCallback, errorCallback, true);
 }
 
+void
+Directory::Remove(const nsAString& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Remove()");
+  RemoveEntry(entry, false, successCallback, errorCallback);
+}
+
+void
+Directory::Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Remove()");
+  nsString entryRelpath;
+  entry.GetRelpath(entryRelpath);
+  RemoveEntry(entryRelpath, false, successCallback, errorCallback);
+}
+
 already_AddRefed<mozilla::dom::Future>
 Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
 {
@@ -283,7 +301,6 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
-
 }
 
 void
@@ -326,6 +343,41 @@ Directory::GetEntry(const nsAString& path, const FileSystemFlags& options,
     SDCARD_LOG("in app process");
     SDCardGetParams params(realPath, options.mCreate, options.mExclusive,
         isFile);
+    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
+  }
+}
+
+void
+Directory::RemoveEntry(const nsAString& path, bool recursive, VoidCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.RemoveEntry()");
+
+  ErrorCallback* pErrorCallback = nullptr;
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
+
+  // Check if path is valid.
+  if (!Path::IsValidPath(path)) {
+    SDCARD_LOG("Invalid path!");
+    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return;
+  }
+
+  // Make sure path is absolute.
+  nsString entryRelpath;
+  Path::Absolutize(path, mRelpath, entryRelpath);
+
+  if (XRE_GetProcessType() == GeckoProcessType_Default) {
+    SDCARD_LOG("in b2g process");
+    nsRefPtr<SPRemoveEvent> r = new SPRemoveEvent(entryRelpath, recursive, pCaller);
+    r->Start();
+  } else {
+    SDCARD_LOG("in app process");
+    SDCardRemoveParams params(entryRelpath, recursive);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }

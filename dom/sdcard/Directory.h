@@ -69,6 +69,12 @@ public:
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
+  void Remove(const nsAString& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
+  void Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
   void GetFile(const nsAString& path, const FileSystemFlags& options,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
@@ -88,6 +94,9 @@ private:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
       bool isDirectory);
+
+  void RemoveEntry(const nsAString& path, bool recursive, VoidCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 };
 
 } // namespace sdcard

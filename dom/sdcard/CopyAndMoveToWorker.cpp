@@ -61,7 +61,7 @@ CopyAndMoveToWorker::Work()
 
   if (!(isFile || isDirectory)) {
     // Cannot copy/move a special file.
-    SDCARD_LOG("mFile is neither a file nor directory.");
+    SDCARD_LOG("mFile is neither a file nor a directory.");
     SetError(Error::DOM_ERROR_INVALID_MODIFICATION);
     return;
   }
