@@ -71,6 +71,7 @@ Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Fields
   _topHosts: {},
+  _topHostsLen: 0,
 
   //////////////////////////////////////////////////////////////////////////////
   //// Interests API
@@ -220,7 +221,7 @@ Interests.prototype = {
     }
 
     // if there's room add new host to the topHosts object
-    if (Object.keys(this._topHosts).length < 200) {
+    if (this._topHostsLen < 200) {
       // assume default frecency 100
       this._topHosts[host] = 100;
     }
@@ -470,11 +471,12 @@ Interests.prototype = {
    */
   _refreshFrecentHosts: function I__refreshFrecentHosts() {
     this._topHosts = {};
+    this._topHostsLen = 0;
     return PlacesInterestsUtils.getMostFrecentHosts().then(results => {
       let promises = [];
       results.forEach(item => {
-        promises.push(InterestsStorage.addFrecentHost(item.id,item.host,item.frecency));
         this._topHosts[item.host] = item.frecency;
+        this._topHostsLen++;
       });
       return gatherPromises(promises).then();
     });
@@ -619,7 +621,7 @@ Interests.prototype = {
         if(!output.interestsHosts.hasOwnProperty(item.interest)) {
           output.interestsHosts[item.interest] = [];
         }
-        output.interestsHosts[item.interest].push({host: item.host, frecency: item.frecency});
+        output.interestsHosts[item.interest].push({host: item.host, frecency: this._topHosts[item.host]});
       }
 
       return output;

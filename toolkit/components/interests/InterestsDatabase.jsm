@@ -58,13 +58,6 @@ const SCHEMA = {
       ", PRIMARY KEY (interest_id, host)" +
       ")"
     ,
-    moz_interests_frecent_hosts :
-      "CREATE TABLE moz_interests_frecent_hosts (" +
-      "  id INTEGER PRIMARY KEY" +
-      ", host TEXT NOT NULL UNIQUE" +
-      ", frecency INTEGER" +
-      ")"
-    ,
   },
   indices : {
     moz_shared_interest_index : {

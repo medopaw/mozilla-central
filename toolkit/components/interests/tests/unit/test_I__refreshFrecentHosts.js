@@ -19,9 +19,6 @@ add_task(function test_I__refreshFrecentHosts()
                                      "http://www.netflix.com/",
                                      "http://www.samsung.com/"]);
 
-  let ret = yield InterestsStorage._execute("SELECT id,host from moz_interests_frecent_hosts", {
-      columns: ["id" , "host"],
-  });
-  isIdentical(ret,[{"id":1,"host":"cars.com"},{"id":2,"host":"mozilla.org"},{"id":3,"host":"netflix.com"},{"id":4,"host":"samsung.com"}]);
+  isIdentical(iServiceObject._topHosts,{"samsung.com":100,"netflix.com":100,"mozilla.org":100,"cars.com":100});
 });
 

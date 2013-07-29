@@ -111,14 +111,7 @@ add_task(function test_InterestsStorageMostFrecentHosts() {
   });
 
   // attempt to directly add a host that is NOT IN 200 most frrecent
-  yield InterestsStorage.addInterestHost("cars","209.site.com").then(function(results) {
-    // we should do not have any results
-    do_check_true(results == null);
-  },
-  function(error) {
-    // we should do not come here
-    do_check_false("sql statement should have failed without promise rejection");
-  });
+  yield iServiceObject._addInterestsForHost("209.site.com",["cars"]);
 
   yield getInterestsForHost("209.site.com").then(results => {
     // we should do not have any results

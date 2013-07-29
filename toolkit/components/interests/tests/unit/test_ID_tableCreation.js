@@ -19,5 +19,4 @@ add_task(function test_ID_tableCreation()
  do_check_true(yield db.tableExists("moz_interests_hosts"));
  do_check_true(yield db.tableExists("moz_interests_visits"));
  do_check_true(yield db.tableExists("moz_interests_shared"));
- do_check_true(yield db.tableExists("moz_interests_frecent_hosts"));
 });

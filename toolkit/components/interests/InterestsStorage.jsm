@@ -21,9 +21,6 @@ const MS_PER_DAY = 86400000;
  * Store the SQL statements used for this file together for easy reference
  */
 const SQL = {
-  addFrecentHost:
-    "REPLACE INTO moz_interests_frecent_hosts VALUES(:id, :host, :frecency)",
-
   addInterestHost:
     "INSERT OR IGNORE INTO moz_interests_hosts (interest_id, host) " +
     "VALUES((SELECT id " +
@@ -82,18 +79,15 @@ const SQL = {
     "WHERE interest IN (:interests)",
 
   getRecentHostsForInterests:
-    "SELECT i.interest, h.host, h.frecency " +
+    "SELECT i.interest, ih.host " +
     "FROM moz_interests i " +
-      ", moz_interests_frecent_hosts h " +
       ", moz_interests_hosts ih " +
       ", moz_interests_visits iv " +
     "WHERE i.interest IN (:interests) " +
-      "AND ih.host = h.host " +
       "AND ih.interest_id = i.id " +
       "AND iv.interest_id = i.id " +
       "AND iv.day > :dayCutoff " +
-    "GROUP BY i.interest, h.host " +
-    "ORDER BY h.frecency DESC",
+    "GROUP BY i.interest, ih.host ",
 
   getScoresForInterests:
     "SELECT interest name, " +
@@ -171,27 +165,6 @@ const SQL = {
 let InterestsStorage = {
   //////////////////////////////////////////////////////////////////////////////
   //// InterestsStorage
-
-  /**
-   * Insert a frecent host (a host among 200 most frecent hosts)
-   *
-   * @param   id
-   *          host id
-   * @param   host
-   *          host string
-   * @param   frecency
-   *          host frecency
-   * @returns Promise for when the row is added
-   */
-  addFrecentHost: function IS_addFrecentHost(id, host, frecency) {
-    return this._execute(SQL.addFrecentHost, {
-      params: {
-        id: id,
-        host: host,
-        frecency: frecency,
-      },
-    });
-  },
 
   /**
    * Record the pair of interest and host
@@ -321,7 +294,7 @@ let InterestsStorage = {
    */
   getRecentHostsForInterests: function IS_getRecentHostsForInterests(interests, daysAgo) {
     return this._execute(SQL.getRecentHostsForInterests, {
-      columns: ["interest", "host", "frecency"],
+      columns: ["interest", "host"],
       listParams: {
         interests: interests,
       },
