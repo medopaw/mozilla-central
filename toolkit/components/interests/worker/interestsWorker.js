@@ -5,7 +5,7 @@
 "use strict";
 
 try{
-  importScripts("interestsTextClassifier.js");
+  importScripts("resource://gre/modules/interests/worker/interestsTextClassifier.js");
 }catch(ex){dump("ERROR file:" + ex.fileName + " line:" + ex.lineNumber + " message:" + ex.message);}
 
 function InterestsWorkerError(message) {

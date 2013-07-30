@@ -187,15 +187,15 @@ Interests.prototype = {
   get _worker() {
     if (gServiceEnabled && !("__worker" in this)) {
       // Use a ChromeWorker to workaround Bug 487070.
-      this.__worker = new ChromeWorker("chrome://global/content/interestsWorker.js");
+      this.__worker = new ChromeWorker("resource://gre/modules/interests/worker/interestsWorker.js");
       this.__worker.addEventListener("message", this, false);
       this.__worker.addEventListener("error", this, false);
 
       let scriptLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"].
         getService(Ci.mozIJSSubScriptLoader);
-      let data = scriptLoader.loadSubScript("chrome://global/content/interestsData.js");
-      let model = scriptLoader.loadSubScript("chrome://global/content/interestsClassifierModel.js");
-      let stopwords = scriptLoader.loadSubScript("chrome://global/content/interestsUrlStopwords.js");
+      let data = scriptLoader.loadSubScript("resource://gre/modules/interests/worker/interestsData.js");
+      let model = scriptLoader.loadSubScript("resource://gre/modules/interests/worker/interestsClassifierModel.js");
+      let stopwords = scriptLoader.loadSubScript("resource://gre/modules/interests/worker/interestsUrlStopwords.js");
 
       this.__worker.postMessage({
         message: "bootstrap",
