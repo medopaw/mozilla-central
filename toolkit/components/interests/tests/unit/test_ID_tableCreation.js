@@ -6,7 +6,7 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/InterestsDatabase.jsm");
+Cu.import("resource://gre/modules/interests/InterestsDatabase.jsm");
 
 function run_test() {
   run_next_test();

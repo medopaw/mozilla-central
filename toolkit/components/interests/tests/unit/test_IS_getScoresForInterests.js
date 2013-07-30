@@ -6,7 +6,5 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/InterestsStorage.jsm");
-
 function run_test() {
 }

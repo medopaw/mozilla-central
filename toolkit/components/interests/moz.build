@@ -16,6 +16,8 @@ EXTRA_JS_MODULES = [
 
 DIRS += ['worker']
 
+JS_MODULES_PATH = 'modules/interests'
+
 MODULE = 'interests'
 
 TEST_DIRS += ['tests']

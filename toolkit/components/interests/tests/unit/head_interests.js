@@ -11,7 +11,7 @@ const Cu = Components.utils;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/NetUtil.jsm");
-Cu.import("resource://gre/modules/InterestsStorage.jsm");
+Cu.import("resource://gre/modules/interests/InterestsStorage.jsm");
 
 
 // Import common head.

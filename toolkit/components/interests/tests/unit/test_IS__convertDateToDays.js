@@ -6,8 +6,6 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/InterestsStorage.jsm");
-
 function run_test() {
   // Make sure the current time is rounded
   let nowDays = InterestsStorage._convertDateToDays();

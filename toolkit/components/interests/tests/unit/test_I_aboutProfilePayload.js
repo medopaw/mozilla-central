@@ -8,7 +8,6 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/InterestsStorage.jsm");
 
 const kInterests = ["arts", "banking", "blogging", "business", "career",
 "cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",

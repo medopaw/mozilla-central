@@ -6,8 +6,6 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/InterestsStorage.jsm");
-
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI);
 
 function run_test() {

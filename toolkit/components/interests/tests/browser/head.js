@@ -21,7 +21,7 @@ XPCOMUtils.defineLazyModuleGetter(this, "Promise",
 XPCOMUtils.defineLazyModuleGetter(this, "Task",
                                   "resource://gre/modules/Task.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "InterestsStorage",
-                                  "resource://gre/modules/InterestsStorage.jsm");
+                                  "resource://gre/modules/interests/InterestsStorage.jsm");
 
 /**
  * Allows waiting for an observer notification once.

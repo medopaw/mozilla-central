@@ -13,7 +13,7 @@ const {classes: Cc, interfaces: Ci, results: Cr, utils: Cu} = Components;
 
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
-Cu.import("resource://gre/modules/InterestsDatabase.jsm");
+Cu.import("resource://gre/modules/interests/InterestsDatabase.jsm");
 
 const MS_PER_DAY = 86400000;
 

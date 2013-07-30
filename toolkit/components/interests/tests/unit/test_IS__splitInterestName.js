@@ -6,8 +6,6 @@
 
 "use strict";
 
-Cu.import("resource://gre/modules/InterestsStorage.jsm");
-
 function check(interest, expected) {
   let namespace = InterestsStorage._splitInterestName(interest);
   do_check_eq(JSON.stringify(namespace), JSON.stringify(expected));

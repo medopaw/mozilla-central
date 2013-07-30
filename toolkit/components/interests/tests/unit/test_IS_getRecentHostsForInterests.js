@@ -6,8 +6,6 @@
 
 "use strict";
 
-//Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/InterestsStorage.jsm");
 XPCOMUtils.defineLazyServiceGetter(this, "gHistory", "@mozilla.org/browser/history;1", "mozIAsyncHistory");
 
 function run_test() {

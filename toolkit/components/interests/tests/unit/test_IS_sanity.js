@@ -6,7 +6,6 @@
 
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
-Cu.import("resource://gre/modules/InterestsStorage.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
 let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
