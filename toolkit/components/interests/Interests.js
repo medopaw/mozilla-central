@@ -379,8 +379,7 @@ Interests.prototype = {
                               aData.visitDate,
                               aData.visitCount).then(results => {
       // generate "interest-visit-saved" event
-      let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-      timer.init(timer => {
+      this._setupOneTimeTimer(() => {
         // tell the world we have added this interest
         Services.obs.notifyObservers({wrappedJSObject: aData},
                                      "interest-visit-saved",
@@ -393,7 +392,7 @@ Interests.prototype = {
             this._resolveResubmitHistoryPromise();
           }
         }
-      }, 0, Ci.nsITimer.TYPE_ONE_SHOT);
+      });
     });
   },
 
@@ -431,14 +430,24 @@ Interests.prototype = {
     });
 
     return gatherPromises(promises).then(results => {
-      let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-      timer.init(timer => {
+      this._setupOneTimeTimer(() => {
         // notify observers all interests have been aded
         Services.obs.notifyObservers(null,
                                      "interest-metadata-initialized",
                                      results.length);
-      }, 0, Ci.nsITimer.TYPE_ONE_SHOT);
+      });
     });
+  },
+
+  /**
+   * sets up a one time timer
+   *
+   * @param   callback
+   *          callback to call
+   */
+  _setupOneTimeTimer: function I__setupOneTimeTimer(callback) {
+    let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+    timer.init(timer => callback(timer), 0, Ci.nsITimer.TYPE_ONE_SHOT);
   },
 
   /**
