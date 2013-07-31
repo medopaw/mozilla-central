@@ -23,8 +23,12 @@ const kSplitter = /[^-\w\xco-\u017f\u0380-\u03ff\u0400-\u04ff]+/;
 // bootstrap the worker with data and models
 function bootstrap(aMessageData) {
   //expects : {interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}
-  gTokenizer = new PlaceTokenizer(aMessageData.interestsUrlStopwords);
-  gClassifier = new NaiveBayesClassifier(aMessageData.interestsClassifierModel);
+  if (aMessageData.interestsUrlStopwords) {
+    gTokenizer = new PlaceTokenizer(aMessageData.interestsUrlStopwords);
+  }
+  if (aMessageData.interestsClassifierModel) {
+    gClassifier = new NaiveBayesClassifier(aMessageData.interestsClassifierModel);
+  }
 
   swapRules(aMessageData, true);
 
@@ -115,7 +119,7 @@ function getInterestsForDocument(aMessageData) {
     interests = ruleClassify(aMessageData);
     if (interests.length == 0) {
       // fallback to text classification
-      interests = textClassify(aMessageData);
+      // interests = textClassify(aMessageData);
     }
 
     // remove duplicates
