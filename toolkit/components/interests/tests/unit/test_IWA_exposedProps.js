@@ -32,8 +32,5 @@ add_task(function test_getTopInterests_exposedProps() {
   // Have the sandbox read out certain values
   do_check_eq(doIt("ret[0].diversity"), 0);
   do_check_eq(doIt("ret[0].name"), "cars");
-  do_check_eq(doIt("ret[0].recency.immediate"), true);
-  do_check_eq(doIt("ret[0].recency.recent"), false);
-  do_check_eq(doIt("ret[0].recency.past"), false);
   do_check_eq(doIt("ret[0].score"), 100);
 });

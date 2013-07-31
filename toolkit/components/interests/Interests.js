@@ -294,23 +294,21 @@ Interests.prototype = {
    *          excludeMeta: Boolean true to not include metadata
    *          roundDiversity: Boolean true to round to the closest int
    *          roundScore: Boolean true to normalize scores to the first score
-   *          roundRecency: Boolean true to round to the interest's threshold
    * @returns Promise with an array of interests with added data
    */
   _packageInterests: function I__packageInterests(scoresPromise, options={}) {
     // Wait for the scores to come back with interest names
     return scoresPromise.then(sortedInterests => {
       let names = sortedInterests.map(({name}) => name);
-      // Pass on the scores and add on interest, diversity and bucket data
+      // Pass on the scores and add on interest and diversity
       return [
         sortedInterests,
         InterestsStorage.getInterests(names),
         InterestsStorage.getDiversityForInterests(names, options),
-        InterestsStorage.getBucketsForInterests(names, options),
       ];
     // Wait for all the promises to finish then combine the data
-    }).then(gatherPromises).then(([interests, meta, diversity, buckets]) => {
-      let {excludeMeta, roundDiversity, roundRecency, roundScore} = options;
+    }).then(gatherPromises).then(([interests, meta, diversity]) => {
+      let {excludeMeta, roundDiversity, roundScore} = options;
 
       // Take the first result's score to be the max
       let maxScore = 0;
@@ -331,16 +329,6 @@ Interests.prototype = {
         // Include meta only if not explictly excluded
         if (!excludeMeta) {
           interest.meta = meta[name];
-        }
-
-        // Include recency and round to thresholds if requested
-        interest.recency = buckets[name];
-        if (roundRecency) {
-          // Round each recency bucket to the interest's threshold
-          let {recency} = interest;
-          Object.keys(recency).forEach(bucket => {
-            recency[bucket] = recency[bucket] >= meta[name].threshold;
-          });
         }
 
         // Round the already-included score to a percent [0-100] if requested
@@ -591,7 +579,6 @@ Interests.prototype = {
       excludeMeta: false,
       interestLimit: aInterestProfileLimit,
       roundDiversity: true,
-      roundRecency: true,
       roundScore: true,
     });
 
@@ -679,7 +666,6 @@ InterestsWebAPI.prototype = {
         checkSharable: true,
         excludeMeta: true,
         roundDiversity: true,
-        roundRecency: true,
         roundScore: true,
         requestingHost: this.realHost,
       });
@@ -716,7 +702,6 @@ InterestsWebAPI.prototype = {
         excludeMeta: true,
         interestLimit: aNumber,
         roundDiversity: true,
-        roundRecency: true,
         roundScore: true,
         requestingHost: this.realHost,
       });

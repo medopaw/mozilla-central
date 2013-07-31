@@ -49,12 +49,10 @@ add_task(function test_I_sharedInterestsSetting()
                         {"name":"cars",
                          "score":2.896551724137931,
                          "diversity":25,
-                         "recency":{"immediate":3,"recent":0,"past":0}
                         },
                         {"name":"movies",
                          "score":2.793103448275862,
                          "diversity":25,
-                         "recency":{"immediate":3,"recent":0,"past":0}
                         }
                       ]);
 
@@ -75,12 +73,10 @@ add_task(function test_I_sharedInterestsSetting()
                         {"name":"cars",
                          "score":2.896551724137931,
                          "diversity":25,
-                         "recency":{"immediate":3,"recent":0,"past":0}
                         },
                         {"name":"movies",
                          "score":2.793103448275862,
                          "diversity":25,
-                         "recency":{"immediate":3,"recent":0,"past":0}
                         }
                       ]);
 

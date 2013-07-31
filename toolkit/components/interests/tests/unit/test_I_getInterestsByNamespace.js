@@ -23,9 +23,6 @@ add_task(function test_interestLimit() {
 add_task(function test_roundDiversity() {
 });
 
-add_task(function test_roundRecency() {
-});
-
 add_task(function test_roundScore() {
 });
 
@@ -66,7 +63,7 @@ add_task(function test_getEmptyNamespace()
     excludeMeta: true,
   });
   checkScores([
-    {"name":"technology","score":1,"diversity":25,"recency":{"immediate":1,"recent":0,"past":0}},
+    {"name":"technology","score":1,"diversity":25},
   ], 4, results);
 
   // add another visit for the same category, same day
@@ -77,7 +74,7 @@ add_task(function test_getEmptyNamespace()
     excludeMeta: true,
   });
   checkScores([
-    {"name":"technology","score":2,"diversity":50,"recency":{"immediate":2,"recent":0,"past":0}},
+    {"name":"technology","score":2,"diversity":50},
   ], 4, results);
 
   // add 3 visits for another category, same day, new top interest
@@ -87,8 +84,8 @@ add_task(function test_getEmptyNamespace()
     excludeMeta: true,
   });
   checkScores([
-      {"name":"cars","score":3,"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"technology","score":2,"diversity":50,"recency":{"immediate":2,"recent":0,"past":0}},
+      {"name":"cars","score":3,"diversity":25},
+      {"name":"technology","score":2,"diversity":50},
   ], 3, results);
 
   // add visits for another category, one day ago
@@ -98,9 +95,9 @@ add_task(function test_getEmptyNamespace()
     excludeMeta: true,
   });
   checkScores([
-      {"name":"cars","score":3,"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"technology","score":2,"diversity":50,"recency":{"immediate":2,"recent":0,"past":0}},
+      {"name":"cars","score":3,"diversity":25},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25},
+      {"name":"technology","score":2,"diversity":50},
   ], 2, results);
 
   // get top 2 visits, test result limiting
@@ -110,8 +107,8 @@ add_task(function test_getEmptyNamespace()
     interestLimit: 2,
   });
   checkScores([
-      {"name":"cars","score":3,"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
+      {"name":"cars","score":3,"diversity":25},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25},
   ], 0, results);
 
   // add visits to the same category over multiple days
@@ -123,10 +120,10 @@ add_task(function test_getEmptyNamespace()
     excludeMeta: true,
   });
   checkScores([
-      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28),"diversity":0,"recency":{"immediate":6,"recent":0,"past":0}},
-      {"name":"cars","score":3,"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"technology","score":2,"diversity":50,"recency":{"immediate":2,"recent":0,"past":0}},
+      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28),"diversity":0},
+      {"name":"cars","score":3,"diversity":25},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25},
+      {"name":"technology","score":2,"diversity":50},
   ], 1, results);
 
   // set ignored for an interest
@@ -136,9 +133,9 @@ add_task(function test_getEmptyNamespace()
     excludeMeta: true,
   });
   checkScores([
-      {"name":"cars","score":3,"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"technology","score":2,"diversity":50,"recency":{"immediate":2,"recent":0,"past":0}},
+      {"name":"cars","score":3,"diversity":25},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25},
+      {"name":"technology","score":2,"diversity":50},
   ], 2, results);
 
   // unset ignored for an interest
@@ -148,10 +145,10 @@ add_task(function test_getEmptyNamespace()
     excludeMeta: true,
   });
   checkScores([
-      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28),"diversity":0,"recency":{"immediate":6,"recent":0,"past":0}},
-      {"name":"cars","score":3,"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25,"recency":{"immediate":3,"recent":0,"past":0}},
-      {"name":"technology","score":2,"diversity":50,"recency":{"immediate":2,"recent":0,"past":0}},
+      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28),"diversity":0},
+      {"name":"cars","score":3,"diversity":25},
+      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":25},
+      {"name":"technology","score":2,"diversity":50},
   ], 1, results);
 
   yield InterestsStorage.clearRecentVisits(100);
@@ -164,7 +161,7 @@ add_task(function test_getEmptyNamespace()
   });
   checkScores([], 5, results);
 
-  // add visits within test-threshold, modifying buckets
+  // add visits within test-threshold
   // assuming recent is: 14-28 days, past is > 28 days
   yield InterestsStorage.addInterestVisit("history", {visitTime: (now - MS_PER_DAY*15), visitCount: 3});
   results = yield iServiceObject.getInterestsByNamespace("", {
@@ -172,7 +169,7 @@ add_task(function test_getEmptyNamespace()
     excludeMeta: true,
   });
   checkScores([
-      {"name":"history","score":scoreDecay(3, 15, 28),"diversity":0,"recency":{"immediate":0,"recent":3,"past":2}},
+      {"name":"history","score":scoreDecay(3, 15, 28),"diversity":0},
   ], 4, results);
 });
 
