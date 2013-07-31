@@ -76,7 +76,12 @@ let InterestsDatabase = {
   //////////////////////////////////////////////////////////////////////////////
   //// Fields
 
+  // Sqlite connection
   _dbConnectionPromise: null,
+
+  // Database creation/migration promise, resolved to true in the event of
+  // creation or migration.  Otherwise is resolved to false.
+  _dbMigrationPromiseDeferred: Promise.defer(),
 
   //////////////////////////////////////////////////////////////////////////////
   //// Public API
@@ -91,6 +96,15 @@ let InterestsDatabase = {
       this._dbConnectionPromise = this._openDatabaseConnection();
     }
     return this._dbConnectionPromise;
+  },
+
+  /**
+   * returns a promise resolved to migration flag
+   *
+   * @returns Promise resolving to true upon creation or migration
+  */
+  getDbMigrationPromise: function ID_getDbMigrationPromise() {
+    return this._dbMigrationPromiseDeferred.promise;
   },
 
   //////////////////////////////////////////////////////////////////////////////
@@ -139,9 +153,15 @@ let InterestsDatabase = {
   _dbInit : function ID__dbInit(connection) {
     return connection.getSchemaVersion().then(version => {
       if (version == 0)
-        return this._dbCreate(connection);
+        return this._dbCreate(connection).then(() => {
+          this._dbMigrationPromiseDeferred.resolve(true);
+        });
       else if(version != DB_VERSION)
-        return this._dbMigrate(connection,version);
+        return this._dbMigrate(connection,version).then(() => {
+          this._dbMigrationPromiseDeferred.resolve(true);
+        });
+      else
+        this._dbMigrationPromiseDeferred.resolve(false);
     });
   },
 

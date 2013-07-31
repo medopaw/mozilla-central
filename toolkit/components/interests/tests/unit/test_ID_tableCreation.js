@@ -19,4 +19,9 @@ add_task(function test_ID_tableCreation()
  do_check_true(yield db.tableExists("moz_interests_hosts"));
  do_check_true(yield db.tableExists("moz_interests_visits"));
  do_check_true(yield db.tableExists("moz_interests_shared"));
+
+ yield InterestsDatabase.getDbMigrationPromise().then(result => {
+  // we alsways recreate database, hence migration promise is true
+  do_check_true(result);
+ });
 });

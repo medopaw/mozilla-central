@@ -14,9 +14,11 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/interests/InterestsStorage.jsm");
+Cu.import("resource://gre/modules/interests/InterestsDatabase.jsm");
 Cu.import("resource://gre/modules/PlacesInterestsUtils.jsm");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+Cu.import("resource://gre/modules/Task.jsm");
 
 const gatherPromises = Promise.promised(Array);
 
@@ -32,6 +34,9 @@ const kWindowReady = "toplevel-window-ready";
 // prefs
 const kPrefEnabled = "interests.enabled";
 const kPrefWhitelist = "interests.userDomainWhitelist";
+
+// constants
+const kDaysToResubmit = 31;
 
 const kInterests = ["arts", "banking", "blogging", "business", "career",
 "cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",
@@ -451,6 +456,26 @@ Interests.prototype = {
   },
 
   /**
+   * resubmits history if migration flag is set
+   *
+   * @returns completion promise
+   */
+  _checkForMigration: function I__checkForMigration() {
+    return InterestsDatabase.getDbMigrationPromise().then(flag => {
+      if (flag) {
+        return Task.spawn(function () {
+          yield this._refreshFrecentHosts();
+          yield this.resubmitRecentHistoryVisits(kDaysToResubmit);
+        }.bind(this));
+      }
+      else {
+        // return resolved promise
+        return Promise.resolve();
+      }
+    });
+  },
+
+  /**
    * checks if a host belongs to top hosts
    *
    * @param   host
@@ -513,6 +538,9 @@ Interests.prototype = {
       Services.obs.addObserver(this, kPlacesInitComplete, false);
       Services.obs.addObserver(this, kShutdown, false);
       Services.obs.addObserver(this, kWindowReady, false);
+      this._setupOneTimeTimer(() => {
+        this._checkForMigration();
+      });
     }
     else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
