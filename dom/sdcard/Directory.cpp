@@ -265,15 +265,7 @@ Directory::Enumerate(EntriesCallback& successCallback,
 {
   SDCARD_LOG("in Directory.Enumerate()");
 
-  ErrorCallback* pErrorCallback = nullptr;
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
-
-  // Leave read-only access non-ipc to speed up.
-  nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(mRelpath, false, pCaller);
-  r->Start();
+  EnumerateInternal(false, successCallback, errorCallback);
 }
 
 void
@@ -282,15 +274,7 @@ Directory::EnumerateDeep(EntriesCallback& successCallback,
 {
   SDCARD_LOG("in Directory.EnumerateDeep()");
 
-  ErrorCallback* pErrorCallback = nullptr;
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
-
-  // Leave read-only access non-ipc to speed up.
-  nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(mRelpath, true, pCaller);
-  r->Start();
+  EnumerateInternal(true, successCallback, errorCallback);
 }
 
 already_AddRefed<mozilla::dom::Future>
@@ -378,6 +362,30 @@ Directory::GetEntry(const nsAString& path, const FileSystemFlags& options,
     SDCARD_LOG("in app process");
     SDCardGetParams params(realPath, options.mCreate, options.mExclusive,
         isFile);
+    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
+  }
+}
+
+void
+Directory::EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.EnumerateInternal()");
+
+  ErrorCallback* pErrorCallback = nullptr;
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
+
+  if (XRE_GetProcessType() == GeckoProcessType_Default) {
+    SDCARD_LOG("in b2g process");
+    nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(mRelpath, aDeep, pCaller);
+    r->Start();
+  } else {
+    SDCARD_LOG("in app process");
+    SDCardEnumerateParams params(mRelpath, aDeep);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }

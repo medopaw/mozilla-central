@@ -86,13 +86,13 @@ public:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void RemoveRecursively(VoidCallback& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
-
   void Enumerate (EntriesCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
   void EnumerateDeep (EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
+
+  void RemoveRecursively(VoidCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
@@ -100,6 +100,9 @@ private:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
       bool isDirectory);
+
+  void EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
   void RemoveEntry(const nsAString& path, bool recursive, VoidCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);

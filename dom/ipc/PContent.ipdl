@@ -157,6 +157,7 @@ struct SDCardParentParams
 struct SDCardEnumerateParams
 {
   nsString relpath; // dir
+  bool deep;
 };
 
 struct SDCardRemoveParams

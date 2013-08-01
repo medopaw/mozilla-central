@@ -7,6 +7,7 @@
 #include "SDCardRequestParent.h"
 #include "IPCCopyAndMoveToEvent.h"
 #include "IPCGetEntryEvent.h"
+#include "IPCEnumerateEvent.h"
 #include "IPCRemoveEvent.h"
 #include "SDCardEvent.h"
 #include "Utils.h"
@@ -90,6 +91,11 @@ SDCardRequestParent::Dispatch()
       SDCardEnumerateParams p = mParams;
       SDCARD_LOG("Get direct children of %s",
           NS_ConvertUTF16toUTF8(p.relpath()).get());
+
+      nsCOMPtr<IPCEnumerateEvent> r = new IPCEnumerateEvent(p.relpath(),
+          p.deep(), this);
+      r->Start();
+
       break;
     }
 

@@ -32,6 +32,7 @@ CPP_SOURCES += [
     'GetMetadataWorker.cpp',
     'GetParentWorker.cpp',
     'IPCCopyAndMoveToEvent.cpp',
+    'IPCEnumerateEvent.cpp',
     'IPCEvent.cpp',
     'IPCGetEntryEvent.cpp',
     'IPCRemoveEvent.cpp',
