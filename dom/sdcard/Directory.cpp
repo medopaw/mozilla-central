@@ -246,7 +246,7 @@ Directory::Remove(const nsAString& entry, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Remove()");
-  RemoveEntry(entry, false, successCallback, errorCallback);
+  RemoveInternal(entry, false, successCallback, errorCallback);
 }
 
 void
@@ -256,7 +256,7 @@ Directory::Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successC
   SDCARD_LOG("in Directory.Remove()");
   nsString entryRelpath;
   entry.GetRelpath(entryRelpath);
-  RemoveEntry(entryRelpath, false, successCallback, errorCallback);
+  RemoveInternal(entryRelpath, false, successCallback, errorCallback);
 }
 
 void
@@ -392,7 +392,7 @@ Directory::EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
 }
 
 void
-Directory::RemoveEntry(const nsAString& path, bool recursive, VoidCallback& successCallback,
+Directory::RemoveInternal(const nsAString& path, bool recursive, VoidCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.RemoveEntry()");

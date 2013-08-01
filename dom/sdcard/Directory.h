@@ -104,7 +104,7 @@ private:
   void EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void RemoveEntry(const nsAString& path, bool recursive, VoidCallback& successCallback,
+  void RemoveInternal(const nsAString& path, bool recursive, VoidCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 };
 
