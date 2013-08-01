@@ -14,8 +14,8 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-ReadEntriesWorker::ReadEntriesWorker(const nsAString& aRelpath) :
-    Worker(aRelpath)
+ReadEntriesWorker::ReadEntriesWorker(const nsAString& aRelpath, bool aDeep) :
+    Worker(aRelpath), mDeep(aDeep)
 {
   SDCARD_LOG("construct ReadEntriesWorker");
 }
@@ -28,13 +28,20 @@ ReadEntriesWorker::~ReadEntriesWorker()
 void
 ReadEntriesWorker::Work()
 {
-  SDCARD_LOG("in ReadEntriesWorker.Work()!");
+  SDCARD_LOG("in ReadEntriesWorker.Work()");
   SDCARD_LOG("realPath=%s", NS_ConvertUTF16toUTF8(mRelpath).get());
   MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
 
-  nsresult rv = NS_OK;
+  EnumerateInternal(mFile);
+}
+
+void
+ReadEntriesWorker::EnumerateInternal(nsCOMPtr<nsIFile> aDir)
+{
+  SDCARD_LOG("in ReadEntriesWorker.EnumerateInternal()");
+
   nsCOMPtr<nsISimpleEnumerator> childEnumerator;
-  rv = mFile->GetDirectoryEntries(getter_AddRefs(childEnumerator));
+  nsresult rv = aDir->GetDirectoryEntries(getter_AddRefs(childEnumerator));
   if (NS_FAILED(rv) ) {
     SetError(rv);
     return;
@@ -66,12 +73,36 @@ ReadEntriesWorker::Work()
       return;
     }
 
-    if (isDir || isFile) {
-      nsString childPath;
-      childFile->GetPath(childPath);
-      mResultPaths.AppendElement(childPath);
+    if (mDeep) {
+      if (isDir) {
+        EnumerateInternal(childFile);
+      } else if (isFile) {
+        if (!AppendToResult(childFile)) {
+          break;
+        }
+      }
+    } else {
+      if (isDir || isFile) {
+        if (!AppendToResult(childFile)) {
+          break;
+        }
+      }
     }
   }
+}
+
+bool
+ReadEntriesWorker::AppendToResult(nsCOMPtr<nsIFile> aFile)
+{
+  SDCARD_LOG("in ReadEntriesWorker::AppendToResult()");
+  nsString path;
+  nsresult rv = aFile->GetPath(path);
+  if (NS_FAILED(rv) ) {
+    SetError(rv);
+    return false;
+  }
+  mResultPaths.AppendElement(path);
+  return true;
 }
 
 } // namespace sdcard

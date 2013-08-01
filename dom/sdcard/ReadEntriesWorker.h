@@ -16,13 +16,18 @@ namespace sdcard {
 class ReadEntriesWorker : public Worker
 {
 public:
-  ReadEntriesWorker(const nsAString& aRelpath);
+  ReadEntriesWorker(const nsAString& aRelpath, bool aDeep);
   ~ReadEntriesWorker();
 
   InfallibleTArray<nsString> mResultPaths;
 
 private:
   virtual void Work() MOZ_OVERRIDE;
+  bool mDeep;
+
+private:
+  void EnumerateInternal(nsCOMPtr<nsIFile> aDir);
+  bool AppendToResult(nsCOMPtr<nsIFile> aFile);
 };
 
 } // namespace sdcard

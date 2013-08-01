@@ -17,6 +17,7 @@
 #include "SPCopyAndMoveToEvent.h"
 #include "SPGetEntryEvent.h"
 #include "SPRemoveEvent.h"
+#include "SPReadEntriesEvent.h"
 #include "mozilla/dom/ContentChild.h"
 #include "SDCardRequestChild.h"
 
@@ -256,6 +257,40 @@ Directory::Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successC
   nsString entryRelpath;
   entry.GetRelpath(entryRelpath);
   RemoveEntry(entryRelpath, false, successCallback, errorCallback);
+}
+
+void
+Directory::Enumerate(EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Enumerate()");
+
+  ErrorCallback* pErrorCallback = nullptr;
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
+
+  // Leave read-only access non-ipc to speed up.
+  nsRefPtr<SPReadEntriesEvent> r = new SPReadEntriesEvent(mRelpath, false, pCaller);
+  r->Start();
+}
+
+void
+Directory::EnumerateDeep(EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.EnumerateDeep()");
+
+  ErrorCallback* pErrorCallback = nullptr;
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
+
+  // Leave read-only access non-ipc to speed up.
+  nsRefPtr<SPReadEntriesEvent> r = new SPReadEntriesEvent(mRelpath, true, pCaller);
+  r->Start();
 }
 
 already_AddRefed<mozilla::dom::Future>

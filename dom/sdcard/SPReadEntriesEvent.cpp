@@ -13,8 +13,8 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-SPReadEntriesEvent::SPReadEntriesEvent(const nsAString& aRelpath, Caller* aCaller) :
-    SPEvent(new ReadEntriesWorker(aRelpath), aCaller)
+SPReadEntriesEvent::SPReadEntriesEvent(const nsAString& aRelpath, bool aDeep, Caller* aCaller) :
+    SPEvent(new ReadEntriesWorker(aRelpath, aDeep), aCaller)
 {
   SDCARD_LOG("construct SPReadEntriesEvent");
 }

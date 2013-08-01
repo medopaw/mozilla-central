@@ -15,7 +15,7 @@ namespace sdcard {
 class SPReadEntriesEvent : public SPEvent
 {
 public:
-  SPReadEntriesEvent(const nsAString& aRelpath, Caller* aCaller);
+  SPReadEntriesEvent(const nsAString& aRelpath, bool aDeep, Caller* aCaller);
   ~SPReadEntriesEvent();
 
 private:

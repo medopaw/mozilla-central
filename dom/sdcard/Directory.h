@@ -89,6 +89,12 @@ public:
   void RemoveRecursively(VoidCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
+  void Enumerate (EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
+
+  void EnumerateDeep (EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
+
 private:
   void GetEntry(const nsAString& path, const FileSystemFlags& options,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,

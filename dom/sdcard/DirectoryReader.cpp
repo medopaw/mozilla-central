@@ -62,7 +62,7 @@ DirectoryReader::ReadEntries(EntriesCallback& successCallback,
   // Leave read-only access non-ipc to speed up.
   nsString relpath;
   mEntry->GetRelpath(relpath);
-  nsRefPtr<SPReadEntriesEvent> r = new SPReadEntriesEvent(relpath, pCaller);
+  nsRefPtr<SPReadEntriesEvent> r = new SPReadEntriesEvent(relpath, false, pCaller);
   r->Start();
 }
 
