@@ -85,9 +85,9 @@ SDCardRequestParent::Dispatch()
       break;
     }
 
-  case SDCardParams::TSDCardGetAllParams:
+  case SDCardParams::TSDCardEnumerateParams:
     {
-      SDCardGetAllParams p = mParams;
+      SDCardEnumerateParams p = mParams;
       SDCARD_LOG("Get direct children of %s",
           NS_ConvertUTF16toUTF8(p.relpath()).get());
       break;
