@@ -35,14 +35,8 @@ const kValidMessages = {
 const MS_PER_DAY = 86400000;
 const MICROS_PER_DAY = 86400000000;
 
-// Wrapper around setInterest that puts in some default duration and threshold
-const DEFAULT_DURATION = 14;
-const DEFAULT_THRESHOLD = 5;
 function addInterest(interest) {
-  return InterestsStorage.setInterest(interest, {
-    duration: DEFAULT_DURATION,
-    threshold: DEFAULT_THRESHOLD,
-  });
+  return InterestsStorage.setInterest(interest, {});
 }
 
 function clearInterestsHosts() {
@@ -221,7 +215,14 @@ function unExposeAll(obj) {
 }
 
 function scoreDecay(score, numDays, daysToZero) {
-  return score * (1 - numDays/(daysToZero+1));
+  let decay;
+  if (numDays > daysToZero) {
+    decay = 1;  
+  }
+  else {
+    decay = numDays/(daysToZero+1);
+  }
+  return score * (1 - decay);
 }
 
 Services.prefs.setBoolPref("interests.enabled", true);

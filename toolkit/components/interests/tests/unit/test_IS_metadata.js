@@ -23,60 +23,36 @@ add_task(function test_IS_metadata()
   isIdentical({}, results);
 
   // non-existent interest cases
-  results = yield InterestsStorage.getInterests(["eccentricity"])
+  results = yield InterestsStorage.getInterests(["eccentricity"]);
   isIdentical({}, results);
 
-  results = yield InterestsStorage.getInterests(["eccentricity", "quixotic"])
+  results = yield InterestsStorage.getInterests(["eccentricity", "quixotic"]);
   isIdentical({}, results);
 
-  results = yield InterestsStorage.getInterests(["cars"])
-  isIdentical({"cars": {threshold: DEFAULT_THRESHOLD, duration: DEFAULT_DURATION, sharable: 1}}, results);
+  results = yield InterestsStorage.getInterests(["cars"]);
+  isIdentical({"cars": {sharable: 1}}, results);
 
   // updates work as expected
-  yield InterestsStorage.setInterest("cars", {threshold: 5, duration: 15, sharable: false});
-  results = yield InterestsStorage.getInterests(["cars"])
-  isIdentical({"cars": {threshold: 5, duration: 15, sharable: 0}}, results);
+  yield InterestsStorage.setInterest("cars", {sharable: false});
+  results = yield InterestsStorage.getInterests(["cars"]);
+  isIdentical({"cars": {sharable: 0}}, results);
 
-  // null for option does not change anything
-  yield InterestsStorage.setInterest("cars", {threshold: null, duration: null, ignored: null});
-  results = yield InterestsStorage.getInterests(["cars"])
-  isIdentical({"cars": {threshold: 5, duration: 15, sharable: 0}}, results);
-
-  // not specifying dateUpdate sets today's update time
-  yield InterestsStorage.setInterest("cars", {duration: 7});
-  results = yield InterestsStorage.getInterests(["cars"])
-  isIdentical({"cars": {threshold: 5, duration: 7, sharable: 0}}, results);
-
-  // can set threshold and durations to 0
-  yield InterestsStorage.setInterest("cars", {threshold: 0, duration: 0, sharable: true});
-  results = yield InterestsStorage.getInterests(["cars"])
-  isIdentical({"cars": {threshold: 0, duration: 0, sharable: 1}}, results);
-  yield InterestsStorage.setInterest("cars");
-  results = yield InterestsStorage.getInterests(["cars"])
-  isIdentical({"cars": {threshold: 0, duration: 0, sharable: 1}}, results);
+  yield InterestsStorage.setInterest("cars", {sharable: true});
+  results = yield InterestsStorage.getInterests(["cars"]);
+  isIdentical({"cars": {sharable: 1}}, results);
 
 
   // INSERT cases
 
   // calling with an interest that doesn't exist
-  let didFail = false;
-  yield InterestsStorage.setInterest("idontexist", {}).then(null, () => didFail = true);
-  do_check_true(didFail);
   results = yield InterestsStorage.getInterests(["idontexist"]);
   isIdentical([], results);
 
-  // inserting with parameters works
-  results = yield InterestsStorage.getInterests(["movies"]);
-  isIdentical({"movies": {threshold: DEFAULT_THRESHOLD, duration: DEFAULT_DURATION, sharable: 1}}, results);
-  yield InterestsStorage.setInterest("movies", {threshold:14, duration: 5});
-  results = yield InterestsStorage.getInterests(["movies"])
-  isIdentical({"movies": {threshold: 14, duration: 5, sharable: 1}}, results);
-
   // > 1 interests
   results = yield InterestsStorage.getInterests(["movies", "cars"]);
-  isIdentical({"cars": {threshold: 0, duration: 0, sharable: 1}, "movies": {threshold: 14, duration: 5, sharable: 1}}, results);
+  isIdentical({"cars": {sharable: 1}, "movies": {sharable: 1}}, results);
 
   // multiple interests, one doesn't exist
   results = yield InterestsStorage.getInterests(["movies", "cars", "idontexist"]);
-  isIdentical({"cars": {threshold: 0, duration: 0, sharable: 1}, "movies": {threshold: 14, duration: 5, sharable: 1}}, results);
+  isIdentical({"cars": {sharable: 1}, "movies": {sharable: 1}}, results);
 });

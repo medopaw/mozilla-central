@@ -29,10 +29,10 @@ add_task(function test_IS_sanity() {
     do_check_true(itemsHave(data,"computers"));
   });
 
-  thePromise = InterestsStorage.getBucketsForInterests(["cars" , "computers"]);
+  thePromise = InterestsStorage.getScoresForInterests(["cars" , "computers"]);
   yield thePromise.then(function(data) {
-    do_check_eq(data["cars"]["immediate"], 2);
-    do_check_eq(data["computers"]["immediate"], 1);
+    do_check_eq(data[0].score, 2);
+    do_check_eq(data[1].score, 1);
   });
 
 });

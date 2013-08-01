@@ -43,24 +43,6 @@ const SQL = {
     "DELETE FROM moz_interests_visits " +
     "WHERE day > :dayCutoff",
 
-  getBucketsForInterests:
-    "SELECT interest, " +
-           "SUM(CASE WHEN day > :today - duration THEN visits " +
-                    "ELSE 0 END) * " +
-             "(NOT IFNULL(:checkSharable, 0) OR sharable) immediate, " +
-           "SUM(CASE WHEN day > :today - duration * 2 AND " +
-                         "day <= :today - duration THEN visits " +
-                    "ELSE 0 END) * " +
-             "(NOT IFNULL(:checkSharable, 0) OR sharable) recent, " +
-           "SUM(CASE WHEN day <= :today - duration * 2 THEN visits " +
-                    "ELSE 0 END) * " +
-             "(NOT IFNULL(:checkSharable, 0) OR sharable) past " +
-    "FROM moz_interests " +
-    "LEFT JOIN moz_interests_visits " +
-    "ON interest_id = id " +
-    "WHERE interest IN (:interests) " +
-    "GROUP BY id",
-
   getDiversityForInterests:
     "SELECT interest, " +
            "COUNT(interest_id) * 100.0 / " +
@@ -121,14 +103,6 @@ const SQL = {
             "WHERE interest = :interest), " +
            ":interest, " +
            ":namespace, " +
-           "IFNULL(:duration, " +
-                  "(SELECT duration " +
-                   "FROM moz_interests " +
-                   "WHERE interest = :interest)), " +
-           "IFNULL(:threshold, " +
-                  "(SELECT threshold " +
-                   "FROM moz_interests " +
-                   "WHERE interest = :interest)), " +
            "IFNULL(:sharable, " +
                   "(SELECT sharable " +
                    "FROM moz_interests " +
@@ -221,30 +195,6 @@ let InterestsStorage = {
   },
 
   /**
-   * Generate buckets data for interests
-   *
-   * @param   interests
-   *          Array of interest strings
-   * @param   [optional] options {see below}
-   *          checkSharable: Boolean for 0-buckets for unshared defaulting false
-   * @returns Promise with each interest as keys on an object with bucket data
-   */
-  getBucketsForInterests: function IS_getBucketsForInterests(interests, options={}) {
-    let {checkSharable} = options;
-    return this._execute(SQL.getBucketsForInterests, {
-      columns: ["immediate", "recent", "past"],
-      key: "interest",
-      listParams: {
-        interests: interests,
-      },
-      params: {
-        checkSharable: checkSharable,
-        today: this._convertDateToDays(),
-      },
-    });
-  },
-
-  /**
    * Compute diversity values for interests
    *
    * @param   interests
@@ -256,7 +206,7 @@ let InterestsStorage = {
   getDiversityForInterests: function IS_getDiversityForInterests(interests, options={}) {
     let {checkSharable} = options;
     return this._execute(SQL.getDiversityForInterests, {
-      columns: ["diversity"],
+      columns: "diversity",
       key: "interest",
       listParams: {
         interests: interests,
@@ -275,7 +225,7 @@ let InterestsStorage = {
    */
   getInterests: function IS_getInterests(interests) {
     return this._execute(SQL.getInterests, {
-      columns: ["duration", "sharable", "threshold"],
+      columns: ["sharable"],
       key: "interest",
       listParams: {
         interests: interests,
@@ -356,20 +306,16 @@ let InterestsStorage = {
    * @param   interest
    *          Full interest name with namespace to set
    * @param   [optional] metadata {see below}
-   *          duration: Number of days of visits to include in buckets
    *          sharable: Boolean user preference if the interest can be shared
-   *          threshold: Number of visits in a bucket to signal recency interest
    * @returns Promise for when the interest data is set
    */
   setInterest: function IS_setInterest(interest, metadata={}) {
-    let {duration, sharable, threshold} = metadata;
+    let {sharable} = metadata;
     return this._execute(SQL.setInterest, {
       params: {
-        duration: duration,
         interest: interest,
         namespace: this._splitInterestName(interest)[0],
         sharable: sharable,
-        threshold: threshold,
       },
     });
   },

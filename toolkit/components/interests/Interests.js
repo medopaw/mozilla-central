@@ -427,13 +427,6 @@ Interests.prototype = {
   _initInterestMeta: function I__initInterestMeta() {
     let promises = [];
 
-    kInterests.forEach(item => {
-      promises.push(InterestsStorage.setInterest(item, {
-        duration: 14,
-        threshold: 100,
-      }));
-    });
-
     return gatherPromises(promises).then(results => {
       this._setupOneTimeTimer(() => {
         // notify observers all interests have been aded

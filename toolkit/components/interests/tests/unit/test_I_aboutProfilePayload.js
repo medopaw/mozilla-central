@@ -62,7 +62,6 @@ add_task(function test_setInterestSharable() {
     excludeMeta: false,
     interestLimit: kInterests.length,
     roundDiversity: true,
-    roundRecency: true,
     roundScore: true,
   });
   expected = expected.slice(0,1);

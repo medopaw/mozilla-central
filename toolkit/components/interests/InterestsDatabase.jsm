@@ -30,8 +30,6 @@ const SCHEMA = {
       "  id INTEGER PRIMARY KEY" +
       ", interest TEXT NOT NULL UNIQUE" +
       ", namespace TEXT NOT NULL" +
-      ", duration INTEGER NOT NULL" +
-      ", threshold INTEGER NOT NULL" +
       ", sharable INTEGER DEFAULT 1 NOT NULL" +
       ")"
     ,

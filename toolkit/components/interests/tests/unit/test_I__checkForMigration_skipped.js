@@ -33,10 +33,8 @@ add_task(function test_I__checkForMigration_skipped() {
   // run the service test for Migration, since the database already exists
   // no history will be re-processed and buckets will be empty
   yield iServiceObject._checkForMigration();
-  yield InterestsStorage.getBucketsForInterests(["cars"]).then(data => {
-        do_check_eq(data["cars"]["immediate"], 0);
-        do_check_eq(data["cars"]["recent"], 0);
-        do_check_eq(data["cars"]["past"], 0);
+  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+        do_check_eq(data[0]["score"], 0);
   });
 });
 

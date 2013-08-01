@@ -26,7 +26,6 @@ add_task(function test_InterestWebAPI_getInterests()
                                      "http://www.netflix.com/",
                                      "http://www.samsung.com/"]);
 
-  // interests set with default values for threshold and duration
   yield addInterest("cars");
   yield addInterest("movies");
   yield addInterest("video-games");
@@ -35,7 +34,7 @@ add_task(function test_InterestWebAPI_getInterests()
   yield addInterest("computers");
 
   // this interest has custom values for duration and threshold
-  yield InterestsStorage.setInterest("technology", {duration: 20, threshold: 10});
+  yield InterestsStorage.setInterest("technology");
   /*
   */
 

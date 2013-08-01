@@ -20,7 +20,7 @@ add_task(function test_InterestsStorage_getTopInterest()
   yield addInterest("technology");
   yield addInterest("video-games");
   yield addInterest("history");
-  yield InterestsStorage.setInterest("ignored-interest", {sharable: false, duration: DEFAULT_DURATION, threshold: DEFAULT_THRESHOLD});
+  yield InterestsStorage.setInterest("ignored-interest", {sharable: false});
 
   // make a bunch of insertions for a number of days
   let now = Date.now();

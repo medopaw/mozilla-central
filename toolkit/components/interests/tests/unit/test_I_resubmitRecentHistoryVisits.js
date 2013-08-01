@@ -21,15 +21,15 @@ add_task(function test_ResubmitHistoryVisits() {
   let myDef = Promise.defer();
   yield InterestsStorage.clearRecentVisits(100).then(data => {
     // test that interests are all empty
-    InterestsStorage.getBucketsForInterests(["cars" , "computers","movies"]).then(function(data) {
+    InterestsStorage.getScoresForInterests(["cars" , "computers","movies"]).then(function(data) {
       myDef.resolve(data);
     });
   });
 
   yield myDef.promise.then(function(data) {
-    do_check_eq(data["cars"]["immediate"], 0);
-    do_check_eq(data["computers"]["immediate"], 0);
-    do_check_eq(data["movies"]["immediate"], 0);
+    do_check_eq(data[0]["score"], 0);
+    do_check_eq(data[1]["score"], 0);
+    do_check_eq(data[2]["score"], 0);
   });
 
   // the database is clean - repopulate it
@@ -43,6 +43,11 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
+  // baseline, let's make sure there is no history
+  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+        do_check_eq(data[0]["score"], 0);
+  });
+
   let promise1 = iServiceObject.resubmitRecentHistoryVisits(60);
   let promise2 = iServiceObject.resubmitRecentHistoryVisits(60);
   let promise3 = iServiceObject.resubmitRecentHistoryVisits(60);
@@ -54,10 +59,8 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promise1;
 
   // so we have processed the history, let's make sure we get interests back
-  yield InterestsStorage.getBucketsForInterests(["cars"]).then(data => {
-        do_check_eq(data["cars"]["immediate"], 1);
-        do_check_eq(data["cars"]["recent"], 2);
-        do_check_eq(data["cars"]["past"], 3);
+  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+        do_check_true(data[0]["score"] != 0);
   });
 });
 
@@ -76,11 +79,9 @@ add_task(function test_ResubmitLocalHostFailure() {
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
   yield iServiceObject.resubmitRecentHistoryVisits(60);
-  yield InterestsStorage.getBucketsForInterests(["cars"]).then(data => {
-        do_check_true(data["cars"] != null);
-        do_check_eq(data["cars"]["immediate"], 2);
-        do_check_eq(data["cars"]["recent"], 2);
-        do_check_eq(data["cars"]["past"], 3);
+  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+        do_check_true(data[0] != null);
+        do_check_true(data[0]["scores"] != 0);
   });
 });
 

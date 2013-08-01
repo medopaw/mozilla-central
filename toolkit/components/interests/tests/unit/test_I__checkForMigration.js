@@ -27,15 +27,18 @@ add_task(function test_I__checkForMigration() {
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
+  // no migrations, no scores
+  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+        do_check_eq(data[0]["score"], 0);
+  });
+
   // run the service test for Migration, since the database was created
   // we should have populated interests database from history
   yield iServiceObject._checkForMigration();
 
-  // check that you have correct buckets
-  yield InterestsStorage.getBucketsForInterests(["cars"]).then(data => {
-        do_check_eq(data["cars"]["immediate"], 1);
-        do_check_eq(data["cars"]["recent"], 2);
-        do_check_eq(data["cars"]["past"], 3);
+  // check that you have non-zero scores
+  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+        do_check_true(data[0]["score"] != 0);
   });
 });
 
