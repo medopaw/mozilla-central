@@ -12,11 +12,11 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-class SPReadEntriesEvent : public SPEvent
+class SPEnumerateEvent : public SPEvent
 {
 public:
-  SPReadEntriesEvent(const nsAString& aRelpath, bool aDeep, Caller* aCaller);
-  ~SPReadEntriesEvent();
+  SPEnumerateEvent(const nsAString& aRelpath, bool aDeep, Caller* aCaller);
+  ~SPEnumerateEvent();
 
 private:
   virtual void OnSuccess() MOZ_OVERRIDE;

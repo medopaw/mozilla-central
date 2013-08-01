@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "ReadEntriesWorker.h"
+#include "EnumerateWorker.h"
 #include "nsISimpleEnumerator.h"
 #include "Entry.h"
 #include "nsIFile.h"
@@ -14,21 +14,21 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-ReadEntriesWorker::ReadEntriesWorker(const nsAString& aRelpath, bool aDeep) :
+EnumerateWorker::EnumerateWorker(const nsAString& aRelpath, bool aDeep) :
     Worker(aRelpath), mDeep(aDeep)
 {
-  SDCARD_LOG("construct ReadEntriesWorker");
+  SDCARD_LOG("construct EnumerateWorker");
 }
 
-ReadEntriesWorker::~ReadEntriesWorker()
+EnumerateWorker::~EnumerateWorker()
 {
-  SDCARD_LOG("destruct ReadEntriesWorker");
+  SDCARD_LOG("destruct EnumerateWorker");
 }
 
 void
-ReadEntriesWorker::Work()
+EnumerateWorker::Work()
 {
-  SDCARD_LOG("in ReadEntriesWorker.Work()");
+  SDCARD_LOG("in EnumerateWorker.Work()");
   SDCARD_LOG("realPath=%s", NS_ConvertUTF16toUTF8(mRelpath).get());
   MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
 
@@ -36,9 +36,9 @@ ReadEntriesWorker::Work()
 }
 
 void
-ReadEntriesWorker::EnumerateInternal(nsCOMPtr<nsIFile> aDir)
+EnumerateWorker::EnumerateInternal(nsCOMPtr<nsIFile> aDir)
 {
-  SDCARD_LOG("in ReadEntriesWorker.EnumerateInternal()");
+  SDCARD_LOG("in EnumerateWorker.EnumerateInternal()");
 
   nsCOMPtr<nsISimpleEnumerator> childEnumerator;
   nsresult rv = aDir->GetDirectoryEntries(getter_AddRefs(childEnumerator));
@@ -92,9 +92,9 @@ ReadEntriesWorker::EnumerateInternal(nsCOMPtr<nsIFile> aDir)
 }
 
 bool
-ReadEntriesWorker::AppendToResult(nsCOMPtr<nsIFile> aFile)
+EnumerateWorker::AppendToResult(nsCOMPtr<nsIFile> aFile)
 {
-  SDCARD_LOG("in ReadEntriesWorker::AppendToResult()");
+  SDCARD_LOG("in EnumerateWorker::AppendToResult()");
   nsString path;
   nsresult rv = aFile->GetPath(path);
   if (NS_FAILED(rv) ) {

@@ -9,7 +9,7 @@
 #include "nsContentUtils.h"
 #include "Caller.h"
 #include "Window.h"
-#include "SPReadEntriesEvent.h"
+#include "SPEnumerateEvent.h"
 #include "Directory.h"
 #include "Utils.h"
 
@@ -62,7 +62,7 @@ DirectoryReader::ReadEntries(EntriesCallback& successCallback,
   // Leave read-only access non-ipc to speed up.
   nsString relpath;
   mEntry->GetRelpath(relpath);
-  nsRefPtr<SPReadEntriesEvent> r = new SPReadEntriesEvent(relpath, false, pCaller);
+  nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(relpath, false, pCaller);
   r->Start();
 }
 

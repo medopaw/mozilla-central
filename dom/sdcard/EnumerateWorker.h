@@ -13,11 +13,11 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-class ReadEntriesWorker : public Worker
+class EnumerateWorker : public Worker
 {
 public:
-  ReadEntriesWorker(const nsAString& aRelpath, bool aDeep);
-  ~ReadEntriesWorker();
+  EnumerateWorker(const nsAString& aRelpath, bool aDeep);
+  ~EnumerateWorker();
 
   InfallibleTArray<nsString> mResultPaths;
 

@@ -4,8 +4,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "SPReadEntriesEvent.h"
-#include "ReadEntriesWorker.h"
+#include "SPEnumerateEvent.h"
+#include "EnumerateWorker.h"
 #include "Caller.h"
 #include "Utils.h"
 
@@ -13,23 +13,23 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-SPReadEntriesEvent::SPReadEntriesEvent(const nsAString& aRelpath, bool aDeep, Caller* aCaller) :
-    SPEvent(new ReadEntriesWorker(aRelpath, aDeep), aCaller)
+SPEnumerateEvent::SPEnumerateEvent(const nsAString& aRelpath, bool aDeep, Caller* aCaller) :
+    SPEvent(new EnumerateWorker(aRelpath, aDeep), aCaller)
 {
-  SDCARD_LOG("construct SPReadEntriesEvent");
+  SDCARD_LOG("construct SPEnumerateEvent");
 }
 
-SPReadEntriesEvent::~SPReadEntriesEvent()
+SPEnumerateEvent::~SPEnumerateEvent()
 {
-  SDCARD_LOG("destruct SPReadEntriesEvent");
+  SDCARD_LOG("destruct SPEnumerateEvent");
 }
 
 void
-SPReadEntriesEvent::OnSuccess()
+SPEnumerateEvent::OnSuccess()
 {
-  SDCARD_LOG("in SPReadEntriesEvent.OnSuccess()!");
+  SDCARD_LOG("in SPEnumerateEvent.OnSuccess()!");
   mCaller->CallEntriesCallback(
-      static_cast<ReadEntriesWorker*>(mWorker.get())->mResultPaths);
+      static_cast<EnumerateWorker*>(mWorker.get())->mResultPaths);
 }
 
 } // namespace sdcard

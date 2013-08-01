@@ -17,7 +17,7 @@
 #include "SPCopyAndMoveToEvent.h"
 #include "SPGetEntryEvent.h"
 #include "SPRemoveEvent.h"
-#include "SPReadEntriesEvent.h"
+#include "SPEnumerateEvent.h"
 #include "mozilla/dom/ContentChild.h"
 #include "SDCardRequestChild.h"
 
@@ -272,7 +272,7 @@ Directory::Enumerate(EntriesCallback& successCallback,
   nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
 
   // Leave read-only access non-ipc to speed up.
-  nsRefPtr<SPReadEntriesEvent> r = new SPReadEntriesEvent(mRelpath, false, pCaller);
+  nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(mRelpath, false, pCaller);
   r->Start();
 }
 
@@ -289,7 +289,7 @@ Directory::EnumerateDeep(EntriesCallback& successCallback,
   nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
 
   // Leave read-only access non-ipc to speed up.
-  nsRefPtr<SPReadEntriesEvent> r = new SPReadEntriesEvent(mRelpath, true, pCaller);
+  nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(mRelpath, true, pCaller);
   r->Start();
 }
 
