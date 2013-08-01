@@ -242,6 +242,24 @@ Directory::Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName
 }
 
 void
+Directory::Enumerate(EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Enumerate()");
+
+  EnumerateInternal(false, successCallback, errorCallback);
+}
+
+void
+Directory::EnumerateDeep(EntriesCallback& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.EnumerateDeep()");
+
+  EnumerateInternal(true, successCallback, errorCallback);
+}
+
+void
 Directory::Remove(const nsAString& entry, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
@@ -260,21 +278,21 @@ Directory::Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successC
 }
 
 void
-Directory::Enumerate(EntriesCallback& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::RemoveDeep(const nsAString& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in Directory.Enumerate()");
-
-  EnumerateInternal(false, successCallback, errorCallback);
+  SDCARD_LOG("in Directory.RemoveDeep()");
+  RemoveInternal(entry, true, successCallback, errorCallback);
 }
 
 void
-Directory::EnumerateDeep(EntriesCallback& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::RemoveDeep(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in Directory.EnumerateDeep()");
-
-  EnumerateInternal(true, successCallback, errorCallback);
+  SDCARD_LOG("in Directory.RemoveDeep()");
+  nsString entryRelpath;
+  entry.GetRelpath(entryRelpath);
+  RemoveInternal(entryRelpath, true, successCallback, errorCallback);
 }
 
 already_AddRefed<mozilla::dom::Future>
@@ -392,10 +410,10 @@ Directory::EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
 }
 
 void
-Directory::RemoveInternal(const nsAString& path, bool recursive, VoidCallback& successCallback,
+Directory::RemoveInternal(const nsAString& path, bool deep, VoidCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in Directory.RemoveEntry()");
+  SDCARD_LOG("in Directory.RemoveDeep()");
 
   ErrorCallback* pErrorCallback = nullptr;
   if (errorCallback.WasPassed()) {
@@ -416,11 +434,11 @@ Directory::RemoveInternal(const nsAString& path, bool recursive, VoidCallback& s
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPRemoveEvent> r = new SPRemoveEvent(entryRelpath, recursive, pCaller);
+    nsRefPtr<SPRemoveEvent> r = new SPRemoveEvent(entryRelpath, deep, pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardRemoveParams params(entryRelpath, recursive);
+    SDCardRemoveParams params(entryRelpath, deep);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }

@@ -103,10 +103,10 @@ SDCardRequestParent::Dispatch()
     {
       SDCardRemoveParams p = mParams;
       SDCARD_LOG("Remove %s with recursive=%d",
-          NS_ConvertUTF16toUTF8(p.relpath()).get(), p.recursive());
+          NS_ConvertUTF16toUTF8(p.relpath()).get(), p.deep());
 
       nsCOMPtr<IPCRemoveEvent> r = new IPCRemoveEvent(p.relpath(),
-          p.recursive(), this);
+          p.deep(), this);
       r->Start();
 
       break;

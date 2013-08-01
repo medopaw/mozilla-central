@@ -163,7 +163,7 @@ struct SDCardEnumerateParams
 struct SDCardRemoveParams
 {
   nsString relpath;
-  bool recursive;
+  bool deep;
 };
 
 union SDCardParams

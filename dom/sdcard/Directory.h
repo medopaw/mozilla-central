@@ -75,6 +75,12 @@ public:
   void Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
+  void RemoveDeep(const nsAString& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
+  void RemoveDeep(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
   void GetFile(const nsAString& path, const FileSystemFlags& options,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
@@ -104,7 +110,7 @@ private:
   void EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void RemoveInternal(const nsAString& path, bool recursive, VoidCallback& successCallback,
+  void RemoveInternal(const nsAString& path, bool deep, VoidCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 };
 
