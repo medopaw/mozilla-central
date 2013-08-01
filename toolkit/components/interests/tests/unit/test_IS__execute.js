@@ -20,10 +20,19 @@ add_task(function test_promise() {
 add_task(function test_column() {
   LOG("Check reading out a single column as a value");
   let ret = yield InterestsStorage._execute("SELECT 2 a", {
-    columns: ["a"],
+    columns: "a",
   });
   do_check_eq(ret.length, 1);
   do_check_eq(ret[0], 2);
+});
+
+add_task(function test_column_array() {
+  LOG("Check reading out a single column as a value");
+  let ret = yield InterestsStorage._execute("SELECT 2 a", {
+    columns: ["a"],
+  });
+  do_check_eq(ret.length, 1);
+  do_check_eq(ret[0].a, 2);
 });
 
 add_task(function test_columns() {
@@ -65,10 +74,19 @@ add_task(function test_key() {
 add_task(function test_key_column() {
   LOG("Check reading out a key and column");
   let ret = yield InterestsStorage._execute("SELECT 'hi' k, 2 a", {
-    columns: ["a"],
+    columns: "a",
     key: "k",
   });
   do_check_eq(ret.hi, 2);
+});
+
+add_task(function test_key_column_array() {
+  LOG("Check reading out a key and column");
+  let ret = yield InterestsStorage._execute("SELECT 'hi' k, 2 a", {
+    columns: ["a"],
+    key: "k",
+  });
+  do_check_eq(ret.hi.a, 2);
 });
 
 add_task(function test_key_columns() {
@@ -110,7 +128,7 @@ add_task(function test_onRow() {
   LOG("Check passing in onRow callback");
   let rows = [];
   let ret = yield InterestsStorage._execute("SELECT 2 a", {
-    columns: ["a"],
+    columns: "a",
     onRow: v => {
       rows.push(v);
     }

@@ -55,7 +55,7 @@ function getHostsForInterest(interest) {
   return InterestsStorage._execute(
     "SELECT ih.host AS host FROM moz_interests i, moz_interests_hosts ih " +
     "WHERE i.interest = :interest AND i.id = ih.interest_id", {
-    columns: ["host"],
+    columns: "host",
     params: {
       interest: interest,
     },
@@ -66,7 +66,7 @@ function getInterestsForHost(host) {
   return InterestsStorage._execute(
     "SELECT interest FROM moz_interests i, moz_interests_hosts ih " +
     "WHERE ih.host = :host AND i.id = ih.interest_id", {
-    columns: ["interest"],
+    columns: "interest",
     params: {
       host: host,
     },

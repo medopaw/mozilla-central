@@ -491,8 +491,8 @@ let InterestsStorage = {
         let result;
         if (columns != null) {
           // For just a single column, make the result that column
-          if (columns.length == 1) {
-            result = row.getResultByName(columns[0]);
+	  if (typeof columns == "string") {
+            result = row.getResultByName(columns);
           }
           // For multiple columns, put as valyes on an object
           else {
