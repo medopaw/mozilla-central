@@ -16,12 +16,12 @@ function run_test() {
 
 add_task(function test_ResubmitHistoryVisits() {
 
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","movies","computers"]);
+  yield promiseAddUrlInterestsVisit("http://www.autoblog.com/", ["Autos","movies","computers"]);
 
   let myDef = Promise.defer();
   yield InterestsStorage.clearRecentVisits(100).then(data => {
     // test that interests are all empty
-    InterestsStorage.getScoresForInterests(["cars" , "computers","movies"]).then(function(data) {
+    InterestsStorage.getScoresForInterests(["Autos" , "computers","movies"]).then(function(data) {
       myDef.resolve(data);
     });
   });
@@ -33,18 +33,18 @@ add_task(function test_ResubmitHistoryVisits() {
   });
 
   // the database is clean - repopulate it
-  // clean places tables and re-insert cars.com
+  // clean places tables and re-insert autoblog.com
   let microNow = Date.now() * 1000;
   yield promiseClearHistory();
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
   // baseline, let's make sure there is no history
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_eq(data[0]["score"], 0);
   });
 
@@ -59,7 +59,7 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promise1;
 
   // so we have processed the history, let's make sure we get interests back
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_true(data[0]["score"] != 0);
   });
 });
@@ -67,19 +67,19 @@ add_task(function test_ResubmitHistoryVisits() {
 add_task(function test_ResubmitLocalHostFailure() {
 
   yield promiseClearHistoryAndVisits();
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars"]);
+  yield promiseAddUrlInterestsVisit("http://www.autoblog.com/", ["Autos"]);
 
   let microNow = Date.now() * 1000;
   yield promiseAddVisits({uri: NetUtil.newURI("http://localhost/"), visitDate: microNow});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
   yield iServiceObject.resubmitRecentHistoryVisits(60);
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_true(data[0] != null);
         do_check_true(data[0]["scores"] != 0);
   });
@@ -99,11 +99,11 @@ add_task(function test_ResubmitEmptyHistoryFailure() {
 add_task(function test_ResubmitPrematurePromiseResolvedFailure() {
 
   yield promiseClearHistoryAndVisits();
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars"]);
+  yield promiseAddUrlInterestsVisit("http://www.autoblog.com/", ["Autos"]);
 
   let microNow = Date.now() * 1000;
   for (let i=0; i<30; i++) {
-    yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - i*MICROS_PER_DAY});
+    yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - i*MICROS_PER_DAY});
   }
 
   // setup observer

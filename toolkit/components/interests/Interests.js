@@ -38,15 +38,13 @@ const kPrefWhitelist = "interests.userDomainWhitelist";
 // constants
 const kDaysToResubmit = 31;
 
-const kInterests = ["arts", "banking", "blogging", "business", "career",
-"cars", "clothes", "computers", "consumer-electronics", "cuisine", "dance",
-"discounts", "drinks", "education", "email", "entertainment", "family",
-"fashion", "finance", "food", "games", "government", "health", "history",
-"hobby", "home", "image-sharing", "law", "maps", "marketing", "men",
-"motorcycles", "movies", "music", "news", "outdoors", "pets", "photography",
-"politics", "radio", "reading", "real-estate", "reference", "relationship",
-"religion", "reviews", "science", "shoes", "shopping", "society", "sports",
-"technology", "travel", "tv", "video-games", "weather", "women", "writing"];
+const kInterests = ["Android", "Apple", "Arts", "Autos", "Baseball", "Basketball",
+"Boxing", "Business", "Cooking", "Design", "Do-It-Yourself", "Entrepreneur",
+"Fashion-Men", "Fashion-Women", "Football", "Gardening", "Golf", "Gossip",
+"Health-Men", "Health-Women", "Hockey", "Home-Design", "Humor", "Ideas",
+"Mixed-Martial-Arts", "Movies", "Music", "Parenting", "Photography", "Politics",
+"Programming", "Science", "Soccer", "Sports", "Technology", "Tennis", "Travel",
+"Television", "Video-Games", "Weddings"];
 
 let gServiceEnabled = Services.prefs.getBoolPref(kPrefEnabled);
 let gInterestsService = null;

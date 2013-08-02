@@ -18,22 +18,22 @@ add_task(function test_I__checkForMigration_skipped() {
   let file = do_get_file("empty.interests.database.sqlite");
   file.copyToFollowingLinks(gProfD, "interests.sqlite");
 
-  yield addInterest("cars");
+  yield addInterest("Autos");
 
   // populate history
   let microNow = Date.now() * 1000;
   yield promiseClearHistory();
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
   // run the service test for Migration, since the database already exists
   // no history will be re-processed and buckets will be empty
   yield iServiceObject._checkForMigration();
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_eq(data[0]["score"], 0);
   });
 });

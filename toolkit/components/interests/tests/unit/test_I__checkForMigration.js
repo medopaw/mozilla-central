@@ -15,20 +15,20 @@ function run_test() {
 add_task(function test_I__checkForMigration() {
 
   // add an interest
-  yield addInterest("cars");
+  yield addInterest("Autos");
 
   // populate history
   let microNow = Date.now() * 1000;
   yield promiseClearHistory();
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.cars.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
   // no migrations, no scores
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_eq(data[0]["score"], 0);
   });
 
@@ -37,7 +37,7 @@ add_task(function test_I__checkForMigration() {
   yield iServiceObject._checkForMigration();
 
   // check that you have non-zero scores
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(data => {
+  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_true(data[0]["score"] != 0);
   });
 });
