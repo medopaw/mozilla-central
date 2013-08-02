@@ -69,14 +69,14 @@ GetEntryWorker::Work()
       SetError(rv);
       return;
     }
-    if (!(isFile || isDirectory)
+/*    if (!(isFile || isDirectory)
         || (mIsFile && isDirectory)
         || (!mIsFile && isFile)) {
       SDCARD_LOG(
           "If create is not true and the path exists, but is a directory/file, getFile/getDirectory must fail.");
       SetError(Error::DOM_ERROR_TYPE_MISMATCH);
       return;
-    }
+    }*/
   }
 
   if (mCreate && !exists) {

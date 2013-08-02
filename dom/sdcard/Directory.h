@@ -45,6 +45,10 @@ public:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
+  void Get(const nsAString& path,
+      const Optional< OwningNonNull<EntryCallback> >& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
+
   void Rename (const nsAString& oldName, const nsAString& newName,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);

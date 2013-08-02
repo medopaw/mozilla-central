@@ -143,6 +143,18 @@ Directory::CreateDirectory(const nsAString& name,
 }
 
 void
+Directory::Get(const nsAString& path,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Get()");
+  FileSystemFlags options;
+  options.mCreate = false;
+  options.mExclusive = false;
+  GetEntry(path, options, successCallback, errorCallback, false);
+}
+
+void
 Directory::Rename(const nsAString& oldName, const nsAString& newName,
   const Optional< OwningNonNull<EntryCallback> >& successCallback,
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
@@ -413,7 +425,7 @@ void
 Directory::RemoveInternal(const nsAString& path, bool deep, VoidCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
-  SDCARD_LOG("in Directory.RemoveDeep()");
+  SDCARD_LOG("in Directory.RemoveInternal()");
 
   ErrorCallback* pErrorCallback = nullptr;
   if (errorCallback.WasPassed()) {
