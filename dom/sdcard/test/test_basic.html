@@ -1,22 +1,38 @@
-<!--
-  Any copyright is dedicated to the Public Domain.
-  http://creativecommons.org/publicdomain/zero/1.0/
--->
 <!DOCTYPE HTML>
 <html>
+<!--
+https://bugzilla.mozilla.org/show_bug.cgi?id=726593
+-->
 <head>
-  <title>Test for the Filesystem API </title>
+  <meta charset="utf-8">
+  <title>Test for File System API</title>
+  <script type="application/javascript" src="/tests/SimpleTest/SimpleTest.js"></script>
+  <script type="text/javascript" src="filesystem_common.js"></script>
+  <link rel="stylesheet" type="text/css" href="/tests/SimpleTest/test.css"/>
+  <script type="application/javascript">
+
+  /** Test for File System API **/
+
+  filesystem_setup();
+
+  var sdcard = navigator.mozSDCard;
+  ok(sdcard, "Should have mozSDCard");
+  
+  var root = sdcard.root;
+  ok(root, "Can't find root directory");
+  
+  var name = sdcard.root.name;
+  is(name, "sdcard", "Wrong root directory name");
+
+  </script>
 </head>
 <body>
-  
+<a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=726593">Mozilla Bug 726593</a>
+<p id="display"></p>
+<div id="content" style="display: none">
+
+</div>
 <pre id="test">
-<script class="testbody" type="text/javascript">
-
-ok(navigator.mozSDCard, "Should have mozSDCard");
-
-</script>
 </pre>
-
 </body>
 </html>
-

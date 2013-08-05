@@ -1367,7 +1367,8 @@ Navigator::GetMozSDCard(nsISupports** aSDCard)
 
   if (!mSDCard) {
     // Only need to check permission on creation of mSDCard
-    if (CheckPermission("sdcard-filesystem")) {
+    if (CheckPermission("sdcard-filesystem")
+        || mozilla::Preferences::GetBool("file.system.testing", false)) {
       nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(mWindow);
       mSDCard = new sdcard::FileSystem(window, NS_LITERAL_STRING("SD Card"), NS_LITERAL_STRING("/sdcard"));
     }

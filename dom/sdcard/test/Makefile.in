@@ -18,6 +18,7 @@ include $(DEPTH)/config/autoconf.mk
 #                 test_diskSpace.html \
 
 MOCHITEST_FILES	= \
+    filesystem_common.js \
     test_basic.html \
 		$(NULL)
 
