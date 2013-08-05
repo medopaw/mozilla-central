@@ -117,6 +117,11 @@ Path::IsValidPath(const nsAString& aPath)
     return true;
   }
 
+  if (Path::IsAbsolute(aPath)) {
+    SDCARD_LOG("Absolute path is not allowed!");
+    return false;
+  }
+
   if (FindInReadable(Path::nul, aPath)) {
     SDCARD_LOG("Embedded NULs are not allowed!");
     return false;
@@ -124,6 +129,16 @@ Path::IsValidPath(const nsAString& aPath)
 
   if (FindInReadable(Path::backslash, aPath)) {
     SDCARD_LOG("Backslashes are not allowed!");
+    return false;
+  }
+
+  if (FindInReadable(Path::selfReference, aPath)) {
+    SDCARD_LOG("Self reference is not allowed!");
+    return false;
+  }
+
+  if (FindInReadable(Path::parentReference, aPath)) {
+    SDCARD_LOG("Parent reference is not allowed!");
     return false;
   }
 
@@ -214,12 +229,13 @@ Path::Absolutize(const nsAString& aPath, const nsAString& aParent,
   } else {
     retval = aPath;
   }
-  Path::RemoveExtraParentReferences(retval);
+  // Path::RemoveExtraParentReferences(retval);
   SDCARD_LOG("Absolutize path: %s -> %s", NS_ConvertUTF16toUTF8(aPath).get(),
       NS_ConvertUTF16toUTF8(retval).get());
 }
 
-void
+
+/* void
 Path::RemoveExtraParentReferences(nsString& aPath)
 {
   MOZ_ASSERT(Path::IsAbsolute(aPath), "Path must be absolute!");
@@ -255,7 +271,7 @@ Path::RemoveExtraParentReferences(nsString& aPath)
     Path::EnsureDirectory(result);
   }
   aPath = result;
-}
+} */
 
 } // namespace sdcard
 } // namespace dom

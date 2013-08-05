@@ -55,7 +55,7 @@ public:
   static void Append(const nsAString& aParent, const nsAString& aToAppend, nsString& retval);
   static void Absolutize(nsString& aPath, const nsAString& aParent);
   static void Absolutize(const nsAString& aPath, const nsAString& aParent, nsString& retval);
-  static void RemoveExtraParentReferences(nsString& aPath);
+  // static void RemoveExtraParentReferences(nsString& aPath);
 };
 
 } // namespace sdcard
