@@ -61,11 +61,12 @@ Directory::CreateReader()
 }
 
 void
-Directory::CreateFile(const nsAString& name,
+Directory::CreateFile(const nsAString& path,
   const Optional< OwningNonNull<EntryCallback> >& successCallback,
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.createFile()");
+
   // Assign callback nullptr if not passed
   EntryCallback* pSuccessCallback = nullptr;
   ErrorCallback* pErrorCallback = nullptr;
@@ -77,16 +78,16 @@ Directory::CreateFile(const nsAString& name,
   }
   nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
 
-  // Check if name is valid.
-  if (!Path::IsValidName(name)) {
-    SDCARD_LOG("Invalid name!");
+  // Check if path is valid.
+  if (!Path::IsValidPath(path)) {
+    SDCARD_LOG("Invalid path!");
     pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
     return;
   }
 
   // Get absolute real path.
   nsString realPath;
-  Path::Absolutize(name, mRelpath, realPath);
+  Path::Absolutize(path, mRelpath, realPath);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
