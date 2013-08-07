@@ -270,22 +270,34 @@ Interests.prototype = {
     return "";
   },
 
-  _addInterestsForHost: function I__addInterestsForHost(aHost, aInterests, aVisitDate, aVisitCount) {
-    let deferred = Promise.defer();
-
+  /**
+   * Record potentially multiple interests for a given host for a visit
+   *
+   * @param   interests
+   *          Array of interests to save
+   * @param   host
+   *          Host triggering the interests
+   * @param   visitDate
+   *          Date to associate with the interest visit
+   * @param   visitCount
+   *          Number of visits on the date
+   * @returns Promise when interests are added
+   */
+  _addInterestsForHost: function I__addInterestsForHost(interests, host, visitDate, visitCount) {
     // execute host and visit additions
     let addVisitPromises = [];
-    for (let interest of aInterests) {
-      // we need to wait until interest is added to the inerestes table
-      addVisitPromises.push(InterestsStorage.addInterestVisit(interest,{visitTime: aVisitDate, visitCount: aVisitCount}));
-      if (this._isTopHost(aHost)) {
-        addVisitPromises.push(InterestsStorage.addInterestHost(interest, aHost));
+    for (let interest of interests) {
+      addVisitPromises.push(InterestsStorage.addInterestVisit(interest, {
+        visitCount: visitCount,
+        visitTime: visitDate,
+      }));
+
+      // Only record this host if it's a top host
+      if (this._isTopHost(host)) {
+        addVisitPromises.push(InterestsStorage.addInterestHost(interest, host));
       }
     }
-    Promise.promised(Array)(addVisitPromises).then(results => {
-      deferred.resolve(results);
-    }, error => deferred.reject(error))
-    return deferred.promise;
+    return gatherPromises(addVisitPromises);
   },
 
   /**
@@ -373,12 +385,9 @@ Interests.prototype = {
     });
   },
 
-  _getInterestsForHost: function I__getInterestsForHost(aHost, aCallback) {
-  },
-
   _handleInterestsResults: function I__handleInterestsResults(aData) {
-    this._addInterestsForHost(aData.host,
-                              aData.interests,
+    this._addInterestsForHost(aData.interests,
+                              aData.host,
                               aData.visitDate,
                               aData.visitCount).then(results => {
       // generate "interest-visit-saved" event

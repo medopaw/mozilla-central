@@ -107,7 +107,7 @@ function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
         interests.forEach(function(interest) {
           visitPromises.push(addInterest(interest));
         });
-        visitPromises.push(iServiceObject._addInterestsForHost(host,interests,visitTime,visitCount));
+        visitPromises.push(iServiceObject._addInterestsForHost(interests, host, visitTime, visitCount));
       });
       return Promise.promised(Array)(visitPromises).then();
     });

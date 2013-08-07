@@ -109,7 +109,7 @@ add_task(function test_InterestsStorageMostFrecentHosts() {
   });
 
   // attempt to directly add a host that is NOT IN 200 most frrecent
-  yield iServiceObject._addInterestsForHost("209.site.com",["cars"]);
+  yield iServiceObject._addInterestsForHost(["cars"], "209.site.com");
 
   yield getInterestsForHost("209.site.com").then(results => {
     // we should do not have any results
