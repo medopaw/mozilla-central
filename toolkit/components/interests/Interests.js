@@ -562,7 +562,7 @@ Interests.prototype = {
       Services.obs.addObserver(this, kShutdown, false);
       Services.obs.addObserver(this, kWindowReady, false);
       this._setupOneTimeTimer(() => {
-        this._checkForMigration().then();
+        this._checkForMigration();
       });
     }
     else if (aTopic == kWindowReady) {
