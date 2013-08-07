@@ -25,7 +25,6 @@ const gatherPromises = Promise.promised(Array);
 // observer event topics
 const kDOMLoaded = "DOMContentLoaded";
 const kIdleDaily = "idle-daily";
-const kPlacesInitComplete = "places-init-complete";
 const kPrefChanged = "nsPref:changed";
 const kShutdown = "xpcom-shutdown";
 const kStartup = "app-startup";
@@ -434,6 +433,10 @@ Interests.prototype = {
   _initInterestMeta: function I__initInterestMeta() {
     let promises = [];
 
+    kInterests.forEach(item => {
+      promises.push(InterestsStorage.setInterest(item));
+    });
+
     return gatherPromises(promises).then(results => {
       this._setupOneTimeTimer(() => {
         // notify observers all interests have been aded
@@ -465,6 +468,7 @@ Interests.prototype = {
       if (flag) {
         return Task.spawn(function () {
           yield this._refreshFrecentHosts();
+          yield this._checkMetadataInit();
           yield this.resubmitRecentHistoryVisits(kDaysToResubmit);
         }.bind(this));
       }
@@ -473,6 +477,26 @@ Interests.prototype = {
         return Promise.resolve();
       }
     });
+  },
+
+  /**
+   * inits interest metadata if interests don't exist
+   *
+   * @returns completion promise
+   */
+  _checkMetadataInit: function I__checkMetadataInit() {
+    let metadataPromise = Promise.defer();
+    InterestsStorage.getInterests(["Arts"]).then(results => {
+      if (Object.keys(results).length == 0) {
+        this._initInterestMeta().then(() => {
+          metadataPromise.resolve();
+        });
+      }
+      else {
+          metadataPromise.resolve();
+      }
+    });
+    return metadataPromise.promise;
   },
 
   /**
@@ -535,25 +559,15 @@ Interests.prototype = {
   observe: function I_observe(aSubject, aTopic, aData) {
     if (aTopic == kStartup) {
       Services.obs.addObserver(this, kIdleDaily, false);
-      Services.obs.addObserver(this, kPlacesInitComplete, false);
       Services.obs.addObserver(this, kShutdown, false);
       Services.obs.addObserver(this, kWindowReady, false);
       this._setupOneTimeTimer(() => {
-        this._checkForMigration();
+        this._checkForMigration().then();
       });
     }
     else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
       aSubject.addEventListener(kDOMLoaded, this, true);
-    }
-    else if (aTopic == kPlacesInitComplete) {
-      // initialize interest metadata if need be
-      InterestsStorage.getInterests(["arts"]).then(results => {
-        if (Object.keys(results).length == 0) {
-          this._initInterestMeta();
-        }
-      });
-      this._refreshFrecentHosts();
     }
     else if (aTopic == kPrefChanged) {
       if (aData == kPrefEnabled) {
@@ -565,7 +579,6 @@ Interests.prototype = {
     }
     else if (aTopic == kShutdown) {
       Services.obs.removeObserver(this, kIdleDaily);
-      Services.obs.removeObserver(this, kPlacesInitComplete);
       Services.obs.removeObserver(this, kShutdown);
       Services.obs.removeObserver(this, kWindowReady);
       Services.prefs.removeObserver("interests.", this);

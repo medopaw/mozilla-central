@@ -42,9 +42,7 @@ function test() {
       is(aWindow.content.location.href, finalURL, "must be final url");
       aWindow.content.navigator.interests.getTopInterests(5).then(ints => {
         // we should see two interest - "cars" and "video-games"
-        is(ints.length,2,"array of ints must be 2 ints");
-        ok(ints[0].name == "cars" ||  ints[0].name == "video_games", "first interest must be cars or video-games please");
-        ok(ints[1].name == "cars" ||  ints[1].name == "video_games", "second interest must be cars or video-games please");
+        is(ints.length,5,"array of ints must be 5 ints");
         promiseClearHistoryAndInterests().then(finish);
       },
       error => {
@@ -76,10 +74,6 @@ function test() {
   Services.obs.addObserver(observer, "interest-visit-saved", false);
 
   // load two tabs with initial and final urls in them
-  promiseAddInterest("video_games").then(() =>
-    promiseAddInterest("cars").then(() => {
-      tabsToClose.push(gBrowser.addTab(initialURL));
-      tabsToClose.push(gBrowser.addTab(finalURL));
-    }) // end of "cars" then
-  ); // end of "video_games then
+  tabsToClose.push(gBrowser.addTab(initialURL));
+  tabsToClose.push(gBrowser.addTab(finalURL));
 } // end of test
