@@ -26,7 +26,7 @@ interface Entry {
 interface Directory : Entry {
     [Creator]
     DirectoryReader createReader ();
-    void            createFile (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            createFile (DOMString path, optional CreateFileOptions options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            createDirectory (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            get (DOMString path, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
@@ -64,6 +64,14 @@ dictionary FileSystemFlags {
     boolean create = false;
     boolean exclusive = false;
 };
+
+dictionary CreateFileOptions {
+    CreateIfExistsMode ifExists = "fail";
+//  (DOMString or Blob or ArrayBuffer or ArrayBufferView) data;
+    any data;
+};
+
+enum CreateIfExistsMode { "truncate", "fail" };
 
 callback EntryCallback = void (Entry entry);
 

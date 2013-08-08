@@ -61,11 +61,23 @@ Directory::CreateReader()
 }
 
 void
-Directory::CreateFile(const nsAString& path,
+Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOptions& options,
   const Optional< OwningNonNull<EntryCallback> >& successCallback,
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.createFile()");
+  switch (options.mIfExists) {
+  case CreateIfExistsMode::Truncate:
+    SDCARD_LOG("CreateFileOptions.ifExists=truncate");
+    break;
+  case CreateIfExistsMode::Fail:
+    SDCARD_LOG("CreateFileOptions.ifExists=fail");
+    break;
+  default:
+    SDCARD_LOG("Wrong CreateFileOptions.ifExists");
+    break;
+  }
+  // SDCARD_LOG("%s", options.mData);
 
   // Assign callback nullptr if not passed
   EntryCallback* pSuccessCallback = nullptr;

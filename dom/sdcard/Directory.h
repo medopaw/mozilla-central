@@ -37,7 +37,7 @@ public:
 
   already_AddRefed<DirectoryReader> CreateReader();
 
-  void CreateFile(const nsAString& path,
+  void CreateFile(JSContext* cx, const nsAString& path, const CreateFileOptions& options,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
