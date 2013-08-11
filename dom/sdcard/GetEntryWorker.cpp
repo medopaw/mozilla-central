@@ -78,20 +78,27 @@ GetEntryWorker::Work()
           "If create is not true and the path exists, but is a directory/file, getFile/getDirectory must fail.");
       SetError(Error::DOM_ERROR_TYPE_MISMATCH);
       return;
-    }*/
+    } */
   }
 
-  if (mCreate && !exists) {
-    // Create
-    SDCARD_LOG("Create %s", NS_ConvertUTF16toUTF8(mRelpath).get());
-    // Only owner can access created item, and directory needs +x.
-    uint32_t permission = mIsFile ? 0600 : 0700;
-    // Note that any path segment that does not already exist will be created automatically, which I think is implied by w3c draft.
-    rv = mFile->Create(FileUtils::GetType(mIsFile), permission);
-    if (NS_FAILED(rv) ) {
-      SDCARD_LOG("Error occurs during creation.");
-      SetError(rv);
-      return;
+  if (mCreate) {
+    if (exists) {
+      if (mTruncate) {
+        SDCARD_LOG("When create it true, if truncate it true, we truncate and then create it, otherwise we just retrieve it.");
+      }
+    } else {
+      SDCARD_LOG("If create is true and entry does not exist, we must create it.");
+      // Create
+      SDCARD_LOG("Create %s", NS_ConvertUTF16toUTF8(mRelpath).get());
+      // Only owner can access created item, and directory needs +x.
+      uint32_t permission = mIsFile ? 0600 : 0700;
+      // Note that any path segment that does not already exist will be created automatically, which I think is implied by w3c draft.
+      rv = mFile->Create(FileUtils::GetType(mIsFile), permission);
+      if (NS_FAILED(rv) ) {
+        SDCARD_LOG("Error occurs during creation.");
+        SetError(rv);
+        return;
+      }
     }
   }
 

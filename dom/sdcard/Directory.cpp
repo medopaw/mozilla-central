@@ -117,7 +117,9 @@ Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOpti
   const JS::Value* pContent = options.mData.WasPassed() ?
     &(options.mData.Value()) : nullptr;
 
-  GetEntry(path, true, exclusive, true, successCallback, errorCallback, true, pContent);
+  GetEntry(path, true, exclusive, true,
+      successCallback, errorCallback,
+      true, pContent);
 }
 
 void
