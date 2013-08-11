@@ -357,7 +357,8 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
 void
 Directory::GetEntry(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback, bool isFile)
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback, bool isFile,
+    const JS::Value* aContent)
 {
   SDCARD_LOG("in Directory.GetEntry()");
 

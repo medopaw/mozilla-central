@@ -109,7 +109,7 @@ private:
   void GetEntry(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
-      bool isFile = true);
+      bool isFile = true, const JS::Value* aContent = nullptr);
 
   void EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
