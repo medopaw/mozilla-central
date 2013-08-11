@@ -18,6 +18,7 @@ public:
   IPCGetEntryEvent(const nsAString& aRelpath,
       bool aCreate,
       bool aExclusive,
+      bool aTruncate,
       bool aIsFile,
       SDCardRequestParent* aParent);
   ~IPCGetEntryEvent();

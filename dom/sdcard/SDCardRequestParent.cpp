@@ -60,13 +60,13 @@ SDCardRequestParent::Dispatch()
   case SDCardParams::TSDCardGetParams:
     {
       SDCardGetParams p = mParams;
-      SDCARD_LOG("Get %s %s with create=%d, exclusive=%d, isFile=%d",
+      SDCARD_LOG("Get %s %s with create=%d, exclusive=%d, truncate=%d, isFile=%d",
           p.isFile() ? "file" : "directory",
-          NS_ConvertUTF16toUTF8(p.relpath()).get(), p.create(), p.exclusive(),
-          p.isFile());
+          NS_ConvertUTF16toUTF8(p.relpath()).get(),
+          p.create(), p.exclusive(), p.truncate(), p.isFile());
 
       nsCOMPtr<IPCGetEntryEvent> r = new IPCGetEntryEvent(p.relpath(),
-          p.create(), p.exclusive(), p.isFile(), this);
+          p.create(), p.exclusive(), p.truncate(), p.isFile(), this);
       r->Start();
 
       break;

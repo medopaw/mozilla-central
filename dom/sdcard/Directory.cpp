@@ -7,6 +7,9 @@
 #include "Directory.h"
 #include "mozilla/dom/FileSystemBinding.h"
 #include "nsContentUtils.h"
+// #include "jsfriendapi.h"
+// #include "jsapi.h"
+// #include "mozilla/dom/DOMJSClass.h"
 
 #include "DirectoryReader.h"
 #include "FileUtils.h"
@@ -66,19 +69,51 @@ Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOpti
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.createFile()");
+
+  // create and truncate will both be true
+  bool exclusive;
+
   switch (options.mIfExists) {
   case CreateIfExistsMode::Truncate:
     SDCARD_LOG("CreateFileOptions.ifExists=truncate");
+    exclusive = false;
     break;
   case CreateIfExistsMode::Fail:
     SDCARD_LOG("CreateFileOptions.ifExists=fail");
+    exclusive = true;
     break;
   default:
     SDCARD_LOG("Wrong CreateFileOptions.ifExists");
     break;
   }
   // SDCARD_LOG("%s", options.mData);
+/*
+  if (options.mData.wasPassed()) {
+    const JS::Value& val = options.mData.Value();
+  }
 
+
+  if (options.mData.WasPassed()) {
+    SDCARD_LOG("CreateFileOptions.data is passed");
+    const JS::Value& val = options.mData.Value();
+    if (val.isObject()) {
+      const JSObject& obj = val.toObject();
+      if (obj.is<Directory>()) {
+
+      if (JS_IsArrayBufferObject(obj)) {
+      } else if (JS_IsArrayBufferViewObject(obj)) {
+      } else { // Temporally assume that it's Blob
+
+      }
+    } else if (val.isString()) {
+    } else {
+      SDCARD_LOG("Wrong type of CreateFileOptions.data");
+    }
+  }
+  // if (JS_IsArrayBufferObject(options.mData)) {
+   // js::ArrayBuffer* src = js::ArrayBuffer::fromJSObject(obj);
+  // }
+*/
   // Assign callback nullptr if not passed
   EntryCallback* pSuccessCallback = nullptr;
   ErrorCallback* pErrorCallback = nullptr;
@@ -103,12 +138,12 @@ Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOpti
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath, true, true,
-        true, pCaller);
+    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath,
+        true, exclusive, true, true, pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardGetParams params(realPath, true, true, true);
+    SDCardGetParams params(realPath, true, exclusive, true, true);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
@@ -144,12 +179,12 @@ Directory::CreateDirectory(const nsAString& name,
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath, true, true,
+    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath, true, true, false,
         false, pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardGetParams params(realPath, true, true, false);
+    SDCardGetParams params(realPath, true, true, false, false);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
@@ -399,11 +434,11 @@ Directory::GetEntry(const nsAString& path, const FileSystemFlags& options,
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
     nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath, options.mCreate,
-        options.mExclusive, isFile, pCaller);
+        options.mExclusive, true, isFile, pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardGetParams params(realPath, options.mCreate, options.mExclusive,
+    SDCardGetParams params(realPath, options.mCreate, options.mExclusive, true,
         isFile);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);

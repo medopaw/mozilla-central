@@ -18,6 +18,7 @@ public:
   SPGetEntryEvent(const nsAString& aRelpath,
       bool aCreate,
       bool aExclusive,
+      bool aTruncate,
       bool aIsFile,
       Caller* aCaller);
   ~SPGetEntryEvent();

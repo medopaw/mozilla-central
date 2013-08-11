@@ -16,9 +16,10 @@ namespace sdcard {
 SPGetEntryEvent::SPGetEntryEvent(const nsAString& aRelpath,
     bool aCreate,
     bool aExclusive,
+    bool aTruncate,
     bool aIsFile,
     Caller* aCaller) :
-    SPEvent(new GetEntryWorker(aRelpath, aCreate, aExclusive, aIsFile), aCaller)
+    SPEvent(new GetEntryWorker(aRelpath, aCreate, aExclusive, aTruncate, aIsFile), aCaller)
 {
   SDCARD_LOG("construct SPGetEntryEvent");
 }

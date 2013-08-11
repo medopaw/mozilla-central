@@ -141,6 +141,7 @@ struct SDCardGetParams
   nsString relpath;
   bool create;
   bool exclusive;
+  bool truncate;
   bool isFile;
 };
 

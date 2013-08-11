@@ -17,10 +17,11 @@ namespace sdcard {
 IPCGetEntryEvent::IPCGetEntryEvent(const nsAString& aRelpath,
     bool aCreate,
     bool aExclusive,
+    bool aTruncate,
     bool aIsFile,
     SDCardRequestParent* aParent) :
     IPCEvent(
-        new GetEntryWorker(aRelpath, aCreate, aExclusive, aIsFile),
+        new GetEntryWorker(aRelpath, aCreate, aExclusive, aTruncate, aIsFile),
         aParent)
 {
   SDCARD_LOG("construct IPCGetEntryEvent");

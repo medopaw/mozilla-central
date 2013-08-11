@@ -18,6 +18,7 @@ public:
   GetEntryWorker(const nsAString& aRelpath,
       bool aCreate,
       bool aExclusive,
+      bool aTruncate,
       bool aIsFile);
   ~GetEntryWorker();
 
@@ -28,6 +29,7 @@ private:
 
   bool mCreate;
   bool mExclusive;
+  bool mTruncate;
   bool mIsFile;
 };
 

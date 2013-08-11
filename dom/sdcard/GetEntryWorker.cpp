@@ -16,10 +16,12 @@ namespace sdcard {
 GetEntryWorker::GetEntryWorker(const nsAString& aRelpath,
     bool aCreate,
     bool aExclusive,
+    bool aTruncate,
     bool aIsFile) :
     Worker(aRelpath),
     mCreate(aCreate),
     mExclusive(aExclusive),
+    mTruncate(aTruncate),
     mIsFile(aIsFile)
 {
   SDCARD_LOG("construct GetEntryWorker");
