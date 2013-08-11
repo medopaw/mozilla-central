@@ -197,9 +197,7 @@ Directory::Get(const nsAString& path,
 {
   SDCARD_LOG("in Directory.Get()");
   FileSystemFlags options;
-  options.mCreate = false;
-  options.mExclusive = false;
-  GetEntry(path, options, successCallback, errorCallback, false);
+  GetEntry(path, false, false, false, successCallback, errorCallback, false);
 }
 
 void
@@ -371,7 +369,8 @@ Directory::GetDirectory(const nsAString& path,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.GetDirectory()");
-  GetEntry(path, options, successCallback, errorCallback, false);
+  GetEntry(path, options.mCreate, options.mExclusive, false,
+      successCallback, errorCallback, false);
 }
 
 void
@@ -401,7 +400,7 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
 }
 
 void
-Directory::GetEntry(const nsAString& path, const FileSystemFlags& options,
+Directory::GetEntry(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback, bool isFile)
 {
@@ -433,13 +432,12 @@ Directory::GetEntry(const nsAString& path, const FileSystemFlags& options,
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath, options.mCreate,
-        options.mExclusive, true, isFile, pCaller);
+    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath,
+        aCreate, aExclusive, aTruncate, isFile, pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardGetParams params(realPath, options.mCreate, options.mExclusive, true,
-        isFile);
+    SDCardGetParams params(realPath, aCreate, aExclusive, aTruncate, isFile);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
