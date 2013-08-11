@@ -114,39 +114,7 @@ Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOpti
    // js::ArrayBuffer* src = js::ArrayBuffer::fromJSObject(obj);
   // }
 */
-  // Assign callback nullptr if not passed
-  EntryCallback* pSuccessCallback = nullptr;
-  ErrorCallback* pErrorCallback = nullptr;
-  if (successCallback.WasPassed()) {
-    pSuccessCallback = &(successCallback.Value());
-  }
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
-
-  // Check if path is valid.
-  if (!Path::IsValidPath(path)) {
-    SDCARD_LOG("Invalid path!");
-    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-    return;
-  }
-
-  // Get absolute real path.
-  nsString realPath;
-  Path::Absolutize(path, mRelpath, realPath);
-
-  if (XRE_GetProcessType() == GeckoProcessType_Default) {
-    SDCARD_LOG("in b2g process");
-    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath,
-        true, exclusive, true, true, pCaller);
-    r->Start();
-  } else {
-    SDCARD_LOG("in app process");
-    SDCardGetParams params(realPath, true, exclusive, true, true);
-    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
-    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
-  }
+  GetEntry(path, true, exclusive, true, successCallback, errorCallback, true);
 }
 
 void
@@ -155,7 +123,7 @@ Directory::CreateDirectory(const nsAString& name,
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.createDirectory()");
-  // Assign callback nullptr if not passed
+
   EntryCallback* pSuccessCallback = nullptr;
   ErrorCallback* pErrorCallback = nullptr;
   if (successCallback.WasPassed()) {
@@ -173,21 +141,8 @@ Directory::CreateDirectory(const nsAString& name,
     return;
   }
 
-  // Get absolute real path.
-  nsString realPath;
-  Path::Absolutize(name, mRelpath, realPath);
-
-  if (XRE_GetProcessType() == GeckoProcessType_Default) {
-    SDCARD_LOG("in b2g process");
-    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath, true, true, false,
-        false, pCaller);
-    r->Start();
-  } else {
-    SDCARD_LOG("in app process");
-    SDCardGetParams params(realPath, true, true, false, false);
-    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
-    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
-  }
+  // name is also a relative path
+  GetEntry(name, true, false, false, successCallback, errorCallback, false);
 }
 
 void
@@ -196,8 +151,8 @@ Directory::Get(const nsAString& path,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Get()");
-  FileSystemFlags options;
-  GetEntry(path, false, false, false, successCallback, errorCallback, false);
+  // Don't need isFile flag.
+  GetEntry(path, false, false, false, successCallback, errorCallback);
 }
 
 void
@@ -424,7 +379,7 @@ Directory::GetEntry(const nsAString& path, bool aCreate, bool aExclusive, bool a
     return;
   }
 
-  // Make sure path is absolute.
+  // Make sure path is absolute. The parameter path must be a DOM path.
   nsString absolutePath;
   Path::Absolutize(path, mFullPath, absolutePath);
   nsString realPath;
