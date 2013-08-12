@@ -1367,10 +1367,22 @@ Navigator::GetMozSDCard(nsISupports** aSDCard)
 
   if (!mSDCard) {
     // Only need to check permission on creation of mSDCard
-    if (CheckPermission("sdcard-filesystem")
-        || mozilla::Preferences::GetBool("file.system.testing", false)) {
-      nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(mWindow);
+    nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(mWindow);
+    if (CheckPermission("sdcard-filesystem")) {
+      printf("sdcard permissin passed\n");
       mSDCard = new sdcard::FileSystem(window, NS_LITERAL_STRING("SD Card"), NS_LITERAL_STRING("/sdcard"));
+    } else if (mozilla::Preferences::GetBool("file.system.testing", false)) {
+      nsCOMPtr<nsIFile> tempDir;
+      nsCOMPtr<nsIProperties> dirService = do_GetService(NS_DIRECTORY_SERVICE_CONTRACTID);
+      dirService->Get(NS_OS_TEMP_DIR, NS_GET_IID(nsIFile), getter_AddRefs(tempDir));
+      if (tempDir) {
+        tempDir->AppendRelativeNativePath(NS_LITERAL_CSTRING("file-system-testing"));
+        tempDir->Create(nsIFile::DIRECTORY_TYPE, 0777);
+        tempDir->Normalize();
+      }
+      nsString rootPath;
+      tempDir->GetPath(rootPath);
+      mSDCard = new sdcard::FileSystem(window, NS_LITERAL_STRING("SD Card Testing"), rootPath);
     }
     NS_ENSURE_TRUE(mSDCard, NS_OK);
   }

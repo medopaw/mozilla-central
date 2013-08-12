@@ -31,7 +31,7 @@ public:
   // FileSystem.root.fullPath, normally "/"
   static const nsString root;
   // The real path of FileSystem.root, normally "/sdcard"
-  static const nsString base;
+  static nsString base;
 
   static bool IsRoot(const nsAString& aPath);
   static bool IsBase(const nsAString& aPath);

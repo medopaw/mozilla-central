@@ -39,6 +39,7 @@ FileSystem::FileSystem(nsPIDOMWindow* aWindow,
 
   FileSystem::smFileSystem = this;
 
+  Path::base = aPath;
   FileInfo info;
   nsresult rv = FileUtils::GetFileInfo(Path::base, info);
   if (NS_FAILED(rv)) {

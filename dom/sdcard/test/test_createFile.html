@@ -15,19 +15,9 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 
   filesystem_setup();
 
-  var sdcard = navigator.mozSDCard;
-  ok(sdcard, "Should have mozSDCard");
+  var root = navigator.mozSDCard.root;
   
-  var root = sdcard.root;
-  ok(root, "Can't find root directory");
-  
-  var sysName = sdcard.name;
-  is(sysName, "SD Card Testing", "Wrong file system name");
-
-  var rootName = sdcard.root.name;
-  is(rootName, "file-system-testing", "Wrong root directory name");
-
-  filesystem_cleanup();
+  root.createFile("test_file_not_exists");
 
   </script>
 </head>

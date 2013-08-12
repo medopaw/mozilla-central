@@ -23,7 +23,8 @@ const nsString Path::selfReference = NS_LITERAL_STRING(".");
 const nsString Path::parentReference = NS_LITERAL_STRING("..");
 
 const nsString Path::root = Path::separator;
-const nsString Path::base = Path::root + NS_LITERAL_STRING("sdcard");
+// Default base is /sdcard. Could be chanaged later.
+nsString Path::base = Path::root + NS_LITERAL_STRING("sdcard");
 
 bool
 Path::IsRoot(const nsAString& aPath)
