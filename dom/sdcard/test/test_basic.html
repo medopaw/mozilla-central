@@ -27,7 +27,7 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
   var rootName = sdcard.root.name;
   is(rootName, "file-system-testing", "Wrong root directory name");
 
-  var path = "filesystem/test", name = "test";
+  var path = "filesystem/testfile", name = "testfile";
   root.createFile(path, {ifExists: "fail"}, function(entry) {
 	  ok(entry.name == name, "File name should match");
 

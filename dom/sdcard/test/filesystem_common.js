@@ -40,3 +40,47 @@ function filesystem_cleanup() {
   }
   SimpleTest.finish();
 }
+
+function test_dump(msg) {
+	dump("\n[File System Test]" + msg + "\n");
+}
+
+var testEngine = {
+  tests: [],
+  test: null,
+  func: null,
+  title: function() {
+	return "Test " + (this.test.name ? ('"' + this.test.name + '" ') : "");
+  },
+  next: function() {
+	if (this.test) {
+	  if (this.test.invert) {
+		ok(false, this.title() + "failed");
+		filesystem_cleanup();
+		return;
+	  } else {
+		ok(true, this.title() + "passed");
+	  }
+	}
+	this.proceed();
+  },
+  fail: function(error) {
+	if (this.test.invert) {
+	  ok(true, this.title() + "passed");
+	  this.proceed();
+	} else {
+	  ok(false, this.title() + "failed with error: " + error.name);
+	  filesystem_cleanup();
+	}
+  },
+  proceed: function() {
+    this.test = this.tests.shift();
+	if (this.test == undefined) {
+	  filesystem_cleanup();
+	  return;
+	}
+	var onsuccess = (this.test.onsuccess || this.next).bind(this);
+	var onerror = (this.test.onerror || this.fail).bind(this);
+	this.func(this.test.args, onsuccess, onerror);
+  }
+};
