@@ -123,31 +123,13 @@ Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOpti
 }
 
 void
-Directory::CreateDirectory(const nsAString& name,
+Directory::CreateDirectory(const nsAString& path,
   const Optional< OwningNonNull<EntryCallback> >& successCallback,
   const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.createDirectory()");
 
-  EntryCallback* pSuccessCallback = nullptr;
-  ErrorCallback* pErrorCallback = nullptr;
-  if (successCallback.WasPassed()) {
-    pSuccessCallback = &(successCallback.Value());
-  }
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
-
-  // Check if name is valid.
-  if (!Path::IsValidName(name)) {
-    SDCARD_LOG("Invalid name!");
-    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-    return;
-  }
-
-  // name is also a relative path
-  GetEntry(name, true, false, false, successCallback, errorCallback, false);
+  GetEntry(path, true, false, false, successCallback, errorCallback, false);
 }
 
 void

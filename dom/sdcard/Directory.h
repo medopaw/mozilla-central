@@ -41,7 +41,7 @@ public:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void CreateDirectory(const nsAString& name,
+  void CreateDirectory(const nsAString& path,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 

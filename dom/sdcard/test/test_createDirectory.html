@@ -17,23 +17,19 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 
   var root = navigator.mozSDCard.root;
   
-  var test_paths = ["filesystem/testfile_empty", "filesystem/testfile_content"];
+  var test_path = "filesystem/testdir";
   testEngine.tests = [{
-			name: "create file that does not exist",
-			args: [test_paths[0]]
+			name: "create directory that does not exist",
+			args: [test_path]
 		}, {
-			name: "create file that exists and truncate",
-			args: [test_paths[0], {ifExists: "truncate"}]
-		}, {
-			name: "create file that exists and fail",
-			args: [test_paths[0], {ifExists: "fail"}],
-			invert: true
+			name: "create directory that exists",
+			args: [test_path]
 		}];
 
   testEngine.func = function(args, onsuccess, onerror) {
-	  var path = args[0], options = args[1];
-	  test_dump("create file " + path);
-	  root.createFile(path, options, onsuccess, onerror);  
+	  var path = args[0];
+	  test_dump("create directory " + path);
+	  root.createDirectory(path, onsuccess, onerror);  
   };
 
   testEngine.proceed();
