@@ -27,7 +27,34 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
   var rootName = sdcard.root.name;
   is(rootName, "file-system-testing", "Wrong root directory name");
 
-  filesystem_cleanup();
+  var path = "filesystem/test", name = "test";
+  root.createFile(path, {ifExists: "fail"}, function(entry) {
+	  ok(entry.name == name, "File name should match");
+
+	  root.get(path, function(entry) {
+		  ok(entry.name == name, "File name should match");
+		  
+		  root.remove(path, function() {
+			  root.get(path, function(entry) {
+				  ok(true, "File was not deleted successfully");
+				  filesystem_cleanup();
+			  }, function(error) {
+				  ok(true, "File was deleted successfully");
+				  filesystem_cleanup();
+			  });
+		  }, function(error) {
+			  ok(false, "remove() error: " + error.name);
+		  }); 
+		  
+		  ok(true, "get() success");
+	  }, function(error) {
+		  ok(false, "get() error: " + error.name);
+	  });
+
+	  ok(true, "createFile() success");
+  }, function(error) {
+	  ok(false, "createFile() error: " + error.name);
+  });
 
   </script>
 </head>
