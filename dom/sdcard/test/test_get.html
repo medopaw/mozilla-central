@@ -17,27 +17,43 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 
   var root = navigator.mozSDCard.root;
   
-  var test_paths = ["filesystem/testfile_empty", "filesystem/testfile_content"];
-
-  testEngine.tests = [{
-		name: "create file that does not exist",
-		args: [test_paths[0]]
-	}, {
-		name: "create file that exists and truncate",
-		args: [test_paths[0], {ifExists: "truncate"}]
-	}, {
-		name: "create file that exists and fail",
-		args: [test_paths[0], {ifExists: "fail"}],
+  var test_paths = ["filesystem/testentry_notexist",
+                    "filesystem/./testentry_illegal",
+                    "filesystem/../testentry_illegal",
+                    "filesystem/testfile",
+                    "filesytem/testdir"];
+  
+	testEngine.tests = [{
+		name: "get path that does not exist",
+		args: [test_paths[0]],
 		invert: true
+	}, {
+		name: "get path that is illegal with self reference",
+		args: [test_paths[1]],
+		invert: true
+	}, {
+		name: "get path that is illegal with parent reference",
+		args: [test_paths[2]],
+		invert: true
+	}, {
+		name: "get file",
+		args: [test_paths[3]]
+	}, {
+		name: "get directory",
+		args: [test_paths[4]]
 	}];
 
   testEngine.func = function(args, onsuccess, onerror) {
-	  var path = args[0], options = args[1];
+	  var path = args[0];
 	  test_dump("create file " + path);
-	  root.createFile(path, options, onsuccess, onerror);  
+	  root.get(path, onsuccess, onerror);  
   };
-
-  testEngine.proceed();
+  
+  root.createFile(test_paths[3], null, function() {
+	  root.createDirectory(test_paths[4], function() {
+		  testEngine.proceed();
+	  });
+  });
 
   </script>
 </head>

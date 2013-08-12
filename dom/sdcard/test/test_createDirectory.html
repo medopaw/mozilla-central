@@ -18,13 +18,14 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
   var root = navigator.mozSDCard.root;
   
   var test_path = "filesystem/testdir";
+
   testEngine.tests = [{
-			name: "create directory that does not exist",
-			args: [test_path]
-		}, {
-			name: "create directory that exists",
-			args: [test_path]
-		}];
+		name: "create directory that does not exist",
+		args: [test_path]
+	}, {
+		name: "create directory that exists",
+		args: [test_path]
+	}];
 
   testEngine.func = function(args, onsuccess, onerror) {
 	  var path = args[0];

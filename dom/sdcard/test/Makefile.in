@@ -15,6 +15,7 @@ MOCHITEST_FILES	= \
     test_basic.html \
     test_createDirectory.html \
     test_createFile.html \
+    test_get.html \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk
