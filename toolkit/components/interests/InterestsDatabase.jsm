@@ -43,9 +43,10 @@ const SCHEMA = {
     moz_interests_visits :
       "CREATE TABLE moz_interests_visits (" +
       "  interest_id INTEGER NOT NULL" +
+      ", host TEXT NOT NULL" +
       ", day INTEGER NOT NULL" +
       ", visits INTEGER NOT NULL" +
-      ", PRIMARY KEY (interest_id, day)" +
+      ", PRIMARY KEY (interest_id, host, day)" +
       ")"
     ,
     moz_interests_shared :

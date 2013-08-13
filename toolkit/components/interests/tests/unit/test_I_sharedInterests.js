@@ -13,30 +13,18 @@ function run_test() {
 
 add_task(function test_I_sharedInterestsSetting()
 {
-  yield promiseAddVisitsWithRefresh(["http://www.cars.com/",
-                                     "http://www.mozilla.org/",
-                                     "http://www.netflix.com/",
-                                     "http://www.samsung.com/"]);
   yield addInterest("cars");
-  yield addInterest("computers");
   yield addInterest("movies");
   yield addInterest("technology");
-  yield addInterest("video-games");
-  yield addInterest("history");
-
-  yield InterestsStorage.addInterestHost("technology", "samsung.com");
-  yield InterestsStorage.addInterestHost("cars", "cars.com");
-  yield InterestsStorage.addInterestHost("movies", "netflix.com");
-  yield InterestsStorage.addInterestHost("computers", "mozilla.org");
 
   // make a bunch of insertions for a number of days
   let now = Date.now();
   let today = InterestsStorage._convertDateToDays(now);
 
   // add visit
-  yield InterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  yield InterestsStorage.addInterestVisit("cars", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
-  yield InterestsStorage.addInterestVisit("movies", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("technology", "samsung.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("movies", "netflix.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
 
   // get top 2 visits, test result limiting
   results = yield iServiceObject.getInterestsByNamespace("", {
@@ -48,11 +36,11 @@ add_task(function test_I_sharedInterestsSetting()
   isIdentical(results,[
                         {"name":"cars",
                          "score":2.896551724137931,
-                         "diversity":25,
+                         "diversity":1,
                         },
                         {"name":"movies",
                          "score":2.793103448275862,
-                         "diversity":25,
+                         "diversity":1,
                         }
                       ]);
 
@@ -72,11 +60,11 @@ add_task(function test_I_sharedInterestsSetting()
   isIdentical(results,[
                         {"name":"cars",
                          "score":2.896551724137931,
-                         "diversity":25,
+                         "diversity":1,
                         },
                         {"name":"movies",
                          "score":2.793103448275862,
-                         "diversity":25,
+                         "diversity":1,
                         }
                       ]);
 

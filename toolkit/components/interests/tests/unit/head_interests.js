@@ -123,14 +123,6 @@ function promiseAddUrlInterestsVisit(url,interests,count,daysAgo) {
     });
 }
 
-function promiseAddInterestVisits(interest,count,daysAgo) {
-  let visitPromises = [];
-  let now = Date.now();
-  visitPromises.push(addInterest(interest));
-  visitPromises.push(InterestsStorage.addInterestVisit(interest, {visitTime: now - MS_PER_DAY*(daysAgo || 0), visitCount: count || 1}));
-  return Promise.promised(Array)(visitPromises).then();
-}
-
 function addInterestVisitsToSite(site,interest,count) {
   let promises = [];
   for (let i = 0; i < count; i++) {

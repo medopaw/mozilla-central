@@ -28,14 +28,16 @@ const SQL = {
             "WHERE interest = :interest), " +
            ":host) ",
 
-  addInterestVisit:
+  addInterestHostVisit:
     "REPLACE INTO moz_interests_visits " +
     "SELECT id, " +
+           "IFNULL(host, :host), " +
            "IFNULL(day, :day), " +
            "IFNULL(visits, 0) + IFNULL(:visits, 1) " +
     "FROM moz_interests " +
     "LEFT JOIN moz_interests_visits " +
     "ON interest_id = id AND " +
+       "host = :host AND " +
        "day = :day " +
     "WHERE interest = :interest",
 
@@ -43,14 +45,12 @@ const SQL = {
     "DELETE FROM moz_interests_visits " +
     "WHERE day > :dayCutoff",
 
-  getDiversityForInterests:
+  getHostCountsForInterests:
     "SELECT interest, " +
-           "COUNT(interest_id) * 100.0 / " +
-             "(SELECT COUNT(DISTINCT host) " +
-              "FROM moz_interests_hosts) * " +
-             "(NOT IFNULL(:checkSharable, 0) OR sharable) diversity " +
+           "COUNT(DISTINCT host) * " +
+             "(NOT IFNULL(:checkSharable, 0) OR sharable) count " +
     "FROM moz_interests " +
-    "LEFT JOIN moz_interests_hosts " +
+    "LEFT JOIN moz_interests_visits " +
     "ON interest_id = id " +
     "WHERE interest IN (:interests) " +
     "GROUP BY id",
@@ -158,21 +158,25 @@ let InterestsStorage = {
     });
   },
 
+
   /**
    * Increment or initialize the number of visits for an interest on a day
    *
    * @param   interest
    *          The full interest string with namespace
+   * @param   host
+   *          The host string to associate with the interest
    * @param   [optional] visitData {see below}
    *          visitCount: Number of visits to add defaulting to 1
    *          visitTime: Date/time to associate with the visit defaulting to now
    * @returns Promise for when the row is added/updated
    */
-  addInterestVisit: function IS_addInterestVisit(interest, visitData={}) {
+  addInterestHostVisit: function IS_addInterestHostVisit(interest, host, visitData={}) {
     let {visitCount, visitTime} = visitData;
-    return this._execute(SQL.addInterestVisit, {
+    return this._execute(SQL.addInterestHostVisit, {
       params: {
         day: this._convertDateToDays(visitTime),
+        host: host,
         interest: interest,
         visits: visitCount,
       },
@@ -195,18 +199,18 @@ let InterestsStorage = {
   },
 
   /**
-   * Compute diversity values for interests
+   * Count the number of hosts interests
    *
    * @param   interests
    *          Array of interest strings
    * @param   [optional] options {see below}
-   *          checkSharable: Boolean for 0-diversity for unshared defaulting false
-   * @returns Promise with each interest as keys on an object with diversity
+   *          checkSharable: Boolean for 0-count for unshared defaulting false
+   * @returns Promise with each interest as keys on an object with host counts
    */
-  getDiversityForInterests: function IS_getDiversityForInterests(interests, options={}) {
+  getHostCountsForInterests: function IS_getHostCountsForInterests(interests, options={}) {
     let {checkSharable} = options;
-    return this._execute(SQL.getDiversityForInterests, {
-      columns: "diversity",
+    return this._execute(SQL.getHostCountsForInterests, {
+      columns: "count",
       key: "interest",
       listParams: {
         interests: interests,

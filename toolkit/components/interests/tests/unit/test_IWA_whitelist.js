@@ -23,11 +23,11 @@ add_task(function test_InterestWebAPI_whitelist()
 
   // data setup
   yield addInterest("technology");
-  yield InterestsStorage.addInterestVisit("technology", {visitTime: (now - MS_PER_DAY*10), visitCount: 10});
+  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*10), visitCount: 10});
   results = yield apiInstance.getTopInterests();
   unExposeAll(results);
   checkScores([
-      {"name":"technology","score":100,"diversity":0},
+      {"name":"technology","score":100,"diversity":100},
   ], 0, results);
 
   // whitelist permission setup
@@ -68,10 +68,10 @@ add_task(function test_InterestWebAPI_whitelist()
   apiInstance.init({location: {hostname: "mozilla.com"}});
 
   checkSucceeds("interests.getTopInterests(6)", [
-      {"name":"technology","score":100,"diversity":0},
+      {"name":"technology","score":100,"diversity":100},
   ], 0);
   checkSucceeds("interests.getInterests(['technology'])", [
-      {"name":"technology","score":100,"diversity":0},
+      {"name":"technology","score":100,"diversity":100},
   ], 0);
 
   // site added to user-defined whitelist in prefs
@@ -79,10 +79,10 @@ add_task(function test_InterestWebAPI_whitelist()
   apiInstance.init({location: {hostname: "testsite.com"}});
 
   checkSucceeds("interests.getTopInterests(6)", [
-      {"name":"technology","score":100,"diversity":0},
+      {"name":"technology","score":100,"diversity":100},
   ], 0);
   checkSucceeds("interests.getInterests(['technology'])", [
-      {"name":"technology","score":100,"diversity":0},
+      {"name":"technology","score":100,"diversity":100},
   ], 0);
 });
 

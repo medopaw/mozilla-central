@@ -286,7 +286,7 @@ Interests.prototype = {
     // execute host and visit additions
     let addVisitPromises = [];
     for (let interest of interests) {
-      addVisitPromises.push(InterestsStorage.addInterestVisit(interest, {
+      addVisitPromises.push(InterestsStorage.addInterestHostVisit(interest, host, {
         visitCount: visitCount,
         visitTime: visitDate,
       }));
@@ -306,7 +306,7 @@ Interests.prototype = {
    *          Promise with an array of interests with name and score
    * @param   [optional] options {see below}
    *          excludeMeta: Boolean true to not include metadata
-   *          roundDiversity: Boolean true to round to the closest int
+   *          roundDiversity: Boolean true to normalize to the max host count
    *          roundScore: Boolean true to normalize scores to the first score
    * @returns Promise with an array of interests with added data
    */
@@ -314,14 +314,14 @@ Interests.prototype = {
     // Wait for the scores to come back with interest names
     return scoresPromise.then(sortedInterests => {
       let names = sortedInterests.map(({name}) => name);
-      // Pass on the scores and add on interest and diversity
+      // Pass on the scores and add on interest and host counts
       return [
         sortedInterests,
         InterestsStorage.getInterests(names),
-        InterestsStorage.getDiversityForInterests(names, options),
+        InterestsStorage.getHostCountsForInterests(names, options),
       ];
     // Wait for all the promises to finish then combine the data
-    }).then(gatherPromises).then(([interests, meta, diversity]) => {
+    }).then(gatherPromises).then(([interests, meta, hostCounts]) => {
       let {excludeMeta, roundDiversity, roundScore} = options;
 
       // Take the first result's score to be the max
@@ -330,14 +330,22 @@ Interests.prototype = {
         maxScore = interests[0].score;
       }
 
+      // Find the largest host count for these interests
+      let maxHosts = 0;
+      Object.keys(hostCounts).forEach(interest => {
+        maxHosts = Math.max(maxHosts, hostCounts[interest]);
+      });
+
+      dump( maxHosts + " MAX HOSTS !!!\n");
+
       // Package up pieces according to options
       interests.forEach(interest => {
         let {name} = interest;
 
         // Include diversity and round to a percent [0-100] if requested
-        interest.diversity = diversity[name];
-        if (roundDiversity) {
-          interest.diversity = Math.round(interest.diversity);
+        interest.diversity = hostCounts[name];
+        if (roundDiversity && maxHosts != 0) {
+          interest.diversity = Math.round(interest.diversity / maxHosts * 100);
         }
 
         // Include meta only if not explictly excluded

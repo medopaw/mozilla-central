@@ -93,14 +93,14 @@ add_task(function test_ClearRecentVisits()
   // test visitCounts when adding visits
 
   // add one today
-  yield promiseAddInterestVisits("cars");
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/", "cars");
   expectedScore = 1;
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
   // add a couple more yesterday
-  yield promiseAddInterestVisits("cars", 4, 1);
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 4, 1);
   expectedScore += scoreDecay(4, 1, 28);
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
@@ -108,8 +108,8 @@ add_task(function test_ClearRecentVisits()
 
   // add some in the recent bucket, some in the past
   // recent assumed to be 14-28 days ago, past > 28 days
-  yield promiseAddInterestVisits("cars", 3, 15);
-  yield promiseAddInterestVisits("cars", 10, 31);
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 3, 15);
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 10, 31);
   expectedScore += scoreDecay(3, 15, 28)
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     // comparing rounded scores due to numerical error

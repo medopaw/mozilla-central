@@ -18,15 +18,15 @@ add_task(function addGoingOlder() {
   let expectedScore = 1;
 
   // Add one visit for now and make sure there's only one
-  yield InterestsStorage.addInterestVisit(interest);
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com");
   yield InterestsStorage.getScoresForInterests([interest]).then(function(result) {
     do_check_eq(result[0].score, expectedScore);
   });
 
   // Add a couple visits from 3 weeks ago
   let recentTime = Date.now() - 21 * MS_PER_DAY;
-  yield InterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
-  yield InterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com", {visitTime: recentTime});
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com", {visitTime: recentTime});
 
   expectedScore += 2 * scoreDecay(1, 21, 28);
 
@@ -36,9 +36,9 @@ add_task(function addGoingOlder() {
 
   // Add a few visits from 5 weeks ago. should not change the score
   let pastTime = Date.now() - 35 * MS_PER_DAY;
-  yield InterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
-  yield InterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
-  yield InterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com", {visitTime: pastTime});
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com", {visitTime: pastTime});
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com", {visitTime: pastTime});
 
   yield InterestsStorage.getScoresForInterests([interest]).then(function(result) {
     do_check_eq(result[0].score, expectedScore);
@@ -54,7 +54,7 @@ add_task(function addGoingNewer() {
   let pastTime = Date.now() - 35 * MS_PER_DAY;
   let expectedScore = 0
 
-  yield InterestsStorage.addInterestVisit(interest, {visitTime: pastTime});
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com", {visitTime: pastTime});
 
   yield InterestsStorage.getScoresForInterests([interest]).then(function(result) {
     do_check_eq(result[0].score, expectedScore);
@@ -62,8 +62,8 @@ add_task(function addGoingNewer() {
 
   // Add a couple visits from 3 weeks ago
   let recentTime = Date.now() - 21 * MS_PER_DAY;
-  yield InterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
-  yield InterestsStorage.addInterestVisit(interest, {visitTime: recentTime});
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com", {visitTime: recentTime});
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com", {visitTime: recentTime});
 
   expectedScore += 2 * scoreDecay(1, 21, 28);
 
@@ -72,9 +72,9 @@ add_task(function addGoingNewer() {
   });
 
   // Add a few visits for now
-  yield InterestsStorage.addInterestVisit(interest);
-  yield InterestsStorage.addInterestVisit(interest);
-  yield InterestsStorage.addInterestVisit(interest);
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com");
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com");
+  yield InterestsStorage.addInterestHostVisit(interest,"foo.com");
 
   expectedScore += 3;
 

@@ -15,7 +15,7 @@ function run_test() {
 add_task(function test_getTopInterests_exposedProps() {
   yield addInterest("cars");
   yield InterestsStorage.setInterest("cars");
-  yield InterestsStorage.addInterestVisit("cars");
+  yield InterestsStorage.addInterestHostVisit("cars","cars.com");
 
   // Create a content sandbox and a helper to evaluate in the sandbox
   let sandbox = Cu.Sandbox("http://www.example.com");
@@ -30,7 +30,7 @@ add_task(function test_getTopInterests_exposedProps() {
   yield doIt("then(function(_ret) { ret = _ret; })");
 
   // Have the sandbox read out certain values
-  do_check_eq(doIt("ret[0].diversity"), 0);
+  do_check_eq(doIt("ret[0].diversity"), 100);
   do_check_eq(doIt("ret[0].name"), "cars");
   do_check_eq(doIt("ret[0].score"), 100);
 });
