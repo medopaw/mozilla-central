@@ -217,4 +217,8 @@ function scoreDecay(score, numDays, daysToZero) {
   return score * (1 - decay);
 }
 
+function dbg(datum, ending = " <===========\n") {
+  dump(JSON.stringify(datum) + ending);
+}
+
 Services.prefs.setBoolPref("interests.enabled", true);
