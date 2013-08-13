@@ -15,6 +15,8 @@ MOCHITEST_FILES	= \
     test_basic.html \
     test_createDirectory.html \
     test_createFile.html \
+    test_enumerate.html \
+    test_enumerateDeep.html \
     test_get.html \
     test_move_copy.html \
     test_remove.html \

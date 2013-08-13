@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+<!--
+https://bugzilla.mozilla.org/show_bug.cgi?id=726593
+-->
+<head>
+  <meta charset="utf-8">
+  <title>Test for File System API</title>
+  <script type="application/javascript" src="/tests/SimpleTest/SimpleTest.js"></script>
+  <script type="text/javascript" src="filesystem_common.js"></script>
+  <link rel="stylesheet" type="text/css" href="/tests/SimpleTest/test.css"/>
+  <script type="application/javascript">
+
+  /** Test for File System API **/
+
+  filesystem_setup();
+
+  var root = navigator.mozSDCard.root;
+  
+  var test_paths = ["filesystem/testentry_nonexistent",
+                    "filesystem/./testentry_illegal",
+                    "filesystem/../testentry_illegal",
+                    "filesystem/testfile",
+                    "filesystem/testdir"];
+
+  testEngine.tests = [{
+		name: "enumerate path that does not exist",
+		args: [test_paths[0]],
+		invert: true
+	}, {
+		name: "enumerate path that is illegal with self reference",
+		args: [test_paths[1]],
+		invert: true
+	}, {
+		name: "enumerate path that is illegal with parent reference",
+		args: [test_paths[2]],
+		invert: true
+	}, {
+		name: "enumerate file",
+		args: [test_paths[3]],
+		invert: true
+	}, {
+		name: "enumerate dir",
+		args: [test_paths[4]]
+/*	}, {
+		name: "enumerate without passing a path",
+		args: [test_paths[5]]
+*/	}];
+
+  testEngine.func = function(args, onsuccess, onerror) {
+	  var path = args[0];
+	  test_dump("enumerate " + path);
+	  root.enumerate(path, onsuccess, onerror);  
+  };
+
+  root.createFile(test_paths[3], null, function() {
+	  root.createDirectory(test_paths[4], function() {
+		  root.createFile(test_paths[4] + "/testfile_1", null, function() {
+			  root.createFile(test_paths[4] + "/testfile_2", null, function() {
+				  testEngine.proceed();
+			  });
+		  });
+	  });
+  });
+
+  </script>
+</head>
+<body>
+<a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=726593">Mozilla Bug 726593</a>
+<p id="display"></p>
+<div id="content" style="display: none">
+
+</div>
+<pre id="test">
+</pre>
+</body>
+</html>

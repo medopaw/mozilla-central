@@ -40,6 +40,7 @@ EnumerateWorker::EnumerateInternal(nsCOMPtr<nsIFile> aDir)
 {
   SDCARD_LOG("in EnumerateWorker.EnumerateInternal()");
 
+  // If aDir is not a directory, an error would be thrown here.
   nsCOMPtr<nsISimpleEnumerator> childEnumerator;
   nsresult rv = aDir->GetDirectoryEntries(getter_AddRefs(childEnumerator));
   if (NS_FAILED(rv) ) {
