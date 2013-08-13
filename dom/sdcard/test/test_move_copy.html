@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<!--
+https://bugzilla.mozilla.org/show_bug.cgi?id=726593
+-->
+<head>
+  <meta charset="utf-8">
+  <title>Test for File System API</title>
+  <script type="application/javascript" src="/tests/SimpleTest/SimpleTest.js"></script>
+  <script type="text/javascript" src="filesystem_common.js"></script>
+  <link rel="stylesheet" type="text/css" href="/tests/SimpleTest/test.css"/>
+  <script type="application/javascript">
+
+  /** Test for File System API **/
+
+  filesystem_setup();
+
+  var root = navigator.mozSDCard.root;
+  /*
+  var test_paths = ["filesystem/testpath_to_path",
+                    "filesystem/testpath_to_dir",
+                    "filesystem/testpath_to_dict",
+                    "filesystem/testfile_to_path",
+                    "filesystem/testfile_to_dir",
+                    "filesystem/testfile_to_dict",
+                    "filesystem/testdir_to_path",
+                    "filesystem/testdir_to_dir",
+                    "filesystem/testdir_to_dict",
+                    "filesystem/lastone"];
+
+  testEngine.tests = [{
+		name: "create file that does not exist",
+		args: [test_paths[0]]
+	}, {
+		name: "create file that exists and truncate",
+		args: [test_paths[0], {ifExists: "truncate"}]
+	}, {
+		name: "create file that exists and fail",
+		args: [test_paths[0], {ifExists: "fail"}],
+		invert: true
+	}];
+
+  testEngine.func = function(args, onsuccess, onerror) {
+	  var path = args[0], options = args[1];
+	  test_dump("create file " + path);
+	  root.createFile(path, options, onsuccess, onerror);  
+  };
+
+  testEngine.proceed();
+  */
+  
+  ok(true, "not implemented yet");
+
+  </script>
+</head>
+<body>
+<a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=726593">Mozilla Bug 726593</a>
+<p id="display"></p>
+<div id="content" style="display: none">
+
+</div>
+<pre id="test">
+</pre>
+</body>
+</html>
