@@ -113,7 +113,7 @@ private:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
       bool isFile = true, const JS::Value* aContent = nullptr);
 
-  void EnumerateInternal(bool aDeep,
+  void EnumerateInternal(const Optional<nsAString >& path, bool aDeep,
       const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 

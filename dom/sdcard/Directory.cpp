@@ -248,7 +248,7 @@ Directory::Enumerate(const Optional<nsAString >& path,
 {
   SDCARD_LOG("in Directory.Enumerate()");
 
-  EnumerateInternal(false, successCallback, errorCallback);
+  EnumerateInternal(path, false, successCallback, errorCallback);
 }
 
 void
@@ -258,7 +258,7 @@ Directory::EnumerateDeep(const Optional<nsAString >& path,
 {
   SDCARD_LOG("in Directory.EnumerateDeep()");
 
-  EnumerateInternal(true, successCallback, errorCallback);
+  EnumerateInternal(path, true, successCallback, errorCallback);
 }
 
 void
@@ -389,7 +389,7 @@ Directory::GetEntry(const nsAString& path, bool aCreate, bool aExclusive, bool a
 }
 
 void
-Directory::EnumerateInternal(bool aDeep,
+Directory::EnumerateInternal(const Optional<nsAString >& path, bool aDeep,
       const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
@@ -405,13 +405,25 @@ Directory::EnumerateInternal(bool aDeep,
   }
   nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
 
+  nsString relpath = mRelpath;
+  if (path.WasPassed()) {
+    nsString strPath;
+    strPath = path.Value();
+    if (!Path::IsValidPath(strPath)) {
+      SDCARD_LOG("Invalid path!");
+      pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+      return;
+    }
+    Path::Absolutize(strPath, mRelpath, relpath);
+  }
+
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(mRelpath, aDeep, pCaller);
+    nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(relpath, aDeep, pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardEnumerateParams params(mRelpath, aDeep);
+    SDCardEnumerateParams params(relpath, aDeep);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
