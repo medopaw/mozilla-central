@@ -96,10 +96,12 @@ public:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Enumerate (EntriesCallback& successCallback,
+  void Enumerate (const Optional<nsAString >& path,
+      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void EnumerateDeep (EntriesCallback& successCallback,
+  void EnumerateDeep (const Optional<nsAString >& path,
+      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
   void RemoveRecursively(VoidCallback& successCallback,
@@ -111,7 +113,8 @@ private:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
       bool isFile = true, const JS::Value* aContent = nullptr);
 
-  void EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
+  void EnumerateInternal(bool aDeep,
+      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
   void RemoveInternal(const nsAString& path, bool deep, VoidCallback& successCallback,

@@ -242,7 +242,8 @@ Directory::Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName
 }
 
 void
-Directory::Enumerate(EntriesCallback& successCallback,
+Directory::Enumerate(const Optional<nsAString >& path,
+      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Enumerate()");
@@ -251,7 +252,8 @@ Directory::Enumerate(EntriesCallback& successCallback,
 }
 
 void
-Directory::EnumerateDeep(EntriesCallback& successCallback,
+Directory::EnumerateDeep(const Optional<nsAString >& path,
+      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.EnumerateDeep()");
@@ -387,16 +389,21 @@ Directory::GetEntry(const nsAString& path, bool aCreate, bool aExclusive, bool a
 }
 
 void
-Directory::EnumerateInternal(bool aDeep, EntriesCallback& successCallback,
+Directory::EnumerateInternal(bool aDeep,
+      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.EnumerateInternal()");
 
+  EntriesCallback* pSuccessCallback = nullptr;
+  if (successCallback.WasPassed()) {
+    pSuccessCallback = &(successCallback.Value());
+  }
   ErrorCallback* pErrorCallback = nullptr;
   if (errorCallback.WasPassed()) {
     pErrorCallback = &(errorCallback.Value());
   }
-  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
+  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
