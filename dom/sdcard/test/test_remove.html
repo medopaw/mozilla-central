@@ -16,42 +16,53 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
   filesystem_setup();
 
   var root = navigator.mozSDCard.root;
-  
-  var test_paths = ["filesystem/testentry_nonexistent",
-                    "filesystem/./testentry_illegal",
+
+  var test_paths = ["filesystem/./testentry_illegal",
                     "filesystem/../testentry_illegal",
+                    "filesystem/testentry_nonexistent",
                     "filesystem/testfile",
-                    "filesytem/testdir"];
-  
-	testEngine.tests = [{
-		name: "get path that does not exist",
+                    "filesystem/testdir_empty",
+                    "filesystem/testdir_nonempty"];
+
+  testEngine.tests = [{
+		name: "remove path that is illegal with self reference",
 		args: [test_paths[0]],
 		invert: true
 	}, {
-		name: "get path that is illegal with self reference",
+		name: "remove path that is illegal with parent reference",
 		args: [test_paths[1]],
 		invert: true
 	}, {
-		name: "get path that is illegal with parent reference",
+		name: "remove path that does not exist",
 		args: [test_paths[2]],
 		invert: true
 	}, {
-		name: "get file",
+		name: "remove file",
 		args: [test_paths[3]]
 	}, {
-		name: "get directory",
+		name: "remove empty directory",
 		args: [test_paths[4]]
+	}, {
+		name: "remove nonempty directory",
+		args: [test_paths[5]],
+		invert: true
 	}];
 
   testEngine.func = function(args, onsuccess, onerror) {
 	  var path = args[0];
-	  test_dump("get " + path);
-	  root.get(path, onsuccess, onerror);  
+	  test_dump("remove " + path);
+	  root.remove(path, onsuccess, onerror);  
   };
-  
+
   root.createFile(test_paths[3], null, function() {
 	  root.createDirectory(test_paths[4], function() {
-		  testEngine.proceed();
+		  root.createDirectory(test_paths[5], function() {
+			  root.createFile(test_paths[5] + "/testfile_1", null, function() {
+				  root.createFile(test_paths[5] + "/testfile_2", null, function() {
+					  testEngine.proceed();
+				  });
+			  });
+		  });
 	  });
   });
 
