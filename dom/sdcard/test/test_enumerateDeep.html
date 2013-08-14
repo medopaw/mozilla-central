@@ -17,50 +17,44 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 
   var root = navigator.mozSDCard.root;
   
-  var test_paths = ["filesystem/testentry_nonexistent",
-                    "filesystem/./testentry_illegal",
-                    "filesystem/../testentry_illegal",
-                    "filesystem/testfile",
-                    "filesystem/testdir"];
-
   testEngine.tests = [{
-		name: "enumerate path that does not exist",
-		args: [test_paths[0]],
-		invert: true
-	}, {
-		name: "enumerate path that is illegal with self reference",
-		args: [test_paths[1]],
-		invert: true
-	}, {
-		name: "enumerate path that is illegal with parent reference",
-		args: [test_paths[2]],
-		invert: true
-	}, {
-		name: "enumerate file",
-		args: [test_paths[3]],
-		invert: true
-	}, {
-		name: "enumerate dir",
-		args: [test_paths[4]]
-/*	}, {
-		name: "enumerate without passing a path",
-		args: [test_paths[5]]
-*/	}];
+    name: "enumerate " + testPath.nonexistent.desc,
+    args: [testPath.nonexistent.path],
+    invert: true
+  }, {
+    name: "enumerate " + testPath.illegal.selfReference.desc,
+    args: [testPath.illegal.selfReference.path],
+    invert: true
+  }, {
+    name: "enumerate " + testPath.illegal.parentReference.desc,
+    args: [testPath.illegal.parentReference.path],
+    invert: true
+  }, {
+    name: "enumerate " + testPath.file.normal.desc,
+    args: [testPath.file.normal.path],
+    invert: true
+  }, {
+    name: "enumerate " + testPath.dir.normal.desc,
+    args: [testPath.dir.normal.path]
+/*  }, {
+    name: "enumerate without passing a path",
+    args: [test_paths[5]]
+*/  }];
 
   testEngine.func = function(args, onsuccess, onerror) {
-	  var path = args[0];
-	  test_dump("enumerateDeep " + path);
-	  root.enumerate(path, onsuccess, onerror);  
+    var path = args[0];
+    test_dump("enumerateDeep " + path);
+    root.enumerateDeep(path, onsuccess, onerror);  
   };
 
-  root.createFile(test_paths[3], null, function() {
-	  root.createDirectory(test_paths[4], function() {
-		  root.createFile(test_paths[4] + "/testfile_1", null, function() {
-			  root.createFile(test_paths[4] + "/testfile_2", null, function() {
-				  testEngine.proceed();
-			  });
-		  });
-	  });
+  root.createFile(testPath.file.normal.path, null, function() {
+    root.createDirectory(testPath.dir.normal.path, function() {
+      root.createFile(testPath.dir.normal.path + "/testfile_1", null, function() {
+        root.createFile(testPath.dir.normal.path + "/testfile_2", null, function() {
+          testEngine.proceed();
+        });
+      });
+    });
   });
 
   </script>

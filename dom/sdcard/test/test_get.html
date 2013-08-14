@@ -17,30 +17,24 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 
   var root = navigator.mozSDCard.root;
   
-  var test_paths = ["filesystem/testentry_nonexistent",
-                    "filesystem/./testentry_illegal",
-                    "filesystem/../testentry_illegal",
-                    "filesystem/testfile",
-                    "filesytem/testdir"];
-  
 	testEngine.tests = [{
-		name: "get path that does not exist",
-		args: [test_paths[0]],
+		name: "get " + testPath.nonexistent.desc,
+		args: [testPath.nonexistent.path],
 		invert: true
 	}, {
-		name: "get path that is illegal with self reference",
-		args: [test_paths[1]],
+		name: "get " + testPath.illegal.selfReference.desc,
+		args: [testPath.illegal.selfReference.path],
 		invert: true
 	}, {
-		name: "get path that is illegal with parent reference",
-		args: [test_paths[2]],
+		name: "get " + testPath.illegal.parentReference.desc,
+		args: [testPath.illegal.parentReference.path],
 		invert: true
 	}, {
-		name: "get file",
-		args: [test_paths[3]]
+		name: "get " + testPath.file.normal.desc,
+		args: [testPath.file.normal.path]
 	}, {
-		name: "get directory",
-		args: [test_paths[4]]
+		name: "get " + testPath.dir.normal.desc,
+		args: [testPath.dir.normal.path]
 	}];
 
   testEngine.func = function(args, onsuccess, onerror) {
@@ -49,8 +43,8 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 	  root.get(path, onsuccess, onerror);  
   };
   
-  root.createFile(test_paths[3], null, function() {
-	  root.createDirectory(test_paths[4], function() {
+  root.createFile(testPath.file.normal.path, null, function() {
+	  root.createDirectory(testPath.dir.normal.path, function() {
 		  testEngine.proceed();
 	  });
   });

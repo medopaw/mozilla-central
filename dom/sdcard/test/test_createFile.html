@@ -17,17 +17,15 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 
   var root = navigator.mozSDCard.root;
   
-  var test_paths = ["filesystem/testfile_empty", "filesystem/testfile_content"];
-
   testEngine.tests = [{
 		name: "create file that does not exist",
-		args: [test_paths[0]]
+		args: [testPath.file.empty.path]
 	}, {
 		name: "create file that exists and truncate",
-		args: [test_paths[0], {ifExists: "truncate"}]
+		args: [testPath.file.empty.path, {ifExists: "truncate"}]
 	}, {
 		name: "create file that exists and fail",
-		args: [test_paths[0], {ifExists: "fail"}],
+		args: [testPath.file.empty.path, {ifExists: "fail"}],
 		invert: true
 	}];
 

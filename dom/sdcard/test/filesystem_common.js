@@ -84,3 +84,48 @@ var testEngine = {
 	this.func(this.test.args, onsuccess, onerror);
   }
 };
+
+var testPath = {
+  dir: {
+    empty: {
+      path: "filesytem/testdir_empty",
+      desc: "empty directory"
+    },
+    nonempty: {
+      path: "filesystem/testdir_nonempty",
+      desc: "nonempty directory"
+    },
+    normal: {
+      path: "filesystem/testdir",
+      desc: "directory"
+    }
+  },
+  file: {
+    empty: {
+      path: "filesytem/testfile_empty",
+      desc: "empty file"
+    },
+    nonempty: {
+      path: "filesystem/testfile_nonempty",
+      desc: "nonempty file"
+    },
+    normal: {
+      path: "filesystem/testfile",
+      desc: "file"
+    }
+  },
+  illegal: {
+    parentReference: {
+      path: "filesystem/../testentry_illegal",
+      desc: "path that is illegal with parent reference"
+    },
+    selfReference: {
+      path: "filesystem/./testentry_illegal",
+      desc: "path that is illegal with self reference"
+    }
+  },
+  nonexistent: {
+	  path: "filesystem/testentry_nonexistent",
+	  desc: "path that does not exist"
+  }
+};

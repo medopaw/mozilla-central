@@ -24,27 +24,27 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
                     "filesystem/testdir_empty",
                     "filesystem/testdir_nonempty"];
 
-  testEngine.tests = [{
-		name: "remove path that is illegal with self reference",
-		args: [test_paths[0]],
+ 	testEngine.tests = [{
+		name: "remove " + testPath.nonexistent.desc,
+		args: [testPath.nonexistent.path],
 		invert: true
 	}, {
-		name: "remove path that is illegal with parent reference",
-		args: [test_paths[1]],
+		name: "remove " + testPath.illegal.selfReference.desc,
+		args: [testPath.illegal.selfReference.path],
 		invert: true
 	}, {
-		name: "remove path that does not exist",
-		args: [test_paths[2]],
+		name: "remove " + testPath.illegal.parentReference.desc,
+		args: [testPath.illegal.parentReference.path],
 		invert: true
 	}, {
-		name: "remove file",
-		args: [test_paths[3]]
+		name: "remove " + testPath.file.normal.desc,
+		args: [testPath.file.normal.path]
 	}, {
-		name: "remove empty directory",
-		args: [test_paths[4]]
+		name: "remove " + testPath.dir.empty.desc,
+		args: [testPath.dir.empty.path]
 	}, {
-		name: "remove nonempty directory",
-		args: [test_paths[5]],
+		name: "remove " + testPath.dir.nonempty.desc,
+		args: [testPath.dir.nonempty.path],
 		invert: true
 	}];
 
@@ -54,11 +54,11 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 	  root.remove(path, onsuccess, onerror);  
   };
 
-  root.createFile(test_paths[3], null, function() {
-	  root.createDirectory(test_paths[4], function() {
-		  root.createDirectory(test_paths[5], function() {
-			  root.createFile(test_paths[5] + "/testfile_1", null, function() {
-				  root.createFile(test_paths[5] + "/testfile_2", null, function() {
+  root.createFile(testPath.file.normal.path, null, function() {
+	  root.createDirectory(testPath.dir.empty.path, function() {
+		  root.createDirectory(testPath.dir.nonempty.path, function() {
+			  root.createFile(testPath.dir.nonempty.path + "/testfile_1", null, function() {
+				  root.createFile(testPath.dir.nonempty.path + "/testfile_2", null, function() {
 					  testEngine.proceed();
 				  });
 			  });
