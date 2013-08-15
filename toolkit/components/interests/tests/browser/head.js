@@ -441,7 +441,6 @@ function promiseAddInterest(aInterest) {
 function promiseClearInterests() {
   let promises = [];
   promises.push(InterestsStorage._execute("DELETE FROM moz_interests"));
-  promises.push(InterestsStorage._execute("DELETE FROM moz_interests_hosts"));
   promises.push(InterestsStorage._execute("DELETE FROM moz_interests_visits"));
   return Promise.promised(Array)(promises).then();
 }
