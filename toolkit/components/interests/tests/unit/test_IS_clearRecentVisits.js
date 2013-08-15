@@ -18,7 +18,6 @@ add_task(function test_ClearRecentVisits()
 
   // cleanup the tables
   yield InterestsStorage.clearRecentVisits(100);
-  yield clearInterestsHosts();
 
   // check that tables are empty
   let expectedScore = 0;
@@ -116,7 +115,7 @@ add_task(function test_ClearRecentVisits()
     do_check_eq(results[0].score.toFixed(5), expectedScore.toFixed(5));
   });
 
-  yield clearInterestsHosts();
+  yield InterestsStorage.clearRecentVisits(100);
   yield getInterestsForHost("cars.com").then(function(results) {
     do_check_eq(results.length, 0);
   });

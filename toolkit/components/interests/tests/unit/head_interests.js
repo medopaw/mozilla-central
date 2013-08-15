@@ -39,16 +39,10 @@ function addInterest(interest) {
   return InterestsStorage.setInterest(interest, {});
 }
 
-function clearInterestsHosts() {
-  return InterestsStorage._execute(
-    "DELETE FROM moz_interests_hosts"
-  );
-}
-
 function getHostsForInterest(interest) {
   return InterestsStorage._execute(
-    "SELECT ih.host AS host FROM moz_interests i, moz_interests_hosts ih " +
-    "WHERE i.interest = :interest AND i.id = ih.interest_id", {
+    "SELECT DISTINCT(iv.host) AS host FROM moz_interests i, moz_interests_visits iv " +
+    "WHERE i.interest = :interest AND i.id = iv.interest_id", {
     columns: "host",
     params: {
       interest: interest,
@@ -58,8 +52,8 @@ function getHostsForInterest(interest) {
 
 function getInterestsForHost(host) {
   return InterestsStorage._execute(
-    "SELECT interest FROM moz_interests i, moz_interests_hosts ih " +
-    "WHERE ih.host = :host AND i.id = ih.interest_id", {
+    "SELECT DISTINCT(interest) AS interest FROM moz_interests i, moz_interests_visits iv " +
+    "WHERE iv.host = :host AND i.id = iv.interest_id", {
     columns: "interest",
     params: {
       host: host,
@@ -70,7 +64,6 @@ function getInterestsForHost(host) {
 function promiseClearHistoryAndVisits() {
   let promises = [];
   promises.push(InterestsStorage._execute("DELETE FROM moz_interests"));
-  promises.push(InterestsStorage._execute("DELETE FROM moz_interests_hosts"));
   promises.push(InterestsStorage._execute("DELETE FROM moz_interests_visits"));
   promises.push(promiseClearHistory());
   return Promise.promised(Array)(promises).then();

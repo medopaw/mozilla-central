@@ -33,13 +33,6 @@ const SCHEMA = {
       ", sharable INTEGER DEFAULT 1 NOT NULL" +
       ")"
     ,
-    moz_interests_hosts :
-      "CREATE TABLE moz_interests_hosts (" +
-      "  interest_id INTEGER NOT NULL" +
-      ", host TEXT NOT NULL" +
-      ", PRIMARY KEY (interest_id, host)" +
-      ")"
-    ,
     moz_interests_visits :
       "CREATE TABLE moz_interests_visits (" +
       "  interest_id INTEGER NOT NULL" +

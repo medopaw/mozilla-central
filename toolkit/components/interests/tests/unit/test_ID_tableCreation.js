@@ -16,7 +16,6 @@ add_task(function test_ID_tableCreation()
 {
  let db = yield InterestsDatabase.DBConnectionPromise;
  do_check_true(yield db.tableExists("moz_interests"));
- do_check_true(yield db.tableExists("moz_interests_hosts"));
  do_check_true(yield db.tableExists("moz_interests_visits"));
  do_check_true(yield db.tableExists("moz_interests_shared"));
 

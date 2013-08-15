@@ -99,7 +99,6 @@ add_task(function test_InterestWebAPI_getTopInterests()
   yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 15});
   yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 5});
   yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
-  yield InterestsStorage.addInterestHost("video-games", "cars.com");
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   scoreMax = 15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28);

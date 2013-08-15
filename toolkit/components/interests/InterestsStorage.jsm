@@ -21,13 +21,6 @@ const MS_PER_DAY = 86400000;
  * Store the SQL statements used for this file together for easy reference
  */
 const SQL = {
-  addInterestHost:
-    "INSERT OR IGNORE INTO moz_interests_hosts (interest_id, host) " +
-    "VALUES((SELECT id " +
-            "FROM moz_interests " +
-            "WHERE interest = :interest), " +
-           ":host) ",
-
   addInterestHostVisit:
     "REPLACE INTO moz_interests_visits " +
     "SELECT id, " +
@@ -61,15 +54,13 @@ const SQL = {
     "WHERE interest IN (:interests)",
 
   getRecentHostsForInterests:
-    "SELECT i.interest, ih.host " +
+    "SELECT i.interest, iv.host " +
     "FROM moz_interests i " +
-      ", moz_interests_hosts ih " +
       ", moz_interests_visits iv " +
     "WHERE i.interest IN (:interests) " +
-      "AND ih.interest_id = i.id " +
       "AND iv.interest_id = i.id " +
       "AND iv.day > :dayCutoff " +
-    "GROUP BY i.interest, ih.host ",
+    "GROUP BY i.interest, iv.host ",
 
   getScoresForInterests:
     "SELECT interest name, " +
@@ -139,25 +130,6 @@ const SQL = {
 let InterestsStorage = {
   //////////////////////////////////////////////////////////////////////////////
   //// InterestsStorage
-
-  /**
-   * Record the pair of interest and host
-   *
-   * @param   interest
-   *          The full interest string with namespace
-   * @param   host
-   *          The host string to associate with the interest
-   * @returns Promise for when the row is added
-   */
-  addInterestHost: function IS_addInterestHost(interest, host) {
-    return this._execute(SQL.addInterestHost, {
-      params: {
-        host: host,
-        interest: interest,
-      },
-    });
-  },
-
 
   /**
    * Increment or initialize the number of visits for an interest on a day

@@ -290,11 +290,6 @@ Interests.prototype = {
         visitCount: visitCount,
         visitTime: visitDate,
       }));
-
-      // Only record this host if it's a top host
-      if (this._isTopHost(host)) {
-        addVisitPromises.push(InterestsStorage.addInterestHost(interest, host));
-      }
     }
     return gatherPromises(addVisitPromises);
   },
@@ -335,8 +330,6 @@ Interests.prototype = {
       Object.keys(hostCounts).forEach(interest => {
         maxHosts = Math.max(maxHosts, hostCounts[interest]);
       });
-
-      dump( maxHosts + " MAX HOSTS !!!\n");
 
       // Package up pieces according to options
       interests.forEach(interest => {

@@ -60,7 +60,6 @@ add_task(function test_checkSharable()
 add_task(function test_InterestsStorageGetHostCount()
 {
   yield promiseClearHistory();
-  yield clearInterestsHosts();
 
   yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","shopping"]);
   yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "computers");
