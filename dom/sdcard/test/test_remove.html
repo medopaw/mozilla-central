@@ -15,14 +15,21 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 
   filesystem_setup();
 
-  var root = navigator.mozSDCard.root;
+  filesystem_create([{
+		name: testPath.file.normal.name
+	}, {
+		name: testPath.dir.empty.name,
+		tree: []
+	}, {
+		name: testPath.dir.nonempty.name,
+		tree: [{
+			name: testPath.file.normal.name + "_1"
+		}, {
+			name: testPath.file.normal.name + "_2"
+		}]
+	}]);
 
-  var test_paths = ["filesystem/./testentry_illegal",
-                    "filesystem/../testentry_illegal",
-                    "filesystem/testentry_nonexistent",
-                    "filesystem/testfile",
-                    "filesystem/testdir_empty",
-                    "filesystem/testdir_nonempty"];
+  var root = navigator.mozSDCard.root;
 
  	testEngine.tests = [{
 		name: "remove " + testPath.nonexistent.desc,
@@ -54,17 +61,7 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 	  root.remove(path, onsuccess, onerror);  
   };
 
-  root.createFile(testPath.file.normal.path, null, function() {
-	  root.createDirectory(testPath.dir.empty.path, function() {
-		  root.createDirectory(testPath.dir.nonempty.path, function() {
-			  root.createFile(testPath.dir.nonempty.path + "/testfile_1", null, function() {
-				  root.createFile(testPath.dir.nonempty.path + "/testfile_2", null, function() {
-					  testEngine.proceed();
-				  });
-			  });
-		  });
-	  });
-  });
+  testEngine.proceed();
 
   </script>
 </head>

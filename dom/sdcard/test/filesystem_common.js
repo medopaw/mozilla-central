@@ -16,6 +16,8 @@
   }
 }); */
 
+var root_nsIFile;
+
 function filesystem_setup() {
 
   // ensure that the directory we are writing into is empty
@@ -26,6 +28,8 @@ function filesystem_setup() {
     var f = directoryService.get("TmpD", Ci.nsIFile);
     f.appendRelativePath("file-system-testing");
     f.remove(true);
+    root_nsIFile = f.clone();
+    root_nsIFile.appendRelativePath("filesystem");
   } catch(e) {}
 
   SimpleTest.waitForExplicitFinish();
@@ -42,7 +46,36 @@ function filesystem_cleanup() {
 }
 
 function test_dump(msg) {
-	dump("\n[File System Test]" + msg + "\n");
+  dump("\n[File System Test]" + msg + "\n");
+}
+
+function filesystem_create(tree) {
+  if (!tree.nsIFile) {
+    if (!root_nsIFile) {
+      ok(false, "can't get root nsIFile");
+      return;
+    }
+    tree.nsIFile = root_nsIFile;
+  }
+  for (var i = 0; i < tree.length; i++) {
+	var node = tree[i];
+    var f = tree.nsIFile.clone();
+    f.appendRelativePath(node.name);
+    // directory has tree property, even just an empty array
+    if (node.tree) {
+      node.tree.nsIFile = f.clone();
+      if (node.tree.length) {
+    	filesystem_create(node.tree);
+      } else {
+        // create directory
+    	f.create(1, 0777);
+      }
+    } else {
+      // if (node.blob) {}
+      // create file
+      f.create(0, 0777);
+    }
+  }
 }
 
 var testEngine = {
@@ -88,29 +121,35 @@ var testEngine = {
 var testPath = {
   dir: {
     empty: {
-      path: "filesytem/testdir_empty",
+      path: "filesystem/testdir_empty",
+      name: "testdir_empty",
       desc: "empty directory"
     },
     nonempty: {
       path: "filesystem/testdir_nonempty",
+      name: "testdir_nonempty",
       desc: "nonempty directory"
     },
     normal: {
       path: "filesystem/testdir",
+      name: "testdir",
       desc: "directory"
     }
   },
   file: {
     empty: {
-      path: "filesytem/testfile_empty",
+      path: "filesystem/testfile_empty",
+      name: "testfile_empty",
       desc: "empty file"
     },
     nonempty: {
       path: "filesystem/testfile_nonempty",
+      name: "testfile_nonempty",
       desc: "nonempty file"
     },
     normal: {
       path: "filesystem/testfile",
+      name: "testfile",
       desc: "file"
     }
   },

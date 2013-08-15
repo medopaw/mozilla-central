@@ -15,6 +15,17 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
 
   filesystem_setup();
 
+  filesystem_create([{
+		name: testPath.file.normal.name
+	}, {
+		name: testPath.dir.normal.name,
+		tree: [{
+			name: testPath.file.normal.name + "_1"
+		}, {
+			name: testPath.file.normal.name + "_2"
+		}]
+	}]);
+
   var root = navigator.mozSDCard.root;
   
   testEngine.tests = [{
@@ -47,15 +58,7 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
     root.enumerateDeep(path, onsuccess, onerror);  
   };
 
-  root.createFile(testPath.file.normal.path, null, function() {
-    root.createDirectory(testPath.dir.normal.path, function() {
-      root.createFile(testPath.dir.normal.path + "/testfile_1", null, function() {
-        root.createFile(testPath.dir.normal.path + "/testfile_2", null, function() {
-          testEngine.proceed();
-        });
-      });
-    });
-  });
+  testEngine.proceed();
 
   </script>
 </head>
