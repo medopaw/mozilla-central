@@ -593,7 +593,7 @@ Interests.prototype = {
         interestList.push(interests[i].name);
       }
 
-      return InterestsStorage.getRecentHostsForInterests(interestList, 14);
+      return InterestsStorage.getRecentHostsForInterests(interestList, 30);
     });
 
     // gather and package the data promises
@@ -614,7 +614,7 @@ Interests.prototype = {
         }
         output.interestsHosts[item.interest].push({
           host: item.host,
-          frecency: 100,
+          visits: item.visits,
         });
       }
 
