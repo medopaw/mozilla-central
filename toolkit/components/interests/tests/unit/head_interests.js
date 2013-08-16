@@ -85,25 +85,21 @@ function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
   });
   // wait for urls insertions to complete
   return Promise.promised(Array)(uriPromises).then(() => {
-    // urls are added, moz_hosts populated => refresh moz_interests_frecent_hosts
-    return iServiceObject._refreshFrecentHosts().then(() => {
-      // moz_interests_frecent_hosts is in OK state, and hosts and visits
-      let visitPromises = [];
-      let now = Date.now();
-      visits.forEach(function(visit) {
-        let uri = NetUtil.newURI(visit.url);
-        let host = uri.host.replace(/^www\./, "");
-        let visitTime = now - MS_PER_DAY*(visit.daysAgo || 0);
-        let visitCount = visit.count || 1;
-        let interests = (Array.isArray(visit.interests)) ? visit.interests : [visit.interests];
+    let visitPromises = [];
+    let now = Date.now();
+    visits.forEach(function(visit) {
+      let uri = NetUtil.newURI(visit.url);
+      let host = uri.host.replace(/^www\./, "");
+      let visitTime = now - MS_PER_DAY*(visit.daysAgo || 0);
+      let visitCount = visit.count || 1;
+      let interests = (Array.isArray(visit.interests)) ? visit.interests : [visit.interests];
 
-        interests.forEach(function(interest) {
-          visitPromises.push(addInterest(interest));
-        });
-        visitPromises.push(iServiceObject._addInterestsForHost(interests, host, visitTime, visitCount));
+      interests.forEach(function(interest) {
+        visitPromises.push(addInterest(interest));
       });
-      return Promise.promised(Array)(visitPromises).then();
+      visitPromises.push(iServiceObject._addInterestsForHost(interests, host, visitTime, visitCount));
     });
+    return Promise.promised(Array)(visitPromises).then();
   });
 }
 
@@ -135,15 +131,6 @@ function bulkAddInterestVisitsToSite(data) {
     });
   });
   return promiseAddMultipleUrlInterestsVisits(visitObjects);
-}
-
-function promiseAddVisitsWithRefresh(urls) {
-  let uriArray = urls.map(url => {
-    return promiseAddVisits(NetUtil.newURI(url));
-  });
-  return Promise.promised(Array)(uriArray).then(() => {
-    return iServiceObject._refreshFrecentHosts().then();
-  });
 }
 
 function itemsHave(items,data) {

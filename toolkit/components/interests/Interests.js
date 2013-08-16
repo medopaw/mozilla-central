@@ -24,7 +24,6 @@ const gatherPromises = Promise.promised(Array);
 
 // observer event topics
 const kDOMLoaded = "DOMContentLoaded";
-const kIdleDaily = "idle-daily";
 const kPrefChanged = "nsPref:changed";
 const kShutdown = "xpcom-shutdown";
 const kStartup = "app-startup";
@@ -70,11 +69,6 @@ function Interests() {
 }
 
 Interests.prototype = {
-  //////////////////////////////////////////////////////////////////////////////
-  //// Fields
-  _topHosts: {},
-  _topHostsLen: 0,
-
   //////////////////////////////////////////////////////////////////////////////
   //// Interests API
 
@@ -220,12 +214,6 @@ Interests.prototype = {
     // disallow saving of interests for PB windows
     if (PrivateBrowsingUtils.isWindowPrivate(aDocument.defaultView)) {
       return;
-    }
-
-    // if there's room add new host to the topHosts object
-    if (this._topHostsLen < 200) {
-      // assume default frecency 100
-      this._topHosts[host] = 100;
     }
 
     this._callMatchingWorker({
@@ -468,7 +456,6 @@ Interests.prototype = {
     return InterestsDatabase.getDbMigrationPromise().then(flag => {
       if (flag) {
         return Task.spawn(function () {
-          yield this._refreshFrecentHosts();
           yield this._checkMetadataInit();
           yield this.resubmitRecentHistoryVisits(kDaysToResubmit);
         }.bind(this));
@@ -498,35 +485,6 @@ Interests.prototype = {
       }
     });
     return metadataPromise.promise;
-  },
-
-  /**
-   * checks if a host belongs to top hosts
-   *
-   * @param   host
-   *          host to check
-   * @returns true of host is in the tops, false otherwise
-   */
-  _isTopHost: function I__isTopHost(host) {
-    return this._topHosts[host] != null;
-  },
-
-  /**
-   * updates moz_interests_frecent_hosts with fresh select from places.moz_hosts
-   *
-   * @returns promise for update complete
-   */
-  _refreshFrecentHosts: function I__refreshFrecentHosts() {
-    this._topHosts = {};
-    this._topHostsLen = 0;
-    return PlacesInterestsUtils.getMostFrecentHosts().then(results => {
-      let promises = [];
-      results.forEach(item => {
-        this._topHosts[item.host] = item.frecency;
-        this._topHostsLen++;
-      });
-      return gatherPromises(promises).then();
-    });
   },
 
   //////////////////////////////////////////////////////////////////////////////
@@ -559,7 +517,6 @@ Interests.prototype = {
 
   observe: function I_observe(aSubject, aTopic, aData) {
     if (aTopic == kStartup) {
-      Services.obs.addObserver(this, kIdleDaily, false);
       Services.obs.addObserver(this, kShutdown, false);
       Services.obs.addObserver(this, kWindowReady, false);
       this._setupOneTimeTimer(() => {
@@ -579,13 +536,9 @@ Interests.prototype = {
       }
     }
     else if (aTopic == kShutdown) {
-      Services.obs.removeObserver(this, kIdleDaily);
       Services.obs.removeObserver(this, kShutdown);
       Services.obs.removeObserver(this, kWindowReady);
       Services.prefs.removeObserver("interests.", this);
-    }
-    else if (aTopic == kIdleDaily) {
-      this._refreshFrecentHosts();
     }
     else {
       Cu.reportError("unhandled event: "+aTopic);
@@ -659,7 +612,10 @@ Interests.prototype = {
         if(!output.interestsHosts.hasOwnProperty(item.interest)) {
           output.interestsHosts[item.interest] = [];
         }
-        output.interestsHosts[item.interest].push({host: item.host, frecency: this._topHosts[item.host]});
+        output.interestsHosts[item.interest].push({
+          host: item.host,
+          frecency: 100,
+        });
       }
 
       return output;
