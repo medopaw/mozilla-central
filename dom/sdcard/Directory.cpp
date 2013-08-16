@@ -34,8 +34,8 @@ NS_IMPL_CYCLE_COLLECTING_ADDREF(Directory)
 NS_IMPL_CYCLE_COLLECTING_RELEASE(Directory)
 NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(Directory)
   NS_WRAPPERCACHE_INTERFACE_MAP_ENTRY
-  NS_INTERFACE_MAP_ENTRY(nsISupports)
-NS_INTERFACE_MAP_END
+      NS_INTERFACE_MAP_ENTRY(nsISupports)
+      NS_INTERFACE_MAP_END
 
 Directory::Directory(const FileInfo& aInfo) :
     Entry(aInfo)
@@ -64,9 +64,10 @@ Directory::CreateReader()
 }
 
 void
-Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOptions& options,
-  const Optional< OwningNonNull<EntryCallback> >& successCallback,
-  const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::CreateFile(JSContext* cx, const nsAString& path,
+    const CreateFileOptions& options,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.createFile()");
 
@@ -75,47 +76,52 @@ Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOpti
 
   switch (options.mIfExists) {
   case CreateIfExistsMode::Truncate:
-    SDCARD_LOG("CreateFileOptions.ifExists=truncate");
+    SDCARD_LOG("CreateFileOptions.ifExists=truncate")
+    ;
     exclusive = false;
     break;
   case CreateIfExistsMode::Fail:
-    SDCARD_LOG("CreateFileOptions.ifExists=fail");
+    SDCARD_LOG("CreateFileOptions.ifExists=fail")
+    ;
     exclusive = true;
     break;
   default:
-    SDCARD_LOG("Wrong CreateFileOptions.ifExists");
+    SDCARD_LOG("Wrong CreateFileOptions.ifExists")
+    ;
     break;
   }
   // SDCARD_LOG("%s", options.mData);
-/*
-  if (options.mData.wasPassed()) {
-    const JS::Value& val = options.mData.Value();
-  }
+  /*
+   if (options.mData.wasPassed()) {
+   const JS::Value& val = options.mData.Value();
+   }
 
 
-  if (options.mData.WasPassed()) {
-    SDCARD_LOG("CreateFileOptions.data is passed");
-    const JS::Value& val = options.mData.Value();
-    if (val.isObject()) {
-      const JSObject& obj = val.toObject();
-      if (obj.is<Directory>()) {
+   if (options.mData.WasPassed()) {
+   SDCARD_LOG("CreateFileOptions.data is passed");
+   const JS::Value& val = options.mData.Value();
+   if (val.isObject()) {
+   const JSObject& obj = val.toObject();
+   if (obj.is<Directory>()) {
 
-      if (JS_IsArrayBufferObject(obj)) {
-      } else if (JS_IsArrayBufferViewObject(obj)) {
-      } else { // Temporally assume that it's Blob
+   if (JS_IsArrayBufferObject(obj)) {
+   } else if (JS_IsArrayBufferViewObject(obj)) {
+   } else { // Temporally assume that it's Blob
 
-      }
-    } else if (val.isString()) {
-    } else {
-      SDCARD_LOG("Wrong type of CreateFileOptions.data");
-    }
-  }
-  // if (JS_IsArrayBufferObject(options.mData)) {
+   }
+   } else if (val.isString()) {
+   } else {
+   SDCARD_LOG("Wrong type of CreateFileOptions.data");
+   }
+   }
+   // if (JS_IsArrayBufferObject(options.mData)) {
    // js::ArrayBuffer* src = js::ArrayBuffer::fromJSObject(obj);
-  // }
-*/
-  const JS::Value* pContent = options.mData.WasPassed() ?
-    &(options.mData.Value()) : nullptr;
+   // }
+   */
+  const JS::Value* pContent =
+      options.mData.WasPassed() ?
+                                  &(options.mData.Value()) :
+                                  nullptr;
 
   GetInternal(path, true, exclusive, true,
       successCallback, errorCallback,
@@ -124,8 +130,8 @@ Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOpti
 
 void
 Directory::CreateDirectory(const nsAString& path,
-  const Optional< OwningNonNull<EntryCallback> >& successCallback,
-  const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.createDirectory()");
 
@@ -144,8 +150,8 @@ Directory::Get(const nsAString& path,
 
 void
 Directory::Rename(const nsAString& oldName, const nsAString& newName,
-  const Optional< OwningNonNull<EntryCallback> >& successCallback,
-  const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.rename()");
   // Assign callback nullptr if not passed
@@ -183,84 +189,84 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
   }
 }
 /*
-void
-Directory::Move(const nsAString& entry, const nsAString& newName,
-      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Move()");
+ void
+ Directory::Move(const nsAString& entry, const nsAString& newName,
+ const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+ const Optional<OwningNonNull<EntryCallback> >& successCallback,
+ const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+ {
+ SDCARD_LOG("in Directory.Move()");
 
-  // Check if name is valid.
-  nsString entryRelpath;
-  Path::Absolutize(entry, mRelpath, entryRelpath);
+ // Check if name is valid.
+ nsString entryRelpath;
+ Path::Absolutize(entry, mRelpath, entryRelpath);
 
-  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
-      successCallback, errorCallback, false);
-}
+ CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
+ successCallback, errorCallback, false);
+ }
 
-void
-Directory::Move(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
-      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Move()");
-  nsString entryRelpath;
-  entry.GetRelpath(entryRelpath);
-  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
-      successCallback, errorCallback, false);
-}
+ void
+ Directory::Move(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
+ const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+ const Optional<OwningNonNull<EntryCallback> >& successCallback,
+ const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+ {
+ SDCARD_LOG("in Directory.Move()");
+ nsString entryRelpath;
+ entry.GetRelpath(entryRelpath);
+ CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
+ successCallback, errorCallback, false);
+ }
 
-void
-Directory::Copy(const nsAString& entry, const nsAString& newName,
-      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Copy()");
+ void
+ Directory::Copy(const nsAString& entry, const nsAString& newName,
+ const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+ const Optional<OwningNonNull<EntryCallback> >& successCallback,
+ const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+ {
+ SDCARD_LOG("in Directory.Copy()");
 
-  // Check if name is valid.
-  nsString entryRelpath;
-  Path::Absolutize(entry, mRelpath, entryRelpath);
+ // Check if name is valid.
+ nsString entryRelpath;
+ Path::Absolutize(entry, mRelpath, entryRelpath);
 
-  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
-      successCallback, errorCallback, true);
-}
+ CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
+ successCallback, errorCallback, true);
+ }
 
-void
-Directory::Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
-      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Copy()");
-  nsString entryRelpath;
-  entry.GetRelpath(entryRelpath);
-  CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
-      successCallback, errorCallback, true);
-}
-*/
+ void
+ Directory::Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
+ const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+ const Optional<OwningNonNull<EntryCallback> >& successCallback,
+ const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+ {
+ SDCARD_LOG("in Directory.Copy()");
+ nsString entryRelpath;
+ entry.GetRelpath(entryRelpath);
+ CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
+ successCallback, errorCallback, true);
+ }
+ */
 void
 Directory::Move(const nsAString& path, const nsAString& dest,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Move()");
 }
 
 void
 Directory::Copy(const nsAString& path, const nsAString& dest,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Copy()");
 }
 
 void
-Directory::Enumerate(const Optional<nsAString >& path,
-      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::Enumerate(const Optional<nsAString>& path,
+    const Optional<OwningNonNull<EntriesCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Enumerate()");
 
@@ -268,9 +274,9 @@ Directory::Enumerate(const Optional<nsAString >& path,
 }
 
 void
-Directory::EnumerateDeep(const Optional<nsAString >& path,
-      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::EnumerateDeep(const Optional<nsAString>& path,
+    const Optional<OwningNonNull<EntriesCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.EnumerateDeep()");
 
@@ -279,15 +285,16 @@ Directory::EnumerateDeep(const Optional<nsAString >& path,
 
 void
 Directory::Remove(const nsAString& entry, VoidCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Remove()");
   RemoveInternal(entry, false, successCallback, errorCallback);
 }
 
 void
-Directory::Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::Remove(mozilla::dom::sdcard::Directory& entry,
+    VoidCallback& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Remove()");
   nsString entryRelpath;
@@ -297,15 +304,16 @@ Directory::Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successC
 
 void
 Directory::RemoveDeep(const nsAString& entry, VoidCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.RemoveDeep()");
   RemoveInternal(entry, true, successCallback, errorCallback);
 }
 
 void
-Directory::RemoveDeep(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::RemoveDeep(mozilla::dom::sdcard::Directory& entry,
+    VoidCallback& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.RemoveDeep()");
   nsString entryRelpath;
@@ -317,7 +325,8 @@ already_AddRefed<mozilla::dom::Future>
 Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
 {
   SDCARD_LOG("in Directory.GetFile()");
-  nsRefPtr<mozilla::dom::Future> future = new mozilla::dom::Future(GetParentObject());
+  nsRefPtr<mozilla::dom::Future> future = new mozilla::dom::Future(
+      GetParentObject());
   return future.forget();
   //GetInternal(path, options, successCallback, errorCallback, true);
 }
@@ -360,7 +369,18 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
 }
 
 void
-Directory::GetInternal(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
+Directory::CopyMoveInternal(const nsAString& entryRelpath,
+    const nsAString& parentRelpath, const nsAString& newName, bool isCopy,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
+    bool undecided)
+{
+  SDCARD_LOG("in Directory.CopyMoveInternal()");
+}
+
+void
+Directory::GetInternal(const nsAString& path, bool aCreate, bool aExclusive,
+    bool aTruncate,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback, bool isFile,
     const JS::Value* aContent)
@@ -405,9 +425,9 @@ Directory::GetInternal(const nsAString& path, bool aCreate, bool aExclusive, boo
 }
 
 void
-Directory::EnumerateInternal(const Optional<nsAString >& path, bool aDeep,
-      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::EnumerateInternal(const Optional<nsAString>& path, bool aDeep,
+    const Optional<OwningNonNull<EntriesCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.EnumerateInternal()");
 
@@ -435,7 +455,8 @@ Directory::EnumerateInternal(const Optional<nsAString >& path, bool aDeep,
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(relpath, aDeep, pCaller);
+    nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(relpath, aDeep,
+        pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
@@ -446,8 +467,9 @@ Directory::EnumerateInternal(const Optional<nsAString >& path, bool aDeep,
 }
 
 void
-Directory::RemoveInternal(const nsAString& path, bool deep, VoidCallback& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::RemoveInternal(const nsAString& path, bool deep,
+    VoidCallback& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.RemoveInternal()");
 

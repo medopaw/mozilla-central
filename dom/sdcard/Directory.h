@@ -116,6 +116,12 @@ public:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
+  void CopyMoveInternal(const nsAString& entryRelpath, const nsAString& parentRelpath,
+      const nsAString& newName, bool isCopy,
+      const Optional< OwningNonNull<EntryCallback> >& successCallback,
+      const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
+      bool undecided = false);
+
   void GetInternal(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
