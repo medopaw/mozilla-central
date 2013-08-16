@@ -30,10 +30,12 @@ interface Directory : Entry {
     void            createDirectory (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            get (DOMString path, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            move (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            move (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            copy (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            copy (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void            move (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void            move (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void            copy (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void            copy (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            move (DOMString path, DOMString dest, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            copy (DOMString path, DOMString dest, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            remove (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            remove (Directory entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            removeDeep (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);

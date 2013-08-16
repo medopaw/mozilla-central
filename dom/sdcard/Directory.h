@@ -52,7 +52,7 @@ public:
   void Rename (const nsAString& oldName, const nsAString& newName,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
-
+/*
   void Move(const nsAString& entry, const nsAString& newName,
       const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
@@ -70,6 +70,14 @@ public:
 
   void Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
       const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+*/
+  void Move(const nsAString& path, const nsAString& dest,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
+  void Copy(const nsAString& path, const nsAString& dest,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 

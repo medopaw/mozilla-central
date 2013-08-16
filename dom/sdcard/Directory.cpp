@@ -182,7 +182,7 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
-
+/*
 void
 Directory::Move(const nsAString& entry, const nsAString& newName,
       const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
@@ -239,6 +239,22 @@ Directory::Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName
   entry.GetRelpath(entryRelpath);
   CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
       successCallback, errorCallback, true);
+}
+*/
+void
+Directory::Move(const nsAString& path, const nsAString& dest,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Move()");
+}
+
+void
+Directory::Copy(const nsAString& path, const nsAString& dest,
+      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
 }
 
 void
