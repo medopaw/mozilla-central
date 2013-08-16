@@ -51,7 +51,7 @@ SDCardRequestParent::Dispatch()
           NS_ConvertUTF16toUTF8(p.newName()).get());
 
       nsCOMPtr<IPCCopyAndMoveToEvent> r = new IPCCopyAndMoveToEvent(p.relpath(),
-          p.parentPath(), p.newName(), p.isCopy(), this);
+          p.parentPath(), p.newName(), p.isCopy(), p.undecided(), this);
       r->Start();
 
       break;

@@ -124,7 +124,7 @@ Entry::Filesystem() const
   nsRefPtr<FileSystem> filesystem(FileSystem::GetFilesystem());
   return filesystem.forget();
 }
-
+/*
 void
 Entry::MoveTo(Directory& parent, const Optional<nsAString>& newName,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
@@ -199,7 +199,7 @@ Entry::CopyAndMoveTo(const nsString& entryRelpath,
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
-
+*/
 
 void
 Entry::Remove(VoidCallback& successCallback,

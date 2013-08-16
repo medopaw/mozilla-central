@@ -179,11 +179,11 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
     nsRefPtr<SPCopyAndMoveToEvent> r = new SPCopyAndMoveToEvent(oldPath,
-        mRelpath, newName, false, pCaller);
+        mRelpath, newName, false, false, pCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardCopyAndMoveParams params(oldPath, mRelpath, nsString(newName), false);
+    SDCardCopyAndMoveParams params(oldPath, mRelpath, nsString(newName), false, false);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }

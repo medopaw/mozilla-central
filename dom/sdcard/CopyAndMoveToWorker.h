@@ -21,7 +21,8 @@ public:
   CopyAndMoveToWorker(const nsAString& aRelpath,
       const nsAString& aParentPath,
       const nsAString& aNewName,
-      bool aIsCopy);
+      bool aIsCopy,
+      bool aUndecided);
   ~CopyAndMoveToWorker();
 
   nsString mResultPath;
@@ -32,6 +33,7 @@ private:
   nsString mParentPath;
   nsString mNewName;
   bool mIsCopy;
+  bool mUndecided;
 };
 
 } // namespace sdcard

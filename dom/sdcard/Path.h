@@ -48,8 +48,10 @@ public:
   static bool IsParentOf(const nsAString& aPath, const nsAString& aHead);
 
   static void Split(const nsAString& aPath, nsTArray<nsString>& aComponents);
+  static void Separate(const nsAString& aPath, nsString& aParent, nsString& aName);
 
-  static void Decapitate(nsString& aPath, const nsAString& aHead);
+  static void TrimHead(nsString& aPath, const nsAString& aHead);
+  static void TrimTail(nsString& aPath, const nsAString& aTail);
   static void EnsureDirectory(nsString& aPath);
   static void Append(nsString& aPath, const nsAString& aToAppend);
   static void Append(const nsAString& aParent, const nsAString& aToAppend, nsString& retval);

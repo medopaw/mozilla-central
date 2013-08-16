@@ -48,7 +48,7 @@ public:
   void GetFullPath(nsString& retval) const;
 
   already_AddRefed<FileSystem> Filesystem() const;
-
+/*
   void MoveTo(Directory& parent,
       const Optional<nsAString >& newName,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
@@ -58,7 +58,7 @@ public:
       const Optional<nsAString >& newName,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
+*/
 /*
   void ToURL(nsString& retval);
 */
@@ -90,7 +90,7 @@ protected:
   nsString mName;
   nsString mFullPath;
   nsString mRelpath;
-
+/*
   void CopyAndMoveTo(const nsString& entryRelpath,
       const nsString& parentRelpath, const nsString& newName,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
@@ -102,6 +102,7 @@ private:
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
       bool isCopy);
+*/
 };
 
 } // namespace sdcard

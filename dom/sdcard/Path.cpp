@@ -57,7 +57,7 @@ Path::RealPathToDOMPath(const nsAString& aRealPath, nsString& aInnerPath)
     aInnerPath = Path::root;
   } else {
     aInnerPath = aRealPath;
-    Path::Decapitate(aInnerPath, Path::base);
+    Path::TrimHead(aInnerPath, Path::base);
   }
   SDCARD_LOG("Real path to DOM path: %s -> %s",
       NS_ConvertUTF16toUTF8(aInnerPath).get(),
@@ -169,7 +169,6 @@ Path::IsParentOf(const nsAString& aParent, const nsAString& aMayBeChild)
 void
 Path::Split(const nsAString& aPath, nsTArray<nsString>& aArray)
 {
-  // nsCString conversion needed here
   nsTArray<nsCString> array;
 
   // Call ParseString utility to do the work
@@ -182,10 +181,39 @@ Path::Split(const nsAString& aPath, nsTArray<nsString>& aArray)
 }
 
 void
-Path::Decapitate(nsString& aPath, const nsAString& aHead)
+Path::Separate(const nsAString& aPath, nsString& aParent, nsString& aName)
+{
+  MOZ_ASSERT(Path::IsAbsolute(aParent), "Path must be absolute!");
+  // Note that path does not necessarily exist.
+
+  // This is to simplify the problem. Does not mean that path has to be directory.
+  nsString path(aPath);
+  Path::EnsureDirectory(path);
+
+  nsTArray<nsString> parts;
+  Path::Split(path, parts);
+  if (parts.Length() > 0) {
+    aName = parts[parts.Length() - 1];
+    aParent = path;
+    Path::TrimTail(aParent, aName + Path::separator);
+  } else {
+    aName.SetIsVoid(true);
+    aParent = path;
+  }
+}
+
+void
+Path::TrimHead(nsString& aPath, const nsAString& aHead)
 {
   MOZ_ASSERT(StringBeginsWith(aPath, aHead), "aPath must starts with aHead");
   aPath = Substring(aPath, aHead.Length(), aPath.Length() - aHead.Length());
+}
+
+void
+Path::TrimTail(nsString& aPath, const nsAString& aTail)
+{
+  MOZ_ASSERT(StringEndsWith(aPath, aTail), "aPath must ends with aTail");
+  aPath = Substring(aPath, 0, aPath.Length() - aTail.Length());
 }
 
 void

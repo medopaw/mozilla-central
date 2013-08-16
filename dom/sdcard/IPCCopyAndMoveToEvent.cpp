@@ -18,9 +18,10 @@ IPCCopyAndMoveToEvent::IPCCopyAndMoveToEvent(const nsAString& aRelpath,
     const nsAString& aParentPath,
     const nsAString& aNewName,
     bool aIsCopy,
+    bool aUndecided,
     SDCardRequestParent* aParent) :
     IPCEvent(
-      new CopyAndMoveToWorker(aRelpath, aParentPath, aNewName, aIsCopy),
+      new CopyAndMoveToWorker(aRelpath, aParentPath, aNewName, aIsCopy, aUndecided),
       aParent)
 {
   SDCARD_LOG("construct IPCCopyAndMoveToEvent");

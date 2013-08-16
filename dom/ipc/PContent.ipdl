@@ -134,6 +134,7 @@ struct SDCardCopyAndMoveParams
   nsString parentPath;
   nsString newName;
   bool isCopy;
+  bool undecided;
 };
 
 struct SDCardGetParams

@@ -17,9 +17,10 @@ SPCopyAndMoveToEvent::SPCopyAndMoveToEvent(const nsAString& aRelpath,
     const nsAString& aParentPath,
     const nsAString& aNewName,
     bool aIsCopy,
+    bool aUndecided,
     Caller* aCaller) :
     SPEvent(
-      new CopyAndMoveToWorker(aRelpath, aParentPath, aNewName, aIsCopy),
+      new CopyAndMoveToWorker(aRelpath, aParentPath, aNewName, aIsCopy, aUndecided),
       aCaller)
 {
   SDCARD_LOG("construct SPCopyAndMoveToEvent");

@@ -19,6 +19,7 @@ public:
       const nsAString& aParentPath,
       const nsAString& aNewName,
       bool aIsCopy,
+      bool aUndecided,
       Caller* aCaller);
   ~SPCopyAndMoveToEvent();
 

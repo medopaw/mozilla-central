@@ -17,11 +17,13 @@ namespace sdcard {
 CopyAndMoveToWorker::CopyAndMoveToWorker(const nsAString& aRelpath,
     const nsAString& aParentPath,
     const nsAString& aNewName,
-    bool aIsCopy) :
+    bool aIsCopy,
+    bool aUndecided) :
     Worker(aRelpath),
     mParentPath(aParentPath),
     mNewName(aNewName),
-    mIsCopy(aIsCopy)
+    mIsCopy(aIsCopy),
+    mUndecided(aUndecided)
 {
   SDCARD_LOG("construct CopyAndMoveToWorker");
 }
@@ -37,6 +39,42 @@ CopyAndMoveToWorker::Work()
   SDCARD_LOG("in CopyAndMoveToWorker.Work()");
   MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
 
+  nsresult rv = NS_OK;
+  bool exists = false;
+  bool isFile = false;
+  bool isDirectory = false;
+
+  if (mUndecided) {
+    // Settle down parent and new name first.
+    rv = FileUtils::Exists(mParentPath, &exists);
+    if (NS_FAILED(rv)) {
+      SDCARD_LOG("Error occurs when getting exists.");
+      SetError(rv);
+      return;
+    }
+    if (exists) {
+      rv = FileUtils::IsDirectory(mParentPath, &isDirectory);
+      if (NS_FAILED(rv)) {
+        SDCARD_LOG("Error occurs when getting isDirectory.");
+        SetError(rv);
+        return;
+      }
+      if (isDirectory) {
+        // Treat mParentPath as the parent.
+        // Note that we can only set name to void if we are sure the old name is used.
+        mNewName.SetIsVoid(true);
+      } else {
+        // Treat mParentPath as the target path.
+        // Retrieve newName from path and figure out new parent path.
+        Path::Separate(mParentPath, mParentPath, mNewName);
+      }
+    } else {
+      // Treat mParentPath as the target path.
+      // Retrieve newName from path and figure out new parent path.
+      Path::Separate(mParentPath, mParentPath, mNewName);
+    }
+  }
+
   if (Path::IsBase(mRelpath)) {
     // Cannot copy/move the root directory.
     SDCARD_LOG("Can't copy/move the root directory!");
@@ -44,9 +82,7 @@ CopyAndMoveToWorker::Work()
     return;
   }
 
-  bool isFile = false;
-  bool isDirectory = false;
-  nsresult rv = mFile->IsFile(&isFile);
+  rv = mFile->IsFile(&isFile);
   if (NS_FAILED(rv) ) {
     SDCARD_LOG("Error occurs when getting isFile.");
     SetError(rv);
@@ -106,10 +142,14 @@ CopyAndMoveToWorker::Work()
   }
 
   // Whether the destination is a file
-  bool isNewFile = false;
+  // bool isNewFile = false;
   // Whether the destination is a directory
-  bool isNewDirectory = false;
+  // bool isNewDirectory = false;
   if (newFileExits) {
+    SDCARD_LOG("Target already exists. Can't overwrite.");
+    SetError(Error::DOM_ERROR_PATH_EXISTS);
+    return;
+    /*
     resultFile->IsFile(&isNewFile);
     resultFile->IsDirectory(&isNewDirectory);
     if (!(isNewFile || isNewDirectory)) {
@@ -118,6 +158,7 @@ CopyAndMoveToWorker::Work()
       SetError(Error::DOM_ERROR_INVALID_MODIFICATION);
       return;
     }
+    */
   }
 
   nsString newPath;
@@ -132,7 +173,7 @@ CopyAndMoveToWorker::Work()
     SetError(Error::DOM_ERROR_INVALID_MODIFICATION);
     return;
   }
-
+/*
   if (isNewDirectory) {
     bool dirEmpty;
     rv = FileUtils::IsDirectoryEmpty(resultFile, &dirEmpty);
@@ -158,6 +199,7 @@ CopyAndMoveToWorker::Work()
     SetError(Error::DOM_ERROR_INVALID_MODIFICATION);
     return;
   }
+*/
 
   if (Path::IsParentOf(mRelpath, newPath)) {
     // Cannot copy/move a directory inside itself or to child at any depth.

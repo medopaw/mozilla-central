@@ -16,8 +16,8 @@ interface Entry {
     readonly  attribute DOMString  name;
     readonly  attribute DOMString  fullPath;
     readonly  attribute FileSystem filesystem;
-    void      moveTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void      copyTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void      moveTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void      copyTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
 //  DOMString toURL ();
     void      remove (VoidCallback successCallback, optional ErrorCallback errorCallback);
     void      getParent (EntryCallback successCallback, optional ErrorCallback errorCallback);

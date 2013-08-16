@@ -21,6 +21,28 @@ FileUtils::GetType(bool isFile)
 }
 
 nsresult
+FileUtils::IsDirectory(const nsAString& aPath, bool* aIsDirectory)
+{
+  SDCARD_LOG("in FileUtils.IsDirectory() with path=%s", NS_ConvertUTF16toUTF8(aPath).get());
+
+  nsCOMPtr<nsIFile> file;
+  nsresult rv = NS_NewLocalFile(aPath, false, getter_AddRefs(file));
+  rv = file->IsDirectory(aIsDirectory);
+  return rv;
+}
+
+nsresult
+FileUtils::IsFile(const nsAString& aPath, bool* aIsFile)
+{
+  SDCARD_LOG("in FileUtils.IsFile() with path=%s", NS_ConvertUTF16toUTF8(aPath).get());
+
+  nsCOMPtr<nsIFile> file;
+  nsresult rv = NS_NewLocalFile(aPath, false, getter_AddRefs(file));
+  rv = file->IsFile(aIsFile);
+  return rv;
+}
+
+nsresult
 FileUtils::Exists(const nsAString& aPath, bool* aExists)
 {
   SDCARD_LOG("in FileUtils.Exists() with path=%s", NS_ConvertUTF16toUTF8(aPath).get());
