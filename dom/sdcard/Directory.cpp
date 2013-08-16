@@ -117,7 +117,7 @@ Directory::CreateFile(JSContext* cx, const nsAString& path, const CreateFileOpti
   const JS::Value* pContent = options.mData.WasPassed() ?
     &(options.mData.Value()) : nullptr;
 
-  GetEntry(path, true, exclusive, true,
+  GetInternal(path, true, exclusive, true,
       successCallback, errorCallback,
       true, pContent);
 }
@@ -129,7 +129,7 @@ Directory::CreateDirectory(const nsAString& path,
 {
   SDCARD_LOG("in Directory.createDirectory()");
 
-  GetEntry(path, true, false, false, successCallback, errorCallback, false);
+  GetInternal(path, true, false, false, successCallback, errorCallback, false);
 }
 
 void
@@ -139,7 +139,7 @@ Directory::Get(const nsAString& path,
 {
   SDCARD_LOG("in Directory.Get()");
   // Don't need isFile flag.
-  GetEntry(path, false, false, false, successCallback, errorCallback);
+  GetInternal(path, false, false, false, successCallback, errorCallback);
 }
 
 void
@@ -319,7 +319,7 @@ Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
   SDCARD_LOG("in Directory.GetFile()");
   nsRefPtr<mozilla::dom::Future> future = new mozilla::dom::Future(GetParentObject());
   return future.forget();
-  //GetEntry(path, options, successCallback, errorCallback, true);
+  //GetInternal(path, options, successCallback, errorCallback, true);
 }
 
 void
@@ -329,7 +329,7 @@ Directory::GetDirectory(const nsAString& path,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.GetDirectory()");
-  GetEntry(path, options.mCreate, options.mExclusive, false,
+  GetInternal(path, options.mCreate, options.mExclusive, false,
       successCallback, errorCallback, false);
 }
 
@@ -360,12 +360,12 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
 }
 
 void
-Directory::GetEntry(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
+Directory::GetInternal(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback, bool isFile,
     const JS::Value* aContent)
 {
-  SDCARD_LOG("in Directory.GetEntry()");
+  SDCARD_LOG("in Directory.GetInternal()");
 
   // Assign callback nullptr if not passed
   EntryCallback* pSuccessCallback = nullptr;

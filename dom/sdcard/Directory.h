@@ -116,7 +116,7 @@ public:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
-  void GetEntry(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
+  void GetInternal(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
       bool isFile = true, const JS::Value* aContent = nullptr);
