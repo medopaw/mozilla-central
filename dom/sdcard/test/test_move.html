@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+<!--
+https://bugzilla.mozilla.org/show_bug.cgi?id=726593
+-->
+<head>
+  <meta charset="utf-8">
+  <title>Test for File System API</title>
+  <script type="application/javascript" src="/tests/SimpleTest/SimpleTest.js"></script>
+  <script type="text/javascript" src="filesystem_common.js"></script>
+  <link rel="stylesheet" type="text/css" href="/tests/SimpleTest/test.css"/>
+  <script type="application/javascript">
+
+  /** Test for File System API **/
+
+  filesystem_setup();
+
+  var p = {
+    pathToPath: {
+    	path: "filesystem/testpath_to_path",
+      name: "testpath_to_path",
+      desc: "path to path"
+    },
+    pathToDir: {
+    	path: "filesystem/testpath_to_dir",
+      name: "testpath_to_dir",
+      desc: "path to Directory"
+    },
+    pathToDict: {
+    	path: "filesystem/testpath_to_dict",
+    	name: "testpath_to_dict",
+    	desc: "path to DestinationDict"
+    },
+    fileToPath: {
+    	path: "filesystem/testfile_to_path",
+    	name: "testfile_to_path",
+    	desc: "file to path"
+    },
+    fileToDir: {
+    	path: "filesystem/testfile_to_dir",
+    	name: "testfile_to_dir",
+    	desc: "file to directory"
+    },
+    fileToDict: {
+    	path: "filesystem/testfile_to_dict",
+    	name: "testfile_to_dict",
+    	desc: "file to DestinationDict"
+    },
+    dirToPath: {
+    	path: "filesystem/testdir_to_path",
+    	name: "testdir_to_path",
+    	desc: "directory to path"
+    },
+    dirToDir: {
+    	path: "filesystem/testdir_to_dir",
+    	name: "testdir_to_dir",
+    	desc: "directory to directory"
+    },
+    dirToDict: {
+    	path: "filesystem/testdir_to_dict",
+    	name: "testdir_to_dict",
+    	desc: "directory to DestinationDict"
+    },
+    existingFile: {
+    	path: "filesystem/dest/testfile_already_exists",
+    	name: "testfile_already_exists",
+    	desc: "file already exists"
+    },
+    existingDir: {
+    	path: "filesystem/dest/testdir_already_exists",
+    	name: "testdir_already_exists",
+    	desc: "dir already exists"
+    },
+    dest: {
+    	path: "filesystem/dest",
+    	name: "dest",
+    	desc: "destination parent directory"
+    }
+  };
+
+  filesystem_create([{
+		name: p.pathToPath.name
+	}, {
+		name: p.pathToDir.name
+	}, {
+		name: p.pathToDict.name
+	}, {
+		name: p.fileToPath.name
+	}, {
+		name: p.fileToDir.name
+	}, {
+		name: p.fileToDict.name
+	}, {
+		name: p.dirToPath.name
+	}, {
+		name: p.dirToDir.name
+	}, {
+		name: p.dirToDict.name
+	}, {
+		name: "dest",
+		tree: [{
+			name: testPath.dir.normal.name,
+			tree: []
+		}, {
+			name: p.existingFile.name
+		}, {
+			name: p.existingDir.name,
+			tree: []
+		}]
+	}]);
+
+  var root = navigator.mozSDCard.root;
+  
+  root.get(p.dest.path, function(destDir) {
+	  testEngine.tests = [{
+			name: "move " + p.pathToPath.desc,
+			args: [p.pathToPath.path, p.dest.path]
+//		}, {
+//			name: "move " + p.pathToDir.desc,
+//			args: [p.pathToDir.path, destDir]
+/*		}, {
+			name: "move " + p.pathToDict.desc,
+ 			args: [p.pathToDict.path, {
+         dir: destDir,
+         name: p.pathToDict.name + "_new_name"
+			}]
+ 		}, {
+			name: "move " + p.fileToPath.desc,
+			args: [srcFile, p.dest.path]
+		}, {
+			name: "move " + p.fileToDir.desc,
+			args: [srcFile, destDir]
+		}, {
+			name: "move " + p.fileToDict.desc,
+			args: [srcFile, {
+				dir: destDir,
+        name: p.fileToDict.name + "_new_name"
+			}]*/
+//		}, {
+//			name: "move " + p.dirToPath.desc,
+//			args: [p.dirToPath.path, p.dest.path]
+//		}, {
+//			name: "move " + p.dirToDir.desc,
+//			args: [p.dirToDir.path, destDir]
+/*	}, {
+			name: "move " + p.dirToDict.desc,
+ 			args: [p.dirToDict.path, {
+         dir: destDir,
+         name: p.dirToDict.name + "_new_name"
+			}]*/
+		}];
+
+	  testEngine.func = function(args, onsuccess, onerror) {
+		  var path = args[0], dest = args[1];
+		  test_dump("move " + path + " to " + dest);
+		  root.move(path, dest, onsuccess, onerror);
+	  };
+
+	  testEngine.proceed();
+  });
+
+  </script>
+</head>
+<body>
+<a target="_blank" href="https://bugzilla.mozilla.org/show_bug.cgi?id=726593">Mozilla Bug 726593</a>
+<p id="display"></p>
+<div id="content" style="display: none">
+
+</div>
+<pre id="test">
+</pre>
+</body>
+</html>

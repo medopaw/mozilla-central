@@ -253,6 +253,32 @@ Directory::Move(const nsAString& path, const nsAString& dest,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Move()");
+
+  // Assign callback nullptr if not passed
+  EntryCallback* pSuccessCallback = nullptr;
+  ErrorCallback* pErrorCallback = nullptr;
+  if (successCallback.WasPassed()) {
+    pSuccessCallback = &(successCallback.Value());
+  }
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
+
+  // Check if path is valid.
+  if (!Path::IsValidPath(path) || !Path::IsValidPath(dest)) {
+    SDCARD_LOG("Invalid path!");
+    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return;
+  }
+
+  // Make sure path is absolute.
+  nsString entryRelpath, parentRelpath, newName;
+  Path::Absolutize(path, mRelpath, entryRelpath);
+  Path::Absolutize(dest, mRelpath, parentRelpath);
+  newName.SetIsVoid(true);
+
+  CopyMoveInternal(entryRelpath, parentRelpath, newName, true, successCallback, errorCallback, true);
 }
 
 void
@@ -369,13 +395,36 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
 }
 
 void
-Directory::CopyMoveInternal(const nsAString& entryRelpath,
-    const nsAString& parentRelpath, const nsAString& newName, bool isCopy,
+Directory::CopyMoveInternal(const nsString& entryRelpath,
+    const nsString& parentRelpath, const nsString& newName, bool isCopy,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
     bool undecided)
 {
   SDCARD_LOG("in Directory.CopyMoveInternal()");
+
+   // Assign callback nullptr if not passed
+  EntryCallback* pSuccessCallback = nullptr;
+  ErrorCallback* pErrorCallback = nullptr;
+  if (successCallback.WasPassed()) {
+    pSuccessCallback = &(successCallback.Value());
+  }
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
+
+  if (XRE_GetProcessType() == GeckoProcessType_Default) {
+    SDCARD_LOG("in b2g process");
+    nsRefPtr<SPCopyAndMoveToEvent> r = new SPCopyAndMoveToEvent(entryRelpath,
+        parentRelpath, newName, isCopy, undecided, pCaller);
+    r->Start();
+  } else {
+    SDCARD_LOG("in app process");
+    SDCardCopyAndMoveParams params(entryRelpath, parentRelpath, newName, isCopy, undecided);
+    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
+  }
 }
 
 void

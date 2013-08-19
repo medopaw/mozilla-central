@@ -18,7 +18,7 @@ MOCHITEST_FILES	= \
     test_enumerate.html \
     test_enumerateDeep.html \
     test_get.html \
-    test_move_copy.html \
+    test_move.html \
     test_remove.html \
     test_removeDeep.html \
 		$(NULL)

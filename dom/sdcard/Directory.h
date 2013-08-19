@@ -116,8 +116,8 @@ public:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
-  void CopyMoveInternal(const nsAString& entryRelpath, const nsAString& parentRelpath,
-      const nsAString& newName, bool isCopy,
+  void CopyMoveInternal(const nsString& entryRelpath, const nsString& parentRelpath,
+      const nsString& newName, bool isCopy,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
       bool undecided = false);
