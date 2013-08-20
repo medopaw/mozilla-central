@@ -38,7 +38,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   checkScores([], 5, results);
 
   // add visit
-  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0)});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   checkScores([
@@ -46,7 +46,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   ], 4, results);
 
   // add another visit for the same category, same day. do not cross threshold
-  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0)});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   checkScores([
@@ -54,7 +54,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   ], 4, results);
 
   // add more visits for the same category, same day. do cross threshold
-  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*2)});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   checkScores([
@@ -62,7 +62,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   ], 4, results);
 
   // add a few visits for another category, same day, new top interest
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 9});
+  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0)});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   let scoreMax = 2;
@@ -73,7 +73,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   ], 3, results);
 
   // add visits for another category, one day ago
-  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*1)});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   checkScores([
@@ -83,9 +83,9 @@ add_task(function test_InterestWebAPI_getTopInterests()
   ], 2, results);
 
   // add visits to the same category over multiple days
-  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 15});
-  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 5});
-  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*0)});
+  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*1)});
+  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*2)});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   scoreMax = 3;
@@ -97,11 +97,11 @@ add_task(function test_InterestWebAPI_getTopInterests()
   ], 1, results);
 
   // add a couple more interest visits to get top 5. food will show, history won't show up
-  yield InterestsStorage.addInterestHostVisit("movies", "netflix.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
-  yield InterestsStorage.addInterestHostVisit("food", "food.com", {visitTime: (now - MS_PER_DAY*15), visitCount: 5});
-  yield InterestsStorage.addInterestHostVisit("food", "food.com", {visitTime: (now - MS_PER_DAY*16), visitCount: 5});
-  yield InterestsStorage.addInterestHostVisit("technology", "foo.com", {visitTime: (now - MS_PER_DAY*17), visitCount: 5});
-  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*18), visitCount: 5});
+  yield InterestsStorage.addInterestHostVisit("movies", "netflix.com", {visitTime: (now - MS_PER_DAY*1)});
+  yield InterestsStorage.addInterestHostVisit("food", "food.com", {visitTime: (now - MS_PER_DAY*15)});
+  yield InterestsStorage.addInterestHostVisit("food", "food.com", {visitTime: (now - MS_PER_DAY*16)});
+  yield InterestsStorage.addInterestHostVisit("technology", "foo.com", {visitTime: (now - MS_PER_DAY*17)});
+  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*18)});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   checkScores([

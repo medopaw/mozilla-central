@@ -23,7 +23,7 @@ add_task(function test_InterestWebAPI_whitelist()
 
   // data setup
   yield addInterest("technology");
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*10), visitCount: 10});
+  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*10)});
   results = yield apiInstance.getTopInterests();
   unExposeAll(results);
   checkScores([

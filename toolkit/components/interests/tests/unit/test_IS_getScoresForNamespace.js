@@ -31,21 +31,21 @@ add_task(function test_InterestsStorage_getTopInterest()
   checkScores([], 5, results);
 
   // add visit
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 0});
+  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0)});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
     {"name":"technology","score":1},
   ], 4, results);
 
   // add another visit for the same category, same day
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*1)});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
     {"name":"technology","score":2},
   ], 4, results);
 
   // add 3 visits for another category, same day, new top interest
-  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0)});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
       {"name":"technology","score":2},
@@ -53,9 +53,9 @@ add_task(function test_InterestsStorage_getTopInterest()
   ], 3, results);
 
   // add visits for another category, one day ago
-  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
-  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
-  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*3), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*1)});
+  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*2)});
+  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*3)});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
       {"name":"movies","score":3},
@@ -71,10 +71,10 @@ add_task(function test_InterestsStorage_getTopInterest()
   ], 0, results);
 
   // add visits to the same category over multiple days
-  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
-  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 2});
-  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 1});
-  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*3), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*0)});
+  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*1)});
+  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*2)});
+  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*3)});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
       {"name":"video-games","score":4},
@@ -84,7 +84,7 @@ add_task(function test_InterestsStorage_getTopInterest()
   ], 1, results);
 
   yield InterestsStorage.clearRecentVisits(100);
-  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*15), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*15)});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
       {"name":"history","score":1},
@@ -92,7 +92,7 @@ add_task(function test_InterestsStorage_getTopInterest()
 
   // add unshared interest
   yield InterestsStorage.clearRecentVisits(100);
-  yield InterestsStorage.addInterestHostVisit("ignored-interest", "ignored-interest.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("ignored-interest", "ignored-interest.com", {visitTime: (now - MS_PER_DAY*0)});
   yield InterestsStorage.setInterest("ignored-interest", {sharable: false});
 
   // show ignored interests
