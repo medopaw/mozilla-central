@@ -7,9 +7,6 @@ function test() {
   waitForExplicitFinish();
   Services.prefs.setBoolPref("interests.navigator.enabled", true);
   Services.prefs.setBoolPref("interests.enabled", true);
-  yield iServiceObject._checkForMigration();
-
-
   let windowsToClose = [];
   let testURL =
     "http://mochi.test:8888/tests/toolkit/components/interests/tests/browser/cars.html";
@@ -34,12 +31,8 @@ function test() {
     });
   };
 
-  let observer = {
-    observe: function(aSubject, aTopic, aData) {
-      if (aTopic == "interest-metadata-initialized") {
-	testGetInterestsAPI();
-      }
-    }
-  };
-  Services.obs.addObserver(observer, "interest-metadata-initialized", false);
+  Task.spawn(function() {
+    yield iServiceObject._initInterestMeta();
+    testGetInterestsAPI();
+  });
 } // end of test

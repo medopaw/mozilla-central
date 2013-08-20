@@ -21,7 +21,6 @@ iServiceObject._worker.postMessage({
 function test() {
 
   waitForExplicitFinish();
-  yield iServiceObject._checkForMigration();
   Services.prefs.setCharPref("interests.userDomainWhitelist", "mochi.test");
 
   let windowsToClose = [];
