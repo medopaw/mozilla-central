@@ -52,15 +52,6 @@
   )
 
 /**
- * moz_interests
- */
-
-#define CREATE_IDX_MOZ_INTERESTS_NAMESPACE \
-  CREATE_PLACES_IDX( \
-    "namespaceindex", "moz_interests", "namespace", "" \
-  )
-
-/**
  * moz_historyvisits
  */
 
@@ -128,29 +119,6 @@
 #define CREATE_IDX_MOZ_FAVICONS_GUID \
   CREATE_PLACES_IDX( \
     "guid_uniqueindex", "moz_favicons", "guid", "UNIQUE" \
-  )
-
-/**
- * moz_hosts
- */
-
-#define CREATE_IDX_MOZ_HOSTS_FRECENCY \
-  CREATE_PLACES_IDX( \
-    "frecency_index", "moz_hosts", "frecency", "" \
-  )
-
-/**
- * moz_interests_shared
- */
-
-#define CREATE_IDX_MOZ_INTERESTS_SHARED_INTEREST \
-  CREATE_PLACES_IDX( \
-    "shared_interest_id_index", "moz_interests_shared", "interest_id", "" \
-  )
-
-#define CREATE_IDX_MOZ_INTERESTS_SHARED_DOMAIN \
-  CREATE_PLACES_IDX( \
-    "shared_host_index", "moz_interests_shared", "host", "" \
   )
 
 #endif // nsPlacesIndexes_h__

@@ -735,13 +735,6 @@ Database::InitSchema(bool* aDatabaseMigrated)
 
       // Firefox 24 uses schema version 23.
 
-      if (currentSchemaVersion < 24) {
-        rv = MigrateV24Up();
-        NS_ENSURE_SUCCESS(rv, rv);
-      }
-
-      // Firefox 25 uses schema version 24.
-
       // Schema Upgrades must add migration code here.
 
       rv = UpdateBookmarkRootTitles();
@@ -788,8 +781,6 @@ Database::InitSchema(bool* aDatabaseMigrated)
     // moz_hosts.
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_HOSTS);
     NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_HOSTS_FRECENCY);
-    NS_ENSURE_SUCCESS(rv, rv);
 
     // moz_bookmarks.
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_BOOKMARKS);
@@ -829,24 +820,6 @@ Database::InitSchema(bool* aDatabaseMigrated)
     rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_ITEMS_ANNOS);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_ITEMSANNOS_PLACEATTRIBUTE);
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    // moz_interests.
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_NAMESPACE);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_HOSTS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_VISITS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_SHARED);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_FRECENT_HOSTS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_SHARED_INTEREST);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_SHARED_DOMAIN);
     NS_ENSURE_SUCCESS(rv, rv);
 
     // Initialize the bookmark roots in the new DB.
@@ -1916,6 +1889,7 @@ Database::MigrateV22Up()
   return NS_OK;
 }
 
+
 nsresult
 Database::MigrateV23Up()
 {
@@ -1931,40 +1905,6 @@ Database::MigrateV23Up()
   nsCOMPtr<mozIStoragePendingStatement> ps;
   rv = updatePrefixesStmt->ExecuteAsync(nullptr, getter_AddRefs(ps));
   NS_ENSURE_SUCCESS(rv, rv);
-
-  return NS_OK;
-}
-
-nsresult
-Database::MigrateV24Up()
-{
-  MOZ_ASSERT(NS_IsMainThread());
-
-  // Add a moz_interests table.
-  bool tableExists = false;
-  nsresult rv = mMainConn->TableExists(NS_LITERAL_CSTRING("moz_interests"),
-                              &tableExists);
-  NS_ENSURE_SUCCESS(rv, rv);
-  if (!tableExists) {
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_NAMESPACE);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_HOSTS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_VISITS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_HOSTS_FRECENCY);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_FRECENT_HOSTS);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_MOZ_INTERESTS_SHARED);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_SHARED_INTEREST);
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mMainConn->ExecuteSimpleSQL(CREATE_IDX_MOZ_INTERESTS_SHARED_DOMAIN);
-    NS_ENSURE_SUCCESS(rv, rv);
-  }
 
   return NS_OK;
 }

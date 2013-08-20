@@ -7,6 +7,7 @@
 "use strict";
 
 Cu.import("resource://gre/modules/PlacesInterestsUtils.jsm");
+const MICROS_PER_DAY = 86400000000;
 
 function run_test() {
   run_next_test();

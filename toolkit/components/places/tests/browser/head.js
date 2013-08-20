@@ -340,50 +340,12 @@ function DBConn(aForceNewConnection) {
   return gDBConn.connectionReady ? gDBConn : null;
 }
 
-/**
- * Opens a new browser window and executes callback for new window
- *
- * @param aOptions
- *        OpenBrowserWindow options
- * param aCallback
- *        Callback function that will get the new window
- */
 function whenNewWindowLoaded(aOptions, aCallback) {
   let win = OpenBrowserWindow(aOptions);
   win.addEventListener("load", function onLoad() {
     win.removeEventListener("load", onLoad, false);
     aCallback(win);
   }, false);
-}
-
-/**
- * opens a new browser window and loads URL
- * returns a promise resolved on DOMLoaded event
- *
- * @param aOptions
- *        OpenBrowserWindow options for new window
- * param aURL
- *        url to load into the window
- * param [optional] aCallback
- *        Callback function that will recieve the new window
- *        when the window is opened but before URL is loaded
- */
-function loadURLIntoSeparateWindow(aOptions,aURL,aWindowLoadedCallback) {
-  let deferred = Promise.defer();
-  whenNewWindowLoaded(aOptions, function(aWin) {
-    executeSoon(function() {
-      aWin.gBrowser.selectedBrowser.addEventListener("DOMContentLoaded", function onDOMLoad() {
-        aWin.gBrowser.selectedBrowser.removeEventListener("DOMContentLoaded", onDOMLoad, true);
-        deferred.resolve(aWin);
-      });
-      if (aWindowLoadedCallback) {
-        aWindowLoadedCallback(aWin);
-      }
-      aWin.content.location.href = aURL;
-      //aWin.gBrowser.selectedBrowser.loadURI(aURL);
-    });
-  });
-  return deferred.promise;
 }
 
 /**
@@ -404,4 +366,3 @@ function promiseIsURIVisited(aURI, aExpectedValue) {
 
   return deferred.promise;
 }
-
