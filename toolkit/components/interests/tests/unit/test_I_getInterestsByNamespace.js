@@ -59,7 +59,7 @@ add_task(function test_getEmptyNamespace()
   ], 4, results);
 
   // add another visit for the same category, same day
-  yield InterestsStorage.addInterestHostVisit("technology", "mozilla.org", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("technology", "mozilla.org", {visitTime: (now - MS_PER_DAY*1), visitCount: 1});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
@@ -70,7 +70,9 @@ add_task(function test_getEmptyNamespace()
   ], 4, results);
 
   // add 3 visits for another category, same day, new top interest
-  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*3), visitCount: 3});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
@@ -90,8 +92,8 @@ add_task(function test_getEmptyNamespace()
   });
   checkScores([
       {"name":"cars","score":3,"diversity":50},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":50},
       {"name":"technology","score":2,"diversity":100},
+      {"name":"movies","score":1,"diversity":50},
   ], 2, results);
 
   // get top 2 visits, test result limiting
@@ -102,24 +104,24 @@ add_task(function test_getEmptyNamespace()
     interestLimit: 2,
   });
   checkScores([
-      {"name":"cars","score":3,"diversity":100},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":100},
+      {"name":"cars","score":3,"diversity":50},
+      {"name":"technology","score":2,"diversity":100},
   ], 0, results);
 
   // add visits to the same category over multiple days
-  yield InterestsStorage.addInterestHostVisit("video-games", "neogaf.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
-  yield InterestsStorage.addInterestHostVisit("video-games", "foo.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 2});
-  yield InterestsStorage.addInterestHostVisit("video-games", "foo.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("video-games", "neogaf.com", {visitTime: (now - MS_PER_DAY*5), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("video-games", "foo.com", {visitTime: (now - MS_PER_DAY*6), visitCount: 2});
+  yield InterestsStorage.addInterestHostVisit("video-games", "foo.com", {visitTime: (now - MS_PER_DAY*25), visitCount: 1});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
     roundDiversity: true,
   });
   checkScores([
-      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28),"diversity":100},
       {"name":"cars","score":3,"diversity":50},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":50},
+      {"name":"video-games","score":3,"diversity":100},
       {"name":"technology","score":2,"diversity":100},
+      {"name":"movies","score":1,"diversity":50},
   ], 1, results);
 
   // set ignored for an interest
@@ -131,8 +133,8 @@ add_task(function test_getEmptyNamespace()
   });
   checkScores([
       {"name":"cars","score":3,"diversity":50},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":50},
       {"name":"technology","score":2,"diversity":100},
+      {"name":"movies","score":1,"diversity":50},
   ], 2, results);
 
   // unset ignored for an interest
@@ -140,33 +142,23 @@ add_task(function test_getEmptyNamespace()
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
+    roundDiversity: true,
   });
   checkScores([
-      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28),"diversity":2},
-      {"name":"cars","score":3,"diversity":1},
-      {"name":"movies","score":scoreDecay(3, 1, 28),"diversity":1},
-      {"name":"technology","score":2,"diversity":2},
+      {"name":"cars","score":3,"diversity":50},
+      {"name":"video-games","score":3,"diversity":100},
+      {"name":"technology","score":2,"diversity":100},
+      {"name":"movies","score":1,"diversity":50},
   ], 1, results);
 
   yield InterestsStorage.clearRecentVisits(100);
-  // add visits to a category beyond test threshold, i.e. 29 days and beyond
-  // the category should not show up
-  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*29), visitCount: 2});
-  results = yield iServiceObject.getInterestsByNamespace("", {
-    checkSharable: true,
-    excludeMeta: true,
-  });
-  checkScores([], 5, results);
-
-  // add visits within test-threshold
-  // assuming recent is: 14-28 days, past is > 28 days
-  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*15), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*100), visitCount: 3});
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,
     excludeMeta: true,
   });
   checkScores([
-      {"name":"history","score":scoreDecay(3, 15, 28),"diversity":1},
+      {"name":"history","score":1,"diversity":1},
   ], 4, results);
 });
 

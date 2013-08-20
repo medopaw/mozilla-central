@@ -65,24 +65,22 @@ const SQL = {
 
   getScoresForInterests:
     "SELECT interest name, " +
-           "IFNULL(SUM(visits * (1 - (:today - day) / 29.0)), 0) * " +
+           "COUNT(DISTINCT day) * " +
              "(NOT IFNULL(:checkSharable, 0) OR sharable) score " +
     "FROM moz_interests " +
     "LEFT JOIN moz_interests_visits " +
-    "ON interest_id = id AND " +
-       "day >= :today - 28 " +
+    "ON interest_id = id " +
     "WHERE interest IN (:interests) " +
     "GROUP BY id " +
     "ORDER BY score DESC",
 
   getScoresForNamespace:
     "SELECT interest name, " +
-           "IFNULL(SUM(visits * (1 - (:today - day) / 29.0)), 0) * " +
+           "COUNT(DISTINCT day) * " +
              "(NOT IFNULL(:checkSharable, 0) OR sharable) score " +
     "FROM moz_interests " +
     "LEFT JOIN moz_interests_visits " +
-    "ON interest_id = id AND " +
-       "day >= :today - 28 " +
+    "ON interest_id = id " +
     "WHERE namespace = :namespace " +
     "GROUP BY id " +
     "ORDER BY score DESC " +
@@ -249,7 +247,6 @@ let InterestsStorage = {
       },
       params: {
         checkSharable: checkSharable,
-        today: this._convertDateToDays(),
       },
     });
   },
@@ -272,7 +269,6 @@ let InterestsStorage = {
         checkSharable: checkSharable,
         interestLimit: interestLimit,
         namespace: namespace,
-        today: this._convertDateToDays(),
       },
     });
   },

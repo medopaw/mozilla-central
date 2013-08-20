@@ -31,14 +31,14 @@ add_task(function test_InterestsStorage_getTopInterest()
   checkScores([], 5, results);
 
   // add visit
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 0});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
     {"name":"technology","score":1},
   ], 4, results);
 
   // add another visit for the same category, same day
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 1});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
     {"name":"technology","score":2},
@@ -48,51 +48,46 @@ add_task(function test_InterestsStorage_getTopInterest()
   yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
-      {"name":"cars","score":3},
       {"name":"technology","score":2},
+      {"name":"cars","score":1},
   ], 3, results);
 
   // add visits for another category, one day ago
   yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*3), visitCount: 3});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
-      {"name":"cars","score":3},
-      {"name":"movies","score":scoreDecay(3, 1, 28)},
+      {"name":"movies","score":3},
       {"name":"technology","score":2},
+      {"name":"cars","score":1},
   ], 2, results);
 
   // get top 2 visits, test result limiting
   results = yield InterestsStorage.getScoresForNamespace("", {interestLimit: 2});
   checkScores([
-      {"name":"cars","score":3},
-      {"name":"movies","score":scoreDecay(3, 1, 28)},
+      {"name":"movies","score":3},
+      {"name":"technology","score":2},
   ], 0, results);
 
   // add visits to the same category over multiple days
   yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
   yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 2});
   yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 1});
+  yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*3), visitCount: 1});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
-      {"name":"video-games","score":3 + scoreDecay(2, 1, 28) + scoreDecay(1, 2, 28)},
-      {"name":"cars","score":3},
-      {"name":"movies","score":scoreDecay(3, 1, 28)},
+      {"name":"video-games","score":4},
+      {"name":"movies","score":3},
       {"name":"technology","score":2},
+      {"name":"cars","score":1},
   ], 1, results);
 
   yield InterestsStorage.clearRecentVisits(100);
-  // add visits to a category beyond test threshold, i.e. 29 days and beyond
-  // the category should not show up
-  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*29), visitCount: 2});
-  results = yield InterestsStorage.getScoresForNamespace("");
-  checkScores([], 5, results);
-
-  // add visits within test-threshold, modifying buckets
-  // assuming recent is: 14-28 days, past is > 28 days
   yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*15), visitCount: 3});
   results = yield InterestsStorage.getScoresForNamespace("");
   checkScores([
-      {"name":"history","score":scoreDecay(3, 15, 28)},
+      {"name":"history","score":1},
   ], 4, results);
 
   // add unshared interest

@@ -35,11 +35,11 @@ add_task(function test_I_sharedInterestsSetting()
 
   isIdentical(results,[
                         {"name":"cars",
-                         "score":2.896551724137931,
+                         "score":1,
                          "diversity":1,
                         },
                         {"name":"movies",
-                         "score":2.793103448275862,
+                         "score":1,
                          "diversity":1,
                         }
                       ]);
@@ -59,11 +59,11 @@ add_task(function test_I_sharedInterestsSetting()
 
   isIdentical(results,[
                         {"name":"cars",
-                         "score":2.896551724137931,
+                         "score":1,
                          "diversity":1,
                         },
                         {"name":"movies",
-                         "score":2.793103448275862,
+                         "score":1,
                          "diversity":1,
                         }
                       ]);

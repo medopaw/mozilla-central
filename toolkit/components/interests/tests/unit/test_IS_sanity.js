@@ -31,7 +31,7 @@ add_task(function test_IS_sanity() {
 
   thePromise = InterestsStorage.getScoresForInterests(["cars" , "computers"]);
   yield thePromise.then(function(data) {
-    do_check_eq(data[0].score, 2);
+    do_check_eq(data[0].score, 1);
     do_check_eq(data[1].score, 1);
   });
 

@@ -36,7 +36,7 @@ add_task(function test_ClearRecentVisits()
   // make a bunch of insertions for a number of days
   for(let i = 0; i < 100; i++) {
     yield promiseAddUrlInterestsVisit("http://www.cars.com/", "cars", 1, i);
-    expectedScore += scoreDecay(1, i, 28);
+    expectedScore ++;
   }
 
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
@@ -50,10 +50,7 @@ add_task(function test_ClearRecentVisits()
 
   // test deletions
   yield InterestsStorage.clearRecentVisits(14);
-  expectedScore = 0;
-  for(let i = 14; i < 100; i++) {
-    expectedScore += scoreDecay(1, i, 28);
-  }
+  expectedScore -= 14;
 
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
@@ -65,16 +62,13 @@ add_task(function test_ClearRecentVisits()
   });
 
   yield InterestsStorage.clearRecentVisits(28);
-  expectedScore = 0;
-  for(let i = 28; i < 100; i++) {
-    expectedScore += scoreDecay(1, i, 28);
-  }
+  expectedScore -= 14;
 
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
-  yield InterestsStorage.clearRecentVisits(50);
+  yield InterestsStorage.clearRecentVisits(101);
   expectedScore = 0;
 
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
@@ -99,17 +93,17 @@ add_task(function test_ClearRecentVisits()
   });
 
   // add a couple more yesterday
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 4, 1);
-  expectedScore += scoreDecay(4, 1, 28);
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 1, 1);
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 1, 2);
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 1, 3);
+  expectedScore += 3;
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
-  // add some in the recent bucket, some in the past
-  // recent assumed to be 14-28 days ago, past > 28 days
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 3, 15);
+  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 5, 15);
   yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 10, 31);
-  expectedScore += scoreDecay(3, 15, 28)
+  expectedScore += 2;
   yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     // comparing rounded scores due to numerical error
     do_check_eq(results[0].score.toFixed(5), expectedScore.toFixed(5));

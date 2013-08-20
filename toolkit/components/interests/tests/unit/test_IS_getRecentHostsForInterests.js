@@ -26,7 +26,6 @@ add_task(function test_GetRecentHostsForInterests()
   let results;
 
   results = yield InterestsStorage.getRecentHostsForInterests(["computers"], 7);
-  dbg(JSON.stringify(results)); 
   isIdentical([{"interest":"computers","host":"techmeme.com", "visits": 1}], results);
   
   /** testing bounds **/

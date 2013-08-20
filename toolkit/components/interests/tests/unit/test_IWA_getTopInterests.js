@@ -54,7 +54,7 @@ add_task(function test_InterestWebAPI_getTopInterests()
   ], 4, results);
 
   // add more visits for the same category, same day. do cross threshold
-  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 3});
+  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   checkScores([
@@ -65,34 +65,21 @@ add_task(function test_InterestWebAPI_getTopInterests()
   yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 9});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
-  let scoreMax = 9;
+  let scoreMax = 2;
   let calcScore = score => Math.round(score / scoreMax * 100);
   checkScores([
-      {"name":"technology","score":calcScore(9),"diversity":100},
-      {"name":"cars","score":calcScore(5),"diversity":100},
+      {"name":"cars","score":calcScore(2),"diversity":100},
+      {"name":"technology","score":calcScore(1),"diversity":100},
   ], 3, results);
 
   // add visits for another category, one day ago
-
   yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
-  scoreMax = 9;
   checkScores([
-      {"name":"technology","score":calcScore(9),"diversity":100},
-      {"name":"cars","score":calcScore(5),"diversity":100},
-      {"name":"movies","score": calcScore(scoreDecay(3, 1, 28)),"diversity":100},
-  ], 2, results);
-
-  // make interest go beyond custom threshold
-  yield InterestsStorage.addInterestHostVisit("technology", "foo.com", {visitTime: (now - MS_PER_DAY*0), visitCount: 1});
-  results = yield iServiceApi.getTopInterests();
-  unExposeAll(results);
-  scoreMax = 10;
-  checkScores([
-      {"name":"technology","score":calcScore(10),"diversity":100},
-      {"name":"cars","score":calcScore(5),"diversity":50},
-      {"name":"movies","score":calcScore(scoreDecay(3, 1, 28)),"diversity":50},
+      {"name":"cars","score":calcScore(2),"diversity":100},
+      {"name":"movies","score": calcScore(1),"diversity":100},
+      {"name":"technology","score":calcScore(1),"diversity":100},
   ], 2, results);
 
   // add visits to the same category over multiple days
@@ -101,66 +88,35 @@ add_task(function test_InterestWebAPI_getTopInterests()
   yield InterestsStorage.addInterestHostVisit("video-games", "video-games.com", {visitTime: (now - MS_PER_DAY*2), visitCount: 3});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
-  scoreMax = 15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28);
+  scoreMax = 3;
   checkScores([
-      {"name":"video-games","score":calcScore(15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28)),"diversity":50},
-      {"name":"technology","score":calcScore(10),"diversity":100},
-      {"name":"cars","score":calcScore(5),"diversity":50},
-      {"name":"movies","score":calcScore(scoreDecay(3, 1, 28)),"diversity":50},
+      {"name":"video-games","score":calcScore(3),"diversity":100},
+      {"name":"cars","score":calcScore(2),"diversity":100},
+      {"name":"movies","score":calcScore(1),"diversity":100},
+      {"name":"technology","score":calcScore(1),"diversity":100},
   ], 1, results);
 
   // add a couple more interest visits to get top 5. food will show, history won't show up
+  yield InterestsStorage.addInterestHostVisit("movies", "netflix.com", {visitTime: (now - MS_PER_DAY*1), visitCount: 3});
   yield InterestsStorage.addInterestHostVisit("food", "food.com", {visitTime: (now - MS_PER_DAY*15), visitCount: 5});
-  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*16), visitCount: 5});
+  yield InterestsStorage.addInterestHostVisit("food", "food.com", {visitTime: (now - MS_PER_DAY*16), visitCount: 5});
+  yield InterestsStorage.addInterestHostVisit("technology", "foo.com", {visitTime: (now - MS_PER_DAY*17), visitCount: 5});
+  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*18), visitCount: 5});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
-  scoreMax = 15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28);
   checkScores([
-      {"name":"video-games","score":calcScore(15 + scoreDecay(5, 1, 28) + scoreDecay(3, 2, 28)),"diversity":50},
-      {"name":"technology","score":calcScore(10),"diversity":100},
-      {"name":"cars","score":calcScore(5),"diversity":50},
-      {"name":"movies","score":calcScore(scoreDecay(3, 1, 28)),"diversity":50},
-      {"name":"food","score":calcScore(scoreDecay(5, 15, 28)),"diversity":50},
+      {"name":"video-games","score":calcScore(3),"diversity":50},
+      {"name":"cars","score":calcScore(2),"diversity":50},
+      {"name":"food","score":calcScore(2),"diversity":50},
+      {"name":"technology","score":calcScore(2),"diversity":100},
+      {"name":"movies","score":calcScore(1),"diversity":100},
   ], 0, results);
 
   yield InterestsStorage.clearRecentVisits(100);
-  // add visits to a category beyond test threshold, i.e. 29 days and beyond
-  // the category should not show up
-  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*29), visitCount: 5});
   results = yield iServiceApi.getTopInterests();
   unExposeAll(results);
   checkScores([], 5, results);
 
-  // add visits within test-threshold
-  yield InterestsStorage.addInterestHostVisit("history", "history.com", {visitTime: (now - MS_PER_DAY*15), visitCount: 5});
-  results = yield iServiceApi.getTopInterests();
-  unExposeAll(results);
-  checkScores([
-      {"name":"history","score":100,"diversity":100},
-  ], 4, results);
-
-  yield InterestsStorage.clearRecentVisits(100);
-  // add visits to a category beyond custom threshold, i.e. 40 days and beyond, and 10 in threshold
-  // the category should not show up
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*41), visitCount: 10});
-  results = yield iServiceApi.getTopInterests();
-  unExposeAll(results);
-  checkScores([], 5, results);
-
-  // add visits within test-threshold
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*28), visitCount: 5});
-  results = yield iServiceApi.getTopInterests();
-  unExposeAll(results);
-  checkScores([
-      {"name":"technology","score":100,"diversity":100},
-  ], 4, results);
-
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*28), visitCount: 5});
-  results = yield iServiceApi.getTopInterests();
-  unExposeAll(results);
-  checkScores([
-      {"name":"technology","score":100,"diversity":100},
-  ], 4, results);
 });
 
 add_task(function test_sharable() {

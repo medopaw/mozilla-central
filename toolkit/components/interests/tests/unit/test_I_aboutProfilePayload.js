@@ -28,7 +28,8 @@ add_task(function test_getPagePayload() {
   yield addInterest("real-estate");
 
   yield promiseAddUrlInterestsVisit("http://techmeme.com", ["computers"], 1, 1);
-  yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 2, 13);
+  yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 1, 13);
+  yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 1, 14);
   yield promiseAsyncUpdates();
 
   let expected = yield iServiceObject.getInterestsByNamespace("", {
@@ -42,7 +43,6 @@ add_task(function test_getPagePayload() {
   });
 
   let results = yield iServiceObject.getPagePayload();
-  dump(JSON.stringify(results) + " <<<<<<<<<<<<===\n");
   isIdentical(expected, results.interestsProfile);
   isIdentical({"computers":[{"host":"techmeme.com","visits":1}],"real-estate":[{"host":"realtor.com","visits":2}]}, results.interestsHosts);
 

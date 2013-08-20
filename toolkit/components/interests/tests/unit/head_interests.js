@@ -186,17 +186,6 @@ function unExposeAll(obj) {
   delete obj.__exposedProps__;
 }
 
-function scoreDecay(score, numDays, daysToZero) {
-  let decay;
-  if (numDays > daysToZero) {
-    decay = 1;  
-  }
-  else {
-    decay = numDays/(daysToZero+1);
-  }
-  return score * (1 - decay);
-}
-
 function dbg(datum, ending = " <===========\n") {
   dump(JSON.stringify(datum) + ending);
 }
