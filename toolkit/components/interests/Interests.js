@@ -49,15 +49,18 @@ let gInterestsService = null;
 
 function exposeAll(obj) {
   // Filter for Objects and Arrays.
-  if (typeof obj !== "object" || !obj)
+  if (typeof obj !== "object" || !obj) {
     return;
+  }
 
   // Recursively expose our children.
   Object.keys(obj).forEach(key => exposeAll(obj[key]));
 
   // If we're not an Array, generate an __exposedProps__ object for ourselves.
-  if (obj instanceof Array)
+  if (obj instanceof Array) {
     return;
+  }
+
   var exposed = {};
   Object.keys(obj).forEach(key => exposed[key] = "r");
   obj.__exposedProps__ = exposed;
@@ -78,7 +81,7 @@ Interests.prototype = {
    * @param   names
    *          Array of interest string names
    * @returns Promise with interests sorted by score
-   */
+    */
   getInterestsByNames: function I_getInterestsByNames(names, options={}) {
     return this._packageInterests(InterestsStorage.
       getScoresForInterests(names, options), options);
@@ -364,7 +367,9 @@ Interests.prototype = {
       let {requestingHost} = options;
 
       // if requestingHost is null, return interests right away
-      if (!requestingHost) return interests;
+      if (!requestingHost) {
+        return interests;
+      }
 
       // otherwise we have to store what we share with this host
       // call setSharedInterest for each interest being returned to caller
@@ -665,7 +670,7 @@ Interests.prototype = {
       output.interestsHosts = {};
       for(let i=0; i < hostData.length; i++) {
         let item = hostData[i];
-        if(!output.interestsHosts.hasOwnProperty(item.interest)) {
+        if (!output.interestsHosts.hasOwnProperty(item.interest)) {
           output.interestsHosts[item.interest] = [];
         }
         output.interestsHosts[item.interest].push({

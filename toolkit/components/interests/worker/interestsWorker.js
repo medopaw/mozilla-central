@@ -90,8 +90,12 @@ function ruleClassify({host, language, tld, metaData, path, title, url}) {
         });
       }
 
-      if (hostKeys) processDFRKeys(gInterestsData[host]);
-      if (tldKeys) processDFRKeys(gInterestsData[tld]);
+      if (hostKeys) {
+        processDFRKeys(gInterestsData[host]);
+      }
+      if (tldKeys) {
+        processDFRKeys(gInterestsData[tld]);
+      }
     }
   }
   return interests;
