@@ -119,7 +119,7 @@ function getInterestsForDocument(aMessageData) {
     interests = ruleClassify(aMessageData);
     if (interests.length == 0) {
       // fallback to text classification
-      // interests = textClassify(aMessageData);
+      interests = textClassify(aMessageData);
     }
 
     // remove duplicates

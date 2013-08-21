@@ -23,7 +23,7 @@ let defaultMatchTests = [
     info: "DefaultTextClassifier Test 1: polygon",
     url:  "http://www.polygon.com/2013/3/5/4066808/thief-screenshots-leak-next-gen",
     title: "Rumored images for new Thief game leak, reportedly in the works on next-gen platforms",
-    expectedInterests:  {"video-games": 1}
+    expectedInterests:  {"Video-Games": 1}
   }
 ];
 
