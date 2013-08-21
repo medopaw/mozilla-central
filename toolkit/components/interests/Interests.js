@@ -120,7 +120,7 @@ Interests.prototype = {
           item["message"] = "getInterestsForDocument";
           item["host"] = this._getPlacesHostForURI(uri);
           item["path"] = uri["path"];
-          item["tld"] = Services.eTLD.getBaseDomainFromHost(item["host"]);
+          item["tld"] = this._getBaseDomain(item["host"]);
           item["metaData"] = {};
           item["language"] = "en";
           item["messageId"] = "resubmit";
@@ -241,7 +241,7 @@ Interests.prototype = {
       host: host,
       path: aDocument.documentURIObject.path,
       title: aDocument.title,
-      tld: Services.eTLD.getBaseDomainFromHost(host) ,
+      tld: this._getBaseDomain(host),
       metaData: {} ,
       language: "en"
     });
@@ -522,6 +522,21 @@ Interests.prototype = {
       }
     });
     return metadataPromise.promise;
+  },
+
+  /**
+   * returns base domain or "" if unable to resolve
+   *
+   * @param   host
+   * @returns base domain of the host or "" on error
+   */
+  _getBaseDomain: function I__getBaseDomain(host) {
+    try {
+      return Services.eTLD.getBaseDomainFromHost(host)
+    }
+    catch (ex) {
+      return "";
+    }
   },
 
   //////////////////////////////////////////////////////////////////////////////
