@@ -96,6 +96,13 @@ Interests.prototype = {
       getScoresForNamespace(namespace, options), options);
   },
 
+  /**
+   * Re-submits to interests cliassifier synthetic urls from places history
+   *
+   * @param   daysBack
+   *          A number of days to go back into history
+   * @returns Promise when resubmission is complete
+   */
   resubmitRecentHistoryVisits: function I_resubmitRecentHistory(daysBack) {
     // check if history is in progress
     if (this._ResubmitRecentHistoryDeferred) {
@@ -180,6 +187,11 @@ Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Interests Helpers
 
+  /**
+   * inits and returns worker instance.
+   *
+   * @returns the worker instance
+   */
   get _worker() {
     if (gServiceEnabled && !("__worker" in this)) {
       // Use a ChromeWorker to workaround Bug 487070.
@@ -187,12 +199,14 @@ Interests.prototype = {
       this.__worker.addEventListener("message", this, false);
       this.__worker.addEventListener("error", this, false);
 
+      // load reference data files and pass them to the worker
       let scriptLoader = Cc["@mozilla.org/moz/jssubscript-loader;1"].
         getService(Ci.mozIJSSubScriptLoader);
       let data = scriptLoader.loadSubScript("resource://gre/modules/interests/worker/interestsData.js");
       let model = scriptLoader.loadSubScript("resource://gre/modules/interests/worker/interestsClassifierModel.js");
       let stopwords = scriptLoader.loadSubScript("resource://gre/modules/interests/worker/interestsUrlStopwords.js");
 
+      // bootstrap message makes worker to setup categorization structures
       this.__worker.postMessage({
         message: "bootstrap",
         interestsDataType: "dfr",
@@ -204,6 +218,10 @@ Interests.prototype = {
     return this.__worker;
   },
 
+
+  /**
+   * Handles a new page load
+   */
   _handleNewDocument: function I__handleNewDocument(aDocument) {
     // Only compute interests on documents with a host
     let host = this._getPlacesHostForURI(aDocument.documentURIObject);
@@ -216,6 +234,7 @@ Interests.prototype = {
       return;
     }
 
+    // send relevant page info to the worker for interests matching
     this._callMatchingWorker({
       message: "getInterestsForDocument",
       url: aDocument.documentURI,
@@ -373,6 +392,14 @@ Interests.prototype = {
     });
   },
 
+  /**
+   * Handle data from interest matching worker
+   *  when worker finds categories for a url it
+   *  sends matched interests back to the main-thread
+   *  this function will call _addInterestsForHost
+   *  and also will check if the resubmit url count went to 0
+   *  in which case, it will resolve ResubmitHistoryPromise
+   */
   _handleInterestsResults: function I__handleInterestsResults(aData) {
     this._addInterestsForHost(aData.interests,
                               aData.host,
@@ -404,6 +431,11 @@ Interests.prototype = {
     }
   },
 
+  /**
+   * inits and returns domains allowed full access to interests
+   *
+   * @returns list of domains
+   */
   _getDomainWhitelistedSet: function I__getDomainWhitelist() {
     if (!("__whitelistedSet" in this)) {
       // init with default values
@@ -419,6 +451,11 @@ Interests.prototype = {
     return this.__whitelistedSet;
   },
 
+  /**
+   * Initializes hardcoded interests
+   *
+   * @returns A promise for all interests being initialized
+   */
   _initInterestMeta: function I__initInterestMeta() {
     let promises = [];
 
@@ -571,7 +608,11 @@ Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Dashboard utility functions
 
-  // Return data to fully populate a dashboard page
+  /**
+   * Collects info for a dashboard
+   *
+   * @returns data to fully populate a dashboard page
+   */
   getPagePayload: function I_getPagePayload(aInterestProfileLimit) {
     let promises = [];
 
@@ -622,7 +663,10 @@ Interests.prototype = {
     });
   },
 
-  // Set Interest Sharability metadata
+  /**
+   * Set Interest Sharability metadata
+   *
+   */
   setInterestSharable: function I_setInterestSharable(interest, value) {
     value = value ? 1 : 0;
     return InterestsStorage.setInterest(interest, {sharable: value});
