@@ -23,6 +23,29 @@ XPCOMUtils.defineLazyModuleGetter(this, "Task",
 XPCOMUtils.defineLazyModuleGetter(this, "InterestsStorage",
                                   "resource://gre/modules/interests/InterestsStorage.jsm");
 
+/** Initilize the interests worker with preset categories
+ *  modeled by hosts available for mochi tests: example.con & mochi.test
+ *  The urls available for interest categorization are:
+ *  http://example.com/tests/toolkit/components/interests/tests/browser/video-games.html
+ *  http://mochi.test:8888/tests/toolkit/components/interests/tests/browser/cars.html
+ */
+
+iServiceObject._worker.postMessage({
+    message: "bootstrap",
+    interestsDataType: "dfr",
+    interestsData: {
+      "example.com" : {
+        "__ANY" : [
+          "games"
+        ]
+      },
+      "mochi.test" : {
+        "__ANY" : [
+          "cars"
+        ]
+      }},
+});
+
 /**
  * Allows waiting for an observer notification once.
  *
@@ -142,4 +165,18 @@ function promiseClearHistoryAndInterests() {
   promises.push(promiseClearHistory());
   promises.push(promiseClearInterests());
   return Promise.promised(Array)(promises).then();
+}
+
+/**
+ * ensures thart interests database is created
+ * and interests are initialized
+ *
+ * @return {Promise}
+ */
+function ensureInterestsInitilized() {
+  // trigger connection request to the database
+  return iServiceObject.getInterestsByNamespace("").then(() => {
+    // wait for initilization to complete
+    return iServiceObject._checkForMigration();
+  });
 }

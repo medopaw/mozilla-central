@@ -48,13 +48,17 @@ function test() {
 
   Services.obs.addObserver(observer, "interest-visit-saved", false);
 
-  // open the first window in private mode and the second in normal mode
-  loadURLIntoSeparateWindow({private: true},initialURL).then(aWin => {
-    windowsToClose.push(aWin);
-    is(aWin.content.location.href, initialURL, "Must be initial url");
-    loadURLIntoSeparateWindow({private: false},finalURL).then(aWin => {
-      is(aWin.content.location.href, finalURL, "Must be final url");
+  Task.spawn(function() {
+    yield ensureInterestsInitilized();
+    // load two tabs with initial and final urls in them
+    // open the first window in private mode and the second in normal mode
+    loadURLIntoSeparateWindow({private: true},initialURL).then(aWin => {
       windowsToClose.push(aWin);
+      is(aWin.content.location.href, initialURL, "Must be initial url");
+      loadURLIntoSeparateWindow({private: false},finalURL).then(aWin => {
+        is(aWin.content.location.href, finalURL, "Must be final url");
+        windowsToClose.push(aWin);
+      });
     });
   });
 }

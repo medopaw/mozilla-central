@@ -2,22 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-iServiceObject._worker.postMessage({
-    message: "bootstrap",
-    interestsDataType: "dfr",
-    interestsData: {
-      "example.com" : {
-        "__ANY" : [
-          "games"
-        ]
-      },
-      "mochi.test" : {
-        "__ANY" : [
-          "cars"
-        ]
-      }},
-});
-
 function test() {
 
   waitForExplicitFinish();
@@ -167,7 +151,7 @@ function test() {
 
   // load two tabs with initial and final urls in them
   Task.spawn(function() {
-    yield iServiceObject._initInterestMeta();
+    yield ensureInterestsInitilized();
     yield promiseAddInterest("games");
     yield promiseAddInterest("cars");
     tabsToClose.push(gBrowser.addTab(unPrivilegedPage));

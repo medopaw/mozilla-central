@@ -32,7 +32,7 @@ function test() {
   };
 
   Task.spawn(function() {
-    yield iServiceObject._initInterestMeta();
+    yield ensureInterestsInitilized();
     testGetInterestsAPI();
   });
 } // end of test
