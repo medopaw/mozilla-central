@@ -148,11 +148,13 @@ let InterestsDatabase = {
         return this._dbCreate(connection).then(() => {
           this._dbMigrationPromiseDeferred.resolve(true);
         });
-      } else if (version != DB_VERSION) {
+      }
+      else if (version != DB_VERSION) {
         return this._dbMigrate(connection,version).then(() => {
           this._dbMigrationPromiseDeferred.resolve(true);
         });
-      } else {
+      }
+      else {
         this._dbMigrationPromiseDeferred.resolve(false);
       }
     });

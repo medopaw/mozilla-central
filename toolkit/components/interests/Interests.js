@@ -81,7 +81,7 @@ Interests.prototype = {
    * @param   names
    *          Array of interest string names
    * @returns Promise with interests sorted by score
-    */
+   */
   getInterestsByNames: function I_getInterestsByNames(names, options={}) {
     return this._packageInterests(InterestsStorage.
       getScoresForInterests(names, options), options);
