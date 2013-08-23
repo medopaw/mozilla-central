@@ -73,11 +73,12 @@ public:
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 */
-  void Move(const nsAString& path, const nsAString& dest,
+
+  void Move(JSContext* cx, JS::Handle<JS::Value> path, JS::Handle<JS::Value> dest,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Copy(const nsAString& path, const nsAString& dest,
+  void Copy(JSContext* cx, JS::Handle<JS::Value> path, JS::Handle<JS::Value> dest,
       const Optional<OwningNonNull<EntryCallback> >& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 

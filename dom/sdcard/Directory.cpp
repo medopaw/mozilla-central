@@ -247,6 +247,7 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
  successCallback, errorCallback, true);
  }
  */
+/*
 void
 Directory::Move(const nsAString& path, const nsAString& dest,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
@@ -282,7 +283,71 @@ Directory::Move(const nsAString& path, const nsAString& dest,
 }
 
 void
+Directory::Move(const nsAString& path, mozilla::dom::sdcard::Directory& dest,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Move()");
+}
+
+void
+Directory::Move(mozilla::dom::sdcard::Directory& path, const nsAString& dest,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Move()");
+}
+
+void
+Directory::Move(mozilla::dom::sdcard::Directory& path, mozilla::dom::sdcard::Directory& dest,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Move()");
+}
+
+void
 Directory::Copy(const nsAString& path, const nsAString& dest,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
+}
+
+void
+Directory::Copy(const nsAString& path, mozilla::dom::sdcard::Directory& dest,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
+}
+
+void
+Directory::Copy(mozilla::dom::sdcard::Directory& path, const nsAString& dest,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
+}
+
+void
+Directory::Copy(mozilla::dom::sdcard::Directory& path, mozilla::dom::sdcard::Directory& dest,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
+}
+*/
+void
+Directory::Move(JSContext* cx, JS::Handle<JS::Value> path, JS::Handle<JS::Value> dest,
+    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Move()");
+}
+
+void
+Directory::Copy(JSContext* cx, JS::Handle<JS::Value> path, JS::Handle<JS::Value> dest,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {

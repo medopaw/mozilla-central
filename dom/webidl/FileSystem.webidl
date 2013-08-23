@@ -34,8 +34,8 @@ interface Directory : Entry {
 //    void            move (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
 //    void            copy (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
 //    void            copy (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            move (DOMString path, DOMString dest, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            copy (DOMString path, DOMString dest, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            move (any path, any dest, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            copy (any path, any dest, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            remove (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            remove (Directory entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            removeDeep (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
