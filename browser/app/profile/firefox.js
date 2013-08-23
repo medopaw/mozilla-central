@@ -1255,7 +1255,7 @@ pref("dom.identity.enabled", false);
 pref("interests.enabled", false);
 pref("interests.userDomainWhitelist", "");
 pref("interests.navigator.prompted", false);
-pref("interests.about.dashboardUrl", "https://people.mozilla.com/~oyiptong/up-dashboard-latest/%LOCALE%/index.html");
+pref("interests.about.dashboardUrl", "https://up.cdn.mozilla.net/%LOCALE%/");
 
 // Turn on the CSP 1.0 parser for Content Security Policy headers
 pref("security.csp.speccompliant", true);
