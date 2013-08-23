@@ -654,7 +654,7 @@ Interests.prototype = {
         interestList.push(interests[i].name);
       }
 
-      return InterestsStorage.getRecentHostsForInterests(interestList, 30);
+      return InterestsStorage.getRecentHostsForInterests(interestList, Infinity);
     });
 
     // gather and package the data promises

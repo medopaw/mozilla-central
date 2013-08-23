@@ -21,6 +21,7 @@ add_task(function test_GetRecentHostsForInterests()
   yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 2, 13);
   yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 2, 14);
   yield promiseAddUrlInterestsVisit("http://mls.com", ["real-estate"], 1, 15);
+  yield promiseAddUrlInterestsVisit("http://zillow.com", ["real-estate"], 1, 100);
   yield promiseAsyncUpdates();
 
   let results;
@@ -56,4 +57,8 @@ add_task(function test_GetRecentHostsForInterests()
   // multiple hosts and multiple interests
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], 16);
   isIdentical([{"interest":"computers","host":"techmeme.com","visits":1},{"interest":"real-estate","host":"realtor.com","visits":4},{"interest":"real-estate","host":"mls.com","visits":1}], results);
+
+  // multiple hosts and multiple interests no time limit
+  results = yield InterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], Infinity);
+  isIdentical([{"interest":"computers","host":"techmeme.com","visits":1},{"interest":"real-estate","host":"realtor.com","visits":4},{"interest":"real-estate","host":"mls.com","visits":1},{"interest":"real-estate","host":"zillow.com","visits":1}], results);
 });
