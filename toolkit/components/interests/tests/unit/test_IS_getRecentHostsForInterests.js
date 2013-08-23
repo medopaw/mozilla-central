@@ -27,38 +27,38 @@ add_task(function test_GetRecentHostsForInterests()
   let results;
 
   results = yield InterestsStorage.getRecentHostsForInterests(["computers"], 7);
-  isIdentical([{"interest":"computers","host":"techmeme.com", "visits": 1}], results);
+  isIdentical([{"interest":"computers","host":"techmeme.com","days":1,"visits":1}], results);
   
   /** testing bounds **/
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate"], 13);
   isIdentical([], results);
  
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate"], 14);
-  isIdentical([{"interest":"real-estate","host":"realtor.com", "visits": 2}], results);
+  isIdentical([{"interest":"real-estate","host":"realtor.com","days":1,"visits":2}], results);
 
   /** Testing the summation of interests over a multiple days **/
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate"], 15);
-  isIdentical([{"interest":"real-estate","host":"realtor.com", "visits": 4}], results);
+  isIdentical([{"interest":"real-estate","host":"realtor.com","days":2,"visits":4}], results);
 
   /** Multiple hosts for the same interest **/
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate"], 16);
-  isIdentical([{"interest":"real-estate","host":"realtor.com", "visits": 4}, {"interest":"real-estate","host":"mls.com", "visits": 1}], results);
+  isIdentical([{"interest":"real-estate","host":"realtor.com","days":2,"visits":4}, {"interest":"real-estate","host":"mls.com","days":1,"visits":1}], results);
 
   /** multiple interests **/
 
   // an interest not matching within the time limit
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], 7);
-  isIdentical([{"interest":"computers","host":"techmeme.com", "visits": 1}], results);
+  isIdentical([{"interest":"computers","host":"techmeme.com","days":1,"visits":1}], results);
 
   // two matching
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], 14);
-  isIdentical([{"interest":"computers","host":"techmeme.com","visits":1},{"interest":"real-estate","host":"realtor.com","visits":2}], results);
+  isIdentical([{"interest":"computers","host":"techmeme.com","days":1,"visits":1},{"interest":"real-estate","host":"realtor.com","days":1,"visits":2}], results);
 
   // multiple hosts and multiple interests
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], 16);
-  isIdentical([{"interest":"computers","host":"techmeme.com","visits":1},{"interest":"real-estate","host":"realtor.com","visits":4},{"interest":"real-estate","host":"mls.com","visits":1}], results);
+  isIdentical([{"interest":"computers","host":"techmeme.com","days":1,"visits":1},{"interest":"real-estate","host":"realtor.com","days":2,"visits":4},{"interest":"real-estate","host":"mls.com","days":1,"visits":1}], results);
 
   // multiple hosts and multiple interests no time limit
   results = yield InterestsStorage.getRecentHostsForInterests(["real-estate", "computers"], Infinity);
-  isIdentical([{"interest":"computers","host":"techmeme.com","visits":1},{"interest":"real-estate","host":"realtor.com","visits":4},{"interest":"real-estate","host":"mls.com","visits":1},{"interest":"real-estate","host":"zillow.com","visits":1}], results);
+  isIdentical([{"interest":"computers","host":"techmeme.com","days":1,"visits":1},{"interest":"real-estate","host":"realtor.com","days":2,"visits":4},{"interest":"real-estate","host":"mls.com","days":1,"visits":1},{"interest":"real-estate","host":"zillow.com","days":1,"visits":1}], results);
 });

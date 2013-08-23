@@ -44,12 +44,12 @@ add_task(function test_getPagePayload() {
 
   let results = yield iServiceObject.getPagePayload();
   isIdentical(expected, results.interestsProfile);
-  isIdentical({"computers":[{"host":"techmeme.com","visits":1}],"real-estate":[{"host":"realtor.com","visits":2}]}, results.interestsHosts);
+  isIdentical({"computers":[{"host":"techmeme.com","days":1,"visits":1}],"real-estate":[{"host":"realtor.com","days":2,"visits":2}]}, results.interestsHosts);
 
   // limiting interests
   let results = yield iServiceObject.getPagePayload(1);
   isIdentical(expected.slice(0,1), results.interestsProfile);
-  isIdentical({"real-estate":[{"host":"realtor.com","visits":2}]}, results.interestsHosts);
+  isIdentical({"real-estate":[{"host":"realtor.com","days":2,"visits":2}]}, results.interestsHosts);
 
   // chek requesting sites
   do_check_eq(results.requestingSites[0].name,"www.foo.com");

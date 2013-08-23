@@ -56,6 +56,7 @@ const SQL = {
   getRecentHostsForInterests:
     "SELECT interest, " +
            "host, " +
+           "COUNT(day) AS days, " +
            "SUM(visits) AS visits " +
     "FROM moz_interests " +
     "JOIN moz_interests_visits " +
@@ -63,7 +64,7 @@ const SQL = {
     "WHERE interest IN (:interests) AND " +
           "day > :dayCutoff " +
     "GROUP BY interest, host " +
-    "ORDER BY interest, visits DESC",
+    "ORDER BY interest, days DESC, visits DESC",
 
   getScoresForInterests:
     "SELECT interest name, " +
@@ -221,7 +222,7 @@ let InterestsStorage = {
    */
   getRecentHostsForInterests: function IS_getRecentHostsForInterests(interests, daysAgo) {
     return this._execute(SQL.getRecentHostsForInterests, {
-      columns: ["interest", "host", "visits"],
+      columns: ["interest", "host", "days", "visits"],
       listParams: {
         interests: interests,
       },

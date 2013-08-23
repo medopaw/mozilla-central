@@ -674,6 +674,7 @@ Interests.prototype = {
           output.interestsHosts[item.interest] = [];
         }
         output.interestsHosts[item.interest].push({
+          days: item.days,
           host: item.host,
           visits: item.visits,
         });
