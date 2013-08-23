@@ -6,6 +6,7 @@
 
 #include "Entry.h"
 #include "nsContentUtils.h"
+#include "mozilla/dom/FileSystemBinding.h"
 #include "Window.h"
 #include "Error.h"
 #include "Path.h"

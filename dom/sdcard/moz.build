@@ -21,7 +21,6 @@ CPP_SOURCES += [
     'Caller.cpp',
     'CopyAndMoveToWorker.cpp',
     'Directory.cpp',
-    'DirectoryReader.cpp',
     'Entry.cpp',
     'EnumerateWorker.cpp',
     'Error.cpp',

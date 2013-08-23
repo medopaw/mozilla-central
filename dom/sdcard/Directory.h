@@ -8,8 +8,10 @@
 
 #include "mozilla/Attributes.h"
 #include "mozilla/ErrorResult.h"
+
 #include "nsCycleCollectionParticipant.h"
 #include "nsWrapperCache.h"
+#include "mozilla/dom/UnionTypes.h"
 #include "mozilla/dom/Future.h"
 
 #include "Entry.h"
@@ -18,6 +20,13 @@ struct JSContext;
 
 namespace mozilla {
 namespace dom {
+
+class EntriesCallback;
+
+class CreateFileOptions;
+class DestinationDict;
+class FileSystemFlags;
+
 namespace sdcard {
 
 struct FileInfo;
@@ -35,7 +44,7 @@ public:
 
   virtual JSObject* WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope);
 
-  already_AddRefed<DirectoryReader> CreateReader();
+  // already_AddRefed<DirectoryReader> CreateReader();
 
   void CreateFile(JSContext* cx, const nsAString& path, const CreateFileOptions& options,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
@@ -52,34 +61,33 @@ public:
   void Rename (const nsAString& oldName, const nsAString& newName,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
-/*
-  void Move(const nsAString& entry, const nsAString& newName,
-      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+
+  void Move(const StringOrDirectory& path, const nsAString& dest,
+      EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Move(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
-      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+  void Move(const StringOrDirectory& path,
+      mozilla::dom::sdcard::Directory& dest,
+      EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Copy(const nsAString& entry, const nsAString& newName,
-      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+  void Move(const StringOrDirectory& path,
+      const DestinationDict& dest,
+      EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
-      const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-*/
-
-  void Move(JSContext* cx, JS::Handle<JS::Value> path, JS::Handle<JS::Value> dest,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+  void Copy(const StringOrDirectory& path, const nsAString& dest,
+      EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Copy(JSContext* cx, JS::Handle<JS::Value> path, JS::Handle<JS::Value> dest,
-      const Optional<OwningNonNull<EntryCallback> >& successCallback,
+  void Copy(const StringOrDirectory& path,
+      mozilla::dom::sdcard::Directory& dest,
+      EntryCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
+  void Copy(const StringOrDirectory& path,
+      const DestinationDict& dest,
+      EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
   void Remove(const nsAString& entry, VoidCallback& successCallback,

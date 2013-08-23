@@ -5,10 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "Directory.h"
-#include "mozilla/dom/FileSystemBinding.h"
 #include "nsContentUtils.h"
-// #include "jsfriendapi.h"
+#include "mozilla/dom/FileSystemBinding.h"
+#include "jsfriendapi.h"
 // #include "jsapi.h"
+// #include "jsobj.h"
 // #include "mozilla/dom/DOMJSClass.h"
 
 #include "DirectoryReader.h"
@@ -54,7 +55,7 @@ Directory::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope)
 {
   return DirectoryBinding::Wrap(aCx, aScope, this);
 }
-
+/*
 already_AddRefed<DirectoryReader>
 Directory::CreateReader()
 {
@@ -62,7 +63,7 @@ Directory::CreateReader()
   nsRefPtr<DirectoryReader> reader = new DirectoryReader(this);
   return reader.forget();
 }
-
+*/
 void
 Directory::CreateFile(JSContext* cx, const nsAString& path,
     const CreateFileOptions& options,
@@ -115,7 +116,7 @@ Directory::CreateFile(JSContext* cx, const nsAString& path,
    }
    }
    // if (JS_IsArrayBufferObject(options.mData)) {
-   // js::ArrayBuffer* src = js::ArrayBuffer::fromJSObject(obj);
+   js::ArrayBuffer* src = js::ArrayBuffer::fromJSObject(obj);
    // }
    */
   const JS::Value* pContent =
@@ -188,65 +189,6 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
-/*
- void
- Directory::Move(const nsAString& entry, const nsAString& newName,
- const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
- const Optional<OwningNonNull<EntryCallback> >& successCallback,
- const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
- {
- SDCARD_LOG("in Directory.Move()");
-
- // Check if name is valid.
- nsString entryRelpath;
- Path::Absolutize(entry, mRelpath, entryRelpath);
-
- CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
- successCallback, errorCallback, false);
- }
-
- void
- Directory::Move(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
- const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
- const Optional<OwningNonNull<EntryCallback> >& successCallback,
- const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
- {
- SDCARD_LOG("in Directory.Move()");
- nsString entryRelpath;
- entry.GetRelpath(entryRelpath);
- CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
- successCallback, errorCallback, false);
- }
-
- void
- Directory::Copy(const nsAString& entry, const nsAString& newName,
- const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
- const Optional<OwningNonNull<EntryCallback> >& successCallback,
- const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
- {
- SDCARD_LOG("in Directory.Copy()");
-
- // Check if name is valid.
- nsString entryRelpath;
- Path::Absolutize(entry, mRelpath, entryRelpath);
-
- CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
- successCallback, errorCallback, true);
- }
-
- void
- Directory::Copy(mozilla::dom::sdcard::Directory& entry, const nsAString& newName,
- const Optional<NonNull<mozilla::dom::sdcard::Directory> >& newParent,
- const Optional<OwningNonNull<EntryCallback> >& successCallback,
- const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
- {
- SDCARD_LOG("in Directory.Copy()");
- nsString entryRelpath;
- entry.GetRelpath(entryRelpath);
- CopyAndMoveTo(entryRelpath, mRelpath, nsString(newName),
- successCallback, errorCallback, true);
- }
- */
 /*
 void
 Directory::Move(const nsAString& path, const nsAString& dest,
@@ -338,18 +280,56 @@ Directory::Copy(mozilla::dom::sdcard::Directory& path, mozilla::dom::sdcard::Dir
   SDCARD_LOG("in Directory.Copy()");
 }
 */
+
+
 void
-Directory::Move(JSContext* cx, JS::Handle<JS::Value> path, JS::Handle<JS::Value> dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
+Directory::Move(const StringOrDirectory& path, const nsAString& dest,
+    EntryCallback& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Move()");
 }
 
 void
-Directory::Copy(JSContext* cx, JS::Handle<JS::Value> path, JS::Handle<JS::Value> dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::Move(const StringOrDirectory& path,
+      mozilla::dom::sdcard::Directory& dest,
+      EntryCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Move()");
+}
+
+void
+Directory::Move(const StringOrDirectory& path,
+      const DestinationDict& dest,
+      EntryCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Move()");
+}
+
+void
+Directory::Copy(const StringOrDirectory& path, const nsAString& dest,
+      EntryCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
+}
+
+void
+Directory::Copy(const StringOrDirectory& path,
+      mozilla::dom::sdcard::Directory& dest,
+      EntryCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Copy()");
+}
+
+void
+Directory::Copy(const StringOrDirectory& path,
+      const DestinationDict& dest,
+      EntryCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Copy()");
 }

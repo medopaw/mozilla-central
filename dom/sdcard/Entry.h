@@ -9,7 +9,8 @@
 #include "mozilla/Attributes.h"
 #include "mozilla/ErrorResult.h"
 
-#include "mozilla/dom/FileSystemBinding.h"
+// #include "mozilla/dom/FileSystemBinding.h"
+#include "mozilla/dom/BindingDeclarations.h"
 #include "nsWrapperCache.h"
 #include "nsAutoPtr.h"
 #include "nsIFile.h"
@@ -20,6 +21,14 @@ struct JSContext;
 
 namespace mozilla {
 namespace dom {
+
+class EntryCallback;
+class ErrorCallback;
+class MetadataCallback;
+class VoidCallback;
+
+// class Optional<OwningNonNull<T> >;
+
 namespace sdcard {
 
 struct FileInfo;

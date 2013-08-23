@@ -24,18 +24,18 @@ interface Entry {
 };
 
 interface Directory : Entry {
-    [Creator]
-    DirectoryReader createReader ();
+//    [Creator]
+//    DirectoryReader createReader ();
     void            createFile (DOMString path, optional CreateFileOptions options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            createDirectory (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            get (DOMString path, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-//    void            move (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-//    void            move (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-//    void            copy (DOMString entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-//    void            copy (Directory entry, DOMString newName, optional Directory newParent, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            move (any path, any dest, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            copy (any path, any dest, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            move ((DOMString /*or File*/ or Directory) path, DOMString dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            move ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            move ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            copy ((DOMString /*or File*/ or Directory) path, DOMString dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            copy ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
+    void            copy ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            remove (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            remove (Directory entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            removeDeep (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
@@ -52,11 +52,11 @@ interface FileEntry : Entry {
 //    void createWriter (FileWriterCallback successCallback, optional ErrorCallback errorCallback);
 //    void file (FileCallback successCallback, optional ErrorCallback errorCallback);
 };
-
+/*
 interface DirectoryReader {
     void readEntries (EntriesCallback successCallback, optional ErrorCallback errorCallback);
 };
-
+*/
 interface Metadata {
     readonly attribute any                modificationTime;
     readonly attribute unsigned long long size;
@@ -88,3 +88,8 @@ callback MetadataCallback = void (Metadata metadata);
 callback VoidCallback = void ();
 
 callback ErrorCallback = void (DOMError err);
+
+dictionary DestinationDict {
+    Directory dir;
+    DOMString name;
+};
