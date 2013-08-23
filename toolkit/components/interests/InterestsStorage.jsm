@@ -54,13 +54,15 @@ const SQL = {
     "WHERE interest IN (:interests)",
 
   getRecentHostsForInterests:
-    "SELECT i.interest, iv.host, SUM(iv.visits) AS visits " +
-    "FROM moz_interests i " +
-      ", moz_interests_visits iv " +
-    "WHERE i.interest IN (:interests) " +
-      "AND iv.interest_id = i.id " +
-      "AND iv.day > :dayCutoff " +
-    "GROUP BY i.interest, iv.host " +
+    "SELECT interest, " +
+           "host, " +
+           "SUM(visits) AS visits " +
+    "FROM moz_interests " +
+    "JOIN moz_interests_visits " +
+    "ON interest_id = id " +
+    "WHERE interest IN (:interests) AND " +
+          "day > :dayCutoff " +
+    "GROUP BY interest, host " +
     "ORDER BY interest, visits DESC",
 
   getScoresForInterests:
