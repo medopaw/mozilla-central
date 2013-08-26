@@ -14,31 +14,20 @@ function run_test() {
 
 add_task(function test_I__checkForMigration() {
 
-  // add an interest
-  yield addInterest("Autos");
-
   // populate history
   let microNow = Date.now() * 1000;
-  yield promiseClearHistory();
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 15*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
-  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 1*MICROS_PER_DAY});
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 2*MICROS_PER_DAY});
 
-  // no migrations, no scores
-  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
-        do_check_eq(data[0]["score"], 0);
-  });
+  // initialize the storage and cause places resubmition
+  let interestsStorage = yield iServiceObject.InterestsStoragePromise;
+  yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 2*MICROS_PER_DAY});
+  yield iServiceObject._ResubmitRecentHistoryDeferred.promise;
 
-  // run the service test for Migration, since the database was created
-  // we should have populated interests database from history
-  yield iServiceObject._checkForMigration();
-
-  // check that you have non-zero scores
-  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
-        do_check_true(data[0]["score"] != 0);
+  // this was a new database, so migration should have happened, and history should have been re-processed
+  yield interestsStorage.getScoresForInterests(["Autos"]).then(data => {
+        do_check_eq(data[0]["score"], 3);
   });
 });
 

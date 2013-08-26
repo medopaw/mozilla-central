@@ -20,8 +20,6 @@ XPCOMUtils.defineLazyModuleGetter(this, "Promise",
                                   "resource://gre/modules/commonjs/sdk/core/promise.js");
 XPCOMUtils.defineLazyModuleGetter(this, "Task",
                                   "resource://gre/modules/Task.jsm");
-XPCOMUtils.defineLazyModuleGetter(this, "InterestsStorage",
-                                  "resource://gre/modules/interests/InterestsStorage.jsm");
 
 /** Initilize the interests worker with preset categories
  *  modeled by hosts available for mochi tests: example.con & mochi.test
@@ -137,9 +135,11 @@ function loadURLIntoSeparateWindow(aOptions,aURL,aWindowLoadedCallback) {
  * @rejects JavaScript exception.
  */
 function promiseAddInterest(aInterest) {
-  return InterestsStorage.setInterest(aInterest, {
-    duration: 14,
-    threshold: 5,
+  return iServiceObject.InterestsStoragePromise.then(storage => {
+    storage.setInterest(aInterest, {
+      duration: 14,
+      threshold: 5,
+    });
   });
 }
 
@@ -150,33 +150,22 @@ function promiseAddInterest(aInterest) {
  */
 function promiseClearInterests() {
   let promises = [];
-  promises.push(InterestsStorage._execute("DELETE FROM moz_interests"));
-  promises.push(InterestsStorage._execute("DELETE FROM moz_interests_visits"));
+  promises.push(iServiceObject.InterestsStoragePromise.then(storage => {
+    return storage._execute("DELETE FROM moz_interests");
+  }));
   return Promise.promised(Array)(promises).then();
 }
 
 /**
- * clears all interests and history
+ * clears interests visits and history
  *
  * @return {Promise}
  */
-function promiseClearHistoryAndInterests() {
+function promiseClearHistoryAndInterestsVisits() {
   let promises = [];
   promises.push(promiseClearHistory());
-  promises.push(promiseClearInterests());
+  promises.push(iServiceObject.InterestsStoragePromise.then(storage => {
+    return storage._execute("DELETE FROM moz_interests_visits");
+  }));
   return Promise.promised(Array)(promises).then();
-}
-
-/**
- * ensures thart interests database is created
- * and interests are initialized
- *
- * @return {Promise}
- */
-function ensureInterestsInitilized() {
-  // trigger connection request to the database
-  return iServiceObject.getInterestsByNamespace("").then(() => {
-    // wait for initilization to complete
-    return iServiceObject._checkForMigration();
-  });
 }

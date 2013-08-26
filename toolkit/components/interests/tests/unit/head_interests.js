@@ -12,10 +12,11 @@ Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 Cu.import("resource://gre/modules/NetUtil.jsm");
 Cu.import("resource://gre/modules/interests/InterestsStorage.jsm");
+Cu.import("resource://gre/modules/Task.jsm");
 
 
 // Import common head.
-let (commonFile = do_get_file("../../../places/tests/head_common.js", false)) {
+let (commonFile = do_get_file("../head_common.js", false)) {
   let uri = Services.io.newFileURI(commonFile);
   Services.scriptloader.loadSubScript(uri.spec, this);
 }
@@ -32,74 +33,36 @@ const kValidMessages = {
   "InterestsForDocument": true
 }
 
-const MS_PER_DAY = 86400000;
-const MICROS_PER_DAY = 86400000000;
-
 function addInterest(interest) {
-  return InterestsStorage.setInterest(interest, {});
-}
-
-function getHostsForInterest(interest) {
-  return InterestsStorage._execute(
-    "SELECT DISTINCT(iv.host) AS host FROM moz_interests i, moz_interests_visits iv " +
-    "WHERE i.interest = :interest AND i.id = iv.interest_id", {
-    columns: "host",
-    params: {
-      interest: interest,
-    },
-  });
-}
-
-function getInterestsForHost(host) {
-  return InterestsStorage._execute(
-    "SELECT DISTINCT(interest) AS interest FROM moz_interests i, moz_interests_visits iv " +
-    "WHERE iv.host = :host AND i.id = iv.interest_id", {
-    columns: "interest",
-    params: {
-      host: host,
-    },
+  return iServiceObject.InterestsStoragePromise.then((storage) => {
+    return storage.setInterest(interest, {});
   });
 }
 
 function promiseClearHistoryAndVisits() {
-  let promises = [];
-  promises.push(InterestsStorage._execute("DELETE FROM moz_interests"));
-  promises.push(InterestsStorage._execute("DELETE FROM moz_interests_visits"));
-  promises.push(promiseClearHistory());
-  return Promise.promised(Array)(promises).then();
+  return Task.spawn(function() {
+    let storage = yield iServiceObject.InterestsStoragePromise;
+    yield isPromiseClearInterests(storage);
+    yield promiseClearHistory();
+  });
 }
 
 function promiseAddMultipleUrlInterestsVisits(aVisitInfo) {
-  let visits = [];
-  if (Array.isArray(aVisitInfo)) {
-    visits = visits.concat(aVisitInfo);
-  } else {
-    visits.push(aVisitInfo)
-  }
+  return Task.spawn(function() {
+    let visits = [];
+    if (Array.isArray(aVisitInfo)) {
+      visits = visits.concat(aVisitInfo);
+    } else {
+      visits.push(aVisitInfo)
+    }
 
-  // add URL visits and run syc between moz_hosts and moz_interests_frecent_hosts
-  let uriPromises = [];
-  visits.forEach(function(visit) {
-    let uri = NetUtil.newURI(visit.url);
-    uriPromises.push(promiseAddVisits(uri));
-  });
-  // wait for urls insertions to complete
-  return Promise.promised(Array)(uriPromises).then(() => {
-    let visitPromises = [];
-    let now = Date.now();
+    // add URL visits and run syc between moz_hosts and moz_interests_frecent_hosts
     visits.forEach(function(visit) {
-      let uri = NetUtil.newURI(visit.url);
-      let host = uri.host.replace(/^www\./, "");
-      let visitTime = now - MS_PER_DAY*(visit.daysAgo || 0);
-      let visitCount = visit.count || 1;
-      let interests = (Array.isArray(visit.interests)) ? visit.interests : [visit.interests];
-
-      interests.forEach(function(interest) {
-        visitPromises.push(addInterest(interest));
-      });
-      visitPromises.push(iServiceObject._addInterestsForHost(interests, host, visitTime, visitCount));
+      yield promiseAddVisits(uri);
     });
-    return Promise.promised(Array)(visitPromises).then();
+
+    let storage = yield iServiceObject.InterestsStoragePromise;
+    yield isPromiseAddInterestsVisits(storage,visits);
   });
 }
 
@@ -110,84 +73,6 @@ function promiseAddUrlInterestsVisit(url,interests,count,daysAgo) {
       count: count || 1,
       daysAgo: daysAgo || 0
     });
-}
-
-function addInterestVisitsToSite(site,interest,count) {
-  let promises = [];
-  for (let i = 0; i < count; i++) {
-    promises.push(promiseAddUrlInterestsVisit(site,interest));
-  }
-  return Promise.promised(Array)(promises).then();
-}
-
-function bulkAddInterestVisitsToSite(data) {
-  let visitObjects = [];
-  data.forEach(object => {
-    visitObjects.push({
-      url: object.url,
-      interests: object.interests,
-      count: object.count || 1,
-      daysAgo: object.daysAgo || 0
-    });
-  });
-  return promiseAddMultipleUrlInterestsVisits(visitObjects);
-}
-
-function itemsHave(items,data) {
-  for (let i in items) {
-    if(items[i] == data) return true;
-  }
-  return false;
-}
-
-function isIdentical(expected, actual) {
-  if (expected == null) {
-    do_check_eq(expected, actual);
-  }
-  else if (typeof expected == "object") {
-    // Make sure all the keys match up
-    do_check_eq(Object.keys(expected).sort() + "", Object.keys(actual).sort());
-
-    // Recursively check each value individually
-    Object.keys(expected).forEach(key => {
-      dump("Checking key " + key);
-      isIdentical(actual[key], expected[key]);
-    });
-  }
-  else {
-    do_check_eq(expected, actual);
-  }
-}
-
-function checkScores(expected, expectedZeros, interests) {
-  let withScores = interests.slice(0, expected.length);
-  isIdentical(expected, withScores);
-
-  let zeroScores = interests.slice(expected.length);
-  zeroScores.forEach(({name, score}) => {
-    LOG("Checking 0 score for " + name);
-    do_check_eq(score, 0);
-  });
-  do_check_eq(zeroScores.length, expectedZeros);
-}
-
-function unExposeAll(obj) {
-  // Filter for Objects and Arrays.
-  if (typeof obj !== "object" || !obj)
-    return;
-
-  // Recursively unexpose our children.
-  Object.keys(obj).forEach(function(key) {
-    unExposeAll(obj[key]);
-  });
-
-  if (obj instanceof Array)
-    return;
-  delete obj.__exposedProps__;
-}
-
-function dbg(datum, ending = " <===========\n") {
-  dump(JSON.stringify(datum) + ending);
 }
 
 Services.prefs.setBoolPref("interests.enabled", true);

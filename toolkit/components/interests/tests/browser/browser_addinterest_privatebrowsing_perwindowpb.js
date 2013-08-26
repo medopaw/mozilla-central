@@ -41,7 +41,7 @@ function test() {
           Services.obs.removeObserver(enumerator.getNext(), "interest-visit-saved");
         }
         // clear history and finish
-        promiseClearHistoryAndInterests().then(finish);
+        promiseClearHistoryAndInterestsVisits().then(finish);
       }
     }
   };
@@ -49,7 +49,6 @@ function test() {
   Services.obs.addObserver(observer, "interest-visit-saved", false);
 
   Task.spawn(function() {
-    yield ensureInterestsInitilized();
     // load two tabs with initial and final urls in them
     // open the first window in private mode and the second in normal mode
     loadURLIntoSeparateWindow({private: true},initialURL).then(aWin => {

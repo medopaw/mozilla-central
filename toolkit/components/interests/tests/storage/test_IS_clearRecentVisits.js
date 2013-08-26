@@ -7,6 +7,7 @@
 "use strict";
 
 function run_test() {
+  yield initStorage();
   run_next_test();
 }
 
@@ -17,15 +18,15 @@ add_task(function test_ClearRecentVisits()
   yield promiseAddUrlInterestsVisit("http://www.mozilla.org/", "computers");
 
   // cleanup the tables
-  yield InterestsStorage.clearRecentVisits(100);
+  yield gInterestsStorage.clearRecentVisits(100);
 
   // check that tables are empty
   let expectedScore = 0;
-  yield InterestsStorage.getScoresForInterests(["computers"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["computers"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
@@ -39,7 +40,7 @@ add_task(function test_ClearRecentVisits()
     expectedScore ++;
   }
 
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
@@ -49,10 +50,10 @@ add_task(function test_ClearRecentVisits()
   });
 
   // test deletions
-  yield InterestsStorage.clearRecentVisits(14);
+  yield gInterestsStorage.clearRecentVisits(14);
   expectedScore -= 14;
 
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
@@ -61,34 +62,34 @@ add_task(function test_ClearRecentVisits()
     do_check_eq(results[0] , "cars.com");
   });
 
-  yield InterestsStorage.clearRecentVisits(28);
+  yield gInterestsStorage.clearRecentVisits(28);
   expectedScore -= 14;
 
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
-  yield InterestsStorage.clearRecentVisits(101);
+  yield gInterestsStorage.clearRecentVisits(101);
   expectedScore = 0;
 
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
-  yield InterestsStorage.clearRecentVisits(100);
+  yield gInterestsStorage.clearRecentVisits(100);
 
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
-  yield InterestsStorage.clearRecentVisits(100);
+  yield gInterestsStorage.clearRecentVisits(100);
 
   // test visitCounts when adding visits
 
   // add one today
   yield promiseAddUrlInterestsVisit("http://www.cars.com/", "cars");
   expectedScore = 1;
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
@@ -97,19 +98,19 @@ add_task(function test_ClearRecentVisits()
   yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 1, 2);
   yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 1, 3);
   expectedScore += 3;
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
   yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 5, 15);
   yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 10, 31);
   expectedScore += 2;
-  yield InterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     // comparing rounded scores due to numerical error
     do_check_eq(results[0].score.toFixed(5), expectedScore.toFixed(5));
   });
 
-  yield InterestsStorage.clearRecentVisits(100);
+  yield gInterestsStorage.clearRecentVisits(100);
   yield getInterestsForHost("cars.com").then(function(results) {
     do_check_eq(results.length, 0);
   });

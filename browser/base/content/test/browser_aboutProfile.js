@@ -7,24 +7,6 @@ XPCOMUtils.defineLazyModuleGetter(this, "Promise",
 XPCOMUtils.defineLazyModuleGetter(this, "Task",
   "resource://gre/modules/Task.jsm");
 
-// Wait until interest metadata is populated
-function promiseWaitForMetadataInit() {
-  let finishedPopulating = Promise.defer();
-
-  let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-  let observer = {
-    observe: function(subject, topic, data) {
-      if (topic == "interest-metadata-initialized") {
-        finishedPopulating.resolve();
-        observerService.removeObserver(this, "interest-metadata-initialized");
-      }
-    }
-  };
-  observerService.addObserver(observer, "interest-metadata-initialized", false);
-
-  return finishedPopulating.promise;
-}
-
 registerCleanupFunction(function() {
   // Ensure we don't pollute prefs for next tests.
   try {
@@ -85,8 +67,7 @@ function test()
 
       // initialize interest metadata
       let iServiceObject = Cc["@mozilla.org/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
-      yield iServiceObject._initInterestMeta();
-      yield promiseWaitForMetadataInit();
+      yield iServiceObject.InterestsStoragePromise;
 
       Services.prefs.setBoolPref("interests.enabled", false);
       yield promiseNewTabLoadEvent("about:profile");

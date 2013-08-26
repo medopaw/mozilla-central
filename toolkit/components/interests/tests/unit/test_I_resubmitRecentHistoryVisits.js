@@ -16,12 +16,13 @@ function run_test() {
 
 add_task(function test_ResubmitHistoryVisits() {
 
+  let interestsStorage = yield iServiceObject.InterestsStoragePromise;
   yield promiseAddUrlInterestsVisit("http://www.autoblog.com/", ["Autos","movies","computers"]);
 
   let myDef = Promise.defer();
-  yield InterestsStorage.clearRecentVisits(100).then(data => {
+  yield interestsStorage.clearRecentVisits(100).then(data => {
     // test that interests are all empty
-    InterestsStorage.getScoresForInterests(["Autos" , "computers","movies"]).then(function(data) {
+    interestsStorage.getScoresForInterests(["Autos" , "computers","movies"]).then(function(data) {
       myDef.resolve(data);
     });
   });
@@ -44,28 +45,21 @@ add_task(function test_ResubmitHistoryVisits() {
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
   // baseline, let's make sure there is no history
-  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
+  yield interestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_eq(data[0]["score"], 0);
   });
 
-  let promise1 = iServiceObject.resubmitRecentHistoryVisits(60);
-  let promise2 = iServiceObject.resubmitRecentHistoryVisits(60);
-  let promise3 = iServiceObject.resubmitRecentHistoryVisits(60);
-
-  // all of the promisses above should be the same promise
-  do_check_true(promise1 == promise2);
-  do_check_true(promise1 == promise3);
-
-  yield promise1;
+  yield iServiceObject.resubmitRecentHistoryVisits(60);
 
   // so we have processed the history, let's make sure we get interests back
-  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
+  yield interestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_true(data[0]["score"] != 0);
   });
 });
 
 add_task(function test_ResubmitLocalHostFailure() {
 
+  let interestsStorage = yield iServiceObject.InterestsStoragePromise;
   yield promiseClearHistoryAndVisits();
   yield promiseAddUrlInterestsVisit("http://www.autoblog.com/", ["Autos"]);
 
@@ -79,7 +73,7 @@ add_task(function test_ResubmitLocalHostFailure() {
   yield promiseAddVisits({uri: NetUtil.newURI("http://www.autoblog.com/"), visitDate: microNow - 30*MICROS_PER_DAY});
 
   yield iServiceObject.resubmitRecentHistoryVisits(60);
-  yield InterestsStorage.getScoresForInterests(["Autos"]).then(data => {
+  yield interestsStorage.getScoresForInterests(["Autos"]).then(data => {
         do_check_true(data[0] != null);
         do_check_true(data[0]["scores"] != 0);
   });

@@ -13,5 +13,6 @@ TEST_DIRS += [
 MODULE = 'test_interests'
 
 XPCSHELL_TESTS_MANIFESTS += [
+    'storage/xpcshell.ini',
     'unit/xpcshell.ini',
 ]

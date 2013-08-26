@@ -23,7 +23,7 @@ function test() {
       is(aWindow.content.location.href, testURL, "must be test url");
       aWindow.content.navigator.interests.getTopInterests(5).then(ints => {
         is(ints.length,5,"array of ints must be 5 ints");
-        promiseClearHistoryAndInterests().then(finish);
+        promiseClearHistoryAndInterestsVisits().then(finish);
       },
       error => {
         of(false, "interests must be accessible");
@@ -32,7 +32,6 @@ function test() {
   };
 
   Task.spawn(function() {
-    yield ensureInterestsInitilized();
     testGetInterestsAPI();
   });
 } // end of test

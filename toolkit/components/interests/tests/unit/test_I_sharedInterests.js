@@ -13,18 +13,19 @@ function run_test() {
 
 add_task(function test_I_sharedInterestsSetting()
 {
+  let interestsStorage = yield iServiceObject.InterestsStoragePromise;
   yield addInterest("cars");
   yield addInterest("movies");
   yield addInterest("technology");
 
   // make a bunch of insertions for a number of days
   let now = Date.now();
-  let today = InterestsStorage._convertDateToDays(now);
+  let today = interestsStorage._convertDateToDays(now);
 
   // add visit
-  yield InterestsStorage.addInterestHostVisit("technology", "samsung.com", {visitTime: (now - MS_PER_DAY*0)});
-  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*1)});
-  yield InterestsStorage.addInterestHostVisit("movies", "netflix.com", {visitTime: (now - MS_PER_DAY*2)});
+  yield interestsStorage.addInterestHostVisit("technology", "samsung.com", {visitTime: (now - MS_PER_DAY*0)});
+  yield interestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*1)});
+  yield interestsStorage.addInterestHostVisit("movies", "netflix.com", {visitTime: (now - MS_PER_DAY*2)});
 
   // get top 2 visits, test result limiting
   results = yield iServiceObject.getInterestsByNamespace("", {
@@ -45,7 +46,7 @@ add_task(function test_I_sharedInterestsSetting()
                       ]);
 
   // no shared interests should be found
-  yield InterestsStorage.getHostsForSharedInterests(["cars","movies"]).then(results => {
+  yield interestsStorage.getHostsForSharedInterests(["cars","movies"]).then(results => {
     do_check_eq(results.length,0);
   });
 
@@ -76,7 +77,7 @@ add_task(function test_I_sharedInterestsSetting()
     requestingHost: "bar.com",
   });
 
-  yield InterestsStorage.getPersonalizedHosts().then(results => {
+  yield interestsStorage.getPersonalizedHosts().then(results => {
     //dump( JSON.stringify(results)  + " <<<<\n");
     isIdentical(results,[
                           {"interest":"cars","host":"bar.com","day":today},

@@ -42,8 +42,9 @@ function test() {
       is(aWindow.content.location.href, finalURL, "must be final url");
       aWindow.content.navigator.interests.getTopInterests(5).then(ints => {
         // we should see two interest - "cars" and "video-games"
+        dump(JSON.stringify(ints) + " <<<<<<<<<<<<<<<<<<<<<<<\n");
         is(ints.length,5,"array of ints must be 5 ints");
-        promiseClearHistoryAndInterests().then(finish);
+        promiseClearHistoryAndInterestsVisits().then(finish);
       },
       error => {
         of(false, "interests must be accessible in private mode");
@@ -74,7 +75,6 @@ function test() {
   Services.obs.addObserver(observer, "interest-visit-saved", false);
 
   Task.spawn(function() {
-    yield ensureInterestsInitilized();
     // load two tabs with initial and final urls in them
     tabsToClose.push(gBrowser.addTab(initialURL));
     tabsToClose.push(gBrowser.addTab(finalURL));

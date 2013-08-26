@@ -7,6 +7,7 @@
 "use strict";
 
 function run_test() {
+  yield initStorage();
   run_next_test();
 }
 
@@ -21,7 +22,7 @@ add_task(function test_IS_addInterestDuplicates() {
   yield addInterest("shopping");
 
   // Explicitly query for the id because it's not exposed through APIs
-  yield InterestsStorage._execute(
+  yield gInterestsStorage._execute(
     "SELECT id, interest FROM moz_interests ORDER BY id ASC",
     {columns: ["id", "interest"]}
   ).then(results => {

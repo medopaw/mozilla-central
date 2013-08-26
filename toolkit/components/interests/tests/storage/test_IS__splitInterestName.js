@@ -7,11 +7,12 @@
 "use strict";
 
 function check(interest, expected) {
-  let namespace = InterestsStorage._splitInterestName(interest);
+  let namespace = gInterestsStorage._splitInterestName(interest);
   do_check_eq(JSON.stringify(namespace), JSON.stringify(expected));
 }
 
 function run_test() {
+  yield initStorage();
   check("foo", ["", "foo"]);
   check(":bar", ["", "bar"]);
   check("foo:", ["foo", ""]);

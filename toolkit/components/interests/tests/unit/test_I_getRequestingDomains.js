@@ -16,15 +16,16 @@ add_task(function test_I_getRequestingHosts()
   yield addInterest("cars");
   yield addInterest("movies");
   yield addInterest("technology");
+  let interestsStorage = yield iServiceObject.InterestsStoragePromise;
 
   // make a bunch of insertions for a number of days
   let now = Date.now();
-  let today = InterestsStorage._convertDateToDays(now);
+  let today = interestsStorage._convertDateToDays(now);
 
   // add visit
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0)});
-  yield InterestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*1)});
-  yield InterestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*2)});
+  yield interestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*0)});
+  yield interestsStorage.addInterestHostVisit("cars", "cars.com", {visitTime: (now - MS_PER_DAY*1)});
+  yield interestsStorage.addInterestHostVisit("movies", "movies.com", {visitTime: (now - MS_PER_DAY*2)});
 
   results = yield iServiceObject.getInterestsByNamespace("", {
     checkSharable: true,

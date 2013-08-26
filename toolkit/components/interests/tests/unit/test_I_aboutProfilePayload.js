@@ -24,6 +24,7 @@ function run_test() {
 }
 
 add_task(function test_getPagePayload() {
+  yield promiseClearHistoryAndVisits();
   yield addInterest("computers");
   yield addInterest("real-estate");
 

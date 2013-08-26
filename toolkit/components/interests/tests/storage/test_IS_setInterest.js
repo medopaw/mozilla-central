@@ -7,5 +7,6 @@
 "use strict";
 
 function run_test() {
-  // test_InterestsStorage_metadata.js
+  // test_Interests_metadata.js
+  // test_gInterestsStorage_addInterest_duplicates.js
 }

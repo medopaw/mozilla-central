@@ -14,8 +14,9 @@ function run_test() {
 
 add_task(function test_getTopInterests_exposedProps() {
   yield addInterest("cars");
-  yield InterestsStorage.setInterest("cars");
-  yield InterestsStorage.addInterestHostVisit("cars","cars.com");
+  let interestsStorage = yield iServiceObject.InterestsStoragePromise;
+  yield interestsStorage.setInterest("cars");
+  yield interestsStorage.addInterestHostVisit("cars","cars.com");
 
   // Create a content sandbox and a helper to evaluate in the sandbox
   let sandbox = Cu.Sandbox("http://www.example.com");

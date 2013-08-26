@@ -7,6 +7,7 @@
 "use strict";
 
 function run_test() {
+  yield initStorage();
   run_next_test();
 }
 
@@ -16,17 +17,17 @@ add_task(function test_checkSharable()
   yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
 
   // Sanity check that diversity is computed for both
-  yield InterestsStorage.getHostCountsForInterests(["computers","movies"]).then(function(results) {
+  yield gInterestsStorage.getHostCountsForInterests(["computers","movies"]).then(function(results) {
     do_check_eq(results["computers"] , 1);
     do_check_eq(results["movies"] , 1);
   });
-  yield InterestsStorage.getHostCountsForInterests(["computers","movies"], {
+  yield gInterestsStorage.getHostCountsForInterests(["computers","movies"], {
     checkSharable: true,
   }).then(function(results) {
     do_check_eq(results["computers"] , 1);
     do_check_eq(results["movies"] , 1);
   });
-  yield InterestsStorage.getHostCountsForInterests(["computers","movies"], {
+  yield gInterestsStorage.getHostCountsForInterests(["computers","movies"], {
     checkSharable: false,
   }).then(function(results) {
     do_check_eq(results["computers"] , 1);
@@ -34,14 +35,14 @@ add_task(function test_checkSharable()
   });
 
   // Unshare one interest with no change
-  yield InterestsStorage.setInterest("movies", {sharable: false});
-  yield InterestsStorage.getHostCountsForInterests(["computers","movies"]).then(function(results) {
+  yield gInterestsStorage.setInterest("movies", {sharable: false});
+  yield gInterestsStorage.getHostCountsForInterests(["computers","movies"]).then(function(results) {
     do_check_eq(results["computers"] , 1);
     do_check_eq(results["movies"] , 1);
   });
 
   // Explicitly factor in the sharability
-  yield InterestsStorage.getHostCountsForInterests(["computers","movies"], {
+  yield gInterestsStorage.getHostCountsForInterests(["computers","movies"], {
     checkSharable: true,
   }).then(function(results) {
     do_check_eq(results["computers"] , 1);
@@ -49,7 +50,7 @@ add_task(function test_checkSharable()
   });
 
   // Sanity check with explicit false check
-  yield InterestsStorage.getHostCountsForInterests(["computers","movies"], {
+  yield gInterestsStorage.getHostCountsForInterests(["computers","movies"], {
     checkSharable: false,
   }).then(function(results) {
     do_check_eq(results["computers"] , 1);
@@ -57,7 +58,7 @@ add_task(function test_checkSharable()
   });
 });
 
-add_task(function test_InterestsStorageGetHostCount()
+add_task(function test_gInterestsStorageGetHostCount()
 {
   yield promiseClearHistory();
 
@@ -66,19 +67,19 @@ add_task(function test_InterestsStorageGetHostCount()
   yield promiseAddUrlInterestsVisit("http://www.mozilla.org/", ["cars","computers"]);
   yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
 
-  yield InterestsStorage.getHostCountsForInterests(["cars","computers","movies","shopping"]).then(function(results) {
+  yield gInterestsStorage.getHostCountsForInterests(["cars","computers","movies","shopping"]).then(function(results) {
     do_check_eq(results["cars"] , 2);
     do_check_eq(results["computers"] , 2);
     do_check_eq(results["movies"] , 1);
     do_check_eq(results["shopping"] , 1);
   });
 
-  yield InterestsStorage.getHostCountsForInterests(["cars"]).then(function(results) {
+  yield gInterestsStorage.getHostCountsForInterests(["cars"]).then(function(results) {
     do_check_eq(results["cars"] , 2);
   });
 });
 
-add_task(function test_InterestsStorageGetHostCountForManyHosts()
+add_task(function test_gInterestsStorageGetHostCountForManyHosts()
 {
   yield promiseClearHistoryAndVisits();
 
@@ -102,7 +103,7 @@ add_task(function test_InterestsStorageGetHostCountForManyHosts()
   yield bulkAddInterestVisitsToSite(sitesData);
 
   // so "cars" and "movies" will have each 10 sites and shopping is 30
-  yield InterestsStorage.getHostCountsForInterests(["cars","computers","movies","shopping"]).then(function(results) {
+  yield gInterestsStorage.getHostCountsForInterests(["cars","computers","movies","shopping"]).then(function(results) {
     do_check_eq(Object.keys(results).length, 3);
     do_check_eq(results["cars"] , 10);
     do_check_eq(results["movies"] , 10);

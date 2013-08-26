@@ -129,7 +129,11 @@ const SQL = {
 
 };
 
-let InterestsStorage = {
+function InterestsStorage(connection) {
+  this.dbConnection = connection;
+}
+
+InterestsStorage.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// InterestsStorage
 
@@ -405,41 +409,38 @@ let InterestsStorage = {
     else if (columns != null) {
       results = [];
     }
-    // get a hold of interests database connection (it's Sqlite.jsm connection)
-    return InterestsDatabase.DBConnectionPromise.then(connection => {
-      // execute cached sql statement
-      return connection.executeCached(sql, params, function (row) {
-        // Read out the desired columns from the row into an object
-        let result;
-        if (columns != null) {
-          // For just a single column, make the result that column
-          if (typeof columns == "string") {
-            result = row.getResultByName(columns);
-          }
-          // For multiple columns, put as valyes on an object
-          else {
-            result = {};
-            columns.forEach(column => {
-              result[column] = row.getResultByName(column);
-            });
-          }
+    // execute cached sql statement
+    return this.dbConnection.executeCached(sql, params, function (row) {
+      // Read out the desired columns from the row into an object
+      let result;
+      if (columns != null) {
+        // For just a single column, make the result that column
+        if (typeof columns == "string") {
+          result = row.getResultByName(columns);
         }
+        // For multiple columns, put as valyes on an object
+        else {
+          result = {};
+          columns.forEach(column => {
+            result[column] = row.getResultByName(column);
+          });
+        }
+      }
 
-        // Give the packaged result to the handler
-        if (onRow != null) {
-          onRow(result);
-        }
-        // Store the result keyed on the result key
-        else if (key != null) {
-          results[row.getResultByName(key)] = result;
-        }
-        // Append the result in order
-        else if (columns != null) {
-          results.push(result);
-        }
-      }).then(() => {
-        return results;
-      });
+      // Give the packaged result to the handler
+      if (onRow != null) {
+        onRow(result);
+      }
+      // Store the result keyed on the result key
+      else if (key != null) {
+        results[row.getResultByName(key)] = result;
+      }
+      // Append the result in order
+      else if (columns != null) {
+        results.push(result);
+      }
+    }).then(() => {
+      return results;
     });
   },
 

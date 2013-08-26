@@ -7,8 +7,9 @@
 "use strict";
 
 function run_test() {
+  yield initStorage();
   // Make sure the current time is rounded
-  let nowDays = InterestsStorage._convertDateToDays();
+  let nowDays = gInterestsStorage._convertDateToDays();
   let roundedDate = new Date(nowDays * MS_PER_DAY);
   do_check_eq(roundedDate.getUTCMilliseconds(), 0);
   do_check_eq(roundedDate.getUTCSeconds(), 0);
@@ -27,7 +28,7 @@ function run_test() {
   do_check_eq(shiftedDate.getUTCHours(), 4);
 
   // Make sure the shifted date gets rounded correctly
-  let shiftedDays = InterestsStorage._convertDateToDays(shiftedDate);
+  let shiftedDays = gInterestsStorage._convertDateToDays(shiftedDate);
   let roundedShiftedDate = new Date(shiftedDays * MS_PER_DAY);
   do_check_eq(roundedShiftedDate.getUTCMilliseconds(), 0);
   do_check_eq(roundedShiftedDate.getUTCSeconds(), 0);
@@ -39,6 +40,6 @@ function run_test() {
 
   // Going back one millisecond should result in one day before
   let backDate = new Date(nowDays * MS_PER_DAY - 1);
-  let backDays = InterestsStorage._convertDateToDays(backDate);
+  let backDays = gInterestsStorage._convertDateToDays(backDate);
   do_check_eq(nowDays - backDays, 1);
 }

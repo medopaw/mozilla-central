@@ -7,6 +7,7 @@
 "use strict";
 
 function run_test() {
+  yield initStorage();
   run_next_test();
 }
 

@@ -7,8 +7,6 @@
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
-let dbConn = InterestsStorage.db;
-
 let apiInstance = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
 apiInstance.QueryInterface(Ci.nsIDOMGlobalPropertyInitializer);
 
@@ -20,10 +18,12 @@ add_task(function test_InterestWebAPI_whitelist()
 {
   let now = Date.now();
   let results;
+  let interestsStorage = yield iServiceObject.InterestsStoragePromise;
 
+  yield promiseClearHistoryAndVisits();
   // data setup
   yield addInterest("technology");
-  yield InterestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*10)});
+  yield interestsStorage.addInterestHostVisit("technology", "technology.com", {visitTime: (now - MS_PER_DAY*10)});
   results = yield apiInstance.getTopInterests();
   unExposeAll(results);
   checkScores([

@@ -21,14 +21,22 @@ function run_test() {
 }
 
 add_task(function test_I__checkMetadataInit() {
-  // no metadata
-  yield InterestsStorage.getInterests(kInterests).then(data => {
-    do_check_eq(0, Object.keys(data).length)
-  });
-  yield iServiceObject._checkForMigration();
+  let interestsStorage = yield iServiceObject.InterestsStoragePromise;
 
   // metadata populated
-  yield InterestsStorage.getInterests(kInterests).then(data => {
+  yield interestsStorage.getInterests(kInterests).then(data => {
+    do_check_eq(kInterests.length, Object.keys(data).length);
+  });
+
+  yield promiseClearHistoryAndVisits();
+  // no metadata
+  yield interestsStorage.getInterests(kInterests).then(data => {
+    do_check_eq(0, Object.keys(data).length)
+  });
+  yield iServiceObject._initInterestMeta(interestsStorage);
+
+  // metadata populated
+  yield interestsStorage.getInterests(kInterests).then(data => {
     do_check_eq(kInterests.length, Object.keys(data).length);
   });
 });

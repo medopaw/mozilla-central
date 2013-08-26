@@ -75,6 +75,51 @@ Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Interests API
 
+  //////////////////////////////////////////////////////////////////////////////
+  //// Interests data memebers
+
+  // the _interestsStorage promise resolved to this._interestsStorage
+  _interestsStoragePromise: null,
+
+  //////////////////////////////////////////////////////////////////////////////
+  //// Interests API
+
+  /**
+   * initialize the database, the service and create InterestsStorage
+   *
+   * @returns Promise resolving to InterestsStorage instance
+  */
+  get InterestsStoragePromise() {
+    if (this._interestsStoragePromise == null) {
+      // create the promise
+      this._interestsStoragePromise = Promise.defer();
+      // spawn the task that resolves it
+      Task.spawn(function() {
+        // fetch connection from database
+        let connection = yield InterestsDatabase.DBConnectionPromise;
+        // create InterestsStorage instance
+        let interestsStorage = new InterestsStorage(connection);
+        // make sure migration done if needed
+        let isMigrated = yield InterestsDatabase.getDbMigrationPromise();
+        if (isMigrated) {
+          // initialize meta data
+          yield this._checkMetadataInit(interestsStorage);
+          // clear resent history
+          yield interestsStorage.clearRecentVisits(kDaysToResubmit);
+          // resolve the promise
+          this._interestsStoragePromise.resolve(interestsStorage);
+          // run history resubmition, but do not clean the database
+          yield this._resubmitRecentHistory(interestsStorage,kDaysToResubmit,false);
+        }
+        else {
+          // no migration - simply resolve the promise
+          this._interestsStoragePromise.resolve(interestsStorage);
+        }
+      }.bind(this));
+    }
+    return this._interestsStoragePromise.promise;
+  },
+
   /**
    * Package up interest data by names
    *
@@ -83,8 +128,10 @@ Interests.prototype = {
    * @returns Promise with interests sorted by score
    */
   getInterestsByNames: function I_getInterestsByNames(names, options={}) {
-    return this._packageInterests(InterestsStorage.
-      getScoresForInterests(names, options), options);
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      return this._packageInterests(interestsStorage.
+        getScoresForInterests(names, options), options);
+    });
   },
 
   /**
@@ -95,8 +142,10 @@ Interests.prototype = {
    * @returns Promise with interests sorted by score
    */
   getInterestsByNamespace: function I_getInterestsByNamespace(namespace, options={}) {
-    return this._packageInterests(InterestsStorage.
-      getScoresForNamespace(namespace, options), options);
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      return this._packageInterests(interestsStorage.
+        getScoresForNamespace(namespace, options), options);
+    });
   },
 
   /**
@@ -106,40 +155,10 @@ Interests.prototype = {
    *          A number of days to go back into history
    * @returns Promise when resubmission is complete
    */
-  resubmitRecentHistoryVisits: function I_resubmitRecentHistory(daysBack) {
-    // check if history is in progress
-    if (this._ResubmitRecentHistoryDeferred) {
-      return this._ResubmitRecentHistoryDeferred.promise;
-    }
-
-    this._ResubmitRecentHistoryDeferred = Promise.defer();
-    this._ResubmitRecentHistoryUrlCount = 0;
-    // clean interest tables first
-    InterestsStorage.clearRecentVisits(daysBack).then(() => {
-      // read moz_places data and massage it
-      PlacesInterestsUtils.getRecentHistory(daysBack, item => {
-        try {
-          let uri = NetUtil.newURI(item.url);
-          item["message"] = "getInterestsForDocument";
-          item["host"] = this._getPlacesHostForURI(uri);
-          item["path"] = uri["path"];
-          item["tld"] = this._getBaseDomain(item["host"]);
-          item["metaData"] = {};
-          item["language"] = "en";
-          item["messageId"] = "resubmit";
-          this._callMatchingWorker(item);
-          this._ResubmitRecentHistoryUrlCount++;
-        }
-        catch(ex) {}
-      }).then(() => {
-        // check if _ResubmitRecentHistoryDeferred exists and url count == 0
-        // then the history is empty and we should resolve the promise
-        if (this._ResubmitRecentHistoryDeferred && this._ResubmitRecentHistoryUrlCount == 0) {
-          this._resolveResubmitHistoryPromise();
-        }
-      }); // end of getRecentHistory
-    }); // end of clearRecentVisits
-    return this._ResubmitRecentHistoryDeferred.promise;
+  resubmitRecentHistoryVisits: function I_resubmitRecentHistoryVisits(daysBack) {
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      return this._resubmitRecentHistory(interestsStorage,daysBack);
+    });
   },
 
   /**
@@ -162,28 +181,30 @@ Interests.prototype = {
    * @returns Promise with domains + corresponding interests
    */
   getRequestingHosts: function I_getRequestingHosts(daysBack) {
-    return InterestsStorage.getPersonalizedHosts(daysBack).then(results => {
-      let hostsData = {};
-      let hostsList = [];
-      // hosts come in order
-      results.forEach(data => {
-        let {interest, host} = data;
-        if (!hostsData[host]) {
-          // create a host object
-          let hostObject = {
-            name: host,
-            interests: [],
-            isBlocked: this.isSiteBlocked(host),
-            isPrivileged: this._getDomainWhitelistedSet().
-                            has(this._normalizeHostName(host)),
-          };
-          hostsData[host] = hostObject;
-          hostsList.push(hostObject);
-        }
-        // push corresponding host & the interest,date of visit
-        hostsData[host].interests.push(interest);
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      return interestsStorage.getPersonalizedHosts(daysBack).then(results => {
+        let hostsData = {};
+        let hostsList = [];
+        // hosts come in order
+        results.forEach(data => {
+          let {interest, host} = data;
+          if (!hostsData[host]) {
+            // create a host object
+            let hostObject = {
+              name: host,
+              interests: [],
+              isBlocked: this.isSiteBlocked(host),
+              isPrivileged: this._getDomainWhitelistedSet().
+                              has(this._normalizeHostName(host)),
+            };
+            hostsData[host] = hostObject;
+            hostsList.push(hostObject);
+          }
+          // push corresponding host & the interest,date of visit
+          hostsData[host].interests.push(interest);
+        });
+        return hostsList;
       });
-      return hostsList;
     });
   },
 
@@ -293,15 +314,17 @@ Interests.prototype = {
    * @returns Promise when interests are added
    */
   _addInterestsForHost: function I__addInterestsForHost(interests, host, visitDate, visitCount) {
-    // execute host and visit additions
-    let addVisitPromises = [];
-    for (let interest of interests) {
-      addVisitPromises.push(InterestsStorage.addInterestHostVisit(interest, host, {
-        visitCount: visitCount,
-        visitTime: visitDate,
-      }));
-    }
-    return gatherPromises(addVisitPromises);
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      // execute host and visit additions
+      let addVisitPromises = [];
+      for (let interest of interests) {
+        addVisitPromises.push(interestsStorage.addInterestHostVisit(interest, host, {
+          visitCount: visitCount,
+          visitTime: visitDate,
+        }));
+      }
+      return gatherPromises(addVisitPromises);
+    });
   },
 
   /**
@@ -316,84 +339,74 @@ Interests.prototype = {
    * @returns Promise with an array of interests with added data
    */
   _packageInterests: function I__packageInterests(scoresPromise, options={}) {
-    // Wait for the scores to come back with interest names
-    return scoresPromise.then(sortedInterests => {
-      let names = sortedInterests.map(({name}) => name);
-      // Pass on the scores and add on interest and host counts
-      return [
-        sortedInterests,
-        InterestsStorage.getInterests(names),
-        InterestsStorage.getHostCountsForInterests(names, options),
-      ];
-    // Wait for all the promises to finish then combine the data
-    }).then(gatherPromises).then(([interests, meta, hostCounts]) => {
-      let {excludeMeta, roundDiversity, roundScore} = options;
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      // Wait for the scores to come back with interest names
+      return scoresPromise.then(sortedInterests => {
+        let names = sortedInterests.map(({name}) => name);
+        // Pass on the scores and add on interest and host counts
+        return [
+          sortedInterests,
+          interestsStorage.getInterests(names),
+          interestsStorage.getHostCountsForInterests(names, options),
+        ];
+      // Wait for all the promises to finish then combine the data
+      }).then(gatherPromises).then(([interests, meta, hostCounts]) => {
+        let {excludeMeta, roundDiversity, roundScore} = options;
 
-      // Take the first result's score to be the max
-      let maxScore = 0;
-      if (interests.length > 0) {
-        maxScore = interests[0].score;
-      }
-
-      // Find the largest host count for these interests
-      let maxHosts = 0;
-      Object.keys(hostCounts).forEach(interest => {
-        maxHosts = Math.max(maxHosts, hostCounts[interest]);
-      });
-
-      // Package up pieces according to options
-      interests.forEach(interest => {
-        let {name} = interest;
-
-        // Include diversity and round to a percent [0-100] if requested
-        interest.diversity = hostCounts[name];
-        if (roundDiversity && maxHosts != 0) {
-          interest.diversity = Math.round(interest.diversity / maxHosts * 100);
+        // Take the first result's score to be the max
+        let maxScore = 0;
+        if (interests.length > 0) {
+          maxScore = interests[0].score;
         }
 
-        // Include meta only if not explictly excluded
-        if (!excludeMeta) {
-          interest.meta = meta[name];
-        }
+        // Find the largest host count for these interests
+        let maxHosts = 0;
+        Object.keys(hostCounts).forEach(interest => {
+          maxHosts = Math.max(maxHosts, hostCounts[interest]);
+        });
 
-        // Round the already-included score to a percent [0-100] if requested
-        if (roundScore && maxScore != 0) {
-          interest.score = Math.round(interest.score / maxScore * 100);
-        }
-      });
+        // Package up pieces according to options
+        interests.forEach(interest => {
+          let {name} = interest;
 
-      return interests;
-    }).then(interests => {
-      let {requestingHost} = options;
+          // Include diversity and round to a percent [0-100] if requested
+          interest.diversity = hostCounts[name];
+          if (roundDiversity && maxHosts != 0) {
+            interest.diversity = Math.round(interest.diversity / maxHosts * 100);
+          }
 
-      // if requestingHost is null, return interests right away
-      if (!requestingHost) {
+          // Include meta only if not explictly excluded
+          if (!excludeMeta) {
+            interest.meta = meta[name];
+          }
+
+          // Round the already-included score to a percent [0-100] if requested
+          if (roundScore && maxScore != 0) {
+            interest.score = Math.round(interest.score / maxScore * 100);
+          }
+        });
+
         return interests;
-      }
+      }).then(interests => {
+        let {requestingHost} = options;
 
-      // otherwise we have to store what we share with this host
-      // call setSharedInterest for each interest being returned to caller
-      let promises = [];
-      interests.forEach(interest => {
-        promises.push(InterestsStorage.setSharedInterest(interest.name,requestingHost));
+        // if requestingHost is null, return interests right away
+        if (!requestingHost) {
+          return interests;
+        }
+
+        // otherwise we have to store what we share with this host
+        // call setSharedInterest for each interest being returned to caller
+        let promises = [];
+        interests.forEach(interest => {
+          promises.push(interestsStorage.setSharedInterest(interest.name,requestingHost));
+        });
+
+        // return promise to wait until insertions complete, and resolve it to the interests
+        return gatherPromises(promises).then(() => {
+          return interests;
+        });
       });
-
-      // return promise to wait until insertions complete, and resolve it to the interests
-      return gatherPromises(promises).then(() => {
-        return interests;
-      });
-    });
-  },
-
-  _setIgnoredForInterest: function I__setIgnoredForInterest(interest) {
-    return InterestsStorage.setInterest(interest, {
-      sharable: false
-    });
-  },
-
-  _unsetIgnoredForInterest: function I__setIgnoredForInterest(interest) {
-    return InterestsStorage.setInterest(interest, {
-      sharable: true
     });
   },
 
@@ -461,11 +474,11 @@ Interests.prototype = {
    *
    * @returns A promise for all interests being initialized
    */
-  _initInterestMeta: function I__initInterestMeta() {
+  _initInterestMeta: function I__initInterestMeta(interestsStorage) {
     let promises = [];
 
     kInterests.forEach(item => {
-      promises.push(InterestsStorage.setInterest(item));
+      promises.push(interestsStorage.setInterest(item));
     });
 
     return gatherPromises(promises).then(results => {
@@ -490,35 +503,17 @@ Interests.prototype = {
   },
 
   /**
-   * resubmits history if migration flag is set
-   *
-   * @returns completion promise
-   */
-  _checkForMigration: function I__checkForMigration() {
-    return InterestsDatabase.getDbMigrationPromise().then(flag => {
-      if (flag) {
-        return Task.spawn(function () {
-          yield this._checkMetadataInit();
-          yield this.resubmitRecentHistoryVisits(kDaysToResubmit);
-        }.bind(this));
-      }
-      else {
-        // return resolved promise
-        return Promise.resolve();
-      }
-    });
-  },
-
-  /**
    * inits interest metadata if interests don't exist
    *
+   * @param   interestsStorage
+   *          A storage instance
    * @returns completion promise
    */
-  _checkMetadataInit: function I__checkMetadataInit() {
+  _checkMetadataInit: function I__checkMetadataInit(interestsStorage) {
     let metadataPromise = Promise.defer();
-    InterestsStorage.getInterests(["Arts"]).then(results => {
+    interestsStorage.getInterests(["Arts"]).then(results => {
       if (Object.keys(results).length == 0) {
-        this._initInterestMeta().then(() => {
+        this._initInterestMeta(interestsStorage).then(() => {
           metadataPromise.resolve();
         });
       }
@@ -542,6 +537,56 @@ Interests.prototype = {
     catch (ex) {
       return "";
     }
+  },
+
+  /**
+   * Re-submits to interests cliassifier synthetic urls from places history
+   *
+   * @param   interestsStorage
+   *          A storage instance
+   * @param   daysBack
+   *          A number of days to go back into history
+   * @param   doClearDatabase
+   *          A flag to clear database before submit (true by default)
+   * @returns Promise when resubmission is complete
+   */
+  _resubmitRecentHistory: function I__resubmitRecentHistory(interestsStorage, daysBack, doClearDatabase = true) {
+    // check if history is in progress
+    if (this._ResubmitRecentHistoryDeferred) {
+      return this._ResubmitRecentHistoryDeferred.promise;
+    }
+    this._ResubmitRecentHistoryDeferred = Promise.defer();
+    this._ResubmitRecentHistoryUrlCount = 0;
+    // spawn a Task to resubmit history
+    Task.spawn(function() {
+      // clear history if needed
+      if (doClearDatabase) {
+        yield interestsStorage.clearRecentVisits(daysBack);
+      }
+      // read moz_places data and message it to the worker
+      yield PlacesInterestsUtils.getRecentHistory(daysBack, item => {
+        try {
+          let uri = NetUtil.newURI(item.url);
+          item["message"] = "getInterestsForDocument";
+          item["host"] = this._getPlacesHostForURI(uri);
+          item["path"] = uri["path"];
+          item["tld"] = this._getBaseDomain(item["host"]);
+          item["metaData"] = {};
+          item["language"] = "en";
+          item["messageId"] = "resubmit";
+          this._callMatchingWorker(item);
+          this._ResubmitRecentHistoryUrlCount++;
+        }
+        catch(ex) {}
+      }).then(() => {
+        // check if _ResubmitRecentHistoryDeferred exists and url count == 0
+        // then the history is empty and we should resolve the promise
+        if (this._ResubmitRecentHistoryDeferred && this._ResubmitRecentHistoryUrlCount == 0) {
+          this._resolveResubmitHistoryPromise();
+        }
+      }); // end of getRecentHistory
+    }.bind(this));  // end of Task.spawn
+    return this._ResubmitRecentHistoryDeferred.promise;
   },
 
   //////////////////////////////////////////////////////////////////////////////
@@ -654,7 +699,9 @@ Interests.prototype = {
         interestList.push(interests[i].name);
       }
 
-      return InterestsStorage.getRecentHostsForInterests(interestList, Infinity);
+      return this.InterestsStoragePromise.then(interestsStorage => {
+        return interestsStorage.getRecentHostsForInterests(interestList, Infinity);
+      });
     });
 
     // gather and package the data promises
@@ -690,7 +737,9 @@ Interests.prototype = {
    */
   setInterestSharable: function I_setInterestSharable(interest, value) {
     value = value ? 1 : 0;
-    return InterestsStorage.setInterest(interest, {sharable: value});
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      return interestsStorage.setInterest(interest, {sharable: value});
+    });
   },
 
   //////////////////////////////////////////////////////////////////////////////

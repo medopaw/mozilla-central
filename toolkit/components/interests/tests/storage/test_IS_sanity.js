@@ -8,16 +8,14 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
-let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
-
 function run_test() {
-  run_next_test();
+    run_next_test();
 }
 
 add_task(function test_IS_sanity() {
-
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","movies","computers"]);
-  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "cars");
+  yield initStorage();
+  yield promiseAddInterestsVisit("http://www.cars.com/", ["cars","movies","computers"]);
+  yield promiseAddInterestsVisit("http://www.samsung.com/", "cars");
 
   // check insertions
   let thePromise = getInterestsForHost("cars.com");
@@ -29,10 +27,9 @@ add_task(function test_IS_sanity() {
     do_check_true(itemsHave(data,"computers"));
   });
 
-  thePromise = InterestsStorage.getScoresForInterests(["cars" , "computers"]);
+  thePromise = gInterestsStorage.getScoresForInterests(["cars" , "computers"]);
   yield thePromise.then(function(data) {
     do_check_eq(data[0].score, 1);
     do_check_eq(data[1].score, 1);
   });
-
 });

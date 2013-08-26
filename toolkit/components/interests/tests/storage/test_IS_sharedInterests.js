@@ -10,37 +10,38 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
 function run_test() {
+  yield initStorage();
   run_next_test();
 }
 
-add_task(function test_InterestsStorage_sharedInterests()
+add_task(function test_gInterestsStorage_sharedInterests()
 {
   yield addInterest("cars");
   yield addInterest("movies");
   yield addInterest("technology");
 
   let now = Date.now();
-  let today = InterestsStorage._convertDateToDays(now);
+  let today = gInterestsStorage._convertDateToDays(now);
   let results;
 
   // nothig was shared - results are empty
-  yield InterestsStorage.getHostsForSharedInterests(["cars"]).then(results => {
+  yield gInterestsStorage.getHostsForSharedInterests(["cars"]).then(results => {
     do_check_eq(results.length, 0);
   });
 
-  yield InterestsStorage.getPersonalizedHosts().then(results => {
+  yield gInterestsStorage.getPersonalizedHosts().then(results => {
     do_check_eq(results.length, 0);
   });
 
   //make a bunch of insertions
-  yield InterestsStorage.setSharedInterest("movies","foo.com");
-  yield InterestsStorage.setSharedInterest("movies","baz.com",now - MS_PER_DAY*2);
-  yield InterestsStorage.setSharedInterest("movies","bar.com",now - MS_PER_DAY);
-  yield InterestsStorage.setSharedInterest("cars","foo.com");
-  yield InterestsStorage.setSharedInterest("cars","baz.com",now - MS_PER_DAY*2);
-  yield InterestsStorage.setSharedInterest("cars","bar.com",now - MS_PER_DAY);
+  yield gInterestsStorage.setSharedInterest("movies","foo.com");
+  yield gInterestsStorage.setSharedInterest("movies","baz.com",now - MS_PER_DAY*2);
+  yield gInterestsStorage.setSharedInterest("movies","bar.com",now - MS_PER_DAY);
+  yield gInterestsStorage.setSharedInterest("cars","foo.com");
+  yield gInterestsStorage.setSharedInterest("cars","baz.com",now - MS_PER_DAY*2);
+  yield gInterestsStorage.setSharedInterest("cars","bar.com",now - MS_PER_DAY);
 
-  yield InterestsStorage.getHostsForSharedInterests(["cars","movies"]).then(results => {
+  yield gInterestsStorage.getHostsForSharedInterests(["cars","movies"]).then(results => {
     isIdentical(results,[
                           {"interest":"cars","host":"foo.com","day":today},
                           {"interest":"cars","host":"bar.com","day":today-1},
@@ -51,7 +52,7 @@ add_task(function test_InterestsStorage_sharedInterests()
                         ]);
   });
 
-  yield InterestsStorage.getPersonalizedHosts().then(results => {
+  yield gInterestsStorage.getPersonalizedHosts().then(results => {
     isIdentical(results,[
                           {"interest":"movies","host":"foo.com","day":today},
                           {"interest":"cars","host":"foo.com","day":today},
