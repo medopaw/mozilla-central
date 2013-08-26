@@ -123,9 +123,6 @@ public:
       const Optional< OwningNonNull<EntriesCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void RemoveRecursively(VoidCallback& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
-
 private:
   bool GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
       Caller* pCaller);

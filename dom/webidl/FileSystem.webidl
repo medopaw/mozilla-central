@@ -16,16 +16,12 @@ interface Entry {
     readonly  attribute DOMString  name;
     readonly  attribute DOMString  fullPath;
     readonly  attribute FileSystem filesystem;
-//    void      moveTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-//    void      copyTo (Directory parent, optional DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
 //  DOMString toURL ();
     void      remove (VoidCallback successCallback, optional ErrorCallback errorCallback);
     void      getParent (EntryCallback successCallback, optional ErrorCallback errorCallback);
 };
 
 interface Directory : Entry {
-//    [Creator]
-//    DirectoryReader createReader ();
     void            createFile (DOMString path, optional CreateFileOptions options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            createDirectory (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            get (DOMString path, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
@@ -44,7 +40,6 @@ interface Directory : Entry {
     void            enumerateDeep (optional DOMString path, optional EntriesCallback successCallback, optional ErrorCallback errorCallback);
     Future          getFile (DOMString path, optional FileSystemFlags options);
     void            getDirectory (DOMString path, optional FileSystemFlags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            removeRecursively (VoidCallback successCallback, optional ErrorCallback errorCallback);
 };
 
 interface FileEntry : Entry {
@@ -52,11 +47,7 @@ interface FileEntry : Entry {
 //    void createWriter (FileWriterCallback successCallback, optional ErrorCallback errorCallback);
 //    void file (FileCallback successCallback, optional ErrorCallback errorCallback);
 };
-/*
-interface DirectoryReader {
-    void readEntries (EntriesCallback successCallback, optional ErrorCallback errorCallback);
-};
-*/
+
 interface Metadata {
     readonly attribute any                modificationTime;
     readonly attribute unsigned long long size;

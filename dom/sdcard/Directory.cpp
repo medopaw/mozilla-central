@@ -181,98 +181,6 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
-/*
-void
-Directory::Move(const nsAString& path, const nsAString& dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Move()");
-
-  // Assign callback nullptr if not passed
-  EntryCallback* pSuccessCallback = nullptr;
-  ErrorCallback* pErrorCallback = nullptr;
-  if (successCallback.WasPassed()) {
-    pSuccessCallback = &(successCallback.Value());
-  }
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
-
-  // Check if path is valid.
-  if (!Path::IsValidPath(path) || !Path::IsValidPath(dest)) {
-    SDCARD_LOG("Invalid path!");
-    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-    return;
-  }
-
-  // Make sure path is absolute.
-  nsString entryRelpath, parentRelpath, newName;
-  Path::Absolutize(path, mRelpath, entryRelpath);
-  Path::Absolutize(dest, mRelpath, parentRelpath);
-  newName.SetIsVoid(true);
-
-  CopyMoveInternal(entryRelpath, parentRelpath, newName, true, successCallback, errorCallback, true);
-}
-
-void
-Directory::Move(const nsAString& path, mozilla::dom::sdcard::Directory& dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Move()");
-}
-
-void
-Directory::Move(mozilla::dom::sdcard::Directory& path, const nsAString& dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Move()");
-}
-
-void
-Directory::Move(mozilla::dom::sdcard::Directory& path, mozilla::dom::sdcard::Directory& dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Move()");
-}
-
-void
-Directory::Copy(const nsAString& path, const nsAString& dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Copy()");
-}
-
-void
-Directory::Copy(const nsAString& path, mozilla::dom::sdcard::Directory& dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Copy()");
-}
-
-void
-Directory::Copy(mozilla::dom::sdcard::Directory& path, const nsAString& dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Copy()");
-}
-
-void
-Directory::Copy(mozilla::dom::sdcard::Directory& path, mozilla::dom::sdcard::Directory& dest,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Copy()");
-}
-*/
-
 
 void
 Directory::Move(const StringOrDirectory& path, const nsAString& dest,
@@ -437,32 +345,6 @@ Directory::GetDirectory(const nsAString& path,
 
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
   GetInternal(path, options.mCreate, options.mExclusive, false, callerPtr, false);
-}
-
-void
-Directory::RemoveRecursively(VoidCallback& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.RemoveRecursively()");
-
-  ErrorCallback* pErrorCallback = nullptr;
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
-
-  nsString relpath;
-  Path::DOMPathToRealPath(mFullPath, relpath);
-  if (XRE_GetProcessType() == GeckoProcessType_Default) {
-    SDCARD_LOG("in b2g process");
-    nsRefPtr<SPRemoveEvent> r = new SPRemoveEvent(relpath, true, pCaller);
-    r->Start();
-  } else {
-    SDCARD_LOG("in app process");
-    SDCardRemoveParams params(relpath, true);
-    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
-    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
-  }
 }
 
 bool
