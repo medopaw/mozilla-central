@@ -204,12 +204,13 @@ Directory::Move(const StringOrDirectory& path, const nsAString& dest,
   }
 
   // Make sure dest is absolute.
-  nsString parentRelpath, newName;
+  nsString parentRelpath;
   Path::Absolutize(dest, mRelpath, parentRelpath);
 
+  nsString newName;
   newName.SetIsVoid(true);
 
-  CopyMoveInternal(entryRelpath, parentRelpath, newName, true, callerPtr, true);
+  CopyMoveInternal(entryRelpath, parentRelpath, newName, false, callerPtr, true);
 }
 
 void
@@ -219,6 +220,21 @@ Directory::Move(const StringOrDirectory& path,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Move()");
+
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+
+  nsString entryRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+    return;
+  }
+
+  nsString parentRelpath;
+  dest.GetRelpath(parentRelpath);
+
+  nsString newName;
+  newName.SetIsVoid(true);
+
+  CopyMoveInternal(entryRelpath, parentRelpath, newName, false, callerPtr);
 }
 
 void
