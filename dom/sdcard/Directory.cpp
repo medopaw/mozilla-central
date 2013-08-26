@@ -284,9 +284,7 @@ Directory::Move(const StringOrDirectory& path, const nsAString& dest,
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
 
   nsString entryRelpath;
-  GetEntryRelpath(path, entryRelpath, callerPtr);
-  // If entryRelpath is void, error occurs and has been dealt with.
-  if (entryRelpath.IsVoid()) {
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
     return;
   }
 
@@ -467,7 +465,7 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
   }
 }
 
-void
+bool
 Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
     Caller* pCaller)
 {
@@ -479,8 +477,7 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
     if (!Path::IsValidPath(strPath)) {
       SDCARD_LOG("Invalid path!");
       pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-      entryRelpath.SetIsVoid(true);
-      return;
+      return false;
     }
     Path::Absolutize(strPath, mRelpath, entryRelpath);
   } else if (path.IsDirectory()) {
@@ -489,6 +486,8 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
   } else {
     // throw error
   }
+
+  return true;
 }
 
 void
