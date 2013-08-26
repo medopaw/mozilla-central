@@ -281,27 +281,30 @@ Directory::Move(const StringOrDirectory& path, const nsAString& dest,
 {
   SDCARD_LOG("in Directory.Move()");
 
-  nsRefPtr<Caller> pCaller = new Caller(successCallback, errorCallback);
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
 
   nsString entryRelpath;
-  GetEntryRelpath(path, entryRelpath, pCaller);
-/*
-
-  // Check if path is valid.
-  if (!Path::IsValidPath(strPath) || !Path::IsValidPath(dest)) {
-    SDCARD_LOG("Invalid path!");
-    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+  GetEntryRelpath(path, entryRelpath, callerPtr);
+  // If entryRelpath is void, error occurs and has been dealt with.
+  if (entryRelpath.IsVoid()) {
     return;
   }
 
-  // Make sure path is absolute.
-  nsString entryRelpath, parentRelpath, newName;
-  Path::Absolutize(strPath, mRelpath, entryRelpath);
+  // Check if dest is valid.
+  if (!Path::IsValidPath(dest)) {
+    SDCARD_LOG("Invalid path!");
+    callerPtr->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return;
+  }
+
+  // Make sure dest is absolute.
+  nsString parentRelpath, newName;
   Path::Absolutize(dest, mRelpath, parentRelpath);
+
   newName.SetIsVoid(true);
 
-  CopyMoveInternal(entryRelpath, parentRelpath, newName, true, successCallback, errorCallback, true);
-*/}
+  CopyMoveInternal(entryRelpath, parentRelpath, newName, true, callerPtr, true);
+}
 
 void
 Directory::Move(const StringOrDirectory& path,
@@ -472,7 +475,6 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
 
   if (path.IsString()) {
     nsString strPath(path.GetAsString());
-
     // Check if path is valid.
     if (!Path::IsValidPath(strPath)) {
       SDCARD_LOG("Invalid path!");
@@ -480,9 +482,10 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
       entryRelpath.SetIsVoid(true);
       return;
     }
-
+    Path::Absolutize(strPath, mRelpath, entryRelpath);
   } else if (path.IsDirectory()) {
     Directory dirPath = path.GetAsDirectory();
+    dirPath.GetRelpath(entryRelpath);
   } else {
     // throw error
   }

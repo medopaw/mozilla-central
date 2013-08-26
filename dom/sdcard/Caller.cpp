@@ -37,23 +37,6 @@ Caller::Caller(CallbackFunction& aSuccessCallback,
     mErrorCallback = &(aErrorCallback.Value());
   }
 }
-/*
-template <class T>
-Caller::Caller(const Optional<OwningNonNull<T> >& aSuccessCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
-      mSuccessCallback(nullptr),
-      mErrorCallback(nullptr)
-{
-  SDCARD_LOG("construct Caller");
-
-  if (aSuccessCallback.WasPassed()) {
-    mSuccessCallback = &(aSuccessCallback.Value());
-  }
-  if (aErrorCallback.WasPassed()) {
-    mErrorCallback = &(aErrorCallback.Value());
-  }
-}
-*/
 
 Caller::~Caller()
 {
