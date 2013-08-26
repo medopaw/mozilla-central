@@ -69,56 +69,42 @@ function exposeAll(obj) {
 function Interests() {
   gInterestsService = this;
   Services.prefs.addObserver("interests.", this, false);
+
+  // Lazily initialize the database/storage then prepare for service usage
+  XPCOMUtils.defineLazyGetter(this, "InterestsStoragePromise", () => {
+    let deferred = Promise.defer();
+
+    // Async get the database connection then handle initialization
+    Task.spawn(function() {
+      let connection = yield InterestsDatabase.DBConnectionPromise;
+      let interestsStorage = new InterestsStorage(connection);
+
+      // Do additional initialization if the database migrated
+      let isMigrated = yield InterestsDatabase.getDbMigrationPromise();
+      if (isMigrated) {
+        // Make sure the interests metadata exists
+        yield this._checkMetadataInit(interestsStorage);
+
+        // Clear out some recent interests to reprocess because we migrated
+        yield interestsStorage.clearRecentVisits(kDaysToResubmit);
+      }
+
+      // Make storage available for general usage at this point
+      deferred.resolve(interestsStorage);
+
+      // Additionally populate the migrated database with recent interests
+      if (isMigrated) {
+        yield this._resubmitRecentHistory(interestsStorage, kDaysToResubmit, false);
+      }
+    }.bind(this));
+
+    return deferred.promise;
+  });
 }
 
 Interests.prototype = {
   //////////////////////////////////////////////////////////////////////////////
   //// Interests API
-
-  //////////////////////////////////////////////////////////////////////////////
-  //// Interests data memebers
-
-  // the _interestsStorage promise resolved to this._interestsStorage
-  _interestsStoragePromise: null,
-
-  //////////////////////////////////////////////////////////////////////////////
-  //// Interests API
-
-  /**
-   * initialize the database, the service and create InterestsStorage
-   *
-   * @returns Promise resolving to InterestsStorage instance
-  */
-  get InterestsStoragePromise() {
-    if (this._interestsStoragePromise == null) {
-      // create the promise
-      this._interestsStoragePromise = Promise.defer();
-      // spawn the task that resolves it
-      Task.spawn(function() {
-        // fetch connection from database
-        let connection = yield InterestsDatabase.DBConnectionPromise;
-        // create InterestsStorage instance
-        let interestsStorage = new InterestsStorage(connection);
-        // make sure migration done if needed
-        let isMigrated = yield InterestsDatabase.getDbMigrationPromise();
-        if (isMigrated) {
-          // initialize meta data
-          yield this._checkMetadataInit(interestsStorage);
-          // clear resent history
-          yield interestsStorage.clearRecentVisits(kDaysToResubmit);
-          // resolve the promise
-          this._interestsStoragePromise.resolve(interestsStorage);
-          // run history resubmition, but do not clean the database
-          yield this._resubmitRecentHistory(interestsStorage,kDaysToResubmit,false);
-        }
-        else {
-          // no migration - simply resolve the promise
-          this._interestsStoragePromise.resolve(interestsStorage);
-        }
-      }.bind(this));
-    }
-    return this._interestsStoragePromise.promise;
-  },
 
   /**
    * Package up interest data by names
