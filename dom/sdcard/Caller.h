@@ -26,7 +26,19 @@ public:
 
   template <class T>
   Caller(const Optional<OwningNonNull<T> >& aSuccessCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback);
+      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
+      mSuccessCallback(nullptr),
+      mErrorCallback(nullptr)
+  {
+    // SDCARD_LOG("construct Caller");
+
+    if (aSuccessCallback.WasPassed()) {
+      mSuccessCallback = &(aSuccessCallback.Value());
+    }
+    if (aErrorCallback.WasPassed()) {
+      mErrorCallback = &(aErrorCallback.Value());
+    }
+  }
 
   virtual ~Caller();
 

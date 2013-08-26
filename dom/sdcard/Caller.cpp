@@ -37,7 +37,7 @@ Caller::Caller(CallbackFunction& aSuccessCallback,
     mErrorCallback = &(aErrorCallback.Value());
   }
 }
-
+/*
 template <class T>
 Caller::Caller(const Optional<OwningNonNull<T> >& aSuccessCallback,
       const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
@@ -53,6 +53,7 @@ Caller::Caller(const Optional<OwningNonNull<T> >& aSuccessCallback,
     mErrorCallback = &(aErrorCallback.Value());
   }
 }
+*/
 
 Caller::~Caller()
 {

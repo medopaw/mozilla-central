@@ -477,6 +477,7 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
     if (!Path::IsValidPath(strPath)) {
       SDCARD_LOG("Invalid path!");
       pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+      entryRelpath.SetIsVoid(true);
       return;
     }
 
