@@ -121,13 +121,10 @@ Directory::CreateFile(JSContext* cx, const nsAString& path,
    // }
    */
   const JS::Value* pContent =
-      options.mData.WasPassed() ?
-                                  &(options.mData.Value()) :
-                                  nullptr;
+      options.mData.WasPassed() ? &(options.mData.Value()) : nullptr;
 
-  GetInternal(path, true, exclusive, true,
-      successCallback, errorCallback,
-      true, pContent);
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  GetInternal(path, true, exclusive, true, callerPtr, true, pContent);
 }
 
 void
@@ -137,7 +134,8 @@ Directory::CreateDirectory(const nsAString& path,
 {
   SDCARD_LOG("in Directory.createDirectory()");
 
-  GetInternal(path, true, false, false, successCallback, errorCallback, false);
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  GetInternal(path, true, false, false, callerPtr, false);
 }
 
 void
@@ -147,7 +145,8 @@ Directory::Get(const nsAString& path,
 {
   SDCARD_LOG("in Directory.Get()");
   // Don't need isFile flag.
-  GetInternal(path, false, false, false, successCallback, errorCallback);
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  GetInternal(path, false, false, false, callerPtr);
 }
 
 void
@@ -370,7 +369,8 @@ Directory::Enumerate(const Optional<nsAString>& path,
 {
   SDCARD_LOG("in Directory.Enumerate()");
 
-  EnumerateInternal(path, false, successCallback, errorCallback);
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  EnumerateInternal(path, false, callerPtr);
 }
 
 void
@@ -380,7 +380,8 @@ Directory::EnumerateDeep(const Optional<nsAString>& path,
 {
   SDCARD_LOG("in Directory.EnumerateDeep()");
 
-  EnumerateInternal(path, true, successCallback, errorCallback);
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  EnumerateInternal(path, true, callerPtr);
 }
 
 void
@@ -388,7 +389,9 @@ Directory::Remove(const nsAString& entry, VoidCallback& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Remove()");
-  RemoveInternal(entry, false, successCallback, errorCallback);
+
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  RemoveInternal(entry, false, callerPtr);
 }
 
 void
@@ -397,9 +400,11 @@ Directory::Remove(mozilla::dom::sdcard::Directory& entry,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Remove()");
+
   nsString entryRelpath;
   entry.GetRelpath(entryRelpath);
-  RemoveInternal(entryRelpath, false, successCallback, errorCallback);
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  RemoveInternal(entryRelpath, false, callerPtr);
 }
 
 void
@@ -407,7 +412,9 @@ Directory::RemoveDeep(const nsAString& entry, VoidCallback& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.RemoveDeep()");
-  RemoveInternal(entry, true, successCallback, errorCallback);
+
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  RemoveInternal(entry, true, callerPtr);
 }
 
 void
@@ -416,15 +423,18 @@ Directory::RemoveDeep(mozilla::dom::sdcard::Directory& entry,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.RemoveDeep()");
+
   nsString entryRelpath;
   entry.GetRelpath(entryRelpath);
-  RemoveInternal(entryRelpath, true, successCallback, errorCallback);
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  RemoveInternal(entryRelpath, true, callerPtr);
 }
 
 already_AddRefed<mozilla::dom::Future>
 Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
 {
   SDCARD_LOG("in Directory.GetFile()");
+
   nsRefPtr<mozilla::dom::Future> future = new mozilla::dom::Future(
       GetParentObject());
   return future.forget();
@@ -438,8 +448,9 @@ Directory::GetDirectory(const nsAString& path,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.GetDirectory()");
-  GetInternal(path, options.mCreate, options.mExclusive, false,
-      successCallback, errorCallback, false);
+
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  GetInternal(path, options.mCreate, options.mExclusive, false, callerPtr, false);
 }
 
 void
@@ -511,22 +522,11 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
 void
 Directory::CopyMoveInternal(const nsString& entryRelpath,
     const nsString& parentRelpath, const nsString& newName, bool isCopy,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
-    bool undecided)
+    Caller* pCaller, bool undecided)
 {
   SDCARD_LOG("in Directory.CopyMoveInternal()");
 
    // Assign callback nullptr if not passed
-  EntryCallback* pSuccessCallback = nullptr;
-  ErrorCallback* pErrorCallback = nullptr;
-  if (successCallback.WasPassed()) {
-    pSuccessCallback = &(successCallback.Value());
-  }
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
@@ -543,23 +543,9 @@ Directory::CopyMoveInternal(const nsString& entryRelpath,
 
 void
 Directory::GetInternal(const nsAString& path, bool aCreate, bool aExclusive,
-    bool aTruncate,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback, bool isFile,
-    const JS::Value* aContent)
+    bool aTruncate, Caller* pCaller, bool isFile, const JS::Value* aContent)
 {
   SDCARD_LOG("in Directory.GetInternal()");
-
-  // Assign callback nullptr if not passed
-  EntryCallback* pSuccessCallback = nullptr;
-  ErrorCallback* pErrorCallback = nullptr;
-  if (successCallback.WasPassed()) {
-    pSuccessCallback = &(successCallback.Value());
-  }
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
 
   // Check if path is valid.
   if (!Path::IsValidPath(path)) {
@@ -589,20 +575,9 @@ Directory::GetInternal(const nsAString& path, bool aCreate, bool aExclusive,
 
 void
 Directory::EnumerateInternal(const Optional<nsAString>& path, bool aDeep,
-    const Optional<OwningNonNull<EntriesCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+    Caller* pCaller)
 {
   SDCARD_LOG("in Directory.EnumerateInternal()");
-
-  EntriesCallback* pSuccessCallback = nullptr;
-  if (successCallback.WasPassed()) {
-    pSuccessCallback = &(successCallback.Value());
-  }
-  ErrorCallback* pErrorCallback = nullptr;
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
 
   nsString relpath = mRelpath;
   if (path.WasPassed()) {
@@ -630,17 +605,9 @@ Directory::EnumerateInternal(const Optional<nsAString>& path, bool aDeep,
 }
 
 void
-Directory::RemoveInternal(const nsAString& path, bool deep,
-    VoidCallback& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+Directory::RemoveInternal(const nsAString& path, bool deep, Caller* pCaller)
 {
   SDCARD_LOG("in Directory.RemoveInternal()");
-
-  ErrorCallback* pErrorCallback = nullptr;
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
 
   // Check if path is valid.
   if (!Path::IsValidPath(path)) {

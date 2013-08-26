@@ -30,6 +30,7 @@ class StringOrDirectory;
 
 namespace sdcard {
 
+class Caller;
 struct FileInfo;
 
 class Directory MOZ_FINAL : public Entry
@@ -132,23 +133,18 @@ private:
   void GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void CopyMoveInternal(const nsString& entryRelpath, const nsString& parentRelpath,
-      const nsString& newName, bool isCopy,
-      const Optional< OwningNonNull<EntryCallback> >& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
-      bool undecided = false);
+  void CopyMoveInternal(const nsString& entryRelpath,
+      const nsString& parentRelpath, const nsString& newName, bool isCopy,
+      Caller* pCaller, bool undecided = false);
 
-  void GetInternal(const nsAString& path, bool aCreate, bool aExclusive, bool aTruncate,
-      const Optional< OwningNonNull<EntryCallback> >& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback,
-      bool isFile = true, const JS::Value* aContent = nullptr);
+  void GetInternal(const nsAString& path, bool aCreate, bool aExclusive,
+      bool aTruncate, Caller* pCaller, bool isFile = true,
+      const JS::Value* aContent = nullptr);
 
   void EnumerateInternal(const Optional<nsAString >& path, bool aDeep,
-      const Optional< OwningNonNull<EntriesCallback> >& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
+      Caller* pCaller);
 
-  void RemoveInternal(const nsAString& path, bool deep, VoidCallback& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
+  void RemoveInternal(const nsAString& path, bool deep, Caller* pCaller);
 };
 
 } // namespace sdcard

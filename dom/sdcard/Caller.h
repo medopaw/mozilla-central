@@ -20,11 +20,14 @@ namespace sdcard {
 class Caller
 {
 public:
-  Caller(EntryCallback& aSuccessCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback);
-  Caller(const Optional<OwningNonNull<CallbackFunction> >& aSuccessCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback);
   Caller(CallbackFunction* aSuccessCallback, ErrorCallback* aErrorCallback);
+  Caller(CallbackFunction& aSuccessCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback);
+
+  template <class T>
+  Caller(const Optional<OwningNonNull<T> >& aSuccessCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback);
+
   virtual ~Caller();
 
   NS_IMETHOD_(nsrefcnt) AddRef();
