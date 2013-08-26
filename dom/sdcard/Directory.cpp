@@ -156,6 +156,19 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.rename()");
+
+  // Check if names are valid.
+  if (!Path::IsValidName(oldName) || !Path::IsValidName(newName)) {
+    SDCARD_LOG("Invalid name!");
+    HandleError(errorCallback, Error::DOM_ERROR_ENCODING);
+    // pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return;
+  }
+
+  // Get absolute real path.
+  nsString oldPath;
+  Path::Absolutize(oldName, mRelpath, oldPath);
+
   // Assign callback nullptr if not passed
   EntryCallback* pSuccessCallback = nullptr;
   ErrorCallback* pErrorCallback = nullptr;
@@ -166,17 +179,6 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
     pErrorCallback = &(errorCallback.Value());
   }
   nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
-
-  // Check if names are valid.
-  if (!Path::IsValidName(oldName) || !Path::IsValidName(newName)) {
-    SDCARD_LOG("Invalid name!");
-    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-    return;
-  }
-
-  // Get absolute real path.
-  nsString oldPath;
-  Path::Absolutize(oldName, mRelpath, oldPath);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");

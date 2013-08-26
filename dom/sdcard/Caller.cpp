@@ -18,6 +18,33 @@ namespace sdcard {
 NS_IMPL_ADDREF(Caller)
 NS_IMPL_RELEASE(Caller)
 
+Caller::Caller(EntryCallback& aSuccessCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
+      mSuccessCallback(&aSuccessCallback),
+      mErrorCallback(nullptr)
+{
+  SDCARD_LOG("construct Caller");
+
+  if (aErrorCallback.WasPassed()) {
+    mErrorCallback = &(aErrorCallback.Value());
+  }
+}
+
+Caller::Caller(const Optional<OwningNonNull<CallbackFunction> >& aSuccessCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
+      mSuccessCallback(nullptr),
+      mErrorCallback(nullptr)
+{
+  SDCARD_LOG("construct Caller");
+
+  if (aSuccessCallback.WasPassed()) {
+    mSuccessCallback = &(aSuccessCallback.Value());
+  }
+  if (aErrorCallback.WasPassed()) {
+    mErrorCallback = &(aErrorCallback.Value());
+  }
+}
+
 Caller::Caller(CallbackFunction* aSuccessCallback,
     ErrorCallback* aErrorCallback) :
     mSuccessCallback(aSuccessCallback),

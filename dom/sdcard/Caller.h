@@ -20,6 +20,10 @@ namespace sdcard {
 class Caller
 {
 public:
+  Caller(EntryCallback& aSuccessCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback);
+  Caller(const Optional<OwningNonNull<CallbackFunction> >& aSuccessCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback);
   Caller(CallbackFunction* aSuccessCallback, ErrorCallback* aErrorCallback);
   virtual ~Caller();
 
