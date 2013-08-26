@@ -127,11 +127,8 @@ public:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
-  void HandleError(const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
-      const nsString& error);
-
   void GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+      Caller* pCaller);
 
   void CopyMoveInternal(const nsString& entryRelpath,
       const nsString& parentRelpath, const nsString& newName, bool isCopy,

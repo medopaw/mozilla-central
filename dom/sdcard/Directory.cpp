@@ -156,28 +156,18 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
 {
   SDCARD_LOG("in Directory.rename()");
 
+  nsRefPtr<Caller> pCaller = new Caller(successCallback, errorCallback);
+
   // Check if names are valid.
   if (!Path::IsValidName(oldName) || !Path::IsValidName(newName)) {
     SDCARD_LOG("Invalid name!");
-    HandleError(errorCallback, Error::DOM_ERROR_ENCODING);
-    // pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
     return;
   }
 
   // Get absolute real path.
   nsString oldPath;
   Path::Absolutize(oldName, mRelpath, oldPath);
-
-  // Assign callback nullptr if not passed
-  EntryCallback* pSuccessCallback = nullptr;
-  ErrorCallback* pErrorCallback = nullptr;
-  if (successCallback.WasPassed()) {
-    pSuccessCallback = &(successCallback.Value());
-  }
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(pSuccessCallback, pErrorCallback);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
@@ -291,16 +281,11 @@ Directory::Move(const StringOrDirectory& path, const nsAString& dest,
 {
   SDCARD_LOG("in Directory.Move()");
 
+  nsRefPtr<Caller> pCaller = new Caller(successCallback, errorCallback);
+
   nsString entryRelpath;
-  GetEntryRelpath(path, entryRelpath, errorCallback);
+  GetEntryRelpath(path, entryRelpath, pCaller);
 /*
-  // Assign callback nullptr if not passed
-  EntryCallback* pSuccessCallback = nullptr;
-  ErrorCallback* pErrorCallback = nullptr;
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
 
   // Check if path is valid.
   if (!Path::IsValidPath(strPath) || !Path::IsValidPath(dest)) {
@@ -480,25 +465,8 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
 }
 
 void
-Directory::HandleError(const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
-      const nsString& error)
-{
-  SDCARD_LOG("in Directory.HandleError()");
-
-  // errorCallback is always optional
-  ErrorCallback* pErrorCallback = nullptr;
-  if (errorCallback.WasPassed()) {
-    pErrorCallback = &(errorCallback.Value());
-  }
-
-  // successCallback won't be used
-  nsRefPtr<Caller> pCaller = new Caller(nullptr, pErrorCallback);
-  pCaller->CallErrorCallback(error);
-}
-
-void
 Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+    Caller* pCaller)
 {
   SDCARD_LOG("in Directory.GetEntryRelpath()");
 
@@ -508,7 +476,7 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
     // Check if path is valid.
     if (!Path::IsValidPath(strPath)) {
       SDCARD_LOG("Invalid path!");
-      HandleError(errorCallback, Error::DOM_ERROR_ENCODING);
+      pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
       return;
     }
 
