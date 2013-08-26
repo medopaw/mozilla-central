@@ -238,12 +238,20 @@ Directory::Move(const StringOrDirectory& path,
 }
 
 void
-Directory::Move(const StringOrDirectory& path,
-      const DestinationDict& dest,
+Directory::Move(const StringOrDirectory& path, const DestinationDict& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Move()");
+
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+
+  nsString entryRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+    return;
+  }
+
+  // Directory& dir = dest.mDir;
 }
 
 void
@@ -379,7 +387,7 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
     }
     Path::Absolutize(strPath, mRelpath, entryRelpath);
   } else if (path.IsDirectory()) {
-    Directory dirPath = path.GetAsDirectory();
+    Directory& dirPath = path.GetAsDirectory();
     dirPath.GetRelpath(entryRelpath);
   } else {
     // throw error

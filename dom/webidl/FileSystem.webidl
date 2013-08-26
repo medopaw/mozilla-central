@@ -64,6 +64,11 @@ dictionary CreateFileOptions {
     any data;
 };
 
+dictionary DestinationDict {
+    Directory dir;
+    DOMString name;
+};
+
 enum CreateIfExistsMode { "truncate", "fail" };
 
 callback EntryCallback = void (Entry entry);
@@ -79,8 +84,3 @@ callback MetadataCallback = void (Metadata metadata);
 callback VoidCallback = void ();
 
 callback ErrorCallback = void (DOMError err);
-
-dictionary DestinationDict {
-    Directory dir;
-    DOMString name;
-};

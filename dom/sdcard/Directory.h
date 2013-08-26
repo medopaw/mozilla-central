@@ -68,13 +68,11 @@ public:
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Move(const StringOrDirectory& path,
-      mozilla::dom::sdcard::Directory& dest,
+  void Move(const StringOrDirectory& path, mozilla::dom::sdcard::Directory& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Move(const StringOrDirectory& path,
-      const DestinationDict& dest,
+  void Move(const StringOrDirectory& path, const DestinationDict& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
