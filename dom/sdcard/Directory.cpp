@@ -7,6 +7,7 @@
 #include "Directory.h"
 #include "nsContentUtils.h"
 #include "mozilla/dom/FileSystemBinding.h"
+#include "mozilla/dom/UnionTypes.h"
 #include "jsfriendapi.h"
 // #include "jsapi.h"
 // #include "jsobj.h"
@@ -288,7 +289,33 @@ Directory::Move(const StringOrDirectory& path, const nsAString& dest,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
 {
   SDCARD_LOG("in Directory.Move()");
-}
+
+  nsString entryRelpath;
+  GetEntryRelpath(path, entryRelpath, errorCallback);
+/*
+  // Assign callback nullptr if not passed
+  EntryCallback* pSuccessCallback = nullptr;
+  ErrorCallback* pErrorCallback = nullptr;
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+  nsRefPtr<Caller> pCaller = new Caller(&successCallback, pErrorCallback);
+
+  // Check if path is valid.
+  if (!Path::IsValidPath(strPath) || !Path::IsValidPath(dest)) {
+    SDCARD_LOG("Invalid path!");
+    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return;
+  }
+
+  // Make sure path is absolute.
+  nsString entryRelpath, parentRelpath, newName;
+  Path::Absolutize(strPath, mRelpath, entryRelpath);
+  Path::Absolutize(dest, mRelpath, parentRelpath);
+  newName.SetIsVoid(true);
+
+  CopyMoveInternal(entryRelpath, parentRelpath, newName, true, successCallback, errorCallback, true);
+*/}
 
 void
 Directory::Move(const StringOrDirectory& path,
@@ -436,6 +463,46 @@ Directory::RemoveRecursively(VoidCallback& successCallback,
     SDCardRemoveParams params(relpath, true);
     PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
+  }
+}
+
+void
+Directory::HandleError(const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
+      const nsString& error)
+{
+  SDCARD_LOG("in Directory.HandleError()");
+
+  // errorCallback is always optional
+  ErrorCallback* pErrorCallback = nullptr;
+  if (errorCallback.WasPassed()) {
+    pErrorCallback = &(errorCallback.Value());
+  }
+
+  // successCallback won't be used
+  nsRefPtr<Caller> pCaller = new Caller(nullptr, pErrorCallback);
+  pCaller->CallErrorCallback(error);
+}
+
+void
+Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.GetEntryRelpath()");
+
+  if (path.IsString()) {
+    nsString strPath(path.GetAsString());
+
+    // Check if path is valid.
+    if (!Path::IsValidPath(strPath)) {
+      SDCARD_LOG("Invalid path!");
+      HandleError(errorCallback, Error::DOM_ERROR_ENCODING);
+      return;
+    }
+
+  } else if (path.IsDirectory()) {
+    Directory dirPath = path.GetAsDirectory();
+  } else {
+    // throw error
   }
 }
 

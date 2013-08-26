@@ -11,7 +11,6 @@
 
 #include "nsCycleCollectionParticipant.h"
 #include "nsWrapperCache.h"
-#include "mozilla/dom/UnionTypes.h"
 #include "mozilla/dom/Future.h"
 
 #include "Entry.h"
@@ -26,6 +25,8 @@ class EntriesCallback;
 class CreateFileOptions;
 class DestinationDict;
 class FileSystemFlags;
+
+class StringOrDirectory;
 
 namespace sdcard {
 
@@ -125,6 +126,12 @@ public:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
+  void HandleError(const Optional<OwningNonNull<ErrorCallback> >& errorCallback,
+      const nsString& error);
+
+  void GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
   void CopyMoveInternal(const nsString& entryRelpath, const nsString& parentRelpath,
       const nsString& newName, bool isCopy,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
