@@ -94,7 +94,7 @@ function Interests() {
 
       // Additionally populate the migrated database with recent interests
       if (isMigrated) {
-        yield this._resubmitRecentHistory(interestsStorage, kDaysToResubmit, false);
+        yield this._resubmitRecentHistory(kDaysToResubmit, false);
       }
     }.bind(this));
 
@@ -142,9 +142,7 @@ Interests.prototype = {
    * @returns Promise when resubmission is complete
    */
   resubmitRecentHistoryVisits: function I_resubmitRecentHistoryVisits(daysBack) {
-    return this.InterestsStoragePromise.then(interestsStorage => {
-      return this._resubmitRecentHistory(interestsStorage,daysBack);
-    });
+    return this._resubmitRecentHistory(daysBack);
   },
 
   /**
@@ -529,43 +527,45 @@ Interests.prototype = {
    *          A flag to clear database before submit (true by default)
    * @returns Promise when resubmission is complete
    */
-  _resubmitRecentHistory: function I__resubmitRecentHistory(interestsStorage, daysBack, doClearDatabase = true) {
-    // check if history is in progress
-    if (this._ResubmitRecentHistoryDeferred) {
-      return this._ResubmitRecentHistoryDeferred.promise;
-    }
-    this._ResubmitRecentHistoryDeferred = Promise.defer();
-    this._ResubmitRecentHistoryUrlCount = 0;
-    // spawn a Task to resubmit history
-    Task.spawn(function() {
-      // clear history if needed
-      if (doClearDatabase) {
-        yield interestsStorage.clearRecentVisits(daysBack);
+  _resubmitRecentHistory: function I__resubmitRecentHistory(daysBack, doClearDatabase = true) {
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      // check if history is in progress
+      if (this._ResubmitRecentHistoryDeferred) {
+        return this._ResubmitRecentHistoryDeferred.promise;
       }
-      // read moz_places data and message it to the worker
-      yield PlacesInterestsUtils.getRecentHistory(daysBack, item => {
-        try {
-          let uri = NetUtil.newURI(item.url);
-          item["message"] = "getInterestsForDocument";
-          item["host"] = this._getPlacesHostForURI(uri);
-          item["path"] = uri["path"];
-          item["tld"] = this._getBaseDomain(item["host"]);
-          item["metaData"] = {};
-          item["language"] = "en";
-          item["messageId"] = "resubmit";
-          this._callMatchingWorker(item);
-          this._ResubmitRecentHistoryUrlCount++;
+      this._ResubmitRecentHistoryDeferred = Promise.defer();
+      this._ResubmitRecentHistoryUrlCount = 0;
+      // spawn a Task to resubmit history
+      Task.spawn(function() {
+        // clear history if needed
+        if (doClearDatabase) {
+          yield interestsStorage.clearRecentVisits(daysBack);
         }
-        catch(ex) {}
-      }).then(() => {
-        // check if _ResubmitRecentHistoryDeferred exists and url count == 0
-        // then the history is empty and we should resolve the promise
-        if (this._ResubmitRecentHistoryDeferred && this._ResubmitRecentHistoryUrlCount == 0) {
-          this._resolveResubmitHistoryPromise();
-        }
-      }); // end of getRecentHistory
-    }.bind(this));  // end of Task.spawn
-    return this._ResubmitRecentHistoryDeferred.promise;
+        // read moz_places data and message it to the worker
+        yield PlacesInterestsUtils.getRecentHistory(daysBack, item => {
+          try {
+            let uri = NetUtil.newURI(item.url);
+            item["message"] = "getInterestsForDocument";
+            item["host"] = this._getPlacesHostForURI(uri);
+            item["path"] = uri["path"];
+            item["tld"] = this._getBaseDomain(item["host"]);
+            item["metaData"] = {};
+            item["language"] = "en";
+            item["messageId"] = "resubmit";
+            this._callMatchingWorker(item);
+            this._ResubmitRecentHistoryUrlCount++;
+          }
+          catch(ex) {}
+        }).then(() => {
+          // check if _ResubmitRecentHistoryDeferred exists and url count == 0
+          // then the history is empty and we should resolve the promise
+          if (this._ResubmitRecentHistoryDeferred && this._ResubmitRecentHistoryUrlCount == 0) {
+            this._resolveResubmitHistoryPromise();
+          }
+        }); // end of getRecentHistory
+      }.bind(this));  // end of Task.spawn
+      return this._ResubmitRecentHistoryDeferred.promise;
+    });
   },
 
   //////////////////////////////////////////////////////////////////////////////
