@@ -71,10 +71,6 @@ let InterestsDatabase = {
   // Sqlite connection
   _dbConnectionPromise: null,
 
-  // Database creation/migration promise, resolved to true in the event of
-  // creation or migration.  Otherwise is resolved to false.
-  _dbMigrationPromiseDeferred: Promise.defer(),
-
   //////////////////////////////////////////////////////////////////////////////
   //// Public API
 
@@ -118,7 +114,7 @@ let InterestsDatabase = {
       });
 
       try {
-        yield this._dbInit(connection);
+        connection.isMigrated = yield this._dbInit(connection);
       }
       catch (ex) {
         yield connection.close();
@@ -140,22 +136,22 @@ let InterestsDatabase = {
    *
    * @param   connection
    *          an established connection
-   * @returns Promise of the task completion
+   * @returns Promise of completion resolved to migration/creation flag
    */
   _dbInit : function ID__dbInit(connection) {
     return connection.getSchemaVersion().then(version => {
       if (version == 0) {
         return this._dbCreate(connection).then(() => {
-          this._dbMigrationPromiseDeferred.resolve(true);
+          return true;
         });
       }
       else if (version != DB_VERSION) {
         return this._dbMigrate(connection,version).then(() => {
-          this._dbMigrationPromiseDeferred.resolve(true);
+          return true;
         });
       }
       else {
-        this._dbMigrationPromiseDeferred.resolve(false);
+        return false;
       }
     });
   },

@@ -80,8 +80,7 @@ function Interests() {
       let interestsStorage = new InterestsStorage(connection);
 
       // Do additional initialization if the database migrated
-      let isMigrated = yield InterestsDatabase.getDbMigrationPromise();
-      if (isMigrated) {
+      if (connection.isMigrated) {
         // Make sure the interests metadata exists
         yield this._checkMetadataInit(interestsStorage);
 
@@ -93,7 +92,7 @@ function Interests() {
       deferred.resolve(interestsStorage);
 
       // Additionally populate the migrated database with recent interests
-      if (isMigrated) {
+      if (connection.isMigrated) {
         yield this._resubmitRecentHistory(kDaysToResubmit, false);
       }
     }.bind(this));
