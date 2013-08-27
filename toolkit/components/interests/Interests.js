@@ -467,14 +467,7 @@ Interests.prototype = {
       promises.push(interestsStorage.setInterest(item));
     });
 
-    return gatherPromises(promises).then(results => {
-      this._setupOneTimeTimer(() => {
-        // notify observers all interests have been aded
-        Services.obs.notifyObservers(null,
-                                     "interest-metadata-initialized",
-                                     results.length);
-      });
-    });
+    return gatherPromises(promises);
   },
 
   /**
