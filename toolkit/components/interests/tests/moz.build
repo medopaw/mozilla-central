@@ -8,8 +8,6 @@ TEST_DIRS += [
     'browser',
 ]
 
-#TEST_TOOL_DIRS += ['cpp']
-
 MODULE = 'test_interests'
 
 XPCSHELL_TESTS_MANIFESTS += [
