@@ -12,7 +12,6 @@
 #include "nsWrapperCache.h"
 
 #include "nsAutoPtr.h"
-#include "nsString.h"
 #include "Directory.h"
 
 class nsPIDOMWindow;

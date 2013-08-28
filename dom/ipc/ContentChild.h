@@ -96,8 +96,8 @@ public:
     virtual PDeviceStorageRequestChild* AllocPDeviceStorageRequestChild(const DeviceStorageParams&);
     virtual bool DeallocPDeviceStorageRequestChild(PDeviceStorageRequestChild*);
 
-    virtual PSDCardRequestChild* AllocPSDCardRequest(const SDCardParams&);
-    virtual bool DeallocPSDCardRequest(PSDCardRequestChild*);
+    virtual PSDCardRequestChild* AllocPSDCardRequestChild(const SDCardParams&);
+    virtual bool DeallocPSDCardRequestChild(PSDCardRequestChild*);
 
     virtual PBlobChild* AllocPBlobChild(const BlobConstructorParams& aParams);
     virtual bool DeallocPBlobChild(PBlobChild*);

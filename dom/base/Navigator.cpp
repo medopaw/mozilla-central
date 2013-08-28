@@ -50,6 +50,7 @@
 #include "DeviceStorage.h"
 #include "nsIDOMNavigatorSystemMessages.h"
 #ifdef MOZ_SDCARD
+#include "nsDirectoryServiceDefs.h"
 #include "FileSystem.h"
 #endif
 
@@ -1356,14 +1357,14 @@ Navigator::GetMozTime(ErrorResult& aRv)
 }
 #endif
 
-//*****************************************************************************
-//    Navigator::nsIDOMNavigatorSDCard
-//*****************************************************************************
 #ifdef MOZ_SDCARD
-NS_IMETHODIMP
-Navigator::GetMozSDCard(nsISupports** aSDCard)
+sdcard::FileSystem*
+Navigator::GetMozSDCard(ErrorResult& aRv)
 {
-  *aSDCard = nullptr;
+  if (!mWindow) {
+    aRv.Throw(NS_ERROR_UNEXPECTED);
+    return nullptr;
+  }
 
   if (!mSDCard) {
     // Only need to check permission on creation of mSDCard
@@ -1384,7 +1385,6 @@ Navigator::GetMozSDCard(nsISupports** aSDCard)
       tempDir->GetPath(rootPath);
       mSDCard = new sdcard::FileSystem(window, NS_LITERAL_STRING("SD Card Testing"), rootPath);
     }
-    NS_ENSURE_TRUE(mSDCard, NS_OK);
   }
 
   if (mSDCard) {
@@ -1393,9 +1393,7 @@ Navigator::GetMozSDCard(nsISupports** aSDCard)
     }
   }
 
-  NS_ADDREF(*aSDCard = mSDCard);
-
-  return NS_OK;
+  return mSDCard;
 }
 #endif
 

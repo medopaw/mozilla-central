@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "nsString.h"
+#include "nsStringGlue.h"
 #include "FileSystem.h"
 #include "mozilla/dom/FileSystemBinding.h"
 

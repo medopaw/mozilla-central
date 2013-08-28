@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "nsString.h"
+#include "nsStringGlue.h"
 
 namespace mozilla {
 namespace dom {

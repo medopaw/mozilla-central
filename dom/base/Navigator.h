@@ -237,6 +237,9 @@ public:
 #ifdef MOZ_TIME_MANAGER
   time::TimeManager* GetMozTime(ErrorResult& aRv);
 #endif // MOZ_TIME_MANAGER
+#ifdef MOZ_SDCARD
+  sdcard::FileSystem* GetMozSDCard(ErrorResult& aRv);
+#endif // MOZ_SDCARD
 #ifdef MOZ_AUDIO_CHANNEL_MANAGER
   system::AudioChannelManager* GetMozAudioChannelManager(ErrorResult& aRv);
 #endif // MOZ_AUDIO_CHANNEL_MANAGER

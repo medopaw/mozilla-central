@@ -10,6 +10,8 @@
 #include "mozilla/dom/ContentChild.h"
 #include "mozilla/dom/ContentParent.h"
 
+#include "nsThreadUtils.h"
+
 namespace mozilla {
 namespace dom {
 namespace sdcard {
@@ -33,7 +35,8 @@ protected:
   ~SDCardRequestParent();
 
 private:
-  nsAutoRefCnt mRefCnt;
+  ThreadSafeAutoRefCnt mRefCnt;
+  NS_DECL_OWNINGTHREAD
   SDCardParams mParams;
 
   Mutex mMutex;

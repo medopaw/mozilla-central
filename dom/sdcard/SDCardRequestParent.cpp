@@ -16,8 +16,8 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-NS_IMPL_THREADSAFE_ADDREF(SDCardRequestParent)
-NS_IMPL_THREADSAFE_RELEASE(SDCardRequestParent)
+NS_IMPL_ADDREF(SDCardRequestParent)
+NS_IMPL_RELEASE(SDCardRequestParent)
 
 SDCardRequestParent::SDCardRequestParent(const SDCardParams& aParams) :
     mParams(aParams),

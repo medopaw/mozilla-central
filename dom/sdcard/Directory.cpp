@@ -8,9 +8,8 @@
 #include "nsContentUtils.h"
 #include "mozilla/dom/FileSystemBinding.h"
 #include "mozilla/dom/UnionTypes.h"
-#include "jsfriendapi.h"
-// #include "jsapi.h"
-// #include "jsobj.h"
+// #include "jsfriendapi.h"
+#include "mozilla/dom/Promise.h"
 // #include "mozilla/dom/DOMJSClass.h"
 
 #include "DirectoryReader.h"
@@ -348,14 +347,14 @@ Directory::RemoveDeep(mozilla::dom::sdcard::Directory& entry,
   RemoveInternal(entryRelpath, true, callerPtr);
 }
 
-already_AddRefed<mozilla::dom::Future>
+already_AddRefed<Promise>
 Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
 {
   SDCARD_LOG("in Directory.GetFile()");
 
-  nsRefPtr<mozilla::dom::Future> future = new mozilla::dom::Future(
+  nsRefPtr<mozilla::dom::Promise> promise = new mozilla::dom::Promise(
       GetParentObject());
-  return future.forget();
+  return promise.forget();
   //GetInternal(path, options, successCallback, errorCallback, true);
 }
 

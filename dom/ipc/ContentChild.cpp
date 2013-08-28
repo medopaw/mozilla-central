@@ -846,11 +846,11 @@ ContentChild::DeallocPDeviceStorageRequestChild(PDeviceStorageRequestChild* aDev
 }
 
 PSDCardRequestChild*
-ContentChild::AllocPSDCardRequest(const SDCardParams& aParams)
+ContentChild::AllocPSDCardRequestChild(const SDCardParams& aParams)
 {
-  // return new SDCardRequestChild();
 #ifdef MOZ_SDCARD
     MOZ_CRASH("No one should be allocating PSDCardChild actors");
+    // return new SDCardRequestChild();
     return nullptr;
 #else
     MOZ_CRASH("No support for sdcard filesystem on this platform!");
@@ -859,12 +859,14 @@ ContentChild::AllocPSDCardRequest(const SDCardParams& aParams)
 }
 
 bool
-ContentChild::DeallocPSDCardRequest(PSDCardRequestChild* aSDCard)
+ContentChild::DeallocPSDCardRequestChild(PSDCardRequestChild* aSDCard)
 {
     // delete aSDCard;
     // return true;
 #ifdef MOZ_SDCARD
-    delete aSDCard;
+    if (aSDCard) {
+      delete aSDCard;
+    }
     return true;
 #else
     MOZ_NOT_REACHED("No support for sdcard filesystem on this platform!");

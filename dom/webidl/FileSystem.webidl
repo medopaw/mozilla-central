@@ -38,7 +38,7 @@ interface Directory : Entry {
     void            removeDeep (Directory entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            enumerate (optional DOMString path, optional EntriesCallback successCallback, optional ErrorCallback errorCallback);
     void            enumerateDeep (optional DOMString path, optional EntriesCallback successCallback, optional ErrorCallback errorCallback);
-    Future          getFile (DOMString path, optional FileSystemFlags options);
+    Promise         getFile (DOMString path, optional FileSystemFlags options);
     void            getDirectory (DOMString path, optional FileSystemFlags options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
 };
 

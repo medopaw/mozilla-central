@@ -14,7 +14,7 @@
 #include "nsWrapperCache.h"
 #include "nsAutoPtr.h"
 #include "nsIFile.h"
-#include "nsString.h"
+#include "nsStringGlue.h"
 
 class nsPIDOMWindow;
 struct JSContext;

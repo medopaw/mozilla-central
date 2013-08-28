@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "nsString.h"
 #include "nsAutoPtr.h"
+#include "nsStringGlue.h"
 #include "mozilla/dom/DOMError.h"
 
 class DOMError;

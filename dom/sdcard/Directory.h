@@ -11,7 +11,7 @@
 
 #include "nsCycleCollectionParticipant.h"
 #include "nsWrapperCache.h"
-#include "mozilla/dom/Future.h"
+// #include "mozilla/dom/Promise.h"
 
 #include "Entry.h"
 
@@ -19,6 +19,8 @@ struct JSContext;
 
 namespace mozilla {
 namespace dom {
+
+class Promise;
 
 class EntriesCallback;
 
@@ -106,7 +108,7 @@ public:
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
-  already_AddRefed<mozilla::dom::Future> GetFile(const nsAString& path,
+  already_AddRefed<Promise> GetFile(const nsAString& path,
       const FileSystemFlags& options);
 
   void GetDirectory(const nsAString& path, const FileSystemFlags& options,

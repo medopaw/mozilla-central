@@ -1836,7 +1836,7 @@ ContentParent::DeallocPDeviceStorageRequestParent(PDeviceStorageRequestParent* d
 }
 
 PSDCardRequestParent*
-ContentParent::AllocPSDCardRequest(const SDCardParams& aParams)
+ContentParent::AllocPSDCardRequestParent(const SDCardParams& aParams)
 {
 #ifdef MOZ_SDCARD
   nsRefPtr<SDCardRequestParent> result = new SDCardRequestParent(aParams);
@@ -1849,7 +1849,7 @@ ContentParent::AllocPSDCardRequest(const SDCardParams& aParams)
 }
 
 bool
-ContentParent::DeallocPSDCardRequest(PSDCardRequestParent* doomed)
+ContentParent::DeallocPSDCardRequestParent(PSDCardRequestParent* doomed)
 {
 #ifdef MOZ_SDCARD
   SDCardRequestParent *parent = static_cast<SDCardRequestParent*>(doomed);

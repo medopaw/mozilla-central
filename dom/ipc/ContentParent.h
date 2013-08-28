@@ -275,8 +275,8 @@ private:
     virtual PDeviceStorageRequestParent* AllocPDeviceStorageRequestParent(const DeviceStorageParams&);
     virtual bool DeallocPDeviceStorageRequestParent(PDeviceStorageRequestParent*);
 
-    virtual PSDCardRequestParent* AllocPSDCardRequest(const SDCardParams&);
-    virtual bool DeallocPSDCardRequest(PSDCardRequestParent*);
+    virtual PSDCardRequestParent* AllocPSDCardRequestParent(const SDCardParams&);
+    virtual bool DeallocPSDCardRequestParent(PSDCardRequestParent*);
 
     virtual PBlobParent* AllocPBlobParent(const BlobConstructorParams& aParams);
     virtual bool DeallocPBlobParent(PBlobParent*);

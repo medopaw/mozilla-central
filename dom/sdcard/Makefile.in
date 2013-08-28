@@ -10,14 +10,18 @@ VPATH            = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 LIBRARY_NAME     = dom_sdcard_s
-LIBXUL_LIBRARY   = 1
-FORCE_STATIC_LIB = 1
-FAIL_ON_WARNINGS := 1
-
 include $(topsrcdir)/dom/dom-config.mk
+
+MOZILLA_INTERNAL_API = 1
+
+LOCAL_INCLUDES = \
+		-I$(topsrcdir)/dom/base \
+		-I$(topsrcdir)/dom/ipc \
+		-I$(topsrcdir)/content/base/src \
+		-I$(topsrcdir)/content/events/src \
+		$(NULL)
 
 EXPORTS_NAMESPACES = mozilla/dom/sdcard
 
-include $(topsrcdir)/config/config.mk
 include $(topsrcdir)/config/rules.mk
 include $(topsrcdir)/ipc/chromium/chromium-config.mk

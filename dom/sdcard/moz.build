@@ -13,10 +13,6 @@ XPIDL_MODULE = 'dom_sdcard'
 
 MODULE = 'dom'
 
-XPIDL_FLAGS += [
-     '-I$(topsrcdir)/dom/interfaces/base/'
-]
-
 CPP_SOURCES += [
     'Caller.cpp',
     'CopyAndMoveToWorker.cpp',
@@ -50,6 +46,10 @@ CPP_SOURCES += [
     'SPRemoveEvent.cpp',
     'Window.cpp',
     'Worker.cpp',
+]
+
+IPDL_SOURCES += [
+    'PSDCardRequest.ipdl',
 ]
 
 EXPORTS.mozilla.dom.sdcard += [
