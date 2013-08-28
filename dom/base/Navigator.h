@@ -290,6 +290,9 @@ public:
 #ifdef MOZ_TIME_MANAGER
   static bool HasTimeSupport(JSContext* /* unused */, JSObject* aGlobal);
 #endif // MOZ_TIME_MANAGER
+#ifdef MOZ_SDCARD
+  static bool HasSDCardSupport(JSContext* /* unused */, JSObject* aGlobal);
+#endif // MOZ_SDCARD
 #ifdef MOZ_MEDIA_NAVIGATOR
   static bool HasUserMediaSupport(JSContext* /* unused */,
                                   JSObject* /* unused */);

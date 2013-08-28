@@ -309,6 +309,13 @@ partial interface Navigator {
 };
 #endif // MOZ_TIME_MANAGER
 
+#ifdef MOZ_SDCARD
+partial interface Navigator {
+  [Throws, Func="Navigator::HasSDCardSupport"]
+  readonly attribute FileSystem mozSDCard;
+};
+#endif // MOZ_SDCARD
+
 #ifdef MOZ_AUDIO_CHANNEL_MANAGER
 // nsIMozNavigatorAudioChannelManager
 partial interface Navigator {

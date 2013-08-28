@@ -5,10 +5,6 @@
 
 TEST_DIRS += ['test', 'ipc']
 
-XPIDL_SOURCES += [
-    'nsIDOMNavigatorSDCard.idl',
-]
-
 XPIDL_MODULE = 'dom_sdcard'
 
 MODULE = 'dom'

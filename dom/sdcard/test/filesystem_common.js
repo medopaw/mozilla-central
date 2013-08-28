@@ -58,17 +58,17 @@ function filesystem_create(tree) {
     tree.nsIFile = root_nsIFile;
   }
   for (var i = 0; i < tree.length; i++) {
-	var node = tree[i];
+    var node = tree[i];
     var f = tree.nsIFile.clone();
     f.appendRelativePath(node.name);
     // directory has tree property, even just an empty array
     if (node.tree) {
       node.tree.nsIFile = f.clone();
       if (node.tree.length) {
-    	filesystem_create(node.tree);
+        filesystem_create(node.tree);
       } else {
         // create directory
-    	f.create(1, 0777);
+        f.create(1, 0777);
       }
     } else {
       // if (node.blob) {}
@@ -83,38 +83,38 @@ var testEngine = {
   test: null,
   func: null,
   title: function() {
-	return "Test " + (this.test.name ? ('"' + this.test.name + '" ') : "");
+    return "Test " + (this.test.name ? ('"' + this.test.name + '" ') : "");
   },
   next: function() {
-	if (this.test) {
-	  if (this.test.invert) {
-		ok(false, this.title() + "failed");
-		filesystem_cleanup();
-		return;
-	  } else {
-		ok(true, this.title() + "passed");
-	  }
-	}
-	this.proceed();
+    if (this.test) {
+      if (this.test.invert) {
+        ok(false, this.title() + "failed");
+        filesystem_cleanup();
+        return;
+      } else {
+        ok(true, this.title() + "passed");
+      }
+    }
+    this.proceed();
   },
   fail: function(error) {
-	if (this.test.invert) {
-	  ok(true, this.title() + "passed");
-	  this.proceed();
-	} else {
-	  ok(false, this.title() + "failed with error: " + error.name);
-	  filesystem_cleanup();
-	}
+    if (this.test.invert) {
+      ok(true, this.title() + "passed");
+      this.proceed();
+    } else {
+      ok(false, this.title() + "failed with error: " + error.name);
+      filesystem_cleanup();
+    }
   },
   proceed: function() {
     this.test = this.tests.shift();
-	if (this.test == undefined) {
-	  filesystem_cleanup();
-	  return;
-	}
-	var onsuccess = (this.test.onsuccess || this.next).bind(this);
-	var onerror = (this.test.onerror || this.fail).bind(this);
-	this.func(this.test.args, onsuccess, onerror);
+    if (this.test == undefined) {
+      filesystem_cleanup();
+      return;
+    }
+    var onsuccess = (this.test.onsuccess || this.next).bind(this);
+    var onerror = (this.test.onerror || this.fail).bind(this);
+    this.func(this.test.args, onsuccess, onerror);
   }
 };
 
@@ -164,7 +164,7 @@ var testPath = {
     }
   },
   nonexistent: {
-	  path: "filesystem/testentry_nonexistent",
-	  desc: "path that does not exist"
+      path: "filesystem/testentry_nonexistent",
+      desc: "path that does not exist"
   }
 };

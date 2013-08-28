@@ -1362,17 +1362,15 @@ sdcard::FileSystem*
 Navigator::GetMozSDCard(ErrorResult& aRv)
 {
   if (!mWindow) {
+    printf("\nmWindow is invalid\n");
     aRv.Throw(NS_ERROR_UNEXPECTED);
     return nullptr;
   }
+  nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(mWindow);
 
   if (!mSDCard) {
-    // Only need to check permission on creation of mSDCard
-    nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(mWindow);
-    if (CheckPermission("sdcard-filesystem")) {
-      printf("sdcard permissin passed\n");
-      mSDCard = new sdcard::FileSystem(window, NS_LITERAL_STRING("SD Card"), NS_LITERAL_STRING("/sdcard"));
-    } else if (mozilla::Preferences::GetBool("file.system.testing", false)) {
+    if (mozilla::Preferences::GetBool("file.system.testing", false)) {
+      printf("\nin test mode\n");
       nsCOMPtr<nsIFile> tempDir;
       nsCOMPtr<nsIProperties> dirService = do_GetService(NS_DIRECTORY_SERVICE_CONTRACTID);
       dirService->Get(NS_OS_TEMP_DIR, NS_GET_IID(nsIFile), getter_AddRefs(tempDir));
@@ -1384,13 +1382,13 @@ Navigator::GetMozSDCard(ErrorResult& aRv)
       nsString rootPath;
       tempDir->GetPath(rootPath);
       mSDCard = new sdcard::FileSystem(window, NS_LITERAL_STRING("SD Card Testing"), rootPath);
+    } else {
+      mSDCard = new sdcard::FileSystem(window, NS_LITERAL_STRING("SD Card"), NS_LITERAL_STRING("/sdcard"));
     }
   }
 
-  if (mSDCard) {
-    if (!mSDCard->IsValid()) {
-      mSDCard = nullptr;
-    }
+  if (mSDCard && !mSDCard->IsValid()) {
+    mSDCard = nullptr;
   }
 
   return mSDCard;
@@ -1777,6 +1775,18 @@ Navigator::HasTimeSupport(JSContext* /* unused */, JSObject* aGlobal)
   return win && CheckPermission(win, "time");
 }
 #endif // MOZ_TIME_MANAGER
+
+#ifdef MOZ_SDCARD
+/* static */
+bool
+Navigator::HasSDCardSupport(JSContext* /* unused */, JSObject* aGlobal)
+{
+  printf("\nin HasSDCardSupport()!!!\n");
+
+  nsCOMPtr<nsPIDOMWindow> win = GetWindowFromGlobal(aGlobal);
+  return win && (CheckPermission(win, "sdcard-filesystem") || mozilla::Preferences::GetBool("file.system.testing", false));
+}
+#endif // MOZ_SDCARD
 
 #ifdef MOZ_MEDIA_NAVIGATOR
 /* static */

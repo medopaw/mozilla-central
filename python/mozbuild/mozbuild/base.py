@@ -111,7 +111,7 @@ class MozbuildObject(ProcessExecutionMixin):
         If we're not inside a srcdir or objdir, an exception is raised.
         """
 
-        cwd = cwd or os.getcwd()
+        cwd = os.getcwd()
         topsrcdir = None
         topobjdir = None
         mozconfig = None
