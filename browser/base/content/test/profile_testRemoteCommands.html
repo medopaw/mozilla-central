@@ -14,8 +14,6 @@ function checkSubmissionValue(payload, expectedValue) {
 }
 
 function validatePayload(payload) {
-  payload = JSON.parse(payload);
-
   // this is some pretty low-bar validation, but we have plenty of tests of that API elsewhere
   if (Object.keys(payload).length == 0)
     return false;

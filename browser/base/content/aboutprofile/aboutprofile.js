@@ -113,7 +113,7 @@ let userProfileWrapper = {
     let payload = {};
     payload.type = subtype;
     payload.content = data;
-    userProfileWrapper.injectData("payload", JSON.stringify(payload));
+    userProfileWrapper.injectData("payload", payload);
   },
 
   /*
