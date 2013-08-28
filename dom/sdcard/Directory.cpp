@@ -250,7 +250,21 @@ Directory::Move(const StringOrDirectory& path, const DestinationDict& dest,
     return;
   }
 
-  // Directory& dir = dest.mDir;
+  nsString parentRelpath;
+  if (dest.mDir.WasPassed()) {
+    dest.mDir.Value().GetRelpath(parentRelpath);
+  } else {
+    parentRelpath = mRelpath;
+  }
+
+  nsString newName;
+  if (dest.mName.WasPassed()) {
+    newName = dest.mName.Value();
+  } else {
+    newName.SetIsVoid(true);
+  }
+
+  CopyMoveInternal(entryRelpath, parentRelpath, newName, false, callerPtr);
 }
 
 void
@@ -401,8 +415,6 @@ Directory::CopyMoveInternal(const nsString& entryRelpath,
     Caller* pCaller, bool undecided)
 {
   SDCARD_LOG("in Directory.CopyMoveInternal()");
-
-   // Assign callback nullptr if not passed
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
