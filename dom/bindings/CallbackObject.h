@@ -20,7 +20,6 @@
 #include "nsISupports.h"
 #include "nsISupportsImpl.h"
 #include "nsCycleCollectionParticipant.h"
-#include "jsapi.h"
 #include "jswrapper.h"
 #include "mozilla/Assertions.h"
 #include "mozilla/ErrorResult.h"
@@ -30,8 +29,6 @@
 #include "nsWrapperCache.h"
 #include "nsJSEnvironment.h"
 #include "xpcpublic.h"
-#include "nsLayoutStatics.h"
-#include "js/RootingAPI.h"
 
 namespace mozilla {
 namespace dom {
@@ -71,12 +68,12 @@ public:
    * This should only be called if you are certain that the return value won't
    * be passed into a JS API function and that it won't be stored without being
    * rooted (or otherwise signaling the stored value to the CC).
-   *
-   * This can return a handle because we trace our mCallback.
    */
   JS::Handle<JSObject*> CallbackPreserveColor() const
   {
-    return mCallback;
+    // Calling fromMarkedLocation() is safe because we trace our mCallback, and
+    // because the value of mCallback cannot change after if has been set.
+    return JS::Handle<JSObject*>::fromMarkedLocation(mCallback.address());
   }
 
   enum ExceptionHandling {
@@ -93,11 +90,10 @@ protected:
 private:
   inline void Init(JSObject* aCallback)
   {
+    MOZ_ASSERT(aCallback && !mCallback);
     // Set mCallback before we hold, on the off chance that a GC could somehow
     // happen in there... (which would be pretty odd, granted).
     mCallback = aCallback;
-    // Make sure we'll be able to drop as needed
-    nsLayoutStatics::AddRef();
     NS_HOLD_JS_OBJECTS(this, CallbackObject);
   }
 
@@ -107,7 +103,6 @@ protected:
     if (mCallback) {
       mCallback = nullptr;
       NS_DROP_JS_OBJECTS(this, CallbackObject);
-      nsLayoutStatics::Release();
     }
   }
 
@@ -137,7 +132,6 @@ protected:
 
     // Members which can go away whenever
     JSContext* mCx;
-    nsCOMPtr<nsIScriptContext> mCtx;
 
     // And now members whose construction/destruction order we need to control.
 

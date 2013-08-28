@@ -7,7 +7,6 @@
 #include "SpeechRecognition.h"
 
 #include "nsCOMPtr.h"
-#include "nsContentUtils.h"
 #include "nsCycleCollectionParticipant.h"
 
 #include "mozilla/dom/SpeechRecognitionBinding.h"
@@ -108,9 +107,10 @@ SpeechRecognition::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope)
 }
 
 already_AddRefed<SpeechRecognition>
-SpeechRecognition::Constructor(const GlobalObject& aGlobal, ErrorResult& aRv)
+SpeechRecognition::Constructor(const GlobalObject& aGlobal,
+                               ErrorResult& aRv)
 {
-  nsCOMPtr<nsPIDOMWindow> win = do_QueryInterface(aGlobal.Get());
+  nsCOMPtr<nsPIDOMWindow> win = do_QueryInterface(aGlobal.GetAsSupports());
   if (!win) {
     aRv.Throw(NS_ERROR_FAILURE);
   }

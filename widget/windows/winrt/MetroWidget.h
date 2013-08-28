@@ -22,6 +22,11 @@
 #include "mozilla/a11y/Accessible.h"
 #endif
 #include "mozilla/layers/CompositorParent.h"
+#include "mozilla/layers/GeckoContentController.h"
+#include "mozilla/layers/APZCTreeManager.h"
+#include "mozilla/layers/LayerManagerComposite.h"
+#include "Units.h"
+#include "MetroInput.h"
 
 #include "mozwrlbase.h"
 
@@ -40,7 +45,9 @@ class FrameworkView;
 
 } } }
 
-class MetroWidget : public nsWindowBase
+class MetroWidget : public nsWindowBase,
+                    public mozilla::layers::GeckoContentController,
+                    public nsIObserver
 {
   typedef mozilla::widget::WindowHook WindowHook;
   typedef mozilla::widget::TaskbarWindowPreview TaskbarWindowPreview;
@@ -49,6 +56,7 @@ class MetroWidget : public nsWindowBase
   typedef ABI::Windows::UI::Core::IKeyEventArgs IKeyEventArgs;
   typedef ABI::Windows::UI::Core::ICharacterReceivedEventArgs ICharacterReceivedEventArgs;
   typedef mozilla::widget::winrt::FrameworkView FrameworkView;
+  typedef mozilla::layers::FrameMetrics FrameMetrics;
 
   static LRESULT CALLBACK
   StaticWindowProcedure(HWND aWnd, UINT aMsg, WPARAM aWParan, LPARAM aLParam);
@@ -59,10 +67,20 @@ public:
   virtual ~MetroWidget();
 
   NS_DECL_ISUPPORTS_INHERITED
+  NS_DECL_NSIOBSERVER
+
+  static HWND GetICoreWindowHWND() { return sICoreHwnd; }
 
   // nsWindowBase
-  virtual void InitEvent(nsGUIEvent& aEvent, nsIntPoint* aPoint = nullptr) MOZ_OVERRIDE;
   virtual bool DispatchWindowEvent(nsGUIEvent* aEvent) MOZ_OVERRIDE;
+  virtual bool IsTopLevelWidget() MOZ_OVERRIDE { return true; }
+  virtual nsWindowBase* GetParentWindowBase(bool aIncludeOwner) MOZ_OVERRIDE { return nullptr; }
+  // InitEvent assumes physical coordinates and is used by shared win32 code. Do
+  // not hand winrt event coordinates to this routine.
+  virtual void InitEvent(nsGUIEvent& aEvent, nsIntPoint* aPoint = nullptr) MOZ_OVERRIDE;
+
+  // nsBaseWidget
+  virtual CompositorParent* NewCompositorParent(int aSurfaceWidth, int aSurfaceHeight);
 
   // nsIWidget interface
   NS_IMETHOD    Create(nsIWidget *aParent,
@@ -112,6 +130,7 @@ public:
   virtual bool  HasPendingInputEvent();
   virtual double GetDefaultScaleInternal();
   float         GetDPI();
+  mozilla::LayoutDeviceIntPoint CSSIntPointToLayoutDeviceIntPoint(const mozilla::CSSIntPoint &aCSSPoint);
   void          ChangedDPI();
   virtual bool  IsVisible() const;
   virtual bool  IsEnabled() const;
@@ -119,11 +138,12 @@ public:
   virtual bool  ShouldUseOffMainThreadCompositing();
   bool          ShouldUseMainThreadD3D10Manager();
   bool          ShouldUseBasicManager();
+  bool          ShouldUseAPZC();
   virtual LayerManager* GetLayerManager(PLayerTransactionChild* aShadowManager = nullptr,
                                         LayersBackend aBackendHint = mozilla::layers::LAYERS_NONE,
                                         LayerManagerPersistence aPersistence = LAYER_MANAGER_CURRENT,
                                         bool* aAllowRetaining = nullptr);
-  virtual mozilla::layers::LayersBackend GetPreferredCompositorBackend() { return mozilla::layers::LAYERS_D3D11; }
+  virtual void GetPreferredCompositorBackends(nsTArray<mozilla::layers::LayersBackend>& aHints) { aHints.AppendElement(mozilla::layers::LAYERS_D3D11); }
 
   // IME related interfaces
   NS_IMETHOD_(void) SetInputContext(const InputContext& aContext,
@@ -173,6 +193,24 @@ public:
   virtual void SetTransparencyMode(nsTransparencyMode aMode);
   virtual nsTransparencyMode GetTransparencyMode();
 
+  nsresult RequestContentScroll();
+  void RequestContentRepaintImplMainThread();
+
+  // GeckoContentController interface impl
+  virtual void RequestContentRepaint(const FrameMetrics& aFrameMetrics);
+  virtual void HandleDoubleTap(const mozilla::CSSIntPoint& aPoint);
+  virtual void HandleSingleTap(const mozilla::CSSIntPoint& aPoint);
+  virtual void HandleLongTap(const mozilla::CSSIntPoint& aPoint);
+  virtual void SendAsyncScrollDOMEvent(FrameMetrics::ViewID aScrollId, const mozilla::CSSRect &aContentRect, const mozilla::CSSSize &aScrollableSize);
+  virtual void PostDelayedTask(Task* aTask, int aDelayMs);
+  virtual void HandlePanBegin();
+  virtual void HandlePanEnd();
+
+  void SetMetroInput(mozilla::widget::winrt::MetroInput* aMetroInput)
+  {
+    mMetroInput = aMetroInput;
+  }
+
 protected:
   friend class FrameworkView;
 
@@ -203,6 +241,13 @@ protected:
   nsIntRegion mInvalidatedRegion;
   nsCOMPtr<nsIdleService> mIdleService;
   HWND mWnd;
+  static HWND sICoreHwnd;
   WNDPROC mMetroWndProc;
   bool mTempBasicLayerInUse;
+  Microsoft::WRL::ComPtr<mozilla::widget::winrt::MetroInput> mMetroInput;
+  mozilla::layers::FrameMetrics mFrameMetrics;
+  uint64_t mRootLayerTreeId;
+
+public:
+  static nsRefPtr<mozilla::layers::APZCTreeManager> sAPZC;
 };

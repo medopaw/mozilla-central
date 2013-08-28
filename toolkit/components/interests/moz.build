@@ -18,6 +18,8 @@ DIRS += ['worker']
 
 JS_MODULES_PATH = 'modules/interests'
 
+LIBXUL_LIBRARY = True
+
 MODULE = 'interests'
 
 TEST_DIRS += ['tests']

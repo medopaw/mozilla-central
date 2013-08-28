@@ -12,6 +12,7 @@ EXPORTS += [
     'ScrollbarActivity.h',
     'Selection.h',
     'nsCanvasFrame.h',
+    'nsDirection.h',
     'nsFrameIdList.h',
     'nsFrameList.h',
     'nsFrameSelection.h',
@@ -81,7 +82,7 @@ CPP_SOURCES += [
     'nsSimplePageSequence.cpp',
     'nsSplittableFrame.cpp',
     'nsSubDocumentFrame.cpp',
-    'nsTextFrameThebes.cpp',
+    'nsTextFrame.cpp',
     'nsTextFrameUtils.cpp',
     'nsTextRunTransformations.cpp',
     'nsVideoFrame.cpp',
@@ -92,3 +93,10 @@ if CONFIG['MOZ_WIDGET_TOOLKIT'] == 'cocoa':
     CMMSRCS += [
         'nsPluginUtilsOSX.mm',
     ]
+
+FAIL_ON_WARNINGS = not CONFIG['_MSC_VER']
+
+LIBXUL_LIBRARY = True
+
+MSVC_ENABLE_PGO = True
+

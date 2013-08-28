@@ -9,11 +9,14 @@ import logging
 import os
 import types
 
-import mozpack.path
 from mozpack.copier import FilePurger
-from mozpack.manifests import PurgeManifest
+from mozpack.manifests import (
+    InstallManifest,
+    PurgeManifest,
+)
+import mozpack.path as mozpath
 
-from .base import BuildBackend
+from .common import CommonBackend
 from ..frontend.data import (
     ConfigFileSubstitution,
     DirectoryTraversal,
@@ -22,6 +25,7 @@ from ..frontend.data import (
     VariablePassthru,
     Exports,
     Program,
+    XPIDLFile,
     XpcshellManifests,
 )
 from ..util import FileAvoidWrite
@@ -72,6 +76,10 @@ class BackendMakeFile(object):
         self.environment = environment
         self.path = os.path.join(objdir, 'backend.mk')
 
+        # XPIDLFiles attached to this file.
+        self.idls = []
+        self.xpt_name = None
+
         self.fh = FileAvoidWrite(self.path)
         self.fh.write('# THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT.\n')
         self.fh.write('\n')
@@ -87,15 +95,26 @@ class BackendMakeFile(object):
         # scan and build, installing the new Makefile.
         self.fh.write('NO_SUBMAKEFILES_RULE := 1\n')
 
-
     def write(self, buf):
         self.fh.write(buf)
 
     def close(self):
+        if self.xpt_name:
+            self.fh.write('XPT_NAME := %s\n' % self.xpt_name)
+
+            # We just recompile all xpidls because it's easier and less error
+            # prone.
+            self.fh.write('NONRECURSIVE_TARGETS += export\n')
+            self.fh.write('NONRECURSIVE_TARGETS_export += xpidl\n')
+            self.fh.write('NONRECURSIVE_TARGETS_export_xpidl_DIRECTORY = '
+                '$(DEPTH)/config/makefiles/precompile\n')
+            self.fh.write('NONRECURSIVE_TARGETS_export_xpidl_TARGETS += '
+                'xpidl\n')
+
         return self.fh.close()
 
 
-class RecursiveMakeBackend(BuildBackend):
+class RecursiveMakeBackend(CommonBackend):
     """Backend that integrates with the existing recursive make build system.
 
     This backend facilitates the transition from Makefile.in to moz.build
@@ -111,13 +130,10 @@ class RecursiveMakeBackend(BuildBackend):
     """
 
     def _init(self):
+        CommonBackend._init(self)
+
         self._backend_files = {}
         self._ipdl_sources = set()
-
-        self.summary.managed_count = 0
-        self.summary.created_count = 0
-        self.summary.updated_count = 0
-        self.summary.unchanged_count = 0
 
         def detailed(summary):
             return '{:d} total backend files. {:d} created; {:d} updated; {:d} unchanged'.format(
@@ -133,6 +149,8 @@ class RecursiveMakeBackend(BuildBackend):
         self.backend_input_files.add(os.path.join(self.environment.topobjdir,
             'config', 'autoconf.mk'))
 
+        self._install_manifests = dict()
+
         self._purge_manifests = dict(
             dist_bin=PurgeManifest(relpath='dist/bin'),
             dist_include=PurgeManifest(relpath='dist/include'),
@@ -140,6 +158,11 @@ class RecursiveMakeBackend(BuildBackend):
             dist_public=PurgeManifest(relpath='dist/public'),
             dist_sdk=PurgeManifest(relpath='dist/sdk'),
             tests=PurgeManifest(relpath='_tests'),
+            xpidl=PurgeManifest(relpath='config/makefiles/xpidl'),
+        )
+
+        self._install_manifests = dict(
+            dist_idl=InstallManifest(),
         )
 
     def _update_from_avoid_write(self, result):
@@ -155,6 +178,8 @@ class RecursiveMakeBackend(BuildBackend):
     def consume_object(self, obj):
         """Write out build files necessary to build with recursive make."""
 
+        CommonBackend.consume_object(self, obj)
+
         if not isinstance(obj, SandboxDerived):
             return
 
@@ -168,20 +193,25 @@ class RecursiveMakeBackend(BuildBackend):
                 backend_file.environment.create_config_file(obj.output_path))
             self.backend_input_files.add(obj.input_path)
             self.summary.managed_count += 1
+        elif isinstance(obj, XPIDLFile):
+            backend_file.idls.append(obj)
+            backend_file.xpt_name = '%s.xpt' % obj.module
         elif isinstance(obj, VariablePassthru):
             # Sorted so output is consistent and we don't bump mtimes.
             for k, v in sorted(obj.variables.items()):
                 if isinstance(v, list):
                     for item in v:
                         backend_file.write('%s += %s\n' % (k, item))
-
+                elif isinstance(v, bool):
+                    if v:
+                        backend_file.write('%s := 1\n' % k)
                 else:
                     backend_file.write('%s := %s\n' % (k, v))
         elif isinstance(obj, Exports):
             self._process_exports(obj.exports, backend_file)
 
         elif isinstance(obj, IPDLFile):
-            self._ipdl_sources.add(mozpack.path.join(obj.srcdir, obj.basename))
+            self._ipdl_sources.add(mozpath.join(obj.srcdir, obj.basename))
 
         elif isinstance(obj, Program):
             self._process_program(obj.program, backend_file)
@@ -192,6 +222,8 @@ class RecursiveMakeBackend(BuildBackend):
         self._backend_files[obj.srcdir] = backend_file
 
     def consume_finished(self):
+        CommonBackend.consume_finished(self)
+
         for srcdir in sorted(self._backend_files.keys()):
             bf = self._backend_files[srcdir]
 
@@ -292,7 +324,8 @@ class RecursiveMakeBackend(BuildBackend):
             self._update_from_avoid_write(mastermanifest.close())
             self.summary.managed_count += 1
 
-        self._write_purge_manifests()
+        self._write_manifests('install', self._install_manifests)
+        self._write_manifests('purge', self._purge_manifests)
 
     def _process_directory_traversal(self, obj, backend_file):
         """Process a data.DirectoryTraversal instance."""
@@ -303,11 +336,13 @@ class RecursiveMakeBackend(BuildBackend):
 
             if dirs:
                 fh.write('tier_%s_dirs += %s\n' % (tier, ' '.join(dirs)))
+                fh.write('DIRS += $(tier_%s_dirs)\n' % tier)
 
             # tier_static_dirs should have the same keys as tier_dirs.
             if obj.tier_static_dirs[tier]:
                 fh.write('tier_%s_staticdirs += %s\n' % (
                     tier, ' '.join(obj.tier_static_dirs[tier])))
+                fh.write('STATIC_DIRS += $(tier_%s_staticdirs)\n' % tier)
 
                 static = ' '.join(obj.tier_static_dirs[tier])
                 fh.write('EXTERNAL_DIRS += %s\n' % static)
@@ -360,6 +395,75 @@ class RecursiveMakeBackend(BuildBackend):
             self._process_exports(children[subdir], backend_file,
                                   namespace=namespace + subdir)
 
+    def _handle_idl_manager(self, manager):
+        build_files = self._purge_manifests['xpidl']
+
+        for p in ('Makefile', 'backend.mk', '.deps/.mkdir.done',
+            'headers/.mkdir.done', 'xpt/.mkdir.done'):
+            build_files.add(p)
+
+        for idl in manager.idls.values():
+            self._install_manifests['dist_idl'].add_symlink(idl['source'],
+                idl['basename'])
+            self._purge_manifests['dist_include'].add('%s.h' % idl['root'])
+            build_files.add(mozpath.join('headers', '%s.h' % idl['root']))
+
+        for module in manager.modules:
+            build_files.add(mozpath.join('xpt', '%s.xpt' % module))
+            build_files.add(mozpath.join('.deps', '%s.pp' % module))
+
+        headers = sorted('%s.h' % idl['root'] for idl in manager.idls.values())
+        modules = manager.modules
+        xpt_modules = sorted(modules.keys())
+        rules = []
+
+        for module in xpt_modules:
+            deps = sorted(modules[module])
+            idl_deps = ['$(dist_idl_dir)/%s.idl' % dep for dep in deps]
+            rules.extend([
+                # It may seem strange to have the .idl files listed as
+                # prerequisites both here and in the auto-generated .pp files.
+                # It is necessary to list them here to handle the case where a
+                # new .idl is added to an xpt. If we add a new .idl and nothing
+                # else has changed, the new .idl won't be referenced anywhere
+                # except in the command invocation. Therefore, the .xpt won't
+                # be rebuilt because the dependencies say it is up to date. By
+                # listing the .idls here, we ensure the make file has a
+                # reference to the new .idl. Since the new .idl presumably has
+                # an mtime newer than the .xpt, it will trigger xpt generation.
+                '$(idl_xpt_dir)/%s.xpt: %s' % (module, ' '.join(idl_deps)),
+                '\t@echo "$(notdir $@)"',
+                '\t$(idlprocess) $(basename $(notdir $@)) %s' % ' '.join(deps),
+                '',
+            ])
+
+            # Set up linkage so make knows headers come from $(idlprocess).
+            h = ['$(idl_headers_dir)/%s.h' % dep for dep in deps]
+            rules.extend([
+                '%s: $(idl_xpt_dir)/%s.xpt' % (' '.join(h), module),
+                '',
+            ])
+
+        # Create dependency for output header so we force regeneration if the
+        # header was deleted. This ideally should not be necessary. However,
+        # some processes (such as PGO at the time this was implemented) wipe
+        # out dist/include without regard to our install/purge manifests.
+
+        out_path = os.path.join(self.environment.topobjdir, 'config',
+            'makefiles', 'xpidl', 'Makefile')
+        result = self.environment.create_config_file(out_path, extra=dict(
+            xpidl_rules='\n'.join(rules),
+            xpidl_modules=' '.join(xpt_modules),
+            xpidl_headers=' '.join(headers),
+        ))
+        self._update_from_avoid_write(result)
+        self.summary.managed_count += 1
+
+        # The Makefile can't regenerate itself because of custom substitution.
+        # We need to list it here to ensure changes cause regeneration.
+        self.backend_input_files.add(os.path.join(self.environment.topsrcdir,
+            'config', 'makefiles', 'xpidl', 'Makefile.in'))
+
     def _process_program(self, program, backend_file):
         backend_file.write('PROGRAM = %s\n' % program)
 
@@ -370,26 +474,19 @@ class RecursiveMakeBackend(BuildBackend):
             manifest = '%s/%s' % (obj.relativedir, manifest)
         self.xpcshell_manifests.append(manifest)
 
-    def _write_purge_manifests(self):
-        # We write out a "manifest" file for each directory that is to be
-        # purged.
-        #
-        # Ideally we have as few manifests as possible - ideally only 1. This
-        # will likely require all build metadata to be in emitted objects.
-        # We're not quite there yet, so we maintain multiple manifests.
+    def _write_manifests(self, dest, manifests):
         man_dir = os.path.join(self.environment.topobjdir, '_build_manifests',
-            'purge')
+            dest)
 
-        # We have a purger for the manifests themselves to ensure we don't over
-        # purge if we delete a purge manifest.
+        # We have a purger for the manifests themselves to ensure legacy
+        # manifests are deleted.
         purger = FilePurger()
 
-        for k, manifest in self._purge_manifests.items():
+        for k, manifest in manifests.items():
             purger.add(k)
-            full = os.path.join(man_dir, k)
 
             fh = FileAvoidWrite(os.path.join(man_dir, k))
-            manifest.write_fileobj(fh)
+            manifest.write(fileobj=fh)
             self._update_from_avoid_write(fh.close())
 
         purger.purge(man_dir)

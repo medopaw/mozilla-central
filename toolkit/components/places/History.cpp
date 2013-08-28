@@ -1,6 +1,6 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: sw=2 ts=2 et lcs=trail\:.,tab\:>~ :
- * This Source Code Form is subject to the terms of the Mozilla Public
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim: set ts=8 sts=2 et sw=2 tw=80: */
+/* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
@@ -30,11 +30,12 @@
 #include "nsNetUtil.h"
 #include "nsIXPConnect.h"
 #include "mozilla/unused.h"
-#include "nsContentUtils.h"
+#include "nsContentUtils.h" // for nsAutoScriptBlocker
 #include "nsIMemoryReporter.h"
 #include "mozilla/ipc/URIUtils.h"
 #include "nsPrintfCString.h"
 #include "nsTHashtable.h"
+#include "jsapi.h"
 
 // Initial size for the cache holding visited status observers.
 #define VISIT_OBSERVERS_INITIAL_CACHE_SIZE 128
@@ -251,7 +252,7 @@ GetJSArrayFromJSValue(const JS::Value& aValue,
   *_array = JS_NewArrayObject(aCtx, 0, nullptr);
   NS_ENSURE_TRUE(*_array, NS_ERROR_OUT_OF_MEMORY);
 
-  JSBool rc = JS_DefineElement(aCtx, *_array, 0, aValue, nullptr, nullptr, 0);
+  bool rc = JS_DefineElement(aCtx, *_array, 0, aValue, nullptr, nullptr, 0);
   NS_ENSURE_TRUE(rc, NS_ERROR_UNEXPECTED);
   return NS_OK;
 }
@@ -297,7 +298,7 @@ GetURIFromJSObject(JSContext* aCtx,
                    const char* aProperty)
 {
   JS::Rooted<JS::Value> uriVal(aCtx);
-  JSBool rc = JS_GetProperty(aCtx, aObject, aProperty, uriVal.address());
+  bool rc = JS_GetProperty(aCtx, aObject, aProperty, &uriVal);
   NS_ENSURE_TRUE(rc, nullptr);
   return GetJSValueAsURI(aCtx, uriVal);
 }
@@ -355,7 +356,7 @@ GetStringFromJSObject(JSContext* aCtx,
                       nsString& _string)
 {
   JS::Rooted<JS::Value> val(aCtx);
-  JSBool rc = JS_GetProperty(aCtx, aObject, aProperty, val.address());
+  bool rc = JS_GetProperty(aCtx, aObject, aProperty, &val);
   if (!rc) {
     _string.SetIsVoid(true);
     return;
@@ -385,7 +386,7 @@ GetIntFromJSObject(JSContext* aCtx,
                    IntType* _int)
 {
   JS::Rooted<JS::Value> value(aCtx);
-  JSBool rc = JS_GetProperty(aCtx, aObject, aProperty, value.address());
+  bool rc = JS_GetProperty(aCtx, aObject, aProperty, &value);
   NS_ENSURE_TRUE(rc, NS_ERROR_UNEXPECTED);
   if (JSVAL_IS_VOID(value)) {
     return NS_ERROR_INVALID_ARG;
@@ -426,7 +427,7 @@ GetJSObjectFromArray(JSContext* aCtx,
                   "Must provide an object that is an array!");
 
   JS::Rooted<JS::Value> value(aCtx);
-  JSBool rc = JS_GetElement(aCtx, aArray, aIndex, value.address());
+  bool rc = JS_GetElement(aCtx, aArray, aIndex, &value);
   NS_ENSURE_TRUE(rc, NS_ERROR_UNEXPECTED);
   NS_ENSURE_ARG(!JSVAL_IS_PRIMITIVE(value));
   *_rooter = JSVAL_TO_OBJECT(value);
@@ -1908,22 +1909,22 @@ StoreAndNotifyEmbedVisit(VisitData& aPlace,
   (void)NS_DispatchToMainThread(event);
 }
 
-NS_MEMORY_REPORTER_MALLOC_SIZEOF_FUN(HistoryLinksHashtableMallocSizeOf)
-
-int64_t GetHistoryObserversSize()
+class HistoryLinksHashtableReporter MOZ_FINAL : public MemoryReporterBase
 {
-  History* history = History::GetService();
-  return history ?
-         history->SizeOfIncludingThis(HistoryLinksHashtableMallocSizeOf) : 0;
-}
-
-NS_MEMORY_REPORTER_IMPLEMENT(HistoryService,
-  "explicit/history-links-hashtable",
-  KIND_HEAP,
-  UNITS_BYTES,
-  GetHistoryObserversSize,
-  "Memory used by the hashtable of observers Places uses to notify objects of "
-  "changes to links' visited state.")
+public:
+  HistoryLinksHashtableReporter()
+    : MemoryReporterBase("explicit/history-links-hashtable",
+                         KIND_HEAP, UNITS_BYTES,
+"Memory used by the hashtable that records changes to the visited state of "
+"links.")
+    {}
+private:
+  int64_t Amount() MOZ_OVERRIDE
+  {
+    History* history = History::GetService();
+    return history ? history->SizeOfIncludingThis(MallocSizeOf) : 0;
+  }
+};
 
 } // anonymous namespace
 
@@ -1946,12 +1947,15 @@ History::History()
     (void)os->AddObserver(this, TOPIC_PLACES_SHUTDOWN, false);
   }
 
-  NS_RegisterMemoryReporter(new NS_MEMORY_REPORTER_NAME(HistoryService));
+  mReporter = new HistoryLinksHashtableReporter();
+  NS_RegisterMemoryReporter(mReporter);
 }
 
 History::~History()
 {
-  gService = NULL;
+  NS_UnregisterMemoryReporter(mReporter);
+
+  gService = nullptr;
 
 #ifdef DEBUG
   if (mObservers.IsInitialized()) {
@@ -2706,8 +2710,8 @@ History::GetPlacesInfo(const JS::Value& aPlaceIdentifiers,
   nsTArray<VisitData> placesInfo;
   placesInfo.SetCapacity(placesIndentifiersLength);
   for (uint32_t i = 0; i < placesIndentifiersLength; i++) {
-    JS::Value placeIdentifier;
-    JSBool rc = JS_GetElement(aCtx, placesIndentifiers, i, &placeIdentifier);
+    JS::Rooted<JS::Value> placeIdentifier(aCtx);
+    bool rc = JS_GetElement(aCtx, placesIndentifiers, i, &placeIdentifier);
     NS_ENSURE_TRUE(rc, NS_ERROR_UNEXPECTED);
 
     // GUID
@@ -2808,7 +2812,7 @@ History::UpdatePlaces(const JS::Value& aPlaceInfos,
     JS::Rooted<JSObject*> visits(aCtx, nullptr);
     {
       JS::Rooted<JS::Value> visitsVal(aCtx);
-      JSBool rc = JS_GetProperty(aCtx, info, "visits", visitsVal.address());
+      bool rc = JS_GetProperty(aCtx, info, "visits", &visitsVal);
       NS_ENSURE_TRUE(rc, NS_ERROR_UNEXPECTED);
       if (!JSVAL_IS_PRIMITIVE(visitsVal)) {
         visits = JSVAL_TO_OBJECT(visitsVal);
@@ -2930,7 +2934,7 @@ History::Observe(nsISupports* aSubject, const char* aTopic,
 ////////////////////////////////////////////////////////////////////////////////
 //// nsISupports
 
-NS_IMPL_THREADSAFE_ISUPPORTS4(
+NS_IMPL_ISUPPORTS4(
   History
 , IHistory
 , nsIDownloadHistory

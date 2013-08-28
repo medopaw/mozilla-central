@@ -9,7 +9,6 @@
 
 #include "base/basictypes.h"
 
-#include "jsapi.h"
 #include "mozilla/dom/ContentParent.h"
 #include "mozilla/dom/PBrowserParent.h"
 #include "mozilla/dom/PContentDialogParent.h"
@@ -29,7 +28,6 @@ struct JSContext;
 class JSObject;
 class mozIApplication;
 class nsFrameLoader;
-class nsIDOMElement;
 class nsIURI;
 class CpowHolder;
 
@@ -47,6 +45,7 @@ class RenderFrameParent;
 namespace dom {
 
 class ClonedMessageData;
+class Element;
 struct StructuredCloneData;
 
 class ContentDialogParent : public PContentDialogParent {};
@@ -63,8 +62,8 @@ class TabParent : public PBrowserParent
 public:
     TabParent(ContentParent* aManager, const TabContext& aContext);
     virtual ~TabParent();
-    nsIDOMElement* GetOwnerElement() { return mFrameElement; }
-    void SetOwnerElement(nsIDOMElement* aElement);
+    Element* GetOwnerElement() const { return mFrameElement; }
+    void SetOwnerElement(Element* aElement);
 
     /**
      * Get the mozapptype attribute from this TabParent's owner DOM element.
@@ -153,13 +152,15 @@ public:
                                      const int32_t& aFocusChange);
     virtual bool RecvSetCursor(const uint32_t& aValue);
     virtual bool RecvSetBackgroundColor(const nscolor& aValue);
+    virtual bool RecvSetStatus(const uint32_t& aType, const nsString& aStatus);
     virtual bool RecvGetDPI(float* aValue);
     virtual bool RecvGetDefaultScale(double* aValue);
     virtual bool RecvGetWidgetNativeData(WindowsHandle* aValue);
     virtual bool RecvZoomToRect(const CSSRect& aRect);
     virtual bool RecvUpdateZoomConstraints(const bool& aAllowZoom,
-                                           const float& aMinZoom,
-                                           const float& aMaxZoom);
+                                           const CSSToScreenScale& aMinZoom,
+                                           const CSSToScreenScale& aMaxZoom);
+    virtual bool RecvUpdateScrollOffset(const uint32_t& aPresShellId, const ViewID& aViewId, const CSSIntPoint& aScrollOffset);
     virtual bool RecvContentReceivedTouch(const bool& aPreventDefault);
     virtual PContentDialogParent* AllocPContentDialogParent(const uint32_t& aType,
                                                             const nsCString& aName,
@@ -185,6 +186,10 @@ public:
     void HandleLongTap(const CSSIntPoint& aPoint);
     void Activate();
     void Deactivate();
+
+    bool MapEventCoordinatesForChildProcess(nsEvent* aEvent);
+    void MapEventCoordinatesForChildProcess(const LayoutDeviceIntPoint& aOffset,
+                                                   nsEvent* aEvent);
 
     void SendMouseEvent(const nsAString& aType, float aX, float aY,
                         int32_t aButton, int32_t aClickCount,
@@ -214,7 +219,7 @@ public:
             const bool& stickDocument) MOZ_OVERRIDE;
     virtual bool DeallocPOfflineCacheUpdateParent(POfflineCacheUpdateParent* actor);
 
-    JSBool GetGlobalJSObject(JSContext* cx, JSObject** globalp);
+    bool GetGlobalJSObject(JSContext* cx, JSObject** globalp);
 
     NS_DECL_ISUPPORTS
     NS_DECL_NSIAUTHPROMPTPROVIDER
@@ -254,7 +259,7 @@ protected:
                               const nsCString& aASCIIOrigin,
                               bool* aAllowed);
 
-    nsIDOMElement* mFrameElement;
+    Element* mFrameElement;
     nsCOMPtr<nsIBrowserDOMWindow> mBrowserDOMWindow;
 
     struct DelayedDialogData

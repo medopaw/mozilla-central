@@ -25,16 +25,30 @@ let WebProgressListener = {
   _setupJSON: function setupJSON(aWebProgress, aRequest) {
     return {
       isTopLevel: aWebProgress.isTopLevel,
-      requestURI: this._requestSpec(aRequest)
+      isLoadingDocument: aWebProgress.isLoadingDocument,
+      requestURI: this._requestSpec(aRequest),
+      loadType: aWebProgress.loadType
+    };
+  },
+
+  _setupObjects: function setupObjects(aWebProgress) {
+    let win = docShell.QueryInterface(Ci.nsIInterfaceRequestor)
+                      .getInterface(Ci.nsIDOMWindow);
+    return {
+      contentWindow: win,
+      // DOMWindow is not necessarily the content-window with subframes.
+      DOMWindow: aWebProgress.DOMWindow
     };
   },
 
   onStateChange: function onStateChange(aWebProgress, aRequest, aStateFlags, aStatus) {
     let json = this._setupJSON(aWebProgress, aRequest);
+    let objects = this._setupObjects(aWebProgress);
+
     json.stateFlags = aStateFlags;
     json.status = aStatus;
 
-    sendAsyncMessage("Content:StateChange", json);
+    sendAsyncMessage("Content:StateChange", json, objects);
   },
 
   onProgressChange: function onProgressChange(aWebProgress, aRequest, aCurSelf, aMaxSelf, aCurTotal, aMaxTotal) {
@@ -45,29 +59,35 @@ let WebProgressListener = {
     let charset = content.document.characterSet;
 
     let json = this._setupJSON(aWebProgress, aRequest);
+    let objects = this._setupObjects(aWebProgress);
+
     json.documentURI = aWebProgress.DOMWindow.document.documentURIObject.spec;
     json.location = spec;
     json.canGoBack = docShell.canGoBack;
     json.canGoForward = docShell.canGoForward;
     json.charset = charset.toString();
 
-    sendAsyncMessage("Content:LocationChange", json);
+    sendAsyncMessage("Content:LocationChange", json, objects);
   },
 
   onStatusChange: function onStatusChange(aWebProgress, aRequest, aStatus, aMessage) {
     let json = this._setupJSON(aWebProgress, aRequest);
+    let objects = this._setupObjects(aWebProgress);
+
     json.status = aStatus;
     json.message = aMessage;
 
-    sendAsyncMessage("Content:StatusChange", json);
+    sendAsyncMessage("Content:StatusChange", json, objects);
   },
 
   onSecurityChange: function onSecurityChange(aWebProgress, aRequest, aState) {
     let json = this._setupJSON(aWebProgress, aRequest);
+    let objects = this._setupObjects(aWebProgress);
+
     json.state = aState;
     json.status = SecurityUI.getSSLStatusAsString();
 
-    sendAsyncMessage("Content:SecurityChange", json);
+    sendAsyncMessage("Content:SecurityChange", json, objects);
   },
 
   QueryInterface: function QueryInterface(aIID) {
@@ -166,6 +186,23 @@ let SecurityUI = {
   }
 };
 
+let ControllerCommands = {
+  init: function () {
+    addMessageListener("ControllerCommands:Do", this);
+  },
+
+  receiveMessage: function(message) {
+    switch(message.name) {
+      case "ControllerCommands:Do":
+        if (docShell.isCommandEnabled(message.data))
+          docShell.doCommand(message.data);
+        break;
+    }
+  }
+}
+
+ControllerCommands.init()
+
 addEventListener("DOMTitleChanged", function (aEvent) {
   let document = content.document;
   switch (aEvent.type) {
@@ -177,3 +214,13 @@ addEventListener("DOMTitleChanged", function (aEvent) {
     break;
   }
 }, false);
+
+addEventListener("ImageContentLoaded", function (aEvent) {
+  if (content.document instanceof Ci.nsIImageDocument) {
+    let req = content.document.imageRequest;
+    if (!req.image)
+      return;
+    sendAsyncMessage("ImageDocumentLoaded", { width: req.image.width,
+                                              height: req.image.height });
+  }
+}, false)

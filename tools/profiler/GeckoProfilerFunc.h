@@ -7,12 +7,18 @@
 #define PROFILER_FUNCS_H
 
 #include "mozilla/NullPtr.h"
-#include "mozilla/StandardInteger.h"
-#include "mozilla/TimeStamp.h"
-#include "jsfriendapi.h"
+#include <stdint.h>
+
+namespace mozilla {
+class TimeDuration;
+class TimeStamp;
+}
 
 using mozilla::TimeStamp;
 using mozilla::TimeDuration;
+
+struct JSContext;
+class JSObject;
 
 // Returns a handle to pass on exit. This can check that we are popping the
 // correct callstack.
@@ -21,7 +27,7 @@ inline void* mozilla_sampler_call_enter(const char *aInfo, void *aFrameAddress =
 inline void  mozilla_sampler_call_exit(void* handle);
 inline void  mozilla_sampler_add_marker(const char *aInfo);
 
-void mozilla_sampler_start(int aEntries, int aInterval,
+void mozilla_sampler_start(int aEntries, double aInterval,
                            const char** aFeatures, uint32_t aFeatureCount,
                            const char** aThreadNameFilters, uint32_t aFilterCount);
 

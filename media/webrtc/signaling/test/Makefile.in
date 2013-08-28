@@ -75,6 +75,13 @@ LIBS += \
   $(NULL)
 endif
 
+ifeq (gtk3,$(MOZ_WIDGET_TOOLKIT))
+LIBS += \
+  $(MOZ_GTK3_LIBS) \
+  $(FT2_LIBS) \
+  $(NULL)
+endif
+
 ifeq (qt,$(MOZ_WIDGET_TOOLKIT))
 LIBS += \
   $(XLIBS) \
@@ -83,7 +90,7 @@ LIBS += \
   $(NULL)
 endif
 
-ifeq ($(OS_TARGET),Linux)
+ifneq (,$(filter Linux DragonFly FreeBSD NetBSD OpenBSD,$(OS_TARGET)))
 LIBS += \
   $(MOZ_CAIRO_OSLIBS) \
   $(NULL)
@@ -148,13 +155,6 @@ ifneq (gonk,$(MOZ_WIDGET_TOOLKIT))
 ifdef JS_SHARED_LIBRARY
 LIBS += $(MOZ_ZLIB_LIBS)
 endif
-
-CPP_UNIT_TESTS = \
-  sdp_unittests.cpp \
-  signaling_unittests.cpp \
-  mediapipeline_unittest.cpp \
-  mediaconduit_unittests.cpp \
-  $(NULL)
 endif
 endif
 

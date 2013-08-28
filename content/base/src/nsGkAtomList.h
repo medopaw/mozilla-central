@@ -2,7 +2,6 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 // IWYU pragma: private, include "nsGkAtoms.h"
 
 /*
@@ -25,7 +24,7 @@
 // MACRO_NAME=GK_ATOM
 #ifdef small
 #undef small
-#endif 
+#endif
 
 //---------------------------------------------------------------------------
 // Generic atoms
@@ -49,7 +48,6 @@ GK_ATOM(mozsignature, "moz-signature")
 GK_ATOM(_moz_is_glyph, "-moz-is-glyph")
 GK_ATOM(_moz_original_size, "_moz_original_size")
 GK_ATOM(_moz_target, "_moz_target")
-GK_ATOM(_moz_type, "_moz-type")
 GK_ATOM(menuactive, "_moz-menuactive")
 GK_ATOM(_poundDefault, "#default")
 GK_ATOM(_asterix, "*")
@@ -631,6 +629,7 @@ GK_ATOM(odd, "odd")
 GK_ATOM(OFF, "OFF")
 GK_ATOM(ol, "ol")
 GK_ATOM(omitXmlDeclaration, "omit-xml-declaration")
+GK_ATOM(ona2dpstatuschanged, "ona2dpstatuschanged")
 GK_ATOM(onabort, "onabort")
 GK_ATOM(onadapteradded, "onadapteradded")
 GK_ATOM(onafterprint, "onafterprint")
@@ -706,13 +705,16 @@ GK_ATOM(ondragover, "ondragover")
 GK_ATOM(ondragstart, "ondragstart")
 GK_ATOM(ondrop, "ondrop")
 GK_ATOM(onenabled, "onenabled")
+GK_ATOM(onemergencycbmodechange, "onemergencycbmodechange")
 GK_ATOM(onerror, "onerror")
 GK_ATOM(onfailed, "onfailed")
 GK_ATOM(onfocus, "onfocus")
 GK_ATOM(onget, "onget")
+GK_ATOM(ongroupchange, "ongroupchange")
 GK_ATOM(onhashchange, "onhashchange")
 GK_ATOM(onheadphoneschange, "onheadphoneschange")
 GK_ATOM(onheld, "onheld")
+GK_ATOM(onhfpstatuschanged, "onhfpstatuschanged")
 GK_ATOM(onholding, "onholding")
 GK_ATOM(oniccinfochange, "oniccinfochange")
 GK_ATOM(onicccardlockerror, "onicccardlockerror")
@@ -751,11 +753,13 @@ GK_ATOM(onobsolete, "onobsolete")
 GK_ATOM(ononline, "ononline")
 GK_ATOM(onoffline, "onoffline")
 GK_ATOM(onopen, "onopen")
+GK_ATOM(onotastatuschange, "onotastatuschange")
 GK_ATOM(onoverflow, "onoverflow")
 GK_ATOM(onoverflowchanged, "onoverflowchanged")
 GK_ATOM(onpagehide, "onpagehide")
 GK_ATOM(onpageshow, "onpageshow")
 GK_ATOM(onpaint, "onpaint")
+GK_ATOM(onpairedstatuschanged, "onpairedstatuschanged")
 GK_ATOM(onpaste, "onpaste")
 GK_ATOM(onpopuphidden, "onpopuphidden")
 GK_ATOM(onpopuphiding, "onpopuphiding")
@@ -763,12 +767,15 @@ GK_ATOM(onpopupshowing, "onpopupshowing")
 GK_ATOM(onpopupshown, "onpopupshown")
 GK_ATOM(onreadystatechange, "onreadystatechange")
 GK_ATOM(onreceived, "onreceived")
+GK_ATOM(onremoteheld, "onremoteheld")
+GK_ATOM(onremoteresumed, "onremoteresumed")
 GK_ATOM(onretrieving, "onretrieving")
 GK_ATOM(onRequest, "onRequest")
 GK_ATOM(onreset, "onreset")
 GK_ATOM(onresuming, "onresuming")
 GK_ATOM(onMozBeforeResize, "onMozBeforeResize")
 GK_ATOM(onresize, "onresize")
+GK_ATOM(onscostatuschanged, "onscostatuschanged")
 GK_ATOM(onscroll, "onscroll")
 GK_ATOM(onselect, "onselect")
 GK_ATOM(onsending, "onsending")

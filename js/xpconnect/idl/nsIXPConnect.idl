@@ -23,19 +23,26 @@
 #include "xptinfo.h"
 #include "nsAXPCNativeCallContext.h"
 
+struct JSFreeOp;
+
+namespace JS {
+template <typename T> class Handle;
+template <typename T> class MutableHandle;
+}
+
 class nsWrapperCache;
 %}
 
 /***************************************************************************/
 
-// NB: jsval and jsid are declared in nsIVariant.idl
+// NB: jsval and jsid are declared in nsrootidl.idl
 
 [ptr] native JSContextPtr(JSContext);
 [ptr] native JSClassPtr(JSClass);
 [ptr] native JSFreeOpPtr(JSFreeOp);
 [ptr] native JSObjectPtr(JSObject);
-[ptr] native JSValPtr(jsval);
-[ptr] native JSValConstPtr(const jsval);
+[ptr] native JSValPtr(JS::Value);
+[ptr] native JSValConstPtr(const JS::Value);
       native JSPropertyOp(JSPropertyOp);
       native JSEqualityOp(JSEqualityOp);
 [ptr] native JSScriptPtr(JSScript);
@@ -46,7 +53,7 @@ class nsWrapperCache;
 [ptr] native nsWrapperCachePtr(nsWrapperCache);
 [ref] native JSCompartmentOptions(JS::CompartmentOptions);
 [ref] native JSCallArgsRef(const JS::CallArgs);
-      native JSHandleId(JS::HandleId);
+      native JSHandleId(JS::Handle<jsid>);
 
 /***************************************************************************/
 
@@ -291,7 +298,7 @@ interface nsIXPCFunctionThisTranslator : nsISupports
     { 0xbd, 0xd6, 0x0, 0x0, 0x64, 0x65, 0x73, 0x74 } }
 %}
 
-[uuid(3bc074e6-2102-40a4-8c84-38b002c9e2f1)]
+[uuid(0ebc00f0-f3ad-11e2-b778-0800200c9a66)]
 interface nsIXPConnect : nsISupports
 {
 %{ C++
@@ -631,4 +638,11 @@ interface nsIXPConnect : nsISupports
 
     [noscript] JSObjectPtr readFunction(in nsIObjectInputStream aStream,
                                         in JSContextPtr aJSContext);
+
+    /**
+     * This function should be called in JavaScript error reporters
+     * to signal that they are ignoring the error. In this case,
+     * XPConnect can print a warning to the console.
+     */
+    [noscript] void markErrorUnreported(in JSContextPtr aJSContext);
 };

@@ -11,7 +11,6 @@
 #include "mozilla/ipc/PTestShellParent.h"
 #include "mozilla/ipc/PTestShellCommandParent.h"
 
-#include "jsapi.h"
 #include "nsAutoJSValHolder.h"
 #include "nsStringGlue.h"
 
@@ -41,12 +40,11 @@ public:
 class TestShellCommandParent : public PTestShellCommandParent
 {
 public:
-  TestShellCommandParent() : mCx(NULL) { }
+  TestShellCommandParent() : mCx(nullptr) { }
 
-  JSBool SetCallback(JSContext* aCx,
-                     JS::Value aCallback);
+  bool SetCallback(JSContext* aCx, JS::Value aCallback);
 
-  JSBool RunCallback(const nsString& aResponse);
+  bool RunCallback(const nsString& aResponse);
 
   void ReleaseCallback();
 

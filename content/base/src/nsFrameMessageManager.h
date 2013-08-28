@@ -21,7 +21,9 @@
 #include "mozilla/Services.h"
 #include "nsIObserverService.h"
 #include "nsThreadUtils.h"
+#include "nsWeakPtr.h"
 #include "mozilla/Attributes.h"
+#include "js/RootingAPI.h"
 
 namespace mozilla {
 namespace dom {
@@ -111,7 +113,9 @@ class JSObject;
 
 struct nsMessageListenerInfo
 {
-  nsCOMPtr<nsIMessageListener> mListener;
+  // Exactly one of mStrongListener and mWeakListener must be non-null.
+  nsCOMPtr<nsIMessageListener> mStrongListener;
+  nsWeakPtr mWeakListener;
   nsCOMPtr<nsIAtom> mMessage;
 };
 
@@ -132,7 +136,7 @@ class MOZ_STACK_CLASS SameProcessCpowHolder : public CpowHolder
     bool ToObject(JSContext* aCx, JSObject** aObjp);
 
   private:
-    JS::RootedObject mObj;
+    JS::Rooted<JSObject*> mObj;
 };
 
 class nsFrameMessageManager MOZ_FINAL : public nsIContentFrameMessageManager,

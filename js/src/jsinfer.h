@@ -11,14 +11,12 @@
 
 #include "mozilla/MemoryReporting.h"
 
-#include "jsalloc.h"
 #include "jsfriendapi.h"
 
+#include "ds/IdValuePair.h"
 #include "ds/LifoAlloc.h"
 #include "gc/Barrier.h"
-#include "gc/Heap.h"
-#include "js/HashTable.h"
-#include "js/Vector.h"
+#include "js/Utility.h"
 
 class JSScript;
 
@@ -101,11 +99,19 @@ class RootedBase<TaggedProto> : public TaggedProtoOperations<Rooted<TaggedProto>
 
 class CallObject;
 
-namespace ion {
+namespace jit {
     struct IonScript;
 }
 
+namespace analyze {
+    class ScriptAnalysis;
+}
+
 namespace types {
+
+class TypeCallsite;
+class TypeCompartment;
+class TypeSet;
 
 /* Type set entry for either a JSObject with singleton type or a non-singleton TypeObject. */
 struct TypeObjectKey {
@@ -198,7 +204,7 @@ class Type
 };
 
 /* Get the type of a jsval, or zero for an unknown special value. */
-inline Type GetValueType(JSContext *cx, const Value &val);
+inline Type GetValueType(const Value &val);
 
 /*
  * Type inference memory management overview.
@@ -483,10 +489,10 @@ class TypeSet
      * Add a type to this set, calling any constraint handlers if this is a new
      * possible type.
      */
-    inline void addType(JSContext *cx, Type type);
+    inline void addType(ExclusiveContext *cx, Type type);
 
     /* Mark this type set as representing an own property or configured property. */
-    inline void setOwnProperty(JSContext *cx, bool configured);
+    inline void setOwnProperty(ExclusiveContext *cx, bool configured);
 
     /*
      * Add an object to this set using the specified allocator, without
@@ -529,8 +535,6 @@ class TypeSet
      * This variant doesn't freeze constraints. That variant is called knownSubset
      */
     bool isSubset(TypeSet *other);
-    bool isSubsetIgnorePrimitives(TypeSet *other);
-    bool intersectionEmpty(TypeSet *other);
 
     inline StackTypeSet *toStackTypeSet();
     inline HeapTypeSet *toHeapTypeSet();
@@ -643,12 +647,6 @@ class StackTypeSet : public TypeSet
      * specified type.
      */
     bool filtersType(const StackTypeSet *other, Type type) const;
-
-    /*
-     * Get whether this type only contains non-string primitives:
-     * null/undefined/int/double, or some combination of those.
-     */
-    bool knownNonStringPrimitive();
 
     enum DoubleConversion {
         /* All types in the set should use eager double conversion. */
@@ -1042,10 +1040,10 @@ struct TypeObject : gc::Cell
      * assignment, and the own types of the property will be used instead of
      * aggregate types.
      */
-    inline HeapTypeSet *getProperty(JSContext *cx, jsid id, bool own);
+    inline HeapTypeSet *getProperty(ExclusiveContext *cx, jsid id, bool own);
 
     /* Get a property only if it already exists. */
-    inline HeapTypeSet *maybeGetProperty(jsid id, JSContext *cx);
+    inline HeapTypeSet *maybeGetProperty(ExclusiveContext *cx, jsid id);
 
     inline unsigned getPropertyCount();
     inline Property *getProperty(unsigned i);
@@ -1058,19 +1056,19 @@ struct TypeObject : gc::Cell
 
     /* Helpers */
 
-    bool addProperty(JSContext *cx, jsid id, Property **pprop);
-    bool addDefiniteProperties(JSContext *cx, JSObject *obj);
+    bool addProperty(ExclusiveContext *cx, jsid id, Property **pprop);
+    bool addDefiniteProperties(ExclusiveContext *cx, JSObject *obj);
     bool matchDefiniteProperties(HandleObject obj);
     void addPrototype(JSContext *cx, TypeObject *proto);
-    void addPropertyType(JSContext *cx, jsid id, Type type);
-    void addPropertyType(JSContext *cx, jsid id, const Value &value);
-    void addPropertyType(JSContext *cx, const char *name, Type type);
-    void addPropertyType(JSContext *cx, const char *name, const Value &value);
-    void markPropertyConfigured(JSContext *cx, jsid id);
-    void markStateChange(JSContext *cx);
-    void setFlags(JSContext *cx, TypeObjectFlags flags);
-    void markUnknown(JSContext *cx);
-    void clearNewScript(JSContext *cx);
+    void addPropertyType(ExclusiveContext *cx, jsid id, Type type);
+    void addPropertyType(ExclusiveContext *cx, jsid id, const Value &value);
+    void addPropertyType(ExclusiveContext *cx, const char *name, Type type);
+    void addPropertyType(ExclusiveContext *cx, const char *name, const Value &value);
+    void markPropertyConfigured(ExclusiveContext *cx, jsid id);
+    void markStateChange(ExclusiveContext *cx);
+    void setFlags(ExclusiveContext *cx, TypeObjectFlags flags);
+    void markUnknown(ExclusiveContext *cx);
+    void clearNewScript(ExclusiveContext *cx);
     void getFromPrototypes(JSContext *cx, jsid id, TypeSet *types, bool force = false);
 
     void print();
@@ -1108,7 +1106,7 @@ struct TypeObject : gc::Cell
  * Entries for the per-compartment set of type objects which are the default
  * 'new' or the lazy types of some prototype.
  */
-struct TypeObjectEntry
+struct TypeObjectEntry : DefaultHasher<ReadBarriered<TypeObject> >
 {
     struct Lookup {
         Class *clasp;
@@ -1291,7 +1289,7 @@ struct CompilerOutput
     Kind kind() const { return static_cast<Kind>(kindInt); }
     void setKind(Kind k) { kindInt = k; }
 
-    ion::IonScript *ion() const;
+    jit::IonScript *ion() const;
 
     bool isValid() const;
 
@@ -1369,8 +1367,13 @@ struct TypeCompartment
     ArrayTypeTable *arrayTypeTable;
     ObjectTypeTable *objectTypeTable;
 
-    void fixArrayType(JSContext *cx, JSObject *obj);
-    void fixObjectType(JSContext *cx, JSObject *obj);
+  private:
+    void setTypeToHomogenousArray(ExclusiveContext *cx, JSObject *obj, Type type);
+
+  public:
+    void fixArrayType(ExclusiveContext *cx, JSObject *obj);
+    void fixObjectType(ExclusiveContext *cx, JSObject *obj);
+    void fixRestArgumentsType(ExclusiveContext *cx, JSObject *obj);
 
     JSObject *newTypedObject(JSContext *cx, IdValuePair *properties, size_t nproperties);
 
@@ -1411,7 +1414,7 @@ struct TypeCompartment
     void processPendingRecompiles(FreeOp *fop);
 
     /* Mark all types as needing destruction once inference has 'finished'. */
-    void setPendingNukeTypes(JSContext *cx);
+    void setPendingNukeTypes(ExclusiveContext *cx);
 
     /* Mark a script as needing recompilation once inference has finished. */
     void addPendingRecompile(JSContext *cx, const RecompileInfo &info);
@@ -1428,10 +1431,10 @@ struct TypeCompartment
     void sweepShapes(FreeOp *fop);
     void sweepCompilerOutputs(FreeOp *fop, bool discardConstraints);
 
-    void maybePurgeAnalysis(JSContext *cx, bool force = false);
-
     void finalizeObjects();
 };
+
+void FixRestArgumentsType(ExclusiveContext *cxArg, JSObject *obj);
 
 struct TypeZone
 {

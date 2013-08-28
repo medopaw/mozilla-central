@@ -7,6 +7,7 @@
 /*
  * JS atom table.
  */
+
 #include "jsatominlines.h"
 
 #include "mozilla/RangedPtr.h"
@@ -22,6 +23,7 @@
 #include "gc/Marking.h"
 #include "vm/Xdr.h"
 
+#include "jscntxtinlines.h"
 #include "jscompartmentinlines.h"
 
 #include "vm/String-inl.h"
@@ -102,7 +104,6 @@ const char js_typeof_str[]          = "typeof";
 const char js_void_str[]            = "void";
 const char js_while_str[]           = "while";
 const char js_with_str[]            = "with";
-const char js_yield_str[]           = "yield";
 
 /*
  * For a browser build from 2007-08-09 after the browser starts up there are
@@ -112,16 +113,17 @@ const char js_yield_str[]           = "yield";
  */
 #define JS_STRING_HASH_COUNT   1024
 
-JSBool
+bool
 js::InitAtoms(JSRuntime *rt)
 {
-    return rt->atoms.init(JS_STRING_HASH_COUNT);
+    AutoLockForExclusiveAccess lock(rt);
+    return rt->atoms().init(JS_STRING_HASH_COUNT);
 }
 
 void
 js::FinishAtoms(JSRuntime *rt)
 {
-    AtomSet &atoms = rt->atoms;
+    AtomSet &atoms = rt->atoms();
     if (!atoms.initialized()) {
         /*
          * We are called with uninitialized state when JS_NewRuntime fails and
@@ -179,27 +181,29 @@ void
 js::MarkAtoms(JSTracer *trc)
 {
     JSRuntime *rt = trc->runtime;
-    for (AtomSet::Range r = rt->atoms.all(); !r.empty(); r.popFront()) {
-        AtomStateEntry entry = r.front();
+    for (AtomSet::Enum e(rt->atoms()); !e.empty(); e.popFront()) {
+        const AtomStateEntry &entry = e.front();
         if (!entry.isTagged())
             continue;
 
-        JSAtom *tmp = entry.asPtr();
-        MarkStringRoot(trc, &tmp, "interned_atom");
-        JS_ASSERT(tmp == entry.asPtr());
+        JSAtom *atom = entry.asPtr();
+        bool tagged = entry.isTagged();
+        MarkStringRoot(trc, &atom, "interned_atom");
+        if (entry.asPtr() != atom)
+            e.rekeyFront(AtomHasher::Lookup(atom), AtomStateEntry(atom, tagged));
     }
 }
 
 void
 js::SweepAtoms(JSRuntime *rt)
 {
-    for (AtomSet::Enum e(rt->atoms); !e.empty(); e.popFront()) {
+    for (AtomSet::Enum e(rt->atoms()); !e.empty(); e.popFront()) {
         AtomStateEntry entry = e.front();
         JSAtom *atom = entry.asPtr();
         bool isDying = IsStringAboutToBeFinalized(&atom);
 
         /* Pinned or interned key cannot be finalized. */
-        JS_ASSERT_IF(entry.isTagged(), !isDying);
+        JS_ASSERT_IF(rt->hasContexts() && entry.isTagged(), !isDying);
 
         if (isDying)
             e.removeFront();
@@ -213,7 +217,9 @@ AtomIsInterned(JSContext *cx, JSAtom *atom)
     if (StaticStrings::isStatic(atom))
         return true;
 
-    AtomSet::Ptr p = cx->runtime()->atoms.lookup(atom);
+    AutoLockForExclusiveAccess lock(cx);
+
+    AtomSet::Ptr p = cx->runtime()->atoms().lookup(atom);
     if (!p)
         return false;
 
@@ -242,6 +248,8 @@ AtomizeAndTakeOwnership(ExclusiveContext *cx, jschar *tbchars, size_t length, In
         return s;
     }
 
+    AutoLockForExclusiveAccess lock(cx);
+
     /*
      * If a GC occurs at js_NewStringCopy then |p| will still have the correct
      * hash, allowing us to avoid rehashing it. Even though the hash is
@@ -258,7 +266,7 @@ AtomizeAndTakeOwnership(ExclusiveContext *cx, jschar *tbchars, size_t length, In
         return atom;
     }
 
-    AutoEnterAtomsCompartment ac(cx);
+    AutoCompartment ac(cx, cx->atomsCompartment());
 
     JSFlatString *flat = js_NewString<CanGC>(cx, tbchars, length);
     if (!flat) {
@@ -293,6 +301,8 @@ AtomizeAndCopyChars(ExclusiveContext *cx, const jschar *tbchars, size_t length, 
      * GC will potentially free some table entries.
      */
 
+    AutoLockForExclusiveAccess lock(cx);
+
     AtomSet& atoms = cx->atoms();
     AtomSet::AddPtr p = atoms.lookupForAdd(AtomHasher::Lookup(tbchars, length));
     SkipRoot skipHash(cx, &p); /* Prevent the hash from being poisoned. */
@@ -302,7 +312,7 @@ AtomizeAndCopyChars(ExclusiveContext *cx, const jschar *tbchars, size_t length, 
         return atom;
     }
 
-    AutoEnterAtomsCompartment ac(cx);
+    AutoCompartment ac(cx, cx->atomsCompartment());
 
     JSFlatString *flat = js_NewStringCopyN<allowGC>(cx, tbchars, length);
     if (!flat)
@@ -312,7 +322,8 @@ AtomizeAndCopyChars(ExclusiveContext *cx, const jschar *tbchars, size_t length, 
 
     if (!atoms.relookupOrAdd(p, AtomHasher::Lookup(tbchars, length),
                              AtomStateEntry(atom, bool(ib)))) {
-        js_ReportOutOfMemory(cx); /* SystemAllocPolicy does not report OOM. */
+        if (allowGC)
+            js_ReportOutOfMemory(cx); /* SystemAllocPolicy does not report OOM. */
         return NULL;
     }
 
@@ -330,6 +341,8 @@ js::AtomizeString(ExclusiveContext *cx, JSString *str,
         if (ib != InternAtom || js::StaticStrings::isStatic(&atom))
             return &atom;
 
+        AutoLockForExclusiveAccess lock(cx);
+
         AtomSet::Ptr p = cx->atoms().lookup(AtomHasher::Lookup(&atom));
         JS_ASSERT(p); /* Non-static atom must exist in atom state set. */
         JS_ASSERT(p->asPtr() == &atom);
@@ -338,16 +351,9 @@ js::AtomizeString(ExclusiveContext *cx, JSString *str,
         return &atom;
     }
 
-    const jschar *chars;
-    if (str->isLinear()) {
-        chars = str->asLinear().chars();
-    } else {
-        if (!cx->shouldBeJSContext())
-            return NULL;
-        chars = str->getChars(cx->asJSContext());
-        if (!chars)
-            return NULL;
-    }
+    const jschar *chars = str->getChars(cx);
+    if (!chars)
+        return NULL;
 
     if (JSAtom *atom = AtomizeAndCopyChars<NoGC>(cx, chars, str->length(), ib))
         return atom;

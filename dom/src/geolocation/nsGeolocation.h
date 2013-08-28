@@ -5,18 +5,15 @@
 #ifndef nsGeoLocation_h
 #define nsGeoLocation_h
 
-#include "mozilla/dom/PContentPermissionRequestChild.h"
 // Microsoft's API Name hackery sucks
 #undef CreateEvent
 
 #include "mozilla/StaticPtr.h"
 #include "nsCOMPtr.h"
 #include "nsAutoPtr.h"
-#include "nsCOMArray.h"
 #include "nsTArray.h"
 #include "nsITimer.h"
 #include "nsIObserver.h"
-#include "nsIURI.h"
 #include "nsWrapperCache.h"
 
 #include "nsWeakPtr.h"
@@ -28,15 +25,13 @@
 #include "nsIDOMGeoPositionError.h"
 #include "nsIDOMGeoPositionCallback.h"
 #include "nsIDOMGeoPositionErrorCallback.h"
-#include "nsIDOMNavigatorGeolocation.h"
 #include "mozilla/dom/GeolocationBinding.h"
 #include "mozilla/dom/PositionErrorBinding.h"
 #include "mozilla/dom/CallbackObject.h"
 
-#include "nsPIDOMWindow.h"
-
 #include "nsIGeolocationProvider.h"
 #include "nsIContentPermissionPrompt.h"
+#include "nsIDOMWindow.h"
 #include "DictionaryHelpers.h"
 #include "PCOMContentPermissionRequestChild.h"
 #include "mozilla/Attributes.h"
@@ -109,7 +104,7 @@ public:
   static already_AddRefed<nsGeolocationService> GetGeolocationService();
   static mozilla::StaticRefPtr<nsGeolocationService> sService;
 
-  NS_DECL_ISUPPORTS
+  NS_DECL_THREADSAFE_ISUPPORTS
   NS_DECL_NSIGEOLOCATIONUPDATE
   NS_DECL_NSIOBSERVER
 

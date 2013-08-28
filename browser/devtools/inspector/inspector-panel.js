@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: Javascript; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* vim: set ft=javascript ts=2 et sw=2 tw=80: */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -45,12 +45,8 @@ InspectorPanel.prototype = {
    */
   open: function InspectorPanel_open() {
     return this.target.makeRemote().then(() => {
-      return this.target.inspector.getWalker();
-    }).then(walker => {
-      if (this._destroyPromise) {
-        walker.release().then(null, console.error);
-      }
-      this.walker = walker;
+      return this._getWalker();
+    }).then(() => {
       return this._getDefaultNodeForSelection();
     }).then(defaultSelection => {
       return this._deferredOpen(defaultSelection);
@@ -137,11 +133,7 @@ InspectorPanel.prototype = {
       // All the components are initialized. Let's select a node.
       this._selection.setNodeFront(defaultSelection);
 
-      if (this.highlighter) {
-        this.highlighter.unlock();
-      }
-
-      this.markup.expandNode(this.selection.node);
+      this.markup.expandNode(this.selection.nodeFront);
 
       this.emit("ready");
       deferred.resolve(this);
@@ -153,18 +145,41 @@ InspectorPanel.prototype = {
     return deferred.promise;
   },
 
+  _getWalker: function() {
+    let inspector = this.target.inspector;
+    return inspector.getWalker().then(walker => {
+      this.walker = walker;
+      return inspector.getPageStyle();
+    }).then(pageStyle => {
+      this.pageStyle = pageStyle;
+    });
+  },
+
   /**
    * Return a promise that will resolve to the default node for selection.
    */
-  _getDefaultNodeForSelection : function() {
+  _getDefaultNodeForSelection: function() {
+    if (this._defaultNode) {
+      return this._defaultNode;
+    }
+    let walker = this.walker;
+
     // if available set body node as default selected node
     // else set documentElement
-    return this.walker.querySelector(this.walker.rootNode, "body").then(front => {
+    return walker.getRootNode().then(rootNode => {
+      return walker.querySelector(rootNode, "body");
+    }).then(front => {
       if (front) {
         return front;
       }
       return this.walker.documentElement(this.walker.rootNode);
-    });
+    }).then(node => {
+      if (walker !== this.walker) {
+        promise.reject(null);
+      }
+      this._defaultNode = node;
+      return node;
+    })
   },
 
   /**
@@ -214,18 +229,19 @@ InspectorPanel.prototype = {
     } else if (this.target.window) {
       searchDoc = this.target.window.document;
     } else {
-      return;
+      searchDoc = null;
     }
     // Initiate the selectors search object.
-    let setNodeFunction = function(node) {
-      this.selection.setNode(node, "selectorsearch");
+    let setNodeFunction = function(eventName, node) {
+      this.selection.setNodeFront(node, "selectorsearch");
     }.bind(this);
     if (this.searchSuggestions) {
       this.searchSuggestions.destroy();
       this.searchSuggestions = null;
     }
     this.searchBox = this.panelDoc.getElementById("inspector-searchbox");
-    this.searchSuggestions = new SelectorSearch(searchDoc, this.searchBox, setNodeFunction);
+    this.searchSuggestions = new SelectorSearch(this, searchDoc, this.searchBox);
+    this.searchSuggestions.on("node-selected", setNodeFunction);
   },
 
   /**
@@ -274,32 +290,21 @@ InspectorPanel.prototype = {
    */
   onNavigatedAway: function InspectorPanel_onNavigatedAway(event, payload) {
     let newWindow = payload._navPayload || payload;
-    this.walker.release().then(null, console.error);
-    this.walker = null;
+    this._defaultNode = null;
     this.selection.setNodeFront(null);
-    this.selection.setWalker(null);
     this._destroyMarkup();
     this.isDirty = false;
 
-    this.target.inspector.getWalker().then(walker => {
+    this._getDefaultNodeForSelection().then(defaultNode => {
       if (this._destroyPromise) {
-        walker.release().then(null, console.error);
         return;
       }
+      this.selection.setNodeFront(defaultNode, "navigateaway");
 
-      this.walker = walker;
-      this.selection.setWalker(walker);
-      this._getDefaultNodeForSelection().then(defaultNode => {
-        if (this._destroyPromise) {
-          return;
-        }
-        this.selection.setNodeFront(defaultNode, "navigateaway");
-
-        this._initMarkup();
-        this.once("markuploaded", () => {
-          this.markup.expandNode(this.selection.node);
-          this.setupSearchBox();
-        });
+      this._initMarkup();
+      this.once("markuploaded", () => {
+        this.markup.expandNode(this.selection.nodeFront);
+        this.setupSearchBox();
       });
     });
   },
@@ -318,7 +323,7 @@ InspectorPanel.prototype = {
       try {
         selfUpdate(selection);
       } catch(ex) {
-        console.error(ex);
+        console.error(ex)
       }
     }, Ci.nsIThread.DISPATCH_NORMAL);
   },
@@ -391,7 +396,7 @@ InspectorPanel.prototype = {
   onDetached: function InspectorPanel_onDetached(event, parentNode) {
     this.cancelLayoutChange();
     this.breadcrumbs.cutAfter(this.breadcrumbs.indexOf(parentNode));
-    this.selection.setNodeFront(parentNode, "detached");
+    this.selection.setNodeFront(parentNode ? parentNode : this._defaultNode, "detached");
   },
 
   /**
@@ -404,6 +409,7 @@ InspectorPanel.prototype = {
     if (this.walker) {
       this._destroyPromise = this.walker.release().then(null, console.error);
       delete this.walker;
+      delete this.pageStyle;
     } else {
       this._destroyPromise = promise.resolve(null);
     }
@@ -624,10 +630,7 @@ InspectorPanel.prototype = {
     if (!this.selection.isNode()) {
       return;
     }
-    let toCopy = this.selection.node.innerHTML;
-    if (toCopy) {
-      clipboardHelper.copyString(toCopy);
-    }
+    this._copyLongStr(this.walker.innerHTML(this.selection.nodeFront));
   },
 
   /**
@@ -638,10 +641,17 @@ InspectorPanel.prototype = {
     if (!this.selection.isNode()) {
       return;
     }
-    let toCopy = this.selection.node.outerHTML;
-    if (toCopy) {
-      clipboardHelper.copyString(toCopy);
-    }
+
+    this._copyLongStr(this.walker.outerHTML(this.selection.nodeFront));
+  },
+
+  _copyLongStr: function(promise) {
+    return promise.then(longstr => {
+      return longstr.string().then(toCopy => {
+        longstr.release().then(null, console.error);
+        clipboardHelper.copyString(toCopy);
+      });
+    }).then(null, console.error);
   },
 
   /**
@@ -668,17 +678,13 @@ InspectorPanel.prototype = {
       return;
     }
 
-    let toDelete = this.selection.node;
-
-    let parent = this.selection.node.parentNode;
-
     // If the markup panel is active, use the markup panel to delete
     // the node, making this an undoable action.
     if (this.markup) {
-      this.markup.deleteNode(toDelete);
+      this.markup.deleteNode(this.selection.nodeFront);
     } else {
       // remove the node from content
-      parent.removeChild(toDelete);
+      this.walker.removeNode(this.selection.nodeFront);
     }
   },
 

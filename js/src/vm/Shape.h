@@ -9,7 +9,9 @@
 
 #include "mozilla/Attributes.h"
 #include "mozilla/GuardObjects.h"
+#include "mozilla/Maybe.h"
 #include "mozilla/MemoryReporting.h"
+#include "mozilla/TemplateLib.h"
 
 #include "jspropertytree.h"
 #include "jstypes.h"
@@ -108,7 +110,7 @@ static const uint32_t SHAPE_MAXIMUM_SLOT = JS_BIT(24) - 2;
  * minimize footprint.
  */
 struct ShapeTable {
-    static const uint32_t HASH_BITS     = tl::BitSize<HashNumber>::result;
+    static const uint32_t HASH_BITS     = mozilla::tl::BitSize<HashNumber>::value;
     static const uint32_t MIN_ENTRIES   = 7;
     static const uint32_t MIN_SIZE_LOG2 = 4;
     static const uint32_t MIN_SIZE      = JS_BIT(MIN_SIZE_LOG2);
@@ -229,12 +231,17 @@ class Shape;
 class UnownedBaseShape;
 struct StackBaseShape;
 
+namespace gc {
+void MergeCompartments(JSCompartment *source, JSCompartment *target);
+}
+
 class BaseShape : public js::gc::Cell
 {
   public:
     friend class Shape;
     friend struct StackBaseShape;
     friend struct StackShape;
+    friend void gc::MergeCompartments(JSCompartment *source, JSCompartment *target);
 
     enum Flag {
         /* Owned by the referring shape. */
@@ -966,6 +973,7 @@ struct InitialShapeEntry
 
     static inline HashNumber hash(const Lookup &lookup);
     static inline bool match(const InitialShapeEntry &key, const Lookup &lookup);
+    static void rekey(InitialShapeEntry &k, const InitialShapeEntry& newKey) { k = newKey; }
 };
 
 typedef HashSet<InitialShapeEntry, InitialShapeEntry, SystemAllocPolicy> InitialShapeSet;
@@ -994,7 +1002,7 @@ struct StackShape
         JS_ASSERT(slot <= SHAPE_INVALID_SLOT);
     }
 
-    StackShape(Shape *const &shape)
+    StackShape(Shape *shape)
       : base(shape->base()->unowned()),
         propid(shape->propidRef()),
         slot_(shape->slotInfo & Shape::SLOT_MASK),
@@ -1100,7 +1108,7 @@ inline void
 SHAPE_STORE_PRESERVING_COLLISION(js::Shape **spp, js::Shape *shape)
 {
     *spp = reinterpret_cast<js::Shape*>(uintptr_t(shape) |
-                                        SHAPE_HAD_COLLISION(*spp));
+                                        uintptr_t(SHAPE_HAD_COLLISION(*spp)));
 }
 
 namespace js {

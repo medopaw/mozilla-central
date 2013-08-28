@@ -380,6 +380,9 @@ public class GeckoLayerClient implements LayerView.Listener, PanZoomTarget
                 if (!oldMetrics.fuzzyEquals(newMetrics)) {
                     abortPanZoomAnimation();
                 }
+                mPanZoomController.updateScrollOffset(
+                		messageMetrics.viewportRectLeft / messageMetrics.zoomFactor,
+                		messageMetrics.viewportRectTop / messageMetrics.zoomFactor);
                 break;
             case PAGE_SIZE:
                 // adjust the page dimensions to account for differences in zoom
@@ -771,6 +774,12 @@ public class GeckoLayerClient implements LayerView.Listener, PanZoomTarget
     @Override
     public boolean isFullScreen() {
         return mView.isFullScreen();
+    }
+
+    /** Implementation of PanZoomTarget */
+    @Override
+    public RectF getMaxMargins() {
+        return mMarginsAnimator.getMaxMargins();
     }
 
     /** Implementation of PanZoomTarget */

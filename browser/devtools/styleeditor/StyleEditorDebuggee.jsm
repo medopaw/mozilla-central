@@ -95,12 +95,17 @@ StyleEditorDebuggee.prototype = {
    */
   clear: function() {
     this.baseURI = null;
+    this.clearStyleSheets();
+  },
 
+  /**
+   * Clear stylesheets.
+   */
+  clearStyleSheets: function() {
     for (let stylesheet of this.styleSheets) {
       stylesheet.destroy();
     }
     this.styleSheets = [];
-
     this.emit("stylesheets-cleared");
   },
 
@@ -123,7 +128,7 @@ StyleEditorDebuggee.prototype = {
   _getBaseURI: function() {
     let message = { type: "getBaseURI" };
     this._sendRequest(message, (response) => {
-      this.baseURI = response.baseURI;
+      this.baseURI = Services.io.newURI(response.baseURI, null, null);
     });
   },
 
@@ -137,6 +142,9 @@ StyleEditorDebuggee.prototype = {
    *         Object with 'styleSheets' array of actor forms
    */
   _onDocumentLoad: function(type, request) {
+    if (this.styleSheets.length > 0) {
+      this.clearStyleSheets();
+    }
     let sheets = [];
     for (let form of request.styleSheets) {
       let sheet = this._addStyleSheet(form);

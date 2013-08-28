@@ -5,7 +5,10 @@ content.document.title = "Hello, Kitty";
 (function start() {
     sync_test();
     async_test();
-    sendAsyncMessage("cpows:done", {});
+    // The sync-ness of this call is important, because otherwise
+    // we tear down the child's document while we are
+    // still in the async test in the parent.
+    sendSyncMessage("cpows:done", {});
   }
 )();
 
@@ -27,8 +30,15 @@ function make_object()
   o.b = true;
   o.s = "hello";
   o.x = { i: 10 };
-  o.f = function () { return 99; }
+  o.f = function () { return 99; };
+
+  // Doing anything with this Proxy will throw.
+  var throwing = new Proxy({}, new Proxy({}, {
+      get: function (trap) { throw trap; }
+    }));
+
   return { "data": o,
+           "throwing": throwing,
            "document": content.document
          };
 }

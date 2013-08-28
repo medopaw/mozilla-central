@@ -89,6 +89,8 @@
 #include "mozilla/dom/EventSource.h"
 #include "mozilla/dom/indexedDB/IndexedDatabaseManager.h"
 #include "mozilla/dom/network/TCPSocketChild.h"
+#include "mozilla/dom/network/TCPSocketParent.h"
+#include "mozilla/dom/network/TCPServerSocketChild.h"
 #include "mozilla/dom/quota/QuotaManager.h"
 #include "mozilla/OSFileConstants.h"
 #include "mozilla/Services.h"
@@ -168,12 +170,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsPlaintextEditor)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsParserUtils)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsTextServicesDocument)
-#ifdef ENABLE_EDITOR_API_LOG
-#include "nsHTMLEditorLog.h"
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLEditorLog)
-#else
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLEditor)
-#endif
 
 #include "nsHTMLCanvasFrame.h"
 
@@ -251,6 +248,8 @@ using mozilla::dom::indexedDB::IndexedDatabaseManager;
 using mozilla::dom::power::PowerManagerService;
 using mozilla::dom::quota::QuotaManager;
 using mozilla::dom::TCPSocketChild;
+using mozilla::dom::TCPSocketParent;
+using mozilla::dom::TCPServerSocketChild;
 using mozilla::dom::time::TimeService;
 
 // Transformiix
@@ -274,6 +273,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsFormData)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBlobProtocolHandler)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMediaStreamProtocolHandler)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMediaSourceProtocolHandler)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsFontTableProtocolHandler)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsHostObjectURI)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDOMParser)
 NS_GENERIC_FACTORY_CONSTRUCTOR(DOMSessionStorageManager)
@@ -392,9 +392,9 @@ Initialize()
     return NS_ERROR_FAILURE;
   }
 
-  MOZ_STATIC_ASSERT(sizeof(uintptr_t) == sizeof(void*),
-                    "Eeek! You'll need to adjust the size of uintptr_t to the "
-                    "size of a pointer on your platform.");
+  static_assert(sizeof(uintptr_t) == sizeof(void*),
+                "Eeek! You'll need to adjust the size of uintptr_t to the "
+                "size of a pointer on your platform.");
 
   gInitialized = true;
 
@@ -640,6 +640,8 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsStructuredCloneContainer)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(OSFileConstantsService)
 NS_GENERIC_FACTORY_CONSTRUCTOR(TCPSocketChild)
+NS_GENERIC_FACTORY_CONSTRUCTOR(TCPSocketParent)
+NS_GENERIC_FACTORY_CONSTRUCTOR(TCPServerSocketChild)
 
 #ifdef ACCESSIBILITY
 #include "nsAccessibilityService.h"
@@ -735,6 +737,7 @@ NS_DEFINE_NAMED_CID(NS_FORMDATA_CID);
 NS_DEFINE_NAMED_CID(NS_BLOBPROTOCOLHANDLER_CID);
 NS_DEFINE_NAMED_CID(NS_MEDIASTREAMPROTOCOLHANDLER_CID);
 NS_DEFINE_NAMED_CID(NS_MEDIASOURCEPROTOCOLHANDLER_CID);
+NS_DEFINE_NAMED_CID(NS_FONTTABLEPROTOCOLHANDLER_CID);
 NS_DEFINE_NAMED_CID(NS_HOSTOBJECTURI_CID);
 NS_DEFINE_NAMED_CID(NS_XMLHTTPREQUEST_CID);
 NS_DEFINE_NAMED_CID(NS_EVENTSOURCE_CID);
@@ -764,11 +767,7 @@ NS_DEFINE_NAMED_CID(NS_FMRADIO_CID);
 
 NS_DEFINE_NAMED_CID(NS_AUDIOCHANNELAGENT_CID);
 
-#ifdef ENABLE_EDITOR_API_LOG
 NS_DEFINE_NAMED_CID(NS_HTMLEDITOR_CID);
-#else
-NS_DEFINE_NAMED_CID(NS_HTMLEDITOR_CID);
-#endif
 NS_DEFINE_NAMED_CID(NS_EDITORCONTROLLER_CID);
 NS_DEFINE_NAMED_CID(NS_EDITINGCONTROLLER_CID);
 NS_DEFINE_NAMED_CID(NS_EDITORCOMMANDTABLE_CID);
@@ -807,6 +806,8 @@ NS_DEFINE_NAMED_CID(NS_POWERMANAGERSERVICE_CID);
 NS_DEFINE_NAMED_CID(OSFILECONSTANTSSERVICE_CID);
 NS_DEFINE_NAMED_CID(NS_ALARMHALSERVICE_CID);
 NS_DEFINE_NAMED_CID(TCPSOCKETCHILD_CID);
+NS_DEFINE_NAMED_CID(TCPSOCKETPARENT_CID);
+NS_DEFINE_NAMED_CID(TCPSERVERSOCKETCHILD_CID);
 NS_DEFINE_NAMED_CID(NS_TIMESERVICE_CID);
 #ifdef MOZ_WIDGET_GONK
 NS_DEFINE_NAMED_CID(GONK_GPS_GEOLOCATION_PROVIDER_CID);
@@ -1026,6 +1027,7 @@ static const mozilla::Module::CIDEntry kLayoutCIDs[] = {
   { &kNS_BLOBPROTOCOLHANDLER_CID, false, NULL, nsBlobProtocolHandlerConstructor },
   { &kNS_MEDIASTREAMPROTOCOLHANDLER_CID, false, NULL, nsMediaStreamProtocolHandlerConstructor },
   { &kNS_MEDIASOURCEPROTOCOLHANDLER_CID, false, NULL, nsMediaSourceProtocolHandlerConstructor },
+  { &kNS_FONTTABLEPROTOCOLHANDLER_CID, false, NULL, nsFontTableProtocolHandlerConstructor },
   { &kNS_HOSTOBJECTURI_CID, false, NULL, nsHostObjectURIConstructor },
   { &kNS_XMLHTTPREQUEST_CID, false, NULL, nsXMLHttpRequestConstructor },
   { &kNS_EVENTSOURCE_CID, false, NULL, EventSourceConstructor },
@@ -1052,11 +1054,7 @@ static const mozilla::Module::CIDEntry kLayoutCIDs[] = {
   { &kNS_FMRADIO_CID, true, NULL, FMRadioConstructor },
 #endif
   { &kNS_AUDIOCHANNELAGENT_CID, true, NULL, AudioChannelAgentConstructor },
-#ifdef ENABLE_EDITOR_API_LOG
-  { &kNS_HTMLEDITOR_CID, false, NULL, nsHTMLEditorLogConstructor },
-#else
   { &kNS_HTMLEDITOR_CID, false, NULL, nsHTMLEditorConstructor },
-#endif
   { &kNS_EDITORCONTROLLER_CID, false, NULL, nsEditorControllerConstructor },
   { &kNS_EDITINGCONTROLLER_CID, false, NULL, nsEditingControllerConstructor },
   { &kNS_EDITORCOMMANDTABLE_CID, false, NULL, nsEditorCommandTableConstructor },
@@ -1098,6 +1096,8 @@ static const mozilla::Module::CIDEntry kLayoutCIDs[] = {
   { &kOSFILECONSTANTSSERVICE_CID, true, NULL, OSFileConstantsServiceConstructor },
   { &kNS_ALARMHALSERVICE_CID, false, NULL, nsIAlarmHalServiceConstructor },
   { &kTCPSOCKETCHILD_CID, false, NULL, TCPSocketChildConstructor },
+  { &kTCPSOCKETPARENT_CID, false, NULL, TCPSocketParentConstructor },
+  { &kTCPSERVERSOCKETCHILD_CID, false, NULL, TCPServerSocketChildConstructor },
   { &kNS_TIMESERVICE_CID, false, NULL, nsITimeServiceConstructor },
 #ifdef MOZ_WIDGET_GONK
   { &kGONK_GPS_GEOLOCATION_PROVIDER_CID, false, NULL, nsIGeolocationProviderConstructor },
@@ -1184,6 +1184,7 @@ static const mozilla::Module::ContractIDEntry kLayoutContracts[] = {
   { NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX BLOBURI_SCHEME, &kNS_BLOBPROTOCOLHANDLER_CID },
   { NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX MEDIASTREAMURI_SCHEME, &kNS_MEDIASTREAMPROTOCOLHANDLER_CID },
   { NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX MEDIASOURCEURI_SCHEME, &kNS_MEDIASOURCEPROTOCOLHANDLER_CID },
+  { NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX FONTTABLEURI_SCHEME, &kNS_FONTTABLEPROTOCOLHANDLER_CID },
   { NS_XMLHTTPREQUEST_CONTRACTID, &kNS_XMLHTTPREQUEST_CID },
   { NS_EVENTSOURCE_CONTRACTID, &kNS_EVENTSOURCE_CID },
   { NS_DOMACTIVITY_CONTRACTID, &kNS_DOMACTIVITY_CID },
@@ -1211,11 +1212,7 @@ static const mozilla::Module::ContractIDEntry kLayoutContracts[] = {
   { NS_FMRADIO_CONTRACTID, &kNS_FMRADIO_CID },
 #endif
   { NS_AUDIOCHANNELAGENT_CONTRACTID, &kNS_AUDIOCHANNELAGENT_CID },
-#ifdef ENABLE_EDITOR_API_LOG
   { "@mozilla.org/editor/htmleditor;1", &kNS_HTMLEDITOR_CID },
-#else
-  { "@mozilla.org/editor/htmleditor;1", &kNS_HTMLEDITOR_CID },
-#endif
   { "@mozilla.org/editor/editorcontroller;1", &kNS_EDITORCONTROLLER_CID },
   { "@mozilla.org/editor/editingcontroller;1", &kNS_EDITINGCONTROLLER_CID },
   { "@mozilla.org/textservices/textservicesdocument;1", &kNS_TEXTSERVICESDOCUMENT_CID },
@@ -1256,6 +1253,8 @@ static const mozilla::Module::ContractIDEntry kLayoutContracts[] = {
   { OSFILECONSTANTSSERVICE_CONTRACTID, &kOSFILECONSTANTSSERVICE_CID },
   { ALARMHALSERVICE_CONTRACTID, &kNS_ALARMHALSERVICE_CID },
   { "@mozilla.org/tcp-socket-child;1", &kTCPSOCKETCHILD_CID },
+  { "@mozilla.org/tcp-socket-parent;1", &kTCPSOCKETPARENT_CID },
+  { "@mozilla.org/tcp-server-socket-child;1", &kTCPSERVERSOCKETCHILD_CID },
   { TIMESERVICE_CONTRACTID, &kNS_TIMESERVICE_CID },
 #ifdef MOZ_WIDGET_GONK
   { GONK_GPS_GEOLOCATION_PROVIDER_CONTRACTID, &kGONK_GPS_GEOLOCATION_PROVIDER_CID },

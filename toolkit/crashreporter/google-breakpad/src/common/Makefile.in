@@ -9,7 +9,6 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MSVC_ENABLE_PGO := 1
 ifneq (WINNT,$(OS_TARGET))
 ifdef MOZ_CRASHREPORTER
 endif
@@ -37,10 +36,6 @@ HOST_CPPSRCS = \
   $(NULL)
 endif
 endif
-
-DISABLED_CSRCS = \
-  convert_UTF.c \
-  $(NULL)
 
 ifeq ($(OS_TARGET),Android)
 VPATH += $(srcdir)/android

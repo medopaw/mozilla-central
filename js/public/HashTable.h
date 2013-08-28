@@ -7,6 +7,7 @@
 #ifndef js_HashTable_h
 #define js_HashTable_h
 
+#include "mozilla/Alignment.h"
 #include "mozilla/Assertions.h"
 #include "mozilla/Attributes.h"
 #include "mozilla/Casting.h"
@@ -15,10 +16,9 @@
 #include "mozilla/Move.h"
 #include "mozilla/PodOperations.h"
 #include "mozilla/ReentrancyGuard.h"
+#include "mozilla/TemplateLib.h"
 #include "mozilla/TypeTraits.h"
-#include "mozilla/Util.h"
 
-#include "js/TemplateLib.h"
 #include "js/Utility.h"
 
 namespace js {
@@ -60,7 +60,7 @@ class HashMap
     {
         typedef Key KeyType;
         static const Key &getKey(TableEntry &e) { return e.key; }
-        static void setKey(TableEntry &e, Key &k) { const_cast<Key &>(e.key) = k; }
+        static void setKey(TableEntry &e, Key &k) { HashPolicy::rekey(const_cast<Key &>(e.key), k); }
     };
 
     typedef detail::HashTable<TableEntry, MapHashPolicy, AllocPolicy> Impl;
@@ -295,7 +295,7 @@ class HashSet
     {
         typedef T KeyType;
         static const KeyType &getKey(const T &t) { return t; }
-        static void setKey(T &t, KeyType &k) { t = k; }
+        static void setKey(T &t, KeyType &k) { HashPolicy::rekey(t, k); }
     };
 
     typedef detail::HashTable<const T, SetOps, AllocPolicy> Impl;
@@ -517,6 +517,9 @@ struct PointerHasher
         JS_ASSERT(!JS::IsPoisonedPtr(l));
         return k == l;
     }
+    static void rekey(Key &k, const Key& newKey) {
+        k = newKey;
+    }
 };
 
 // Default hash policy: just use the 'lookup' value. This of course only
@@ -535,12 +538,15 @@ struct DefaultHasher
         // Use builtin or overloaded operator==.
         return k == l;
     }
+    static void rekey(Key &k, const Key& newKey) {
+        k = newKey;
+    }
 };
 
 // Specialize hashing policy for pointer types. It assumes that the type is
 // at least word-aligned. For types with smaller size use PointerHasher.
 template <class T>
-struct DefaultHasher<T *> : PointerHasher<T *, tl::FloorLog2<sizeof(void *)>::result>
+struct DefaultHasher<T *> : PointerHasher<T *, mozilla::tl::FloorLog2<sizeof(void *)>::value>
 {};
 
 // For doubles, we can xor the two uint32s.
@@ -890,7 +896,7 @@ class HashTable : private AllocPolicy
     static const unsigned sMinCapacity  = 1 << sMinCapacityLog2;
     static const unsigned sMaxInit      = JS_BIT(23);
     static const unsigned sMaxCapacity  = JS_BIT(24);
-    static const unsigned sHashBits     = tl::BitSize<HashNumber>::result;
+    static const unsigned sHashBits     = mozilla::tl::BitSize<HashNumber>::value;
     static const uint8_t  sMinAlphaFrac = 64;  // (0x100 * .25)
     static const uint8_t  sMaxAlphaFrac = 192; // (0x100 * .75)
     static const uint8_t  sInvMaxAlpha  = 171; // (ceil(0x100 / .75) >> 1)

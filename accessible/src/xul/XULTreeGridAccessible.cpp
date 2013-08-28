@@ -453,6 +453,7 @@ XULTreeGridCellAccessible::
 {
   mParent = aRowAcc;
   mStateFlags |= eSharedNode;
+  mGenericTypes |= eTableCell;
 
   NS_ASSERTION(mTreeView, "mTreeView is null");
 
@@ -777,8 +778,6 @@ XULTreeGridCellAccessible::RelationByType(uint32_t aType)
 void
 XULTreeGridCellAccessible::CellInvalidated()
 {
-  if (!mTreeView)
-    return;
 
   nsAutoString textEquiv;
 
@@ -851,8 +850,6 @@ XULTreeGridCellAccessible::DispatchClickEvent(nsIContent* aContent,
 bool
 XULTreeGridCellAccessible::IsEditable() const
 {
-  if (!mTreeView)
-    return false;
 
   // XXX: logic corresponds to tree.xml, it's preferable to have interface
   // method to check it.

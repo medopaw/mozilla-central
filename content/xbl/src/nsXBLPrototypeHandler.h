@@ -16,8 +16,6 @@
 #include "nsIScriptGlobalObject.h"
 #include "nsCycleCollectionParticipant.h"
 
-#include "js/RootingAPI.h"
-
 class JSObject;
 class nsIDOMEvent;
 class nsIContent;
@@ -27,6 +25,10 @@ class nsIDOMMouseEvent;
 class nsIObjectInputStream;
 class nsIObjectOutputStream;
 class nsXBLPrototypeBinding;
+
+namespace JS {
+template <typename T> class MutableHandle;
+}
 
 namespace mozilla {
 namespace dom {
@@ -136,8 +138,8 @@ public:
     return (mType & NS_HANDLER_ALLOW_UNTRUSTED) != 0;
   }
 
-  nsresult Read(nsIScriptContext* aContext, nsIObjectInputStream* aStream);
-  nsresult Write(nsIScriptContext* aContext, nsIObjectOutputStream* aStream);
+  nsresult Read(nsIObjectInputStream* aStream);
+  nsresult Write(nsIObjectOutputStream* aStream);
 
 public:
   static uint32_t gRefCnt;

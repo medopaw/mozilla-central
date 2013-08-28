@@ -151,10 +151,22 @@ DebuggerTransport.prototype = {
     // Well this is ugly.
     let sep = this._incoming.indexOf(':');
     if (sep < 0) {
+      // Incoming packet length is too big anyway - drop the connection.
+      if (this._incoming.length > 20) {
+        this.close();
+      }
+
       return false;
     }
 
-    let count = parseInt(this._incoming.substring(0, sep));
+    let count = this._incoming.substring(0, sep);
+    // Check for a positive number with no garbage afterwards.
+    if (!/^[0-9]+$/.exec(count)) {
+      this.close();
+      return false;
+    }
+
+    count = +count;
     if (this._incoming.length - (sep + 1) < count) {
       // Don't have a complete request yet.
       return false;
@@ -220,10 +232,11 @@ LocalDebuggerTransport.prototype = {
   send: function LDT_send(aPacket) {
     let serial = this._serial.count++;
     if (wantLogging) {
-      if (aPacket.to) {
-        dumpn("Packet " + serial + " sent to " + uneval(aPacket.to));
-      } else if (aPacket.from) {
+      /* Check 'from' first, as 'echo' packets have both. */
+      if (aPacket.from) {
         dumpn("Packet " + serial + " sent from " + uneval(aPacket.from));
+      } else if (aPacket.to) {
+        dumpn("Packet " + serial + " sent to " + uneval(aPacket.to));
       }
     }
     this._deepFreeze(aPacket);

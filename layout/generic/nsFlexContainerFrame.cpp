@@ -993,7 +993,6 @@ private:
 
 // Utility class for managing our position along the cross axis along
 // the whole flex container (at a higher level than a single line)
-class SingleLineCrossAxisPositionTracker;
 class MOZ_STACK_CLASS CrossAxisPositionTracker : public PositionTracker {
 public:
   CrossAxisPositionTracker(nsFlexContainerFrame* aFlexContainerFrame,
@@ -1100,7 +1099,7 @@ nsFlexContainerFrame::GetType() const
 
 /* virtual */
 int
-nsFlexContainerFrame::GetSkipSides() const
+nsFlexContainerFrame::GetSkipSides(const nsHTMLReflowState* aReflowState) const
 {
   // (same as nsBlockFrame's GetSkipSides impl)
   if (IS_TRUE_OVERFLOW_CONTAINER(this)) {
@@ -2230,9 +2229,8 @@ nsFlexContainerFrame::Reflow(nsPresContext*           aPresContext,
       childReflowState.SetComputedHeight(curItem.GetMainSize());
     }
 
-    nsresult rv =
-      SizeItemInCrossAxis(aPresContext, axisTracker,
-                          childReflowState, curItem);
+    nsresult rv = SizeItemInCrossAxis(aPresContext, axisTracker,
+                                      childReflowState, curItem);
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
@@ -2413,10 +2411,11 @@ nsFlexContainerFrame::Reflow(nsPresContext*           aPresContext,
     if (i == 0 && flexContainerAscent == nscoord_MIN) {
       ResolveReflowedChildAscent(curItem.Frame(), childDesiredSize);
 
-      // (We subtract mComputedOffsets.top because we don't want relative
-      // positioning on the child to affect the baseline that we read from it).
-      flexContainerAscent = physicalPosn.y + childDesiredSize.ascent -
-        childReflowState.mComputedOffsets.top;
+      // (We use GetNormalPosition() instead of physicalPosn because we don't
+      // want relative positioning on the child to affect the baseline that we
+      // read from it).
+      flexContainerAscent = curItem.Frame()->GetNormalPosition().y +
+        childDesiredSize.ascent;
     }
   }
 

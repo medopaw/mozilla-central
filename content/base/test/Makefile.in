@@ -11,14 +11,6 @@ relativesrcdir  = @relativesrcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-CPP_UNIT_TESTS = \
-                 TestNativeXMLHttpRequest.cpp \
-                 TestGetURL.cpp \
-                 TestPlainTextSerializer.cpp \
-                 $(NULL)
-
-# Split files arbitrarily in three groups to not run into too-long command lines
-# which break on Windows (see bug 563151 and bug 831989)
 MOCHITEST_FILES_A = \
 		responseIdentical.sjs \
 		test_bug5141.html \
@@ -248,6 +240,9 @@ MOCHITEST_FILES_A = \
 		test_bug811701.xhtml \
 		test_bug820909.html \
 		test_bug704063.html \
+		test_bug894874.html \
+		test_bug895974.html \
+		test_bug895239.html \
 		$(NULL)
 
 MOCHITEST_FILES_B = \
@@ -332,6 +327,8 @@ MOCHITEST_FILES_B = \
 		test_bug564863.xhtml \
 		test_bug588990.html \
 		test_copypaste.html \
+		test_copypaste.xhtml \
+		copypaste.js \
 		test_bug503481.html \
 		file_bug503481.sjs \
 		test_bug503481b.html \
@@ -369,6 +366,18 @@ MOCHITEST_FILES_B = \
 	 	file_CSP_evalscript_main_spec_compliant.html^headers^ \
 		file_CSP_evalscript_main_spec_compliant_allowed.html \
 		file_CSP_evalscript_main_spec_compliant_allowed.html^headers^ \
+		test_CSP_evalscript_getCRMFRequest.html \
+		file_CSP_evalscript_main_getCRMFRequest.html \
+		file_CSP_evalscript_main_getCRMFRequest.html^headers^ \
+		file_CSP_evalscript_main_getCRMFRequest.js \
+		file_CSP_evalscript_main_allowed_getCRMFRequest.js \
+		file_CSP_evalscript_main_spec_compliant_getCRMFRequest.html \
+	 	file_CSP_evalscript_main_spec_compliant_getCRMFRequest.html^headers^ \
+		file_CSP_evalscript_main_spec_compliant_allowed_getCRMFRequest.html \
+		file_CSP_evalscript_main_spec_compliant_allowed_getCRMFRequest.html^headers^ \
+		file_CSP_evalscript_no_CSP_at_all.html \
+		file_CSP_evalscript_no_CSP_at_all.html^headers^ \
+		file_CSP_evalscript_no_CSP_at_all.js \
 		test_CSP_inlinestyle.html \
 		file_CSP_inlinestyle_main.html \
 		file_CSP_inlinestyle_main.html^headers^ \
@@ -606,6 +615,8 @@ MOCHITEST_FILES_C= \
 		file_mixed_content_frameNavigation_secure.html \
 		file_mixed_content_frameNavigation_secure_grandchild.html \
 		file_mixed_content_frameNavigation_blankTarget.html \
+		file_bug902350.html \
+		file_bug902350_frame.html \
 		test_bug789856.html \
 		file_bug804395.jar \
 		test_bug804395.html \
@@ -638,21 +649,38 @@ MOCHITEST_FILES_C= \
 		test_bug890580.html \
 		test_declare_stylesheet_obsolete.html \
 		variable_style_sheet.sjs \
+		test_processing_instruction_update_stylesheet.xhtml \
+		test_CSP_bug888172.html \
+		file_CSP_bug888172.html \
+		file_CSP_bug888172.sjs \
+		test_CSP_bug663567.html \
+		file_CSP_bug663567_allows.xml \
+		file_CSP_bug663567_allows.xml^headers^ \
+		file_CSP_bug663567_allows.xsl \
+		file_CSP_bug663567_blocks.xml \
+		file_CSP_bug663567_blocks.xml^headers^ \
+		test_CSP_bug802872.html \
+		file_CSP_bug802872.html \
+		file_CSP_bug802872.html^headers^ \
+		file_CSP_bug802872.js \
+		file_CSP_bug802872.sjs \
+		test_bug907892.html \
+		file_bug907892.html \
 		$(NULL)
 
 # OOP tests don't work on Windows (bug 763081) or native-fennec
-# (see Bug 774939)
-ifneq ($(OS_ARCH),WINNT)
-ifndef MOZ_ANDROID_OMTC
+# (see Bug 774939). App permission checks are also disabled on
+# anything but B2G (Bug 900707).
+ifdef MOZ_CHILD_PERMISSIONS
 MOCHITEST_FILES_B += \
 		test_messagemanager_assertpermission.html \
 		test_child_process_shutdown_message.html \
 		$(NULL)
 endif
-endif
 
 MOCHITEST_CHROME_FILES =	\
 		test_bug357450.js \
+		test_copypaste.xul \
 		$(NULL)
 
 # This test fails on the Mac for some reason
@@ -680,6 +708,7 @@ MOCHITEST_FILES_PARTS = $(foreach s,A B C,MOCHITEST_FILES_$(s))
 
 MOCHITEST_BROWSER_FILES = \
 		browser_bug593387.js \
+		browser_bug902350.js \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk

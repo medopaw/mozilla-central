@@ -33,16 +33,12 @@
 #include "nsICODecoder.h"
 #include "nsIconDecoder.h"
 
-#ifdef MOZ_WBMP
-#include "nsWBMPDecoder.h"
-#endif
-
 #include "gfxContext.h"
 
 #include "mozilla/MemoryReporting.h"
 #include "mozilla/Services.h"
 #include "mozilla/Preferences.h"
-#include "mozilla/StandardInteger.h"
+#include <stdint.h>
 #include "mozilla/Telemetry.h"
 #include "mozilla/TimeStamp.h"
 #include "mozilla/ClearOnShutdown.h"
@@ -377,9 +373,9 @@ namespace image {
 static nsCOMPtr<nsIThread> sScaleWorkerThread = nullptr;
 
 #ifndef DEBUG
-NS_IMPL_THREADSAFE_ISUPPORTS2(RasterImage, imgIContainer, nsIProperties)
+NS_IMPL_ISUPPORTS2(RasterImage, imgIContainer, nsIProperties)
 #else
-NS_IMPL_THREADSAFE_ISUPPORTS3(RasterImage, imgIContainer, nsIProperties,
+NS_IMPL_ISUPPORTS3(RasterImage, imgIContainer, nsIProperties,
                               imgIContainerDebug)
 #endif
 
@@ -623,6 +619,12 @@ RasterImage::GetIntrinsicRatio(nsSize* aRatio)
   return NS_OK;
 }
 
+NS_IMETHODIMP_(Orientation)
+RasterImage::GetOrientation()
+{
+  return mOrientation;
+}
+
 //******************************************************************************
 /* unsigned short GetType(); */
 NS_IMETHODIMP
@@ -680,6 +682,11 @@ RasterImage::GetDrawableImgFrame(uint32_t framenum)
   // so we can catch crashes for reasons we haven't investigated.
   if (frame && frame->GetCompositingFailed())
     return nullptr;
+
+  if (frame) {
+    frame->ApplyDirtToSurfaces();
+  }
+
   return frame;
 }
 
@@ -1051,14 +1058,14 @@ size_t
 RasterImage::NonHeapSizeOfDecoded() const
 {
   return SizeOfDecodedWithComputedFallbackIfHeap(gfxASurface::MEMORY_IN_PROCESS_NONHEAP,
-                                                 NULL);
+                                                 nullptr);
 }
 
 size_t
 RasterImage::OutOfProcessSizeOfDecoded() const
 {
   return SizeOfDecodedWithComputedFallbackIfHeap(gfxASurface::MEMORY_OUT_OF_PROCESS,
-                                                 NULL);
+                                                 nullptr);
 }
 
 void
@@ -1201,7 +1208,7 @@ RasterImage::ApplyDecodeFlags(uint32_t aNewFlags)
 }
 
 nsresult
-RasterImage::SetSize(int32_t aWidth, int32_t aHeight)
+RasterImage::SetSize(int32_t aWidth, int32_t aHeight, Orientation aOrientation)
 {
   MOZ_ASSERT(NS_IsMainThread());
 
@@ -1215,7 +1222,9 @@ RasterImage::SetSize(int32_t aWidth, int32_t aHeight)
 
   // if we already have a size, check the new size against the old one
   if (!mMultipart && mHasSize &&
-      ((aWidth != mSize.width) || (aHeight != mSize.height))) {
+      ((aWidth != mSize.width) ||
+       (aHeight != mSize.height) ||
+       (aOrientation != mOrientation))) {
     NS_WARNING("Image changed size on redecode! This should not happen!");
 
     // Make the decoder aware of the error so that it doesn't try to call
@@ -1229,6 +1238,7 @@ RasterImage::SetSize(int32_t aWidth, int32_t aHeight)
 
   // Set the size and flag that we have it
   mSize.SizeTo(aWidth, aHeight);
+  mOrientation = aOrientation;
   mHasSize = true;
 
   mFrameBlender.SetSize(mSize);
@@ -1997,11 +2007,6 @@ RasterImage::InitDecoder(bool aDoSizeDecode, bool aIsSynchronous /* = false */)
     case eDecoderType_icon:
       mDecoder = new nsIconDecoder(*this);
       break;
-#ifdef MOZ_WBMP
-    case eDecoderType_wbmp:
-      mDecoder = new nsWBMPDecoder(*this);
-      break;
-#endif
     default:
       NS_ABORT_IF_FALSE(0, "Shouldn't get here!");
   }
@@ -2329,25 +2334,7 @@ RasterImage::RequestDecodeCore(RequestDecodeType aDecodeType)
 nsresult
 RasterImage::SyncDecode()
 {
-  MutexAutoLock imgLock(mDecodingMutex);
-
-  if (mDecodeRequest) {
-    // If the image is waiting for decode work to be notified, go ahead and do that.
-    if (mDecodeRequest->mRequestStatus == DecodeRequest::REQUEST_WORK_DONE) {
-      nsresult rv = FinishedSomeDecoding();
-      CONTAINER_ENSURE_SUCCESS(rv);
-    }
-  }
-
-  nsresult rv;
-
   PROFILER_LABEL_PRINTF("RasterImage", "SyncDecode", "%s", GetURIString().get());;
-
-  // We really have no good way of forcing a synchronous decode if we're being
-  // called in a re-entrant manner (ie, from an event listener fired by a
-  // decoder), because the decoding machinery is already tied up. We thus explicitly
-  // disallow this type of call in the API, and check for it in API methods.
-  NS_ABORT_IF_FALSE(!mInDecoder, "Yikes, forcing sync in reentrant call!");
 
   // If we have a size decoder open, make sure we get the size
   if (mDecoder && mDecoder->IsSizeDecode()) {
@@ -2361,6 +2348,24 @@ RasterImage::SyncDecode()
       return NS_ERROR_NOT_AVAILABLE;
     }
   }
+
+  MutexAutoLock imgLock(mDecodingMutex);
+
+  // We really have no good way of forcing a synchronous decode if we're being
+  // called in a re-entrant manner (ie, from an event listener fired by a
+  // decoder), because the decoding machinery is already tied up. We thus explicitly
+  // disallow this type of call in the API, and check for it in API methods.
+  NS_ABORT_IF_FALSE(!mInDecoder, "Yikes, forcing sync in reentrant call!");
+
+  if (mDecodeRequest) {
+    // If the image is waiting for decode work to be notified, go ahead and do that.
+    if (mDecodeRequest->mRequestStatus == DecodeRequest::REQUEST_WORK_DONE) {
+      nsresult rv = FinishedSomeDecoding();
+      CONTAINER_ENSURE_SUCCESS(rv);
+    }
+  }
+
+  nsresult rv;
 
   // If we're decoded already, or decoding until the size was available
   // finished us as a side-effect, no worries
@@ -2479,14 +2484,16 @@ RasterImage::ScalingDone(ScaleRequest* request, ScaleStatus status)
   if (status == SCALE_DONE) {
     MOZ_ASSERT(request->done);
 
+    imgFrame *scaledFrame = request->dstFrame.forget();
+    scaledFrame->ImageUpdated(scaledFrame->GetRect());
+    scaledFrame->ApplyDirtToSurfaces();
+
     if (mStatusTracker) {
-      imgFrame *scaledFrame = request->dstFrame.get();
-      scaledFrame->ImageUpdated(scaledFrame->GetRect());
       mStatusTracker->FrameChanged(&request->srcRect);
     }
 
     mScaleResult.status = SCALE_DONE;
-    mScaleResult.frame = request->dstFrame;
+    mScaleResult.frame = scaledFrame;
     mScaleResult.scale = request->scale;
   } else {
     mScaleResult.status = SCALE_INVALID;
@@ -2562,8 +2569,6 @@ RasterImage::DrawWithPreDownscaleIfNeeded(imgFrame *aFrame,
                       mSize.width - framerect.XMost(),
                       mSize.height - framerect.YMost(),
                       framerect.x);
-
-  frame->ApplyDirtToSurfaces();
 
   frame->Draw(aContext, aFilter, userSpaceToImageSpace, aFill, padding, subimage,
               aFlags);
@@ -2996,7 +3001,7 @@ RasterImage::FinishedSomeDecoding(eShutdownIntent aIntent /* = eShutdownIntent_D
   return rv;
 }
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(RasterImage::DecodePool,
+NS_IMPL_ISUPPORTS1(RasterImage::DecodePool,
                               nsIObserver)
 
 /* static */ RasterImage::DecodePool*

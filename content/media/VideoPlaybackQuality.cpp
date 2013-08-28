@@ -8,7 +8,6 @@
 
 #include "mozilla/dom/HTMLMediaElement.h"
 #include "mozilla/dom/VideoPlaybackQualityBinding.h"
-#include "nsContentUtils.h"
 #include "nsCycleCollectionParticipant.h"
 #include "nsWrapperCache.h"
 #include "MediaDecoder.h"
@@ -21,13 +20,13 @@ VideoPlaybackQuality::VideoPlaybackQuality(HTMLMediaElement* aElement,
                                            uint64_t aTotalFrames,
                                            uint64_t aDroppedFrames,
                                            uint64_t aCorruptedFrames,
-                                           double aPlaybackJitter)
+                                           double aTotalFrameDelay)
   : mElement(aElement)
   , mCreationTime(aCreationTime)
   , mTotalFrames(aTotalFrames)
   , mDroppedFrames(aDroppedFrames)
   , mCorruptedFrames(aCorruptedFrames)
-  , mPlaybackJitter(aPlaybackJitter)
+  , mTotalFrameDelay(aTotalFrameDelay)
 {
   SetIsDOMBinding();
 }

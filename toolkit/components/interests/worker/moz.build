@@ -12,6 +12,4 @@ EXTRA_JS_MODULES = [
     'interestsWorker.js',
 ]
 
-MODULE = 'interests'
-
 JS_MODULES_PATH = 'modules/interests/worker'

@@ -115,6 +115,7 @@ sync/net/BasicAuthHeaderProvider.java
 sync/net/BrowserIDAuthHeaderProvider.java
 sync/net/ConnectionMonitorThread.java
 sync/net/HandleProgressException.java
+sync/net/HawkAuthHeaderProvider.java
 sync/net/HMACAuthHeaderProvider.java
 sync/net/HttpResponseObserver.java
 sync/net/Resource.java
@@ -156,7 +157,6 @@ sync/repositories/android/BrowserContractHelpers.java
 sync/repositories/android/CachedSQLiteOpenHelper.java
 sync/repositories/android/ClientsDatabase.java
 sync/repositories/android/ClientsDatabaseAccessor.java
-sync/repositories/android/FennecControlHelper.java
 sync/repositories/android/FennecTabsRepository.java
 sync/repositories/android/FormHistoryRepositorySession.java
 sync/repositories/android/PasswordsRepositorySession.java

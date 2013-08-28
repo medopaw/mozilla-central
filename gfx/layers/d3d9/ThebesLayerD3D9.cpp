@@ -19,12 +19,15 @@
 #include "gfxUtils.h"
 #include "ReadbackProcessor.h"
 #include "ReadbackLayer.h"
+#include "mozilla/gfx/2D.h"
 
 namespace mozilla {
 namespace layers {
 
+using namespace gfx;
+
 ThebesLayerD3D9::ThebesLayerD3D9(LayerManagerD3D9 *aManager)
-  : ThebesLayer(aManager, NULL)
+  : ThebesLayer(aManager, nullptr)
   , LayerD3D9(aManager)
 {
   mImplData = static_cast<LayerD3D9*>(this);
@@ -261,7 +264,7 @@ ThebesLayerD3D9::RenderThebesLayer(ReadbackProcessor* aReadback)
     // Restore defaults
     device()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
     device()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    device()->SetTexture(1, NULL);
+    device()->SetTexture(1, nullptr);
   } else {
     mD3DManager->SetShaderMode(DeviceManagerD3D9::RGBALAYER,
                                GetMaskLayer());
@@ -340,7 +343,7 @@ ThebesLayerD3D9::VerifyContentType(SurfaceMode aMode)
 class OpaqueRenderer {
 public:
   OpaqueRenderer(const nsIntRegion& aUpdateRegion) :
-    mUpdateRegion(aUpdateRegion), mDC(NULL) {}
+    mUpdateRegion(aUpdateRegion), mDC(nullptr) {}
   ~OpaqueRenderer() { End(); }
   already_AddRefed<gfxWindowsSurface> Begin(LayerD3D9* aLayer);
   void End();
@@ -360,7 +363,7 @@ OpaqueRenderer::Begin(LayerD3D9* aLayer)
 
   HRESULT hr = aLayer->device()->
       CreateTexture(bounds.width, bounds.height, 1, 0, D3DFMT_X8R8G8B8,
-                    D3DPOOL_SYSTEMMEM, getter_AddRefs(mTmpTexture), NULL);
+                    D3DPOOL_SYSTEMMEM, getter_AddRefs(mTmpTexture), nullptr);
 
   if (FAILED(hr)) {
     aLayer->ReportFailure(NS_LITERAL_CSTRING("Failed to create temporary texture in system memory."), hr);
@@ -390,8 +393,8 @@ OpaqueRenderer::End()
 {
   if (mSurface && mDC) {
     mSurface->ReleaseDC(mDC);
-    mSurface = NULL;
-    mDC = NULL;
+    mSurface = nullptr;
+    mDC = nullptr;
   }
 }
 
@@ -428,7 +431,7 @@ ThebesLayerD3D9::DrawRegion(nsIntRegion &aRegion, SurfaceMode aMode,
     case SURFACE_SINGLE_CHANNEL_ALPHA: {
       hr = device()->CreateTexture(bounds.width, bounds.height, 1,
                                    0, D3DFMT_A8R8G8B8,
-                                   D3DPOOL_SYSTEMMEM, getter_AddRefs(tmpTexture), NULL);
+                                   D3DPOOL_SYSTEMMEM, getter_AddRefs(tmpTexture), nullptr);
 
       if (FAILED(hr)) {
         ReportFailure(NS_LITERAL_CSTRING("Failed to create temporary texture in system memory."), hr);
@@ -468,7 +471,18 @@ ThebesLayerD3D9::DrawRegion(nsIntRegion &aRegion, SurfaceMode aMode,
   if (!destinationSurface)
     return;
 
-  nsRefPtr<gfxContext> context = new gfxContext(destinationSurface);
+  nsRefPtr<gfxContext> context;
+  if (gfxPlatform::GetPlatform()->SupportsAzureContentForType(BACKEND_CAIRO)) {
+     RefPtr<DrawTarget> dt =
+        gfxPlatform::GetPlatform()->CreateDrawTargetForSurface(destinationSurface,
+                                                               IntSize(destinationSurface->GetSize().width,
+                                                                       destinationSurface->GetSize().height));
+
+    context = new gfxContext(dt);
+  } else {
+    context = new gfxContext(destinationSurface);
+  }
+
   context->Translate(gfxPoint(-bounds.x, -bounds.y));
   LayerManagerD3D9::CallbackInfo cbInfo = mD3DManager->GetCallbackInfo();
   cbInfo.Callback(this, context, aRegion, nsIntRegion(), cbInfo.CallbackData);
@@ -521,7 +535,7 @@ ThebesLayerD3D9::DrawRegion(nsIntRegion &aRegion, SurfaceMode aMode,
         context->Paint();
       }
 
-      imgSurface = NULL;
+      imgSurface = nullptr;
 
       srcTextures.AppendElement(tmpTexture);
       destTextures.AppendElement(mTexture);
@@ -579,7 +593,7 @@ ThebesLayerD3D9::CreateNewTextures(const gfxIntSize &aSize,
   HRESULT hr = device()->CreateTexture(aSize.width, aSize.height, 1,
                                        D3DUSAGE_RENDERTARGET,
                                        aMode != SURFACE_SINGLE_CHANNEL_ALPHA ? D3DFMT_X8R8G8B8 : D3DFMT_A8R8G8B8,
-                                       D3DPOOL_DEFAULT, getter_AddRefs(mTexture), NULL);
+                                       D3DPOOL_DEFAULT, getter_AddRefs(mTexture), nullptr);
   if (FAILED(hr)) {
     ReportFailure(NS_LITERAL_CSTRING("ThebesLayerD3D9::CreateNewTextures(): Failed to create texture"),
                   hr);
@@ -590,7 +604,7 @@ ThebesLayerD3D9::CreateNewTextures(const gfxIntSize &aSize,
     hr = device()->CreateTexture(aSize.width, aSize.height, 1,
                                  D3DUSAGE_RENDERTARGET,
                                  D3DFMT_X8R8G8B8,
-                                 D3DPOOL_DEFAULT, getter_AddRefs(mTextureOnWhite), NULL);
+                                 D3DPOOL_DEFAULT, getter_AddRefs(mTextureOnWhite), nullptr);
     if (FAILED(hr)) {
       ReportFailure(NS_LITERAL_CSTRING("ThebesLayerD3D9::CreateNewTextures(): Failed to create texture (2)"),
                     hr);

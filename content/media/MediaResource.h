@@ -18,6 +18,7 @@
 #include "nsIInterfaceRequestor.h"
 #include "MediaCache.h"
 #include "mozilla/Attributes.h"
+#include "mozilla/TimeStamp.h"
 
 // For HTTP seeking, if number of bytes needing to be
 // seeked forward is less than this value then a read is
@@ -55,7 +56,10 @@ public:
   MediaChannelStatistics(MediaChannelStatistics * aCopyFrom)
   {
     MOZ_ASSERT(aCopyFrom);
-    *this = *aCopyFrom;
+    mAccumulatedBytes = aCopyFrom->mAccumulatedBytes;
+    mAccumulatedTime = aCopyFrom->mAccumulatedTime;
+    mLastStartTime = aCopyFrom->mLastStartTime;
+    mIsStarted = aCopyFrom->mIsStarted;
   }
 
   NS_INLINE_DECL_THREADSAFE_REFCOUNTING(MediaChannelStatistics)

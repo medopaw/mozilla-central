@@ -33,7 +33,6 @@
 #include "nsCExternalHandlerService.h"
 #include "nsIStreamConverterService.h"
 #include "nsCycleCollectionParticipant.h"
-#include "nsLayoutStatics.h"
 #include "nsIScriptObjectPrincipal.h"
 #include "nsHostObjectProtocolHandler.h"
 #include "mozilla/Base64.h"
@@ -53,6 +52,8 @@ using namespace mozilla::dom;
 #define LOAD_STR "load"
 #define LOADSTART_STR "loadstart"
 #define LOADEND_STR "loadend"
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsDOMFileReader)
 
 NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsDOMFileReader,
                                                   FileIOObject)
@@ -103,7 +104,6 @@ nsDOMFileReader::nsDOMFileReader()
     mDataLen(0), mDataFormat(FILE_AS_BINARY),
     mResultArrayBuffer(nullptr)
 {
-  nsLayoutStatics::AddRef();
   SetDOMStringToNull(mResult);
   SetIsDOMBinding();
 }
@@ -113,7 +113,6 @@ nsDOMFileReader::~nsDOMFileReader()
   FreeFileData();
   mResultArrayBuffer = nullptr;
   NS_DROP_JS_OBJECTS(this, nsDOMFileReader);
-  nsLayoutStatics::Release();
 }
 
 
@@ -145,7 +144,7 @@ nsDOMFileReader::Constructor(const GlobalObject& aGlobal, ErrorResult& aRv)
 {
   nsRefPtr<nsDOMFileReader> fileReader = new nsDOMFileReader();
 
-  nsCOMPtr<nsPIDOMWindow> owner = do_QueryInterface(aGlobal.Get());
+  nsCOMPtr<nsPIDOMWindow> owner = do_QueryInterface(aGlobal.GetAsSupports());
   if (!owner) {
     NS_WARNING("Unexpected nsIJSNativeInitializer owner");
     aRv.Throw(NS_ERROR_FAILURE);

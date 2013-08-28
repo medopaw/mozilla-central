@@ -9,18 +9,11 @@ VPATH     = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-LIBXUL_LIBRARY = 1
-
-ifneq ($(OS_ARCH),Darwin)
-# osx_corewlan.mm has warnings I don't understand.
-FAIL_ON_WARNINGS := 1
-endif
-
 ifeq ($(OS_ARCH),SunOS)
 OS_INCLUDES += $(GLIB_CFLAGS)
 endif
 
-ifdef MOZ_ENABLE_DBUS
+ifdef NECKO_WIFI_DBUS
 OS_INCLUDES += $(MOZ_DBUS_GLIB_CFLAGS)
 endif
 

@@ -9,8 +9,6 @@
 
 #include "nsIScriptSecurityManager.h"
 #include "nsIPrincipal.h"
-#include "jsapi.h"
-#include "jsdbgapi.h"
 #include "nsIXPCSecurityManager.h"
 #include "nsInterfaceHashtable.h"
 #include "nsHashtable.h"
@@ -21,8 +19,12 @@
 #include "plstr.h"
 #include "nsIScriptExternalNameSet.h"
 
-#include "mozilla/StandardInteger.h"
+#include <stdint.h>
 
+namespace JS {
+template <typename T> class Handle;
+template <typename T> class MutableHandle;
+}
 class nsIDocShell;
 class nsString;
 class nsIClassInfo;
@@ -371,13 +373,13 @@ private:
 
     bool SubjectIsPrivileged();
 
-    static JSBool
+    static bool
     CheckObjectAccess(JSContext *cx, JS::Handle<JSObject*> obj,
                       JS::Handle<jsid> id, JSAccessMode mode,
                       JS::MutableHandle<JS::Value> vp);
     
     // Decides, based on CSP, whether or not eval() and stuff can be executed.
-    static JSBool
+    static bool
     ContentSecurityPolicyPermitsJSAction(JSContext *cx);
 
     // Returns null if a principal cannot be found; generally callers

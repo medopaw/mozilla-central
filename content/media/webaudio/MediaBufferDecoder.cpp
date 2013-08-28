@@ -8,6 +8,7 @@
 #include "AbstractMediaDecoder.h"
 #include "mozilla/Attributes.h"
 #include "mozilla/ReentrantMonitor.h"
+#include "mozilla/dom/AudioContextBinding.h"
 #include <speex/speex_resampler.h>
 #include "nsXPCOMCIDInternal.h"
 #include "nsComponentManagerUtils.h"
@@ -16,14 +17,14 @@
 #include "DecoderTraits.h"
 #include "AudioContext.h"
 #include "AudioBuffer.h"
-#include "nsIScriptGlobalObject.h"
-#include "nsIScriptContext.h"
 #include "nsIScriptObjectPrincipal.h"
 #include "nsIScriptError.h"
 #include "nsMimeTypes.h"
 #include "nsCxPusher.h"
 
 namespace mozilla {
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(WebAudioDecodeJob)
 
 NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(WebAudioDecodeJob)
   NS_IMPL_CYCLE_COLLECTION_UNLINK(mContext)
@@ -66,7 +67,7 @@ public:
   explicit BufferDecoder(MediaResource* aResource);
   virtual ~BufferDecoder();
 
-  NS_DECL_ISUPPORTS
+  NS_DECL_THREADSAFE_ISUPPORTS
 
   // This has to be called before decoding begins
   void BeginDecoding(nsIThread* aDecodeThread)
@@ -94,6 +95,8 @@ public:
   virtual int64_t GetMediaDuration() MOZ_FINAL MOZ_OVERRIDE;
 
   virtual void SetMediaDuration(int64_t aDuration) MOZ_FINAL MOZ_OVERRIDE;
+
+  virtual void UpdateMediaDuration(int64_t aDuration) MOZ_FINAL MOZ_OVERRIDE;
 
   virtual void SetMediaSeekable(bool aMediaSeekable) MOZ_OVERRIDE;
 
@@ -126,7 +129,7 @@ private:
   nsRefPtr<MediaResource> mResource;
 };
 
-NS_IMPL_THREADSAFE_ISUPPORTS0(BufferDecoder)
+NS_IMPL_ISUPPORTS0(BufferDecoder)
 
 BufferDecoder::BufferDecoder(MediaResource* aResource)
   : mReentrantMonitor("BufferDecoder")
@@ -208,6 +211,12 @@ BufferDecoder::GetMediaDuration()
 
 void
 BufferDecoder::SetMediaDuration(int64_t aDuration)
+{
+  // ignore
+}
+
+void
+BufferDecoder::UpdateMediaDuration(int64_t aDuration)
 {
   // ignore
 }
@@ -893,7 +902,7 @@ WebAudioDecodeJob::OnFailure(ErrorCode aErrorCode)
     doc = pWindow->GetExtantDoc();
   }
   nsContentUtils::ReportToConsole(nsIScriptError::errorFlag,
-                                  "Media",
+                                  NS_LITERAL_CSTRING("Media"),
                                   doc,
                                   nsContentUtils::eDOM_PROPERTIES,
                                   errorMessage);

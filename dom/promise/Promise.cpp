@@ -11,6 +11,9 @@
 #include "PromiseCallback.h"
 #include "nsContentUtils.h"
 #include "nsPIDOMWindow.h"
+#include "WorkerPrivate.h"
+#include "nsJSPrincipals.h"
+#include "nsThreadUtils.h"
 
 namespace mozilla {
 namespace dom {
@@ -45,6 +48,8 @@ private:
 };
 
 // Promise
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(Promise)
 
 NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(Promise)
   NS_IMPL_CYCLE_COLLECTION_UNLINK(mWindow)
@@ -108,6 +113,26 @@ Promise::PrefEnabled()
   return Preferences::GetBool("dom.promise.enabled", false);
 }
 
+/* static */ bool
+Promise::EnabledForScope(JSContext* aCx, JSObject* /* unused */)
+{
+  // Enable if the pref is enabled or if we're chrome or if we're a
+  // certified app.
+  if (PrefEnabled()) {
+    return true;
+  }
+
+  // Note that we have no concept of a certified app in workers.
+  // XXXbz well, why not?
+  if (!NS_IsMainThread()) {
+    return workers::GetWorkerPrivateFromContext(aCx)->IsChromeWorker();
+  }
+
+  nsIPrincipal* prin = nsContentUtils::GetSubjectPrincipal();
+  return nsContentUtils::IsSystemPrincipal(prin) ||
+    prin->GetAppStatus() == nsIPrincipal::APP_STATUS_CERTIFIED;
+}
+
 static void
 EnterCompartment(Maybe<JSAutoCompartment>& aAc, JSContext* aCx,
                  const Optional<JS::Handle<JS::Value> >& aValue)
@@ -120,12 +145,11 @@ EnterCompartment(Maybe<JSAutoCompartment>& aAc, JSContext* aCx,
 }
 
 /* static */ already_AddRefed<Promise>
-Promise::Constructor(const GlobalObject& aGlobal, JSContext* aCx,
+Promise::Constructor(const GlobalObject& aGlobal,
                      PromiseInit& aInit, ErrorResult& aRv)
 {
-  MOZ_ASSERT(PrefEnabled());
-
-  nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(aGlobal.Get());
+  JSContext* cx = aGlobal.GetContext();
+  nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(aGlobal.GetAsSupports());
   if (!window) {
     aRv.Throw(NS_ERROR_UNEXPECTED);
     return nullptr;
@@ -138,12 +162,12 @@ Promise::Constructor(const GlobalObject& aGlobal, JSContext* aCx,
   aRv.WouldReportJSException();
 
   if (aRv.IsJSException()) {
-    Optional<JS::Handle<JS::Value> > value(aCx);
-    aRv.StealJSException(aCx, &value.Value());
+    Optional<JS::Handle<JS::Value> > value(cx);
+    aRv.StealJSException(cx, &value.Value());
 
     Maybe<JSAutoCompartment> ac;
-    EnterCompartment(ac, aCx, value);
-    promise->mResolver->Reject(aCx, value);
+    EnterCompartment(ac, cx, value);
+    promise->mResolver->Reject(cx, value);
   }
 
   return promise.forget();
@@ -153,9 +177,7 @@ Promise::Constructor(const GlobalObject& aGlobal, JSContext* aCx,
 Promise::Resolve(const GlobalObject& aGlobal, JSContext* aCx,
                  JS::Handle<JS::Value> aValue, ErrorResult& aRv)
 {
-  MOZ_ASSERT(PrefEnabled());
-
-  nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(aGlobal.Get());
+  nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(aGlobal.GetAsSupports());
   if (!window) {
     aRv.Throw(NS_ERROR_UNEXPECTED);
     return nullptr;
@@ -172,9 +194,7 @@ Promise::Resolve(const GlobalObject& aGlobal, JSContext* aCx,
 Promise::Reject(const GlobalObject& aGlobal, JSContext* aCx,
                 JS::Handle<JS::Value> aValue, ErrorResult& aRv)
 {
-  MOZ_ASSERT(PrefEnabled());
-
-  nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(aGlobal.Get());
+  nsCOMPtr<nsPIDOMWindow> window = do_QueryInterface(aGlobal.GetAsSupports());
   if (!window) {
     aRv.Throw(NS_ERROR_UNEXPECTED);
     return nullptr;

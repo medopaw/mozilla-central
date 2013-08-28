@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "nsPluginArray.h"
-#include "nsContentUtils.h"
+
 #include "mozilla/dom/PluginArrayBinding.h"
 #include "mozilla/dom/PluginBinding.h"
 #include "nsMimeTypeArray.h"
@@ -16,9 +16,7 @@
 #include "nsIObserverService.h"
 #include "nsIWeakReference.h"
 #include "mozilla/Services.h"
-#include "nsWeakReference.h"
 #include "nsIInterfaceRequestorUtils.h"
-#include "mozilla/Preferences.h"
 
 using namespace mozilla;
 using namespace mozilla::dom;
@@ -282,8 +280,7 @@ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsPluginElement)
   NS_INTERFACE_MAP_ENTRY(nsISupports)
 NS_INTERFACE_MAP_END
 
-NS_IMPL_CYCLE_COLLECTION_WRAPPERCACHE_1(nsPluginElement,
-                                        mMimeTypes)
+NS_IMPL_CYCLE_COLLECTION_WRAPPERCACHE_1(nsPluginElement, mMimeTypes)
 
 nsPluginElement::nsPluginElement(nsWeakPtr aWindow,
                                  nsPluginTag* aPluginTag)
@@ -291,13 +288,6 @@ nsPluginElement::nsPluginElement(nsWeakPtr aWindow,
     mPluginTag(aPluginTag)
 {
   SetIsDOMBinding();
-}
-
-nsPluginElement::~nsPluginElement()
-{
-  for (uint32_t i = 0; i < mMimeTypes.Length(); ++i) {
-    mMimeTypes[i]->Invalidate();
-  }
 }
 
 nsPIDOMWindow*

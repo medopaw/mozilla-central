@@ -36,14 +36,14 @@
 #include "nsDOMDataChannelDeclarations.h"
 
 #ifdef MOZILLA_INTERNAL_API
-#include "nsContentUtils.h"
+#include "mozilla/TimeStamp.h"
+#include "mozilla/Telemetry.h"
 #include "nsDOMJSUtils.h"
 #include "nsIDocument.h"
 #include "nsIScriptError.h"
 #include "nsPrintfCString.h"
 #include "nsURLHelper.h"
 #include "nsNetUtil.h"
-#include "mozilla/dom/BindingUtils.h"
 #include "mozilla/dom/RTCConfigurationBinding.h"
 #include "MediaStreamList.h"
 #include "nsIScriptGlobalObject.h"
@@ -247,6 +247,9 @@ public:
         // providing non-fatal warnings.
         mPC->ClearSdpParseErrorMessages();
         mObserver->OnSetRemoteDescriptionSuccess();
+#ifdef MOZILLA_INTERNAL_API
+        mPC->setStartTime();
+#endif
         break;
 
       case SETLOCALDESCERROR:
@@ -316,7 +319,7 @@ private:
   nsRefPtr<RemoteSourceStreamInfo> mRemoteStream;
 };
 
-NS_IMPL_THREADSAFE_ISUPPORTS1(PeerConnectionImpl, IPeerConnection)
+NS_IMPL_ISUPPORTS1(PeerConnectionImpl, IPeerConnection)
 
 PeerConnectionImpl::PeerConnectionImpl()
 : mRole(kRoleUnknown)
@@ -905,7 +908,7 @@ PeerConnectionImpl::ConvertConstraints(
   JS::Rooted<JSObject*> constraints(aCx, &aConstraints.toObject());
 
   // Mandatory constraints.  Note that we only care if the constraint array exists
-  if (!JS_GetProperty(aCx, constraints, "mandatory", mandatory.address())) {
+  if (!JS_GetProperty(aCx, constraints, "mandatory", &mandatory)) {
     return NS_ERROR_FAILURE;
   }
   if (!mandatory.isNullOrUndefined()) {
@@ -919,7 +922,7 @@ PeerConnectionImpl::ConvertConstraints(
     // Iterate over each property.
     for (size_t i = 0; i < mandatoryOpts.length(); i++) {
       JS::Rooted<JS::Value> option(aCx), optionName(aCx);
-      if (!JS_GetPropertyById(aCx, opts, mandatoryOpts[i], option.address()) ||
+      if (!JS_GetPropertyById(aCx, opts, mandatoryOpts[i], &option) ||
           !JS_IdToValue(aCx, mandatoryOpts[i], optionName.address()) ||
           // We only support boolean constraints for now.
           !option.isBoolean()) {
@@ -935,7 +938,7 @@ PeerConnectionImpl::ConvertConstraints(
   }
 
   // Optional constraints.
-  if (!JS_GetProperty(aCx, constraints, "optional", optional.address())) {
+  if (!JS_GetProperty(aCx, constraints, "optional", &optional)) {
     return NS_ERROR_FAILURE;
   }
   if (!optional.isNullOrUndefined()) {
@@ -950,7 +953,7 @@ PeerConnectionImpl::ConvertConstraints(
     }
     for (uint32_t i = 0; i < length; i++) {
       JS::Rooted<JS::Value> element(aCx);
-      if (!JS_GetElement(aCx, array, i, element.address()) ||
+      if (!JS_GetElement(aCx, array, i, &element) ||
           !element.isObject()) {
         return NS_ERROR_FAILURE;
       }
@@ -961,7 +964,7 @@ PeerConnectionImpl::ConvertConstraints(
         return NS_ERROR_FAILURE;
       }
       JS::Rooted<JS::Value> option(aCx), optionName(aCx);
-      if (!JS_GetPropertyById(aCx, opts, optionalOpts[0], option.address()) ||
+      if (!JS_GetPropertyById(aCx, opts, optionalOpts[0], &option) ||
           !JS_IdToValue(aCx, optionalOpts[0], optionName.address())) {
         return NS_ERROR_FAILURE;
       }
@@ -1328,6 +1331,14 @@ PeerConnectionImpl::ShutdownMedia()
   if (!mMedia)
     return;
 
+#ifdef MOZILLA_INTERNAL_API
+  // End of call to be recorded in Telemetry
+  if (!mStartTime.IsNull()){
+    mozilla::TimeDuration timeDelta = mozilla::TimeStamp::Now() - mStartTime;
+    Telemetry::Accumulate(Telemetry::WEBRTC_CALL_DURATION, timeDelta.ToSeconds());
+  }
+#endif
+
   // Forget the reference so that we can transfer it to
   // SelfDestruct().
   mMedia.forget().get()->SelfDestruct();
@@ -1545,6 +1556,13 @@ PeerConnectionImpl::GetSdpParseErrors() {
   return mSDPParseErrorMessages;
 }
 
+#ifdef MOZILLA_INTERNAL_API
+//Telemetry set start time
+void
+PeerConnectionImpl::setStartTime() {
+  mStartTime = mozilla::TimeStamp::Now();
+}
+#endif
 
 #ifdef MOZILLA_INTERNAL_API
 static nsresult

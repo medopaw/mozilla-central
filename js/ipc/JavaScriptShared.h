@@ -8,9 +8,6 @@
 #ifndef mozilla_jsipc_JavaScriptShared_h__
 #define mozilla_jsipc_JavaScriptShared_h__
 
-#include "jsapi.h"
-#include "jspubtd.h"
-#include "js/HashTable.h"
 #include "mozilla/dom/DOMTypes.h"
 #include "mozilla/jsipc/PJavaScript.h"
 #include "nsJSUtils.h"
@@ -44,7 +41,7 @@ class ObjectStore
 {
     typedef js::DefaultHasher<ObjectId> TableKeyHasher;
 
-    typedef js::HashMap<ObjectId, JSObject *, TableKeyHasher, js::SystemAllocPolicy> ObjectTable;
+    typedef js::HashMap<ObjectId, JS::Heap<JSObject *>, TableKeyHasher, js::SystemAllocPolicy> ObjectTable;
 
   public:
     ObjectStore();
@@ -72,11 +69,13 @@ class ObjectIdCache
     bool init();
     void trace(JSTracer *trc);
 
-    bool add(JSObject *, ObjectId id);
+    bool add(JSContext *cx, JSObject *obj, ObjectId id);
     ObjectId find(JSObject *obj);
     void remove(JSObject *obj);
 
   private:
+    static void keyMarkCallback(JSTracer *trc, void *key, void *data);
+
     ObjectIdTable table_;
 };
 
@@ -94,8 +93,9 @@ class JavaScriptShared
   protected:
     bool toVariant(JSContext *cx, jsval from, JSVariant *to);
     bool toValue(JSContext *cx, const JSVariant &from, JS::MutableHandleValue to);
-    bool fromDescriptor(JSContext *cx, const JSPropertyDescriptor &desc, PPropertyDescriptor *out);
-    bool toDescriptor(JSContext *cx, const PPropertyDescriptor &in, JSPropertyDescriptor *out);
+    bool fromDescriptor(JSContext *cx, JS::Handle<JSPropertyDescriptor> desc, PPropertyDescriptor *out);
+    bool toDescriptor(JSContext *cx, const PPropertyDescriptor &in,
+                      JS::MutableHandle<JSPropertyDescriptor> out);
     bool convertIdToGeckoString(JSContext *cx, JS::HandleId id, nsString *to);
     bool convertGeckoStringToId(JSContext *cx, const nsString &from, JS::MutableHandleId id);
 
@@ -110,14 +110,14 @@ class JavaScriptShared
     virtual bool makeId(JSContext *cx, JSObject *obj, ObjectId *idp) = 0;
     virtual JSObject *unwrap(JSContext *cx, ObjectId id) = 0;
 
-    bool unwrap(JSContext *cx, ObjectId id, JSObject **objp) {
+    bool unwrap(JSContext *cx, ObjectId id, JS::MutableHandle<JSObject*> objp) {
         if (!id) {
-            *objp = NULL;
+            objp.set(NULL);
             return true;
         }
 
-        *objp = unwrap(cx, id);
-        return !!*objp;
+        objp.set(unwrap(cx, id));
+        return bool(objp.get());
     }
 
     static void ConvertID(const nsID &from, JSIID *to);

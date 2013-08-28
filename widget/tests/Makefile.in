@@ -8,8 +8,6 @@ topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 relativesrcdir  = @relativesrcdir@
-FAIL_ON_WARNINGS = 1
-
 include $(DEPTH)/config/autoconf.mk
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
@@ -25,8 +23,6 @@ endif
 #CPP_UNIT_TESTS += TestChromeMargin.cpp  \
 #                 $(NULL)
 endif
-
-CPP_UNIT_TESTS += TestAppShellSteadyState.cpp
 
 MOCHITEST_CHROME_FILES =	test_bug343416.xul \
 		test_bug429954.xul \

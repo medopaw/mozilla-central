@@ -82,7 +82,7 @@ nsDOMUIEvent::Constructor(const mozilla::dom::GlobalObject& aGlobal,
                           const mozilla::dom::UIEventInit& aParam,
                           mozilla::ErrorResult& aRv)
 {
-  nsCOMPtr<mozilla::dom::EventTarget> t = do_QueryInterface(aGlobal.Get());
+  nsCOMPtr<mozilla::dom::EventTarget> t = do_QueryInterface(aGlobal.GetAsSupports());
   nsRefPtr<nsDOMUIEvent> e = new nsDOMUIEvent(t, nullptr, nullptr);
   bool trusted = e->Init(t);
   aRv = e->InitUIEvent(aType, aParam.mBubbles, aParam.mCancelable, aParam.mView,
@@ -102,7 +102,8 @@ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION_INHERITED(nsDOMUIEvent)
 NS_INTERFACE_MAP_END_INHERITING(nsDOMEvent)
 
 static nsIntPoint
-DevPixelsToCSSPixels(const nsIntPoint& aPoint, nsPresContext* aContext)
+DevPixelsToCSSPixels(const LayoutDeviceIntPoint& aPoint,
+                     nsPresContext* aContext)
 {
   return nsIntPoint(aContext->DevPixelsToIntCSSPixels(aPoint.x),
                     aContext->DevPixelsToIntCSSPixels(aPoint.y));
@@ -375,7 +376,7 @@ nsDOMUIEvent::DuplicatePrivateData()
                                                        mEvent->refPoint);
   nsresult rv = nsDOMEvent::DuplicatePrivateData();
   if (NS_SUCCEEDED(rv)) {
-    mEvent->refPoint = screenPoint;
+    mEvent->refPoint = LayoutDeviceIntPoint::FromUntyped(screenPoint);
   }
   return rv;
 }

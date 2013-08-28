@@ -10,10 +10,11 @@
 #ifndef nsDocument_h___
 #define nsDocument_h___
 
+#include "nsIDocument.h"
+
 #include "nsCOMPtr.h"
 #include "nsAutoPtr.h"
 #include "nsCRT.h"
-#include "nsIDocument.h"
 #include "nsWeakReference.h"
 #include "nsWeakPtr.h"
 #include "nsVoidArray.h"
@@ -64,7 +65,6 @@
 #include "mozilla/MemoryReporting.h"
 #include "mozilla/dom/DOMImplementation.h"
 #include "nsIDOMTouchEvent.h"
-#include "nsIInlineEventHandlers.h"
 #include "nsDataHashtable.h"
 #include "mozilla/TimeStamp.h"
 #include "mozilla/Attributes.h"
@@ -94,6 +94,7 @@ class nsWindowSizes;
 class nsHtml5TreeOpExecutor;
 class nsDocumentOnStack;
 class nsPointerLockPermissionRequest;
+class nsISecurityConsoleMessage;
 
 namespace mozilla {
 namespace dom {
@@ -503,8 +504,6 @@ class nsDocument : public nsIDocument,
                    public nsIRadioGroupContainer,
                    public nsIApplicationCacheContainer,
                    public nsStubMutationObserver,
-                   public nsIDOMDocumentTouch,
-                   public nsIInlineEventHandlers,
                    public nsIObserver
 {
 public:
@@ -728,13 +727,16 @@ public:
   NS_IMETHOD WalkRadioGroup(const nsAString& aName,
                             nsIRadioVisitor* aVisitor,
                             bool aFlushContent) MOZ_OVERRIDE;
-  virtual void SetCurrentRadioButton(const nsAString& aName,
-                                     nsIDOMHTMLInputElement* aRadio) MOZ_OVERRIDE;
-  virtual nsIDOMHTMLInputElement* GetCurrentRadioButton(const nsAString& aName) MOZ_OVERRIDE;
-  NS_IMETHOD GetNextRadioButton(const nsAString& aName,
-                                const bool aPrevious,
-                                nsIDOMHTMLInputElement*  aFocusedRadio,
-                                nsIDOMHTMLInputElement** aRadioOut) MOZ_OVERRIDE;
+  virtual void
+    SetCurrentRadioButton(const nsAString& aName,
+                          mozilla::dom::HTMLInputElement* aRadio) MOZ_OVERRIDE;
+  virtual mozilla::dom::HTMLInputElement*
+    GetCurrentRadioButton(const nsAString& aName) MOZ_OVERRIDE;
+  NS_IMETHOD
+    GetNextRadioButton(const nsAString& aName,
+                       const bool aPrevious,
+                       mozilla::dom::HTMLInputElement*  aFocusedRadio,
+                       mozilla::dom::HTMLInputElement** aRadioOut) MOZ_OVERRIDE;
   virtual void AddToRadioGroup(const nsAString& aName,
                                nsIFormControl* aRadio) MOZ_OVERRIDE;
   virtual void RemoveFromRadioGroup(const nsAString& aName,
@@ -755,6 +757,7 @@ public:
 
 private:
   nsRadioGroupStruct* GetRadioGroupInternal(const nsAString& aName) const;
+  void SendToConsole(nsCOMArray<nsISecurityConsoleMessage>& aMessages);
 
 public:
   // nsIDOMNode
@@ -779,15 +782,6 @@ public:
 
   // nsIApplicationCacheContainer
   NS_DECL_NSIAPPLICATIONCACHECONTAINER
-
-  // nsITouchEventReceiver
-  NS_DECL_NSITOUCHEVENTRECEIVER
-
-  // nsIDOMDocumentTouch
-  NS_DECL_NSIDOMDOCUMENTTOUCH
-
-  // nsIInlineEventHandlers
-  NS_DECL_NSIINLINEEVENTHANDLERS
 
   // nsIObserver
   NS_DECL_NSIOBSERVER

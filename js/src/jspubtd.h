@@ -11,10 +11,13 @@
  * JS public API typedefs.
  */
 
+#include "mozilla/PodOperations.h"
+
 #include "jsprototypes.h"
 #include "jstypes.h"
+#include "jsversion.h"  // #include here so it's seen everywhere
 
-#include "mozilla/PodOperations.h"
+#include "js/IdForward.h"
 
 #if defined(JSGC_ROOT_ANALYSIS) || defined(JSGC_USE_EXACT_ROOTING) || defined(DEBUG)
 # define JSGC_TRACK_EXACT_ROOTS
@@ -28,46 +31,20 @@ namespace JS {
  */
 class Value;
 
+class AutoIdVector;
+class CallArgs;
+
 template <typename T>
 class Rooted;
 
 class JS_PUBLIC_API(AutoGCRooter);
 
+class JS_PUBLIC_API(CompileOptions);
+class JS_PUBLIC_API(CompartmentOptions);
+
 struct Zone;
 
 } /* namespace JS */
-
-/*
- * In release builds, jsid is defined to be an integral type. This
- * prevents many bugs from being caught at compile time. E.g.:
- *
- *  jsid id = ...
- *  if (id == JS_TRUE)  // error
- *    ...
- *
- *  size_t n = id;      // error
- *
- * To catch more errors, jsid is given a struct type in C++ debug builds.
- * Struct assignment and (in C++) operator== allow correct code to be mostly
- * oblivious to the change. This feature can be explicitly disabled in debug
- * builds by defining JS_NO_JSVAL_JSID_STRUCT_TYPES.
- */
-# if defined(DEBUG) && !defined(JS_NO_JSVAL_JSID_STRUCT_TYPES)
-#  define JS_USE_JSID_STRUCT_TYPES
-# endif
-
-# ifdef JS_USE_JSID_STRUCT_TYPES
-struct jsid
-{
-    size_t asBits;
-    bool operator==(jsid rhs) const { return asBits == rhs.asBits; }
-    bool operator!=(jsid rhs) const { return asBits != rhs.asBits; }
-};
-#  define JSID_BITS(id) (id.asBits)
-# else  /* defined(JS_USE_JSID_STRUCT_TYPES) */
-typedef ptrdiff_t jsid;
-#  define JSID_BITS(id) (id)
-# endif  /* defined(JS_USE_JSID_STRUCT_TYPES) */
 
 #ifdef WIN32
 typedef wchar_t   jschar;
@@ -200,13 +177,23 @@ class                                       JSStableString;  // long story
 class                                       JSString;
 
 #ifdef JS_THREADSAFE
-typedef struct PRCallOnceType    JSCallOnceType;
+typedef struct PRCallOnceType   JSCallOnceType;
 #else
-typedef JSBool                   JSCallOnceType;
+typedef bool                    JSCallOnceType;
 #endif
-typedef JSBool                 (*JSInitCallback)(void);
+typedef bool                    (*JSInitCallback)(void);
+
+/*
+ * Generic trace operation that calls JS_CallTracer on each traceable thing
+ * stored in data.
+ */
+typedef void
+(* JSTraceDataOp)(JSTracer *trc, void *data);
 
 namespace JS {
+
+typedef void (*OffThreadCompileCallback)(JSScript *script, void *callbackData);
+
 namespace shadow {
 
 struct Runtime
@@ -305,7 +292,7 @@ struct ContextFriendFields
     explicit ContextFriendFields(JSRuntime *rt)
       : runtime_(rt), compartment_(NULL), zone_(NULL), autoGCRooters(NULL)
     {
-#if defined(JSGC_ROOT_ANALYSIS) || defined(JSGC_USE_EXACT_ROOTING)
+#ifdef JSGC_TRACK_EXACT_ROOTS
         mozilla::PodArrayZero(thingGCRooters);
 #endif
 #if defined(DEBUG) && defined(JS_GC_ZEAL) && defined(JSGC_ROOT_ANALYSIS) && !defined(JS_THREADSAFE)

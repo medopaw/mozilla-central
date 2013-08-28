@@ -10,7 +10,6 @@
 #define vm_CommonPropertyNames_h
 
 #include "jsprototypes.h"
-#include "jsversion.h"
 
 #define FOR_EACH_COMMON_PROPERTYNAME(macro) \
     macro(anonymous, anonymous, "anonymous") \
@@ -20,6 +19,7 @@
     macro(builder, builder, "builder") \
     macro(byteLength, byteLength, "byteLength") \
     macro(byteOffset, byteOffset, "byteOffset") \
+    macro(bytes, bytes, "bytes") \
     macro(BYTES_PER_ELEMENT, BYTES_PER_ELEMENT, "BYTES_PER_ELEMENT") \
     macro(call, call, "call") \
     macro(callee, callee, "callee") \
@@ -46,6 +46,7 @@
     macro(delete, delete_, "delete") \
     macro(deleteProperty, deleteProperty, "deleteProperty") \
     macro(each, each, "each") \
+    macro(elementType, elementType, "elementType") \
     macro(empty, empty, "") \
     macro(encodeURI, encodeURI, "encodeURI") \
     macro(encodeURIComponent, encodeURIComponent, "encodeURIComponent") \
@@ -150,6 +151,7 @@
     macro(void0, void0, "(void 0)") \
     macro(watch, watch, "watch") \
     macro(writable, writable, "writable") \
+    macro(yield, yield, "yield") \
     /* Type names must be contiguous and ordered; see js::TypeName. */ \
     macro(undefined, undefined, "undefined") \
     macro(object, object, "object") \

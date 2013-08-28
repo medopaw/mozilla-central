@@ -14,15 +14,13 @@
 
 #include "mozilla/TimeStamp.h"
 #include "mozFlushType.h"
-#include "nsCOMPtr.h"
 #include "nsTObserverArray.h"
 #include "nsTArray.h"
-#include "nsAutoPtr.h"
 #include "nsTHashtable.h"
 #include "nsClassHashtable.h"
 #include "nsHashKeys.h"
 #include "mozilla/Attributes.h"
-#include "mozilla/Util.h"
+#include "mozilla/Maybe.h"
 
 class nsPresContext;
 class nsIPresShell;
@@ -230,17 +228,6 @@ public:
    */
   static int32_t DefaultInterval();
 
-  /**
-   * Enable/disable paint flashing.
-   */
-  void SetPaintFlashing(bool aPaintFlashing) {
-    mPaintFlashing = aPaintFlashing;
-  }
-
-  bool GetPaintFlashing() {
-    return mPaintFlashing;
-  }
-
 private:
   typedef nsTObserverArray<nsARefreshObserver*> ObserverArray;
   typedef nsTHashtable<nsISupportsHashKey> RequestTable;
@@ -295,7 +282,6 @@ private:
   bool mTestControllingRefreshes;
   bool mViewManagerFlushIsPending;
   bool mRequestedHighPrecision;
-  bool mPaintFlashing;
 
   int64_t mMostRecentRefreshEpochTime;
   mozilla::TimeStamp mMostRecentRefresh;

@@ -6,24 +6,38 @@
 #ifndef MOZILLA_GFX_COMPOSITINGRENDERTARGETOGL_H
 #define MOZILLA_GFX_COMPOSITINGRENDERTARGETOGL_H
 
-#include "mozilla/layers/CompositorOGL.h"
-#include "mozilla/gfx/Rect.h"
-#include "gfxASurface.h"
+#include "mozilla-config.h"             // for MOZ_DUMP_PAINTING
+#include "GLContext.h"                  // for GLContext
+#include "GLContextTypes.h"             // for GLenum, GLuint
+#include "GLDefs.h"                     // for LOCAL_GL_FRAMEBUFFER, etc
+#include "gfxMatrix.h"                  // for gfxMatrix
+#include "mozilla/Assertions.h"         // for MOZ_ASSERT, etc
+#include "mozilla/Attributes.h"         // for MOZ_OVERRIDE
+#include "mozilla/RefPtr.h"             // for RefPtr, TemporaryRef
+#include "mozilla/gfx/Point.h"          // for IntSize, IntSizeTyped
+#include "mozilla/gfx/Types.h"          // for SurfaceFormat, etc
+#include "mozilla/layers/Compositor.h"  // for SurfaceInitMode, etc
+#include "mozilla/layers/TextureHost.h" // for CompositingRenderTarget
+#include "mozilla/layers/CompositorOGL.h"  // for CompositorOGL
+#include "mozilla/mozalloc.h"           // for operator new
+#include "nsAString.h"
+#include "nsCOMPtr.h"                   // for already_AddRefed
+#include "nsDebug.h"                    // for NS_ERROR, NS_WARNING
+#include "nsString.h"                   // for nsAutoCString
 
-#ifdef MOZ_DUMP_PAINTING
-#include "mozilla/layers/CompositorOGL.h"
-#endif
+class gfxImageSurface;
 
 namespace mozilla {
 namespace gl {
-  class TextureImage;
   class BindableTexture;
 }
+
 namespace layers {
+
+class TextureSource;
 
 class CompositingRenderTargetOGL : public CompositingRenderTarget
 {
-  typedef gfxASurface::gfxContentType ContentType;
   typedef mozilla::gl::GLContext GLContext;
 
   // For lazy initialisation of the GL stuff
@@ -142,13 +156,22 @@ public:
   // TextureSourceOGL
   TextureSourceOGL* AsSourceOGL() MOZ_OVERRIDE
   {
+    // XXX - Bug 900770
     MOZ_ASSERT(false, "CompositingRenderTargetOGL should not be used as a TextureSource");
     return nullptr;
   }
   gfx::IntSize GetSize() const MOZ_OVERRIDE
   {
+    // XXX - Bug 900770
     MOZ_ASSERT(false, "CompositingRenderTargetOGL should not be used as a TextureSource");
     return gfx::IntSize(0, 0);
+  }
+
+  gfx::SurfaceFormat GetFormat() const MOZ_OVERRIDE
+  {
+    // XXX - Should it be implemented ? is the above assert true ?
+    MOZ_ASSERT(false, "Not implemented");
+    return gfx::FORMAT_UNKNOWN;
   }
 
   const gfxMatrix& GetTransform() {

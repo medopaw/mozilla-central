@@ -14,9 +14,9 @@
 #include "mozilla/dom/PromiseBinding.h"
 #include "nsWrapperCache.h"
 #include "nsAutoPtr.h"
+#include "nsPIDOMWindow.h"
 
 struct JSContext;
-class nsPIDOMWindow;
 
 namespace mozilla {
 namespace dom {
@@ -41,6 +41,7 @@ public:
   ~Promise();
 
   static bool PrefEnabled();
+  static bool EnabledForScope(JSContext* aCx, JSObject* /* unused */);
 
   // WebIDL
 
@@ -53,7 +54,7 @@ public:
   WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
 
   static already_AddRefed<Promise>
-  Constructor(const GlobalObject& aGlobal, JSContext* aCx, PromiseInit& aInit,
+  Constructor(const GlobalObject& aGlobal, PromiseInit& aInit,
               ErrorResult& aRv);
 
   static already_AddRefed<Promise>

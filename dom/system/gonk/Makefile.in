@@ -22,9 +22,6 @@ relativesrcdir   = @relativesrcdir@
 include $(DEPTH)/config/autoconf.mk
 
 LIBRARY_NAME     = domsystemgonk_s
-LIBXUL_LIBRARY   = 1
-FAIL_ON_WARNINGS := 1
-
 include $(topsrcdir)/dom/dom-config.mk
 
 LOCAL_INCLUDES = \
@@ -36,15 +33,13 @@ LOCAL_INCLUDES = \
   -I$(topsrcdir)/content/events/src \
   $(NULL)
 
-EXTRA_COMPONENTS = \
-  NetworkManager.manifest \
-  NetworkManager.js \
-  RadioInterfaceLayer.manifest \
-  RadioInterfaceLayer.js \
-  RILContentHelper.js \
-  NetworkInterfaceListService.manifest \
-  NetworkInterfaceListService.js \
+# TODO: Bug 908038, move this to moz.build
+WORKER_FILES := worker_buf.js \
   $(NULL)
+
+INSTALL_TARGETS += WORKER
+
+WORKER_DEST = $(FINAL_TARGET)/modules/workers
 
 include $(topsrcdir)/config/rules.mk
 include $(topsrcdir)/ipc/chromium/chromium-config.mk
