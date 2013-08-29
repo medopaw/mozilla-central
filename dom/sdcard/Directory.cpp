@@ -266,7 +266,7 @@ Directory::Move(const StringOrDirectory& path, const DestinationDict& dest,
 
   CopyMoveInternal(entryRelpath, parentRelpath, newName, false, callerPtr);
 }
-
+/*
 void
 Directory::Copy(const StringOrDirectory& path, const nsAString& dest,
       EntryCallback& successCallback,
@@ -292,7 +292,7 @@ Directory::Copy(const StringOrDirectory& path,
 {
   SDCARD_LOG("in Directory.Copy()");
 }
-
+*/
 void
 Directory::Enumerate(const Optional<nsAString>& path,
     const Optional<OwningNonNull<EntriesCallback> >& successCallback,

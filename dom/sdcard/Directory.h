@@ -77,7 +77,7 @@ public:
   void Move(const StringOrDirectory& path, const DestinationDict& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
+/*
   void Copy(const StringOrDirectory& path, const nsAString& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
@@ -91,7 +91,7 @@ public:
       const DestinationDict& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
+*/
   void Remove(const nsAString& entry, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 

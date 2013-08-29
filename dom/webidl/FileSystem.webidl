@@ -29,9 +29,9 @@ interface Directory : Entry {
     void            move ((DOMString /*or File*/ or Directory) path, DOMString dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            copy ((DOMString /*or File*/ or Directory) path, DOMString dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            copy ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            copy ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void            copy ((DOMString /*or File*/ or Directory) path, DOMString dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void            copy ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void            copy ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            remove (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            remove (Directory entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            removeDeep (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
