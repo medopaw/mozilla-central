@@ -11,7 +11,6 @@
 
 #include "nsCycleCollectionParticipant.h"
 #include "nsWrapperCache.h"
-// #include "mozilla/dom/Promise.h"
 
 #include "Entry.h"
 

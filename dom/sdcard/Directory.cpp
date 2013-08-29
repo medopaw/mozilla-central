@@ -14,6 +14,7 @@
 
 #include "DirectoryReader.h"
 #include "FileUtils.h"
+#include "Window.h"
 #include "Error.h"
 #include "Path.h"
 #include "Utils.h"
@@ -337,8 +338,7 @@ Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
 {
   SDCARD_LOG("in Directory.GetFile()");
 
-  nsRefPtr<mozilla::dom::Promise> promise = new mozilla::dom::Promise(
-      GetParentObject());
+  nsRefPtr<mozilla::dom::Promise> promise = new Promise(Window::GetWindow());
   return promise.forget();
   //GetInternal(path, options, successCallback, errorCallback, true);
 }
@@ -381,9 +381,8 @@ Directory::GetEntryRelpath(const Directory& aPath, nsString& aEntryRelpath,
   SDCARD_LOG("in Directory.GetEntryRelpath()");
 
   aPath.GetRelpath(aEntryRelpath);
-  // need scope validation here
   if (!Path::IsParentOf(mRelpath, aEntryRelpath)) {
-    SDCARD_LOG("Directory not within scope.");
+    SDCARD_LOG("Directory is out of scope.");
     aCaller->CallErrorCallback(Error::DOM_ERROR_SECURITY);
     return false;
   }
