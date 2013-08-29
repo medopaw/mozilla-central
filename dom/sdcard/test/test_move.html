@@ -79,84 +79,84 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=726593
   };
 
   filesystem_create([{
-		name: p.pathToPath.name
-	}, {
-		name: p.pathToDir.name
-	}, {
-		name: p.pathToDict.name
-	}, {
-		name: p.fileToPath.name
-	}, {
-		name: p.fileToDir.name
-	}, {
-		name: p.fileToDict.name
-	}, {
-		name: p.dirToPath.name
-	}, {
-		name: p.dirToDir.name
-	}, {
-		name: p.dirToDict.name
-	}, {
-		name: "dest",
-		tree: [{
-			name: testPath.dir.normal.name,
-			tree: []
-		}, {
-			name: p.existingFile.name
-		}, {
-			name: p.existingDir.name,
-			tree: []
-		}]
-	}]);
+    name: p.pathToPath.name
+  }, {
+    name: p.pathToDir.name
+  }, {
+    name: p.pathToDict.name
+  }, {
+    name: p.fileToPath.name
+  }, {
+    name: p.fileToDir.name
+  }, {
+    name: p.fileToDict.name
+  }, {
+    name: p.dirToPath.name
+  }, {
+    name: p.dirToDir.name
+  }, {
+    name: p.dirToDict.name
+  }, {
+    name: "dest",
+    tree: [{
+      name: testPath.dir.normal.name,
+      tree: []
+    }, {
+      name: p.existingFile.name
+    }, {
+      name: p.existingDir.name,
+      tree: []
+    }]
+  }]);
 
   var root = navigator.mozSDCard.root;
   
   root.get(p.dest.path, function(destDir) {
-	  testEngine.tests = [{
-			name: "move " + p.pathToPath.desc,
-			args: [p.pathToPath.path, p.dest.path]
-//		}, {
-//			name: "move " + p.pathToDir.desc,
-//			args: [p.pathToDir.path, destDir]
-/*		}, {
-			name: "move " + p.pathToDict.desc,
- 			args: [p.pathToDict.path, {
-         dir: destDir,
-         name: p.pathToDict.name + "_new_name"
-			}]
- 		}, {
-			name: "move " + p.fileToPath.desc,
-			args: [srcFile, p.dest.path]
-		}, {
-			name: "move " + p.fileToDir.desc,
-			args: [srcFile, destDir]
-		}, {
-			name: "move " + p.fileToDict.desc,
-			args: [srcFile, {
-				dir: destDir,
-        name: p.fileToDict.name + "_new_name"
-			}]*/
-//		}, {
-//			name: "move " + p.dirToPath.desc,
-//			args: [p.dirToPath.path, p.dest.path]
-//		}, {
-//			name: "move " + p.dirToDir.desc,
-//			args: [p.dirToDir.path, destDir]
-/*	}, {
-			name: "move " + p.dirToDict.desc,
- 			args: [p.dirToDict.path, {
-         dir: destDir,
-         name: p.dirToDict.name + "_new_name"
-			}]*/
-		}];
+    testEngine.tests = [{
+      name: "move " + p.pathToPath.desc,
+      args: [p.pathToPath.path, p.dest.path]
+    }, {
+      name: "move " + p.pathToDir.desc,
+      args: [p.pathToDir.path, destDir]
+    }, {
+      name: "move " + p.pathToDict.desc,
+      args: [p.pathToDict.path, {
+	dir: destDir,
+	name: p.pathToDict.name + "_new_name"
+      }]
+/*  }, {
+      name: "move " + p.fileToPath.desc,
+      args: [srcFile, p.dest.path]
+    }, {
+      name: "move " + p.fileToDir.desc,
+      args: [srcFile, destDir]
+    }, {
+      name: "move " + p.fileToDict.desc,
+      args: [srcFile, {
+	      dir: destDir,
+	      name: p.fileToDict.name + "_new_name"
+      }]*/
+    }, {
+      name: "move " + p.dirToPath.desc,
+      args: [p.dirToPath.path, p.dest.path]
+    }, {
+      name: "move " + p.dirToDir.desc,
+      args: [p.dirToDir.path, destDir]
+    }, {
+      name: "move " + p.dirToDict.desc,
+      args: [p.dirToDict.path, {
+	dir: destDir,
+	name: p.dirToDict.name + "_new_name"
+      }]
+    }];
 
-	  testEngine.func = function(args, onsuccess, onerror) {
-		  var path = args[0], dest = args[1];
-		  test_dump("move " + path + " to " + dest);
-		  root.move(path, dest, onsuccess, onerror);
-	  };
+    testEngine.func = function(args, onsuccess, onerror) {
+      var path = args[0], dest = args[1];
+      test_dump("move " + path + " to " + dest);
+      root.move(path, dest, onsuccess, onerror);
+    };
 
-	  testEngine.proceed();
+    testEngine.proceed();
   });
 
   </script>
