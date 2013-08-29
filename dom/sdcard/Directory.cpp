@@ -147,40 +147,7 @@ Directory::Get(const nsAString& path,
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
   GetInternal(path, false, false, false, callerPtr);
 }
-/*
-void
-Directory::Rename(const nsAString& oldName, const nsAString& newName,
-    const Optional<OwningNonNull<EntryCallback> >& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.rename()");
 
-  nsRefPtr<Caller> pCaller = new Caller(successCallback, errorCallback);
-
-  // Check if names are valid.
-  if (!Path::IsValidName(oldName) || !Path::IsValidName(newName)) {
-    SDCARD_LOG("Invalid name!");
-    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-    return;
-  }
-
-  // Get absolute real path.
-  nsString oldPath;
-  Path::Absolutize(oldName, mRelpath, oldPath);
-
-  if (XRE_GetProcessType() == GeckoProcessType_Default) {
-    SDCARD_LOG("in b2g process");
-    nsRefPtr<SPCopyAndMoveToEvent> r = new SPCopyAndMoveToEvent(oldPath,
-        mRelpath, newName, false, false, pCaller);
-    r->Start();
-  } else {
-    SDCARD_LOG("in app process");
-    SDCardCopyAndMoveParams params(oldPath, mRelpath, nsString(newName), false, false);
-    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
-    ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
-  }
-}
-*/
 void
 Directory::Move(const StringOrDirectory& path, const nsAString& dest,
     EntryCallback& successCallback,
@@ -414,28 +381,47 @@ Directory::GetDirectory(const nsAString& path,
 }
 
 bool
+Directory::GetEntryRelpath(const nsAString& aPath, nsString& aEntryRelpath,
+    Caller* aCaller)
+{
+  SDCARD_LOG("in Directory.GetEntryRelpath()");
+
+  // Check if path is valid.
+  if (!Path::IsValidPath(aPath)) {
+    SDCARD_LOG("Invalid path!");
+    aCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    return false;
+  }
+  Path::Absolutize(aPath, mRelpath, aEntryRelpath);
+
+  return true;
+}
+
+bool
+Directory::GetEntryRelpath(const Directory& aPath, nsString& aEntryRelpath,
+    Caller* aCaller)
+{
+  SDCARD_LOG("in Directory.GetEntryRelpath()");
+
+  aPath.GetRelpath(aEntryRelpath);
+  return true;
+}
+
+bool
 Directory::GetEntryRelpath(const StringOrDirectory& aPath, nsString& aEntryRelpath,
     Caller* aCaller)
 {
   SDCARD_LOG("in Directory.GetEntryRelpath()");
 
   if (aPath.IsString()) {
-    nsString strPath(aPath.GetAsString());
-    // Check if path is valid.
-    if (!Path::IsValidPath(strPath)) {
-      SDCARD_LOG("Invalid path!");
-      aCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-      return false;
-    }
-    Path::Absolutize(strPath, mRelpath, aEntryRelpath);
+    return GetEntryRelpath(aPath.GetAsString(), aEntryRelpath, aCaller);
   } else if (aPath.IsDirectory()) {
-    Directory& dirPath = aPath.GetAsDirectory();
-    dirPath.GetRelpath(aEntryRelpath);
-  } else {
-    // throw error
+    return GetEntryRelpath(aPath.GetAsDirectory(), aEntryRelpath, aCaller);
   }
 
-  return true;
+  SDCARD_LOG("Type error!");
+  aCaller->CallErrorCallback(Error::DOM_ERROR_TYPE_MISMATCH);
+  return false;
 }
 
 void

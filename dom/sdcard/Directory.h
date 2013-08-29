@@ -61,11 +61,7 @@ public:
   void Get(const nsAString& path,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
-/*
-  void Rename (const nsAString& oldName, const nsAString& newName,
-      const Optional< OwningNonNull<EntryCallback> >& successCallback,
-      const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
-*/
+
   void Move(const StringOrDirectory& path, const nsAString& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
@@ -104,9 +100,16 @@ public:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
+  bool GetEntryRelpath(const nsAString& aPath, nsString& aEntryRelpath,
+      Caller* aCaller);
+
+  bool GetEntryRelpath(const Directory& aPath, nsString& aEntryRelpath,
+      Caller* aCaller);
+
   bool GetEntryRelpath(const StringOrDirectory& aPath, nsString& aEntryRelpath,
       Caller* aCaller);
 
+private:
   void CopyMoveInternal(const nsAString& aEntryRelpath,
       const nsAString& aParentRelpath, const nsString& aNewName, bool isCopy,
       Caller* aCaller, bool aUndecided = false);

@@ -25,7 +25,6 @@ interface Directory : Entry {
     void            createFile (DOMString path, optional CreateFileOptions options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            createDirectory (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            get (DOMString path, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-//    void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move ((DOMString /*or File*/ or Directory) path, DOMString dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
@@ -33,11 +32,7 @@ interface Directory : Entry {
 //    void            copy ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
 //    void            copy ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            remove ((DOMString or Directory) path, VoidCallback successCallback, optional ErrorCallback errorCallback);
-//    void            remove (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
-//    void            remove (Directory entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            removeDeep ((DOMString or Directory) path, VoidCallback successCallback, optional ErrorCallback errorCallback);
-//    void            removeDeep (DOMString entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
-//    void            removeDeep (Directory entry, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            enumerate (optional DOMString path, optional EntriesCallback successCallback, optional ErrorCallback errorCallback);
     void            enumerateDeep (optional DOMString path, optional EntriesCallback successCallback, optional ErrorCallback errorCallback);
     Promise         getFile (DOMString path, optional FileSystemFlags options);
