@@ -599,9 +599,6 @@ Interests.prototype = {
     if (aTopic == kStartup) {
       Services.obs.addObserver(this, kShutdown, false);
       Services.obs.addObserver(this, kWindowReady, false);
-      this._setupOneTimeTimer(() => {
-        this._checkForMigration();
-      });
     }
     else if (aTopic == kWindowReady) {
       // Top level window is the browser window, not the content window(s).
