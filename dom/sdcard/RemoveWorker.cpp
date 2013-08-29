@@ -14,9 +14,9 @@ namespace mozilla {
 namespace dom {
 namespace sdcard {
 
-RemoveWorker::RemoveWorker(const nsAString& aRelpath, bool aRecursive) :
+RemoveWorker::RemoveWorker(const nsAString& aRelpath, bool aDeep) :
     Worker(aRelpath),
-    mRecursive(aRecursive)
+    mDeep(aDeep)
 {
   SDCARD_LOG("construct RemoveWorker");
 }
@@ -29,7 +29,8 @@ RemoveWorker::~RemoveWorker()
 void
 RemoveWorker::Work()
 {
-  SDCARD_LOG("in RemoveWorker.Work()");
+  SDCARD_LOG("in RemoveWorker.Work() with mRelpath=%s and mDeep=%d",
+      NS_ConvertUTF16toUTF8(mRelpath).get(), mDeep);
   MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
 
   nsresult rv = NS_OK;
@@ -37,8 +38,9 @@ RemoveWorker::Work()
     // Cannot remove root directory
     SetError(Error::DOM_ERROR_NO_MODIFICATION_ALLOWED);
   } else {
-    rv = mFile->Remove(mRecursive);
+    rv = mFile->Remove(mDeep);
     if (NS_FAILED(rv) ) {
+      SDCARD_LOG("Error occurs when removing entry.");
       SetError(rv);
     }
   }

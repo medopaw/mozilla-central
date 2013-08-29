@@ -18,12 +18,12 @@ namespace sdcard {
 class RemoveWorker : public Worker
 {
 public:
-  RemoveWorker(const nsAString& aRelpath, bool aRecursive);
+  RemoveWorker(const nsAString& aRelpath, bool aDeep);
   ~RemoveWorker();
 
 private:
   virtual void Work() MOZ_OVERRIDE;
-  bool mRecursive;
+  bool mDeep;
 };
 
 } // namespace sdcard

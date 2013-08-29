@@ -130,21 +130,21 @@ public:
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
 
 private:
-  bool GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
-      Caller* pCaller);
+  bool GetEntryRelpath(const StringOrDirectory& aPath, nsString& aEntryRelpath,
+      Caller* aCaller);
 
-  void CopyMoveInternal(const nsString& entryRelpath,
-      const nsString& parentRelpath, const nsString& newName, bool isCopy,
-      Caller* pCaller, bool undecided = false);
+  void CopyMoveInternal(const nsAString& aEntryRelpath,
+      const nsAString& aParentRelpath, const nsString& aNewName, bool isCopy,
+      Caller* aCaller, bool aUndecided = false);
 
-  void GetInternal(const nsAString& path, bool aCreate, bool aExclusive,
-      bool aTruncate, Caller* pCaller, bool isFile = true,
+  void GetInternal(const nsAString& aPath, bool aCreate, bool aExclusive,
+      bool aTruncate, Caller* aCaller, bool aIsFile = true,
       const JS::Value* aContent = nullptr);
 
-  void EnumerateInternal(const Optional<nsAString >& path, bool aDeep,
-      Caller* pCaller);
+  void EnumerateInternal(const Optional<nsAString >& aPath, bool aDeep,
+      Caller* aCaller);
 
-  void RemoveInternal(const nsAString& path, bool deep, Caller* pCaller);
+  void RemoveInternal(const nsAString& aEntryRelpath, bool aDeep, Caller* aCaller);
 };
 
 } // namespace sdcard

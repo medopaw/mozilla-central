@@ -414,23 +414,23 @@ Directory::GetDirectory(const nsAString& path,
 }
 
 bool
-Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath,
-    Caller* pCaller)
+Directory::GetEntryRelpath(const StringOrDirectory& aPath, nsString& aEntryRelpath,
+    Caller* aCaller)
 {
   SDCARD_LOG("in Directory.GetEntryRelpath()");
 
-  if (path.IsString()) {
-    nsString strPath(path.GetAsString());
+  if (aPath.IsString()) {
+    nsString strPath(aPath.GetAsString());
     // Check if path is valid.
     if (!Path::IsValidPath(strPath)) {
       SDCARD_LOG("Invalid path!");
-      pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+      aCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
       return false;
     }
-    Path::Absolutize(strPath, mRelpath, entryRelpath);
-  } else if (path.IsDirectory()) {
-    Directory& dirPath = path.GetAsDirectory();
-    dirPath.GetRelpath(entryRelpath);
+    Path::Absolutize(strPath, mRelpath, aEntryRelpath);
+  } else if (aPath.IsDirectory()) {
+    Directory& dirPath = aPath.GetAsDirectory();
+    dirPath.GetRelpath(aEntryRelpath);
   } else {
     // throw error
   }
@@ -439,70 +439,73 @@ Directory::GetEntryRelpath(const StringOrDirectory& path, nsString& entryRelpath
 }
 
 void
-Directory::CopyMoveInternal(const nsString& entryRelpath,
-    const nsString& parentRelpath, const nsString& newName, bool isCopy,
-    Caller* pCaller, bool undecided)
+Directory::CopyMoveInternal(const nsAString& aEntryRelpath,
+    const nsAString& aParentRelpath, const nsString& aNewName, bool aIsCopy,
+    Caller* aCaller, bool aUndecided)
 {
   SDCARD_LOG("in Directory.CopyMoveInternal()");
+
+  nsString entryRelpath(aEntryRelpath);
+  nsString parentRelpath(aParentRelpath);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
     nsRefPtr<SPCopyAndMoveToEvent> r = new SPCopyAndMoveToEvent(entryRelpath,
-        parentRelpath, newName, isCopy, undecided, pCaller);
+        parentRelpath, aNewName, aIsCopy, aUndecided, aCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardCopyAndMoveParams params(entryRelpath, parentRelpath, newName, isCopy, undecided);
-    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    SDCardCopyAndMoveParams params(entryRelpath, parentRelpath, aNewName, aIsCopy, aUndecided);
+    PSDCardRequestChild* child = new SDCardRequestChild(aCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
 
 void
-Directory::GetInternal(const nsAString& path, bool aCreate, bool aExclusive,
-    bool aTruncate, Caller* pCaller, bool isFile, const JS::Value* aContent)
+Directory::GetInternal(const nsAString& aPath, bool aCreate, bool aExclusive,
+    bool aTruncate, Caller* aCaller, bool aIsFile, const JS::Value* aContent)
 {
   SDCARD_LOG("in Directory.GetInternal()");
 
   // Check if path is valid.
-  if (!Path::IsValidPath(path)) {
+  if (!Path::IsValidPath(aPath)) {
     SDCARD_LOG("Invalid path!");
-    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+    aCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
     return;
   }
 
   // Make sure path is absolute. The parameter path must be a DOM path.
   nsString absolutePath;
-  Path::Absolutize(path, mFullPath, absolutePath);
-  nsString realPath;
-  Path::DOMPathToRealPath(absolutePath, realPath);
+  Path::Absolutize(aPath, mFullPath, absolutePath);
+  nsString relpath;
+  Path::DOMPathToRealPath(absolutePath, relpath);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(realPath,
-        aCreate, aExclusive, aTruncate, isFile, pCaller);
+    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(relpath,
+        aCreate, aExclusive, aTruncate, aIsFile, aCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardGetParams params(realPath, aCreate, aExclusive, aTruncate, isFile);
-    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    SDCardGetParams params(relpath, aCreate, aExclusive, aTruncate, aIsFile);
+    PSDCardRequestChild* child = new SDCardRequestChild(aCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
 
 void
-Directory::EnumerateInternal(const Optional<nsAString>& path, bool aDeep,
-    Caller* pCaller)
+Directory::EnumerateInternal(const Optional<nsAString>& aPath, bool aDeep,
+    Caller* aCaller)
 {
   SDCARD_LOG("in Directory.EnumerateInternal()");
 
   nsString relpath = mRelpath;
-  if (path.WasPassed()) {
+  if (aPath.WasPassed()) {
     nsString strPath;
-    strPath = path.Value();
+    strPath = aPath.Value();
     if (!Path::IsValidPath(strPath)) {
       SDCARD_LOG("Invalid path!");
-      pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+      aCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
       return;
     }
     Path::Absolutize(strPath, mRelpath, relpath);
@@ -511,40 +514,31 @@ Directory::EnumerateInternal(const Optional<nsAString>& path, bool aDeep,
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
     nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(relpath, aDeep,
-        pCaller);
+        aCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
     SDCardEnumerateParams params(relpath, aDeep);
-    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    PSDCardRequestChild* child = new SDCardRequestChild(aCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
 
 void
-Directory::RemoveInternal(const nsAString& path, bool deep, Caller* pCaller)
+Directory::RemoveInternal(const nsAString& aEntryRelpath, bool aDeep, Caller* aCaller)
 {
   SDCARD_LOG("in Directory.RemoveInternal()");
 
-  // Check if path is valid.
-  if (!Path::IsValidPath(path)) {
-    SDCARD_LOG("Invalid path!");
-    pCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-    return;
-  }
-
-  // Make sure path is absolute.
-  nsString entryRelpath;
-  Path::Absolutize(path, mRelpath, entryRelpath);
+  nsString entryRelpath(aEntryRelpath);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPRemoveEvent> r = new SPRemoveEvent(entryRelpath, deep, pCaller);
+    nsRefPtr<SPRemoveEvent> r = new SPRemoveEvent(entryRelpath, aDeep, aCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardRemoveParams params(entryRelpath, deep);
-    PSDCardRequestChild* child = new SDCardRequestChild(pCaller);
+    SDCardRemoveParams params(entryRelpath, aDeep);
+    PSDCardRequestChild* child = new SDCardRequestChild(aCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
