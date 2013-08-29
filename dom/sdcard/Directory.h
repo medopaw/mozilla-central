@@ -114,11 +114,11 @@ private:
       const nsAString& aParentRelpath, const nsString& aNewName, bool isCopy,
       Caller* aCaller, bool aUndecided = false);
 
-  void GetInternal(const nsAString& aPath, bool aCreate, bool aExclusive,
+  void GetInternal(const nsAString& aEntryRelpath, bool aCreate, bool aExclusive,
       bool aTruncate, Caller* aCaller, bool aIsFile = true,
       const JS::Value* aContent = nullptr);
 
-  void EnumerateInternal(const Optional<nsAString >& aPath, bool aDeep,
+  void EnumerateInternal(const nsAString& aEntryRelpath, bool aDeep,
       Caller* aCaller);
 
   void RemoveInternal(const nsAString& aEntryRelpath, bool aDeep, Caller* aCaller);

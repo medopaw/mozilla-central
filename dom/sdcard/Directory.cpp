@@ -123,7 +123,12 @@ Directory::CreateFile(JSContext* cx, const nsAString& path,
       options.mData.WasPassed() ? &(options.mData.Value()) : nullptr;
 
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  GetInternal(path, true, exclusive, true, callerPtr, true, pContent);
+  nsString entryRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+      return;
+  }
+
+  GetInternal(entryRelpath, true, exclusive, true, callerPtr, true, pContent);
 }
 
 void
@@ -134,7 +139,12 @@ Directory::CreateDirectory(const nsAString& path,
   SDCARD_LOG("in Directory.createDirectory()");
 
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  GetInternal(path, true, false, false, callerPtr, false);
+  nsString entryRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+      return;
+  }
+
+  GetInternal(entryRelpath, true, false, false, callerPtr, false);
 }
 
 void
@@ -145,7 +155,12 @@ Directory::Get(const nsAString& path,
   SDCARD_LOG("in Directory.Get()");
   // Don't need isFile flag.
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  GetInternal(path, false, false, false, callerPtr);
+  nsString entryRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+      return;
+  }
+
+  GetInternal(entryRelpath, false, false, false, callerPtr);
 }
 
 void
@@ -157,21 +172,11 @@ Directory::Move(const StringOrDirectory& path, const nsAString& dest,
 
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
 
-  nsString entryRelpath;
-  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+  nsString entryRelpath, parentRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)
+      || !GetEntryRelpath(dest, parentRelpath, callerPtr)) {
     return;
   }
-
-  // Check if dest is valid.
-  if (!Path::IsValidPath(dest)) {
-    SDCARD_LOG("Invalid path!");
-    callerPtr->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-    return;
-  }
-
-  // Make sure dest is absolute.
-  nsString parentRelpath;
-  Path::Absolutize(dest, mRelpath, parentRelpath);
 
   nsString newName;
   newName.SetIsVoid(true);
@@ -189,13 +194,11 @@ Directory::Move(const StringOrDirectory& path,
 
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
 
-  nsString entryRelpath;
-  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+  nsString entryRelpath, parentRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)
+      || !GetEntryRelpath(dest, parentRelpath, callerPtr)) {
     return;
   }
-
-  nsString parentRelpath;
-  dest.GetRelpath(parentRelpath);
 
   nsString newName;
   newName.SetIsVoid(true);
@@ -219,7 +222,9 @@ Directory::Move(const StringOrDirectory& path, const DestinationDict& dest,
 
   nsString parentRelpath;
   if (dest.mDir.WasPassed()) {
-    dest.mDir.Value().GetRelpath(parentRelpath);
+    if (!GetEntryRelpath(dest.mDir.Value(), parentRelpath, callerPtr)) {
+      return;
+    }
   } else {
     parentRelpath = mRelpath;
   }
@@ -227,6 +232,11 @@ Directory::Move(const StringOrDirectory& path, const DestinationDict& dest,
   nsString newName;
   if (dest.mName.WasPassed()) {
     newName = dest.mName.Value();
+    if (!Path::IsValidName(newName)) {
+      SDCARD_LOG("Invalid name!");
+      callerPtr->CallErrorCallback(Error::DOM_ERROR_ENCODING);
+      return;
+    }
   } else {
     newName.SetIsVoid(true);
   }
@@ -268,7 +278,13 @@ Directory::Enumerate(const Optional<nsAString>& path,
   SDCARD_LOG("in Directory.Enumerate()");
 
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  EnumerateInternal(path, false, callerPtr);
+  nsString entryRelpath = mRelpath;
+  if (path.WasPassed()
+      && !GetEntryRelpath(path.Value(), entryRelpath, callerPtr)) {
+      return;
+  }
+
+  EnumerateInternal(entryRelpath, false, callerPtr);
 }
 
 void
@@ -279,55 +295,14 @@ Directory::EnumerateDeep(const Optional<nsAString>& path,
   SDCARD_LOG("in Directory.EnumerateDeep()");
 
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  EnumerateInternal(path, true, callerPtr);
+  nsString entryRelpath = mRelpath;
+  if (path.WasPassed()
+      && !GetEntryRelpath(path.Value(), entryRelpath, callerPtr)) {
+      return;
+  }
+
+  EnumerateInternal(entryRelpath, true, callerPtr);
 }
-/*
-void
-Directory::Remove(const nsAString& entry, VoidCallback& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Remove()");
-
-  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  RemoveInternal(entry, false, callerPtr);
-}
-
-void
-Directory::Remove(mozilla::dom::sdcard::Directory& entry,
-    VoidCallback& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.Remove()");
-
-  nsString entryRelpath;
-  entry.GetRelpath(entryRelpath);
-  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  RemoveInternal(entryRelpath, false, callerPtr);
-}
-
-void
-Directory::RemoveDeep(const nsAString& entry, VoidCallback& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.RemoveDeep()");
-
-  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  RemoveInternal(entry, true, callerPtr);
-}
-
-void
-Directory::RemoveDeep(mozilla::dom::sdcard::Directory& entry,
-    VoidCallback& successCallback,
-    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
-{
-  SDCARD_LOG("in Directory.RemoveDeep()");
-
-  nsString entryRelpath;
-  entry.GetRelpath(entryRelpath);
-  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
-  RemoveInternal(entryRelpath, true, callerPtr);
-}
-*/
 
 void
 Directory::Remove(const StringOrDirectory& path, VoidCallback& successCallback,
@@ -392,6 +367,8 @@ Directory::GetEntryRelpath(const nsAString& aPath, nsString& aEntryRelpath,
     aCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
     return false;
   }
+
+  // Make sure dest is absolute.
   Path::Absolutize(aPath, mRelpath, aEntryRelpath);
 
   return true;
@@ -404,6 +381,12 @@ Directory::GetEntryRelpath(const Directory& aPath, nsString& aEntryRelpath,
   SDCARD_LOG("in Directory.GetEntryRelpath()");
 
   aPath.GetRelpath(aEntryRelpath);
+  // need scope validation here
+  if (!Path::IsParentOf(mRelpath, aEntryRelpath)) {
+    SDCARD_LOG("Directory not within scope.");
+    aCaller->CallErrorCallback(Error::DOM_ERROR_SECURITY);
+    return false;
+  }
   return true;
 }
 
@@ -448,63 +431,42 @@ Directory::CopyMoveInternal(const nsAString& aEntryRelpath,
 }
 
 void
-Directory::GetInternal(const nsAString& aPath, bool aCreate, bool aExclusive,
+Directory::GetInternal(const nsAString& aEntryRelpath, bool aCreate, bool aExclusive,
     bool aTruncate, Caller* aCaller, bool aIsFile, const JS::Value* aContent)
 {
   SDCARD_LOG("in Directory.GetInternal()");
 
-  // Check if path is valid.
-  if (!Path::IsValidPath(aPath)) {
-    SDCARD_LOG("Invalid path!");
-    aCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-    return;
-  }
-
-  // Make sure path is absolute. The parameter path must be a DOM path.
-  nsString absolutePath;
-  Path::Absolutize(aPath, mFullPath, absolutePath);
-  nsString relpath;
-  Path::DOMPathToRealPath(absolutePath, relpath);
+  nsString entryRelpath(aEntryRelpath);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(relpath,
+    nsRefPtr<SPGetEntryEvent> r = new SPGetEntryEvent(entryRelpath,
         aCreate, aExclusive, aTruncate, aIsFile, aCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardGetParams params(relpath, aCreate, aExclusive, aTruncate, aIsFile);
+    SDCardGetParams params(entryRelpath, aCreate, aExclusive, aTruncate, aIsFile);
     PSDCardRequestChild* child = new SDCardRequestChild(aCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
 
 void
-Directory::EnumerateInternal(const Optional<nsAString>& aPath, bool aDeep,
+Directory::EnumerateInternal(const nsAString& aEntryRelpath, bool aDeep,
     Caller* aCaller)
 {
   SDCARD_LOG("in Directory.EnumerateInternal()");
 
-  nsString relpath = mRelpath;
-  if (aPath.WasPassed()) {
-    nsString strPath;
-    strPath = aPath.Value();
-    if (!Path::IsValidPath(strPath)) {
-      SDCARD_LOG("Invalid path!");
-      aCaller->CallErrorCallback(Error::DOM_ERROR_ENCODING);
-      return;
-    }
-    Path::Absolutize(strPath, mRelpath, relpath);
-  }
+  nsString entryRelpath(aEntryRelpath);
 
   if (XRE_GetProcessType() == GeckoProcessType_Default) {
     SDCARD_LOG("in b2g process");
-    nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(relpath, aDeep,
+    nsRefPtr<SPEnumerateEvent> r = new SPEnumerateEvent(aEntryRelpath, aDeep,
         aCaller);
     r->Start();
   } else {
     SDCARD_LOG("in app process");
-    SDCardEnumerateParams params(relpath, aDeep);
+    SDCardEnumerateParams params(entryRelpath, aDeep);
     PSDCardRequestChild* child = new SDCardRequestChild(aCaller);
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
