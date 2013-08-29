@@ -61,11 +61,11 @@ public:
   void Get(const nsAString& path,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
-
+/*
   void Rename (const nsAString& oldName, const nsAString& newName,
       const Optional< OwningNonNull<EntryCallback> >& successCallback,
       const Optional< OwningNonNull<ErrorCallback> >& errorCallback);
-
+*/
   void Move(const StringOrDirectory& path, const nsAString& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
@@ -77,33 +77,7 @@ public:
   void Move(const StringOrDirectory& path, const DestinationDict& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-/*
-  void Copy(const StringOrDirectory& path, const nsAString& dest,
-      EntryCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
-  void Copy(const StringOrDirectory& path,
-      mozilla::dom::sdcard::Directory& dest,
-      EntryCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
-  void Copy(const StringOrDirectory& path,
-      const DestinationDict& dest,
-      EntryCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
-  void Remove(const nsAString& entry, VoidCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
-  void Remove(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
-  void RemoveDeep(const nsAString& entry, VoidCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
-  void RemoveDeep(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
-      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-*/
   void Remove(const StringOrDirectory& path, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 

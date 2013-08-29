@@ -147,7 +147,7 @@ Directory::Get(const nsAString& path,
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
   GetInternal(path, false, false, false, callerPtr);
 }
-
+/*
 void
 Directory::Rename(const nsAString& oldName, const nsAString& newName,
     const Optional<OwningNonNull<EntryCallback> >& successCallback,
@@ -180,7 +180,7 @@ Directory::Rename(const nsAString& oldName, const nsAString& newName,
     ContentChild::GetSingleton()->SendPSDCardRequestConstructor(child, params);
   }
 }
-
+*/
 void
 Directory::Move(const StringOrDirectory& path, const nsAString& dest,
     EntryCallback& successCallback,

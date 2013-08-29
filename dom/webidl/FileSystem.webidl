@@ -25,7 +25,7 @@ interface Directory : Entry {
     void            createFile (DOMString path, optional CreateFileOptions options, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            createDirectory (DOMString name, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            get (DOMString path, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
+//    void            rename (DOMString oldName, DOMString newName, optional EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move ((DOMString /*or File*/ or Directory) path, DOMString dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
     void            move ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
