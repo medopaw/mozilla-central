@@ -314,7 +314,7 @@ Directory::EnumerateDeep(const Optional<nsAString>& path,
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
   EnumerateInternal(path, true, callerPtr);
 }
-
+/*
 void
 Directory::Remove(const nsAString& entry, VoidCallback& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
@@ -358,6 +358,35 @@ Directory::RemoveDeep(mozilla::dom::sdcard::Directory& entry,
   nsString entryRelpath;
   entry.GetRelpath(entryRelpath);
   nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  RemoveInternal(entryRelpath, true, callerPtr);
+}
+*/
+
+void
+Directory::Remove(const StringOrDirectory& path, VoidCallback& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.Remove()");
+
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  nsString entryRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+    return;
+  }
+  RemoveInternal(entryRelpath, false, callerPtr);
+}
+
+void
+Directory::RemoveDeep(const StringOrDirectory& path, VoidCallback& successCallback,
+    const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
+{
+  SDCARD_LOG("in Directory.RemoveDeep()");
+
+  nsRefPtr<Caller> callerPtr = new Caller(successCallback, errorCallback);
+  nsString entryRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+    return;
+  }
   RemoveInternal(entryRelpath, true, callerPtr);
 }
 

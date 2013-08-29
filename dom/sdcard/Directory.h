@@ -91,7 +91,7 @@ public:
       const DestinationDict& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-*/
+
   void Remove(const nsAString& entry, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
@@ -102,6 +102,12 @@ public:
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
   void RemoveDeep(mozilla::dom::sdcard::Directory& entry, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+*/
+  void Remove(const StringOrDirectory& path, VoidCallback& successCallback,
+      const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+
+  void RemoveDeep(const StringOrDirectory& path, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
   void GetFile(const nsAString& path, const FileSystemFlags& options,
