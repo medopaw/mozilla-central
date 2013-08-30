@@ -24,9 +24,7 @@ let (commonFile = do_get_file("../head_common.js", false)) {
 let gInterestsStorage = null;
 
 function initStorage() {
-  dump("MAKING CONNECTION \n");
   return InterestsDatabase.DBConnectionPromise.then(connection => {
-    dump("CONNECTION ESTABLISHED\n");
     gInterestsStorage = new InterestsStorage(connection);
     return gInterestsStorage;
   });

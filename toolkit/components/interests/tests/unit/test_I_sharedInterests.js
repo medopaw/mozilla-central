@@ -74,7 +74,6 @@ add_task(function test_I_sharedInterestsSetting()
   });
 
   yield interestsStorage.getPersonalizedHosts().then(results => {
-    //dump( JSON.stringify(results)  + " <<<<\n");
     isIdentical(results,[
                           {"interest":"cars","host":"bar.com","day":today},
                           {"interest":"movies","host":"bar.com","day":today},

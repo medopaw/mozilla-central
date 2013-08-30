@@ -37,7 +37,6 @@ add_task(function test_I_getRequestingHosts()
   });
 
   yield iServiceObject.getRequestingHosts().then(results => {
-    //dump(JSON.stringify(results));
     isIdentical(results,[
       {"name":"bar.com","interests":["cars","movies","technology"],"isBlocked":false,"isPrivileged":false},
       {"name":"foo.com","interests":["cars","movies"],"isBlocked":false,"isPrivileged":false}

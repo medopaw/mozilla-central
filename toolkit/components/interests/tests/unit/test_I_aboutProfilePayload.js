@@ -69,7 +69,6 @@ add_task(function test_setInterestSharable() {
   isIdentical(expected, results.interestsProfile);
 
   // set sharable to false
-  dump("set sharable to false\n");
   yield iServiceObject.setInterestSharable(expected[0].name, false);
   expected[0].meta.sharable = 0;
   let results = yield iServiceObject.getPagePayload(1);
