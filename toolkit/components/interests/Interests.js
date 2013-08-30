@@ -508,7 +508,7 @@ Interests.prototype = {
    */
   _getBaseDomain: function I__getBaseDomain(host) {
     try {
-      return Services.eTLD.getBaseDomainFromHost(host)
+      return Services.eTLD.getBaseDomainFromHost(host);
     }
     catch (ex) {
       return "";

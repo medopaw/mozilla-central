@@ -7,13 +7,14 @@
 "use strict";
 
 function run_test() {
+  run_next_test();
 }
 
 add_task(function test_I__getBaseDomain()
 {
   do_check_eq(iServiceObject._getBaseDomain("foo.bar.com"),"bar.com");
   do_check_eq(iServiceObject._getBaseDomain("bar.com"),"bar.com");
-  do_check_eq(iServiceObject._getBaseDomain("125.12.344.11"),"");
+  do_check_eq(iServiceObject._getBaseDomain(1111),"");
   do_check_eq(iServiceObject._getBaseDomain(""),"");
   do_check_eq(iServiceObject._getBaseDomain(null),"");
 });
