@@ -25,23 +25,30 @@ class PromiseInit;
 class PromiseCallback;
 class AnyCallback;
 class PromiseResolver;
+class PromiseRunnable;
 
-class Promise MOZ_FINAL : public nsISupports,
-                          public nsWrapperCache
+class Promise : public nsISupports,
+                public nsWrapperCache
 {
   friend class PromiseTask;
   friend class PromiseResolver;
   friend class PromiseResolverTask;
+  friend class RunnablePromiseCallback;
 
 public:
   NS_DECL_CYCLE_COLLECTING_ISUPPORTS
   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(Promise)
 
   Promise(nsPIDOMWindow* aWindow);
-  ~Promise();
+  virtual ~Promise();
 
   static bool PrefEnabled();
   static bool EnabledForScope(JSContext* aCx, JSObject* /* unused */);
+
+  PromiseResolver* Resolver() const
+  {
+    return mResolver;
+  }
 
   // WebIDL
 
@@ -72,6 +79,9 @@ public:
 
   already_AddRefed<Promise>
   Catch(const Optional<OwningNonNull<AnyCallback> >& aRejectCallback);
+
+  // Helper for nested Promise objects
+  void AppendRunnable(PromiseRunnable* aRunnable);
 
 private:
   enum PromiseState {

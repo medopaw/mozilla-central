@@ -7,6 +7,7 @@
 #include "PromiseCallback.h"
 #include "mozilla/dom/Promise.h"
 #include "mozilla/dom/PromiseResolver.h"
+#include "mozilla/dom/PromiseRunnable.h"
 
 namespace mozilla {
 namespace dom {
@@ -208,6 +209,48 @@ SimpleWrapperPromiseCallback::Call(const Optional<JS::Handle<JS::Value> >& aValu
 {
   ErrorResult rv;
   mCallback->Call(mPromise, aValue, rv);
+}
+
+// RunnablePromiseCallback
+
+NS_IMPL_CYCLE_COLLECTION_INHERITED_1(RunnablePromiseCallback,
+                                     PromiseCallback,
+                                     mRunnable)
+
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION_INHERITED(RunnablePromiseCallback)
+NS_INTERFACE_MAP_END_INHERITING(PromiseCallback)
+
+NS_IMPL_ADDREF_INHERITED(RunnablePromiseCallback, PromiseCallback)
+NS_IMPL_RELEASE_INHERITED(RunnablePromiseCallback, PromiseCallback)
+
+RunnablePromiseCallback::RunnablePromiseCallback(PromiseRunnable* aRunnable,
+                                                Promise::PromiseState aState)
+  : mRunnable(aRunnable)
+  , mState(aState)
+{
+  MOZ_ASSERT(aRunnable);
+  MOZ_COUNT_CTOR(RunnablePromiseCallback);
+}
+
+RunnablePromiseCallback::~RunnablePromiseCallback()
+{
+  MOZ_COUNT_DTOR(RunnablePromiseCallback);
+}
+
+void
+RunnablePromiseCallback::Call(const Optional<JS::Handle<JS::Value> >& aValue)
+{
+  if (mState == Promise::Resolved) {
+    mRunnable->ResolvedCallback(aValue);
+    return;
+  }
+
+  if (mState == Promise::Rejected) {
+    mRunnable->RejectedCallback(aValue);
+    return;
+  }
+
+  NS_NOTREACHED("huh?");
 }
 
 /* static */ PromiseCallback*

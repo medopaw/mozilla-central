@@ -115,6 +115,26 @@ private:
   nsRefPtr<PromiseResolver> mResolver;
 };
 
+// RunnablePromiseCallback is useful when we want to connect 2 existing promise
+// objects implemented in C++.
+class RunnablePromiseCallback MOZ_FINAL : public PromiseCallback
+{
+public:
+  NS_DECL_ISUPPORTS_INHERITED
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED(RunnablePromiseCallback,
+                                           PromiseCallback)
+
+  void Call(const Optional<JS::Handle<JS::Value> >& aValue) MOZ_OVERRIDE;
+
+  RunnablePromiseCallback(PromiseRunnable* aRunnable,
+                          Promise::PromiseState aState);
+  ~RunnablePromiseCallback();
+
+private:
+  nsRefPtr<PromiseRunnable> mRunnable;
+  Promise::PromiseState mState;
+};
+
 } // namespace dom
 } // namespace mozilla
 

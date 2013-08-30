@@ -13,6 +13,7 @@ MODULE = 'dom'
 EXPORTS.mozilla.dom += [
     'Promise.h',
     'PromiseResolver.h',
+    'PromiseRunnable.h',
 ]
 
 CPP_SOURCES += [

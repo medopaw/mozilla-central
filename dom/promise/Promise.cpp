@@ -239,6 +239,18 @@ Promise::Catch(const Optional<OwningNonNull<AnyCallback> >& aRejectCallback)
 }
 
 void
+Promise::AppendRunnable(PromiseRunnable* aRunnable)
+{
+  nsRefPtr<PromiseCallback> resolveCb =
+    new RunnablePromiseCallback(aRunnable, Resolved);
+
+  nsRefPtr<PromiseCallback> rejectCb =
+    new RunnablePromiseCallback(aRunnable, Rejected);
+
+  AppendCallbacks(resolveCb, rejectCb);
+}
+
+void
 Promise::AppendCallbacks(PromiseCallback* aResolveCallback,
                          PromiseCallback* aRejectCallback)
 {
