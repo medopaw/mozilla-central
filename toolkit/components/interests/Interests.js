@@ -168,42 +168,6 @@ Interests.prototype = {
            Services.perms.ALLOW_ACTION;
   },
 
-  /**
-   * Package up shared interests by hosts
-   *
-   * @param   [optional] daysBack
-   *          retrieve domains that accessed interests between daysBack and now
-   *          if omitted all domains will be returned
-   * @returns Promise with domains + corresponding interests
-   */
-  getRequestingHosts: function I_getRequestingHosts(daysBack) {
-    return this.InterestsStoragePromise.then(interestsStorage => {
-      return interestsStorage.getPersonalizedHosts(daysBack).then(results => {
-        let hostsData = {};
-        let hostsList = [];
-        // hosts come in order
-        results.forEach(data => {
-          let {interest, host} = data;
-          if (!hostsData[host]) {
-            // create a host object
-            let hostObject = {
-              name: host,
-              interests: [],
-              isBlocked: this.isSiteBlocked(host),
-              isPrivileged: this._getDomainWhitelistedSet().
-                              has(this._normalizeHostName(host)),
-            };
-            hostsData[host] = hostObject;
-            hostsList.push(hostObject);
-          }
-          // push corresponding host & the interest,date of visit
-          hostsData[host].interests.push(interest);
-        });
-        return hostsList;
-      });
-    });
-  },
-
   //////////////////////////////////////////////////////////////////////////////
   //// Interests Helpers
 
@@ -238,6 +202,42 @@ Interests.prototype = {
     return this.__worker;
   },
 
+
+  /**
+   * Package up shared interests by hosts
+   *
+   * @param   [optional] daysBack
+   *          retrieve domains that accessed interests between daysBack and now
+   *          if omitted all domains will be returned
+   * @returns Promise with domains + corresponding interests
+   */
+  _getRequestingHosts: function I__getRequestingHosts(daysBack) {
+    return this.InterestsStoragePromise.then(interestsStorage => {
+      return interestsStorage.getPersonalizedHosts(daysBack).then(results => {
+        let hostsData = {};
+        let hostsList = [];
+        // hosts come in order
+        results.forEach(data => {
+          let {interest, host} = data;
+          if (!hostsData[host]) {
+            // create a host object
+            let hostObject = {
+              name: host,
+              interests: [],
+              isBlocked: this.isSiteBlocked(host),
+              isPrivileged: this._getDomainWhitelistedSet().
+                              has(this._normalizeHostName(host)),
+            };
+            hostsData[host] = hostObject;
+            hostsList.push(hostObject);
+          }
+          // push corresponding host & the interest,date of visit
+          hostsData[host].interests.push(interest);
+        });
+        return hostsList;
+      });
+    });
+  },
 
   /**
    * Handles a new page load
@@ -707,7 +707,7 @@ Interests.prototype = {
     // gather and package the data promises
     promises.push(interestPromise);
     promises.push(interestHostPromise);
-    promises.push(this.getRequestingHosts());
+    promises.push(this._getRequestingHosts());
     return gatherPromises(promises).then(results => {
       let output = {};
       output.interestsProfile = results[0];
