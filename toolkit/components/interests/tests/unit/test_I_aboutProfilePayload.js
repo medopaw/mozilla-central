@@ -19,10 +19,6 @@ const kInterests = ["arts", "banking", "blogging", "business", "career",
 "religion", "reviews", "science", "shoes", "shopping", "society", "sports",
 "technology", "travel", "tv", "video-games", "weather", "women", "writing"];
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_getPagePayload() {
   yield promiseClearHistoryAndVisits();
   yield addInterest("computers");

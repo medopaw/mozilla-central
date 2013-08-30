@@ -6,16 +6,11 @@
 
 "use strict";
 
-function run_test() {
-  yield initStorage();
-  run_next_test();
-}
-
 add_task(function test_ClearRecentVisits()
 {
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","movies","shopping"], 2);
-  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "consumer-electronics");
-  yield promiseAddUrlInterestsVisit("http://www.mozilla.org/", "computers");
+  yield promiseAddInterestsVisit("http://www.cars.com/", ["cars","movies","shopping"], 2);
+  yield promiseAddInterestsVisit("http://www.samsung.com/", "consumer-electronics");
+  yield promiseAddInterestsVisit("http://www.mozilla.org/", "computers");
 
   // cleanup the tables
   yield gInterestsStorage.clearRecentVisits(100);
@@ -36,7 +31,7 @@ add_task(function test_ClearRecentVisits()
 
   // make a bunch of insertions for a number of days
   for(let i = 0; i < 100; i++) {
-    yield promiseAddUrlInterestsVisit("http://www.cars.com/", "cars", 1, i);
+    yield promiseAddInterestsVisit("http://www.cars.com/", "cars", 1, i);
     expectedScore ++;
   }
 
@@ -87,23 +82,23 @@ add_task(function test_ClearRecentVisits()
   // test visitCounts when adding visits
 
   // add one today
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", "cars");
+  yield promiseAddInterestsVisit("http://www.cars.com/", "cars");
   expectedScore = 1;
   yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
   // add a couple more yesterday
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 1, 1);
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 1, 2);
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 1, 3);
+  yield promiseAddInterestsVisit("http://www.cars.com/","cars", 1, 1);
+  yield promiseAddInterestsVisit("http://www.cars.com/","cars", 1, 2);
+  yield promiseAddInterestsVisit("http://www.cars.com/","cars", 1, 3);
   expectedScore += 3;
   yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     do_check_eq(results[0].score, expectedScore);
   });
 
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 5, 15);
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/","cars", 10, 31);
+  yield promiseAddInterestsVisit("http://www.cars.com/","cars", 5, 15);
+  yield promiseAddInterestsVisit("http://www.cars.com/","cars", 10, 31);
   expectedScore += 2;
   yield gInterestsStorage.getScoresForInterests(["cars"]).then(function(results) {
     // comparing rounded scores due to numerical error

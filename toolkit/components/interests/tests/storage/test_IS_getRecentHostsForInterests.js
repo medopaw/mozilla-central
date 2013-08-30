@@ -8,21 +8,16 @@
 
 XPCOMUtils.defineLazyServiceGetter(this, "gHistory", "@mozilla.org/browser/history;1", "mozIAsyncHistory");
 
-function run_test() {
-  yield initStorage();
-  run_next_test();
-}
-
 add_task(function test_GetRecentHostsForInterests()
 {
   yield addInterest("computers");
   yield addInterest("real-estate");
 
-  yield promiseAddUrlInterestsVisit("http://techmeme.com", ["computers"], 1, 1);
-  yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 2, 13);
-  yield promiseAddUrlInterestsVisit("http://realtor.com", ["real-estate"], 2, 14);
-  yield promiseAddUrlInterestsVisit("http://mls.com", ["real-estate"], 1, 15);
-  yield promiseAddUrlInterestsVisit("http://zillow.com", ["real-estate"], 1, 100);
+  yield promiseAddInterestsVisit("http://techmeme.com", ["computers"], 1, 1);
+  yield promiseAddInterestsVisit("http://realtor.com", ["real-estate"], 2, 13);
+  yield promiseAddInterestsVisit("http://realtor.com", ["real-estate"], 2, 14);
+  yield promiseAddInterestsVisit("http://mls.com", ["real-estate"], 1, 15);
+  yield promiseAddInterestsVisit("http://zillow.com", ["real-estate"], 1, 100);
   yield promiseAsyncUpdates();
 
   let results;

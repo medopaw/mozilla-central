@@ -6,11 +6,6 @@
 
 "use strict";
 
-function run_test() {
-  yield initStorage();
-  run_next_test();
-}
-
 // Test adding interest visits going older in time
 add_task(function addGoingOlder() {
   let interest = "cars";

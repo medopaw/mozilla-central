@@ -6,8 +6,7 @@
 
 "use strict";
 
-function run_test() {
-  yield initStorage();
+add_task(function test_IS__convertDateToDays() {
   // Make sure the current time is rounded
   let nowDays = gInterestsStorage._convertDateToDays();
   let roundedDate = new Date(nowDays * MS_PER_DAY);
@@ -42,4 +41,4 @@ function run_test() {
   let backDate = new Date(nowDays * MS_PER_DAY - 1);
   let backDays = gInterestsStorage._convertDateToDays(backDate);
   do_check_eq(nowDays - backDays, 1);
-}
+});

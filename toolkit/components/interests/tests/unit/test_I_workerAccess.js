@@ -10,10 +10,6 @@ Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
 let observerService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_I_workerAccess() {
   // verify that worker is removed when the feature is disabled
   Services.prefs.setBoolPref("interests.enabled", false);

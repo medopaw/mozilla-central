@@ -6,6 +6,6 @@
 
 "use strict";
 
-function run_test() {
-  // test_Storage_addInterestVisit_oldVisits.js
-}
+add_task(function test_IS_addInterestVisit() {
+
+});

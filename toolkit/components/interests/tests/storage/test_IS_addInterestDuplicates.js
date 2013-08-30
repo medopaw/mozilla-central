@@ -6,11 +6,6 @@
 
 "use strict";
 
-function run_test() {
-  yield initStorage();
-  run_next_test();
-}
-
 // Test that ids for interests increase by 1
 add_task(function test_IS_addInterestDuplicates() {
   // Add some stuff in repeats in various orders

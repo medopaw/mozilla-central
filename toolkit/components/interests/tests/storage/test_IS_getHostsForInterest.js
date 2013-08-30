@@ -6,17 +6,11 @@
 
 "use strict";
 
-function run_test() {
-  yield initStorage();
-  run_next_test();
-}
-
-
 add_task(function test_getHostsForInterest() {
   yield promiseClearHistory();
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", "cars");
-  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "computers");
-  yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
+  yield promiseAddInterestsVisit("http://www.cars.com/", "cars");
+  yield promiseAddInterestsVisit("http://www.samsung.com/", "computers");
+  yield promiseAddInterestsVisit("http://www.netflix.com/", "movies");
 
   yield getHostsForInterest("cars").then(function(results) {
     do_check_eq(results.length, 1);

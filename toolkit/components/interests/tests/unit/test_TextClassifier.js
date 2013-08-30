@@ -13,10 +13,6 @@ let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIOb
 
 let deferEnsureResults;
 
-function run_test() {
-  run_next_test();
-}
-
 // the test array 
 let defaultMatchTests = [
   {

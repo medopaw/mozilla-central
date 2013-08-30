@@ -6,10 +6,6 @@
 
 "use strict";
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_I__getBaseDomain()
 {
   do_check_eq(iServiceObject._getBaseDomain("foo.bar.com"),"bar.com");

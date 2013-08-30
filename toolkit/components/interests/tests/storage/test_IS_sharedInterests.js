@@ -9,11 +9,6 @@
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
-function run_test() {
-  yield initStorage();
-  run_next_test();
-}
-
 add_task(function test_gInterestsStorage_sharedInterests()
 {
   yield addInterest("cars");

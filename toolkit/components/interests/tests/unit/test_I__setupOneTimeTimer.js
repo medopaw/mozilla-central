@@ -6,12 +6,9 @@
 
 "use strict";
 
-function run_test() {
-}
-
 add_task(function test_I__setupOneTimeTimer()
 {
-  let deferred = iServiceObject._makePromise();
+  let deferred = Promise.defer();
   iServiceObject._setupOneTimeTimer(() => {
     deferred.resolve(1);
   });

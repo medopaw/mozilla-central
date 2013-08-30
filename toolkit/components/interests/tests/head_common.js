@@ -112,3 +112,6 @@ function dbg(datum, ending = " <===========\n") {
   dump(JSON.stringify(datum) + ending);
 }
 
+function run_test() {
+  run_next_test();
+}

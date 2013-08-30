@@ -10,11 +10,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 let deferEnsureResults;
 
-
-function run_test() {
-  run_next_test();
-}
-
 // the test array 
 let matchTests = [
 {

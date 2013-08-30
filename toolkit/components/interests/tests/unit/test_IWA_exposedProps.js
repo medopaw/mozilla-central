@@ -8,10 +8,6 @@
 
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI);
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_getTopInterests_exposedProps() {
   yield addInterest("cars");
   let interestsStorage = yield iServiceObject.InterestsStoragePromise;

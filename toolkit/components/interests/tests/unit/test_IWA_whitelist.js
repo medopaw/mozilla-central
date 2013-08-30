@@ -10,10 +10,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 let apiInstance = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
 apiInstance.QueryInterface(Ci.nsIDOMGlobalPropertyInitializer);
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_InterestWebAPI_whitelist()
 {
   let now = Date.now();

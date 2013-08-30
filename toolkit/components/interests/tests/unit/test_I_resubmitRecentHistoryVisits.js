@@ -10,10 +10,6 @@ Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
 let obsereverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_ResubmitHistoryVisits() {
 
   let interestsStorage = yield iServiceObject.InterestsStoragePromise;

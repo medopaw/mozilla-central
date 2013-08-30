@@ -8,10 +8,6 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/interests/InterestsDatabase.jsm");
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_ID_tableCreation()
 {
  let db = yield InterestsDatabase.DBConnectionPromise;

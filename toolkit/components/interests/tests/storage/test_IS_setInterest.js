@@ -6,7 +6,7 @@
 
 "use strict";
 
-function run_test() {
+add_task(function test_IS_setInterest() {
   // test_Interests_metadata.js
   // test_gInterestsStorage_addInterest_duplicates.js
-}
+});

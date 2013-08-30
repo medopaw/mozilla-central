@@ -11,7 +11,7 @@ function checkHost(spec, host) {
   do_check_eq(iServiceObject._getPlacesHostForURI(uri), host);
 }
 
-function run_test() {
+add_task(function test_I__getPlacesHostForURI() {
   // Check plain domains
   checkHost("http://mozilla.com", "mozilla.com");
   checkHost("https://mozilla.com", "mozilla.com");
@@ -31,4 +31,4 @@ function run_test() {
   // Check non-hosts
   checkHost("about:profile", "");
   checkHost("about:config", "");
-}
+});

@@ -8,12 +8,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
-function run_test() {
-    run_next_test();
-}
-
 add_task(function test_IS_sanity() {
-  yield initStorage();
   yield promiseAddInterestsVisit("http://www.cars.com/", ["cars","movies","computers"]);
   yield promiseAddInterestsVisit("http://www.samsung.com/", "cars");
 

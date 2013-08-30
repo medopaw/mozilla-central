@@ -6,6 +6,6 @@
 
 "use strict";
 
-function run_test() {
-  // test_gInterestsStorage_metadata.js
-}
+add_task(function test_IS_getInterests() {
+  // test_IS_getInterests.js
+});

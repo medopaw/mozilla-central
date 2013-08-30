@@ -6,5 +6,6 @@
 
 "use strict";
 
-function run_test() {
-}
+add_task(function test_IS_getScoresForInterests() {
+
+});

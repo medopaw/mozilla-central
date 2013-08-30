@@ -9,10 +9,6 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 let iServiceApi = Cc["@mozilla.org/InterestsWebAPI;1"].createInstance(Ci.mozIInterestsWebAPI)
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_InterestWebAPI_getTopInterests()
 {
   // make a bunch of insertions for a number of days

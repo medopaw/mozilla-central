@@ -8,10 +8,6 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/commonjs/sdk/core/promise.js");
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_I__checkForMigration_skipped() {
 
   // copy empty.interests.database.sqlite to profile directory

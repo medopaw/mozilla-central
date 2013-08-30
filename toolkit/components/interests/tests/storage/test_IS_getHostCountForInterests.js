@@ -6,15 +6,10 @@
 
 "use strict";
 
-function run_test() {
-  yield initStorage();
-  run_next_test();
-}
-
 add_task(function test_checkSharable()
 {
-  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "computers");
-  yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
+  yield promiseAddInterestsVisit("http://www.samsung.com/", "computers");
+  yield promiseAddInterestsVisit("http://www.netflix.com/", "movies");
 
   // Sanity check that diversity is computed for both
   yield gInterestsStorage.getHostCountsForInterests(["computers","movies"]).then(function(results) {
@@ -62,10 +57,10 @@ add_task(function test_gInterestsStorageGetHostCount()
 {
   yield promiseClearHistory();
 
-  yield promiseAddUrlInterestsVisit("http://www.cars.com/", ["cars","shopping"]);
-  yield promiseAddUrlInterestsVisit("http://www.samsung.com/", "computers");
-  yield promiseAddUrlInterestsVisit("http://www.mozilla.org/", ["cars","computers"]);
-  yield promiseAddUrlInterestsVisit("http://www.netflix.com/", "movies");
+  yield promiseAddInterestsVisit("http://www.cars.com/", ["cars","shopping"]);
+  yield promiseAddInterestsVisit("http://www.samsung.com/", "computers");
+  yield promiseAddInterestsVisit("http://www.mozilla.org/", ["cars","computers"]);
+  yield promiseAddInterestsVisit("http://www.netflix.com/", "movies");
 
   yield gInterestsStorage.getHostCountsForInterests(["cars","computers","movies","shopping"]).then(function(results) {
     do_check_eq(results["cars"] , 2);
@@ -81,7 +76,8 @@ add_task(function test_gInterestsStorageGetHostCount()
 
 add_task(function test_gInterestsStorageGetHostCountForManyHosts()
 {
-  yield promiseClearHistoryAndVisits();
+  yield promiseClearHistory();
+  yield promiseClearInterests();
 
   let sitesData = [];
   function pushSite(site,interest,count) {

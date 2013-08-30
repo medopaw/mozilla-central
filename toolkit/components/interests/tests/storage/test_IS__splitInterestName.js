@@ -11,8 +11,7 @@ function check(interest, expected) {
   do_check_eq(JSON.stringify(namespace), JSON.stringify(expected));
 }
 
-function run_test() {
-  yield initStorage();
+add_task(function test_IS__splitInterestName() {
   check("foo", ["", "foo"]);
   check(":bar", ["", "bar"]);
   check("foo:", ["foo", ""]);
@@ -21,4 +20,4 @@ function run_test() {
 
   // not valid input, but checking for expected behavior
   check("foo:bar:baz", ["foo", "bar"]);
-}
+});

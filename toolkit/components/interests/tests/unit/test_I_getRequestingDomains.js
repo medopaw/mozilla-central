@@ -7,10 +7,6 @@
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 Cu.import("resource://gre/modules/Services.jsm");
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_I_getRequestingHosts()
 {
   yield addInterest("cars");

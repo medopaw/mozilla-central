@@ -59,7 +59,7 @@ function getInterestsForHost(host) {
 }
 
 function promiseClearInterests() {
-  return isPromiseClearInterests();
+  return isPromiseClearInterests(gInterestsStorage);
 }
 
 function promiseAddInterestsVisits(aVisitInfo) {
@@ -88,3 +88,7 @@ function bulkAddInterestVisitsToSite(data) {
   return promiseAddInterestsVisits(visitObjects);
 }
 
+// Always initialize a storage - by running initStorage as first task
+add_task(function init_storage() {
+  yield initStorage();
+});

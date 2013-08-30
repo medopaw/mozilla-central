@@ -16,10 +16,6 @@ const kInterests = ["Android", "Apple", "Arts", "Autos", "Baseball", "Basketball
 "Programming", "Science", "Soccer", "Sports", "Technology", "Tennis", "Travel",
 "Television", "Video-Games", "Weddings"];
 
-function run_test() {
-  run_next_test();
-}
-
 add_task(function test_I__checkMetadataInit() {
   let interestsStorage = yield iServiceObject.InterestsStoragePromise;
 

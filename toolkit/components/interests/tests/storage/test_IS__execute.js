@@ -6,11 +6,6 @@
 
 "use strict";
 
-function run_test() {
-  yield initStorage();
-  run_next_test();
-}
-
 add_task(function test_promise() {
   LOG("Check promises work for async queries");
   yield gInterestsStorage._execute("CREATE TABLE tmp(col)");
