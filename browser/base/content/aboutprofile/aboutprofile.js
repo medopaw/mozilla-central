@@ -12,7 +12,7 @@ Cu.import("resource://gre/modules/NetUtil.jsm");
 
 const interestService = Cc["@mozilla.org/interests;1"].getService(Ci.nsISupports).wrappedJSObject;
 const prefs = new Preferences("interests.");
-const kPrefEnabled = "interests.enabled";
+const kPrefWebAPIEnabled = "interests.navigator.enabled";
 const kPermChanged = "perm-changed";
 const kPermInterestType = "interests";
 
@@ -53,20 +53,15 @@ let userProfileWrapper = {
     return Services.io.newURI(url, null, null);
   },
 
-  onOptIn: function () {
-    Services.prefs.setBoolPref(kPrefEnabled, true);
-    this.updatePrefState();
-  },
-
-  onOptOut: function () {
-    Services.prefs.setBoolPref(kPrefEnabled, false);
+  setAPIPref: function (value) {
+    Services.prefs.setBoolPref(kPrefWebAPIEnabled, value);
     this.updatePrefState();
   },
 
   updatePrefState: function () {
     try {
       let prefs = {
-        enabled: Services.prefs.getBoolPref(kPrefEnabled),
+        enabled: Services.prefs.getBoolPref(kPrefWebAPIEnabled),
       }
       this.injectData("prefs", prefs);
     } catch (e) {
@@ -142,11 +137,11 @@ let userProfileWrapper = {
 
   handleRemoteCommand: function handleRemoteCommand(evt) {
     switch (evt.detail.command) {
-      case "DisableUP":
-        this.onOptOut();
+      case "DisableAPI":
+        this.setAPIPref(false);
         break;
-      case "EnableUP":
-        this.onOptIn();
+      case "EnableAPI":
+        this.setAPIPref(true);
         break;
       case "RequestCurrentPrefs":
         this.updatePrefState();

@@ -19,6 +19,10 @@ let (commonFile = do_get_file("../../../places/tests/head_common.js", false)) {
 const MS_PER_DAY = 86400000;
 const MICROS_PER_DAY = 86400000000;
 
+// Enable UP classifier and interest API
+Services.prefs.setBoolPref("interests.enabled", true);
+Services.prefs.setBoolPref("interests.navigator.enabled", true);
+
 function isAddInterest(interestsStorage,interest) {
   return interestsStorage.setInterest(interest, {});
 }

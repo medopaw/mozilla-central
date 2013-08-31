@@ -29,12 +29,12 @@ function test() {
     loadURLIntoSeparateWindow({private: true}, initialURL).then(aWindow => {
       windowsToClose.push(aWindow);
       is(aWindow.content.location.href, initialURL, "must be intital url");
-      aWindow.content.navigator.interests.getTopInterests(5).then(ints => {
+      aWindow.content.navigator.interests.getTopInterests(5).then(() => {
         // if we end up here - it's an error
         of(false, "interests were accessible in private mode");
       },
       error => {
-        ok(error != null, "correctly see error when accessing interests in private mode");
+        ok(true, "correctly see error when accessing interests in private mode");
       });
     });
     loadURLIntoSeparateWindow({private: false}, finalURL).then(aWindow => {

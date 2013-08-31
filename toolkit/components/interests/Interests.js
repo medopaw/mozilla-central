@@ -30,7 +30,8 @@ const kStartup = "app-startup";
 const kWindowReady = "toplevel-window-ready";
 
 // prefs
-const kPrefEnabled = "interests.enabled";
+const kPrefClassifierEnabled = "interests.enabled";
+const kPrefWebAPIEnabled = "interests.navigator.enabled";
 const kPrefWhitelist = "interests.userDomainWhitelist";
 
 // constants
@@ -44,7 +45,8 @@ const kInterests = ["Android", "Apple", "Arts", "Autos", "Baseball", "Basketball
 "Programming", "Science", "Soccer", "Sports", "Technology", "Tennis", "Travel",
 "Television", "Video-Games", "Weddings"];
 
-let gServiceEnabled = Services.prefs.getBoolPref(kPrefEnabled);
+let gClassifierEnabled = Services.prefs.getBoolPref(kPrefClassifierEnabled);
+let gAPIEnabled = Services.prefs.getBoolPref(kPrefWebAPIEnabled);
 let gInterestsService = null;
 
 function exposeAll(obj) {
@@ -156,6 +158,17 @@ Interests.prototype = {
   },
 
   /**
+   * tests if a particular site is explicitly enabled
+   *
+   * @param   site
+   * @returns true if site is explicitly enabled, false otherwise
+   */
+  isSiteEnabled: function I_isSiteEnabled(domain) {
+    return Services.perms.testExactPermission(NetUtil.newURI("http://" + domain),"interests") ==
+           Services.perms.ALLOW_ACTION;
+  },
+
+  /**
    * Package up shared interests by hosts
    *
    * @param   [optional] daysBack
@@ -200,7 +213,7 @@ Interests.prototype = {
    * @returns the worker instance
    */
   get _worker() {
-    if (gServiceEnabled && !("__worker" in this)) {
+    if (gClassifierEnabled && !("__worker" in this)) {
       // Use a ChromeWorker to workaround Bug 487070.
       this.__worker = new ChromeWorker("resource://gre/modules/interests/worker/interestsWorker.js");
       this.__worker.addEventListener("message", this, false);
@@ -573,7 +586,7 @@ Interests.prototype = {
   handleEvent: function I_handleEvent(aEvent) {
     let eventType = aEvent.type;
     if (eventType == "DOMContentLoaded") {
-      if (gServiceEnabled) {
+      if (gClassifierEnabled) {
         let doc = aEvent.target;
         if (doc instanceof Ci.nsIDOMHTMLDocument && doc.defaultView == doc.defaultView.top) {
           this._handleNewDocument(doc);
@@ -605,8 +618,11 @@ Interests.prototype = {
       aSubject.addEventListener(kDOMLoaded, this, true);
     }
     else if (aTopic == kPrefChanged) {
-      if (aData == kPrefEnabled) {
-        this._prefEnabledHandler();
+      if (aData == kPrefClassifierEnabled) {
+        this._prefClassifierHandler();
+      }
+      else if (aData == kPrefWebAPIEnabled) {
+        this._prefAPIHandler();
       }
       else if (aData == kPrefWhitelist) {
         this._resetWhitelistHandler();
@@ -626,15 +642,24 @@ Interests.prototype = {
   //// Preference observers
 
   // Add a pref observer for the enabled state
-  _prefEnabledHandler: function I__prefEnabledHandler() {
-    let enable = Services.prefs.getBoolPref(kPrefEnabled);
-    if (enable && !gServiceEnabled) {
-      gServiceEnabled = true;
-
+  _prefClassifierHandler: function I__prefClassifierHandler() {
+    let enable = Services.prefs.getBoolPref(kPrefClassifierEnabled);
+    if (enable && !gClassifierEnabled) {
+      gClassifierEnabled = true;
     }
-    else if (!enable && gServiceEnabled) {
+    else if (!enable && gClassifierEnabled) {
       delete this.__worker;
-      gServiceEnabled = false;
+      gClassifierEnabled = false;
+    }
+  },
+
+  _prefAPIHandler: function I__prefAPIHandler() {
+    let enable = Services.prefs.getBoolPref(kPrefWebAPIEnabled);
+    if (enable && !gAPIEnabled) {
+      gAPIEnabled = true;
+    }
+    else if (!enable && gAPIEnabled) {
+      gAPIEnabled = false;
     }
   },
 
@@ -838,12 +863,18 @@ InterestsWebAPI.prototype = {
     if (this.window == null || this.window.document == null) {
       promptPromise.resolve();
     }
-    // For private browsing window - always reject
+    // Always reject for private browsing window
     else if (PrivateBrowsingUtils.isWindowPrivate(this.window)) {
-      promptPromise.reject("Interests Unavailable in Private Browsing mode");
+      promptPromise.reject("blocked");
     }
     // For content documents, check the user's permission
     else {
+      let host = gInterestsService._getPlacesHostForURI(this.window.document.documentURIObject);
+      if (!gAPIEnabled && !gInterestsService.isSiteEnabled(host)) {
+        // reject if web api is not enabled and if site is not explicitly enabled
+        promptPromise.reject("blocked");
+      }
+
       let prompt = Cc["@mozilla.org/content-permission/prompt;1"].
         createInstance(Ci.nsIContentPermissionPrompt);
       prompt.prompt({

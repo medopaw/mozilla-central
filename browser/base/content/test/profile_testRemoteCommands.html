@@ -40,7 +40,7 @@ var tests = [
 },
 {
   info: "Verifying enabling works",
-  event: "EnableUP",
+  event: "EnableAPI",
   payloadType: "prefs",
   validateResponse: function(payload) {
     return checkSubmissionValue(payload, true);
@@ -64,7 +64,7 @@ var tests = [
 },
 {
   info: "Verifying disabling works",
-  event: "DisableUP",
+  event: "DisableAPI",
   payloadType: "prefs",
   validateResponse: function(payload) {
     return checkSubmissionValue(payload, false);
@@ -125,5 +125,6 @@ function sendToBrowser(type) {
 </script>
   </head>
   <body onload="init()">
+  <h1>aboutProfile test page</h1>
   </body>
 </html>

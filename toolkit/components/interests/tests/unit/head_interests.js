@@ -74,5 +74,3 @@ function promiseAddUrlInterestsVisit(url,interests,count,daysAgo) {
       daysAgo: daysAgo || 0
     });
 }
-
-Services.prefs.setBoolPref("interests.enabled", true);
