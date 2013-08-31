@@ -11,6 +11,7 @@ add_task(function test_I__getBaseDomain()
   do_check_eq(iServiceObject._getBaseDomain("foo.bar.com"),"bar.com");
   do_check_eq(iServiceObject._getBaseDomain("bar.com"),"bar.com");
   do_check_eq(iServiceObject._getBaseDomain(1111),"");
+  do_check_eq(iServiceObject._getBaseDomain("1.2.3.4"),"");
   do_check_eq(iServiceObject._getBaseDomain(""),"");
   do_check_eq(iServiceObject._getBaseDomain(null),"");
 });
