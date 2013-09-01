@@ -1276,7 +1276,7 @@ pref("dom.identity.enabled", false);
 pref("interests.enabled", true);
 pref("interests.userDomainWhitelist", "");
 pref("interests.navigator.enabled", false);
-pref("interests.navigator.prompted", true);
+pref("interests.navigator.prompted", false);
 pref("interests.about.dashboardUrl", "https://up.cdn.mozilla.net/%LOCALE%/");
 
 // Turn on the CSP 1.0 parser for Content Security Policy headers
