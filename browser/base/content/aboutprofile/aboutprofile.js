@@ -59,14 +59,15 @@ let userProfileWrapper = {
   },
 
   updatePrefState: function () {
+    let enabled = false;
     try {
-      let prefs = {
-        enabled: Services.prefs.getBoolPref(kPrefWebAPIEnabled),
-      }
-      this.injectData("prefs", prefs);
-    } catch (e) {
-      this.reportFailure(this.ERROR_PREFS_FAILED);
+      enabled = Services.prefs.getBoolPref(kPrefWebAPIEnabled);
     }
+    catch(ex) {}
+
+    this.injectData("prefs", {
+      enabled: enabled
+    });
   },
 
   refreshPagePayload: function (numInterestsProfile) {
