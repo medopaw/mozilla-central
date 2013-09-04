@@ -334,7 +334,7 @@ Directory::RemoveDeep(const StringOrDirectory& path, VoidCallback& successCallba
 }
 
 already_AddRefed<Promise>
-Directory::GetFile(const nsAString& path, const FileSystemFlags& options)
+Directory::GetFile(const nsAString& path, const FileSystemFlags& options, ErrorResult& aRv)
 {
   SDCARD_LOG("in Directory.GetFile()");
 

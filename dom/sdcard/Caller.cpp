@@ -19,9 +19,9 @@ NS_IMPL_ADDREF(Caller)
 NS_IMPL_RELEASE(Caller)
 
 Caller::Caller(CallbackFunction* aSuccessCallback,
-    ErrorCallback* aErrorCallback) :
-    mSuccessCallback(aSuccessCallback),
-    mErrorCallback(aErrorCallback)
+      ErrorCallback* aErrorCallback) :
+      mSuccessCallback(aSuccessCallback),
+      mErrorCallback(aErrorCallback), mRv(rv)
 {
   SDCARD_LOG("construct Caller");
 }
@@ -29,7 +29,7 @@ Caller::Caller(CallbackFunction* aSuccessCallback,
 Caller::Caller(CallbackFunction& aSuccessCallback,
       const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
       mSuccessCallback(&aSuccessCallback),
-      mErrorCallback(nullptr)
+      mErrorCallback(nullptr), mRv(rv)
 {
   SDCARD_LOG("construct Caller");
 
@@ -114,6 +114,28 @@ Caller::CallVoidCallback()
     ErrorResult rv;
     static_cast<VoidCallback*>(mSuccessCallback.get())->Call(rv);
   }
+}
+
+Caller::Caller(PromiseResolver* aResovler, ErrorResult& aRv) :
+      mResolver(aResovler),
+      mRv(aRv)
+{
+  SDCARD_LOG("construct Caller");
+}
+
+void
+Caller::Fail(const nsAString& aError)
+{
+  AutoSafeJSContext cx;
+  JS::Value v;
+
+  if (!xpc::NonVoidStringToJsval(cx, aError, &v)) {
+    mRv.Throw(NS_ERROR_FAILURE);
+    return;
+  }
+
+  Optional<JS::Handle<JS::Value> > val(cx, v);
+  mResolver->Reject(cx, val);
 }
 
 } // namespace sdcard

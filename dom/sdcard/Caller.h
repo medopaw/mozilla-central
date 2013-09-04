@@ -9,6 +9,8 @@
 #include "nsStringGlue.h"
 #include "FileSystem.h"
 #include "mozilla/dom/FileSystemBinding.h"
+#include "mozilla/dom/PromiseResolver.h"
+#include "Window.h"
 
 namespace mozilla {
 namespace dom {
@@ -28,7 +30,7 @@ public:
   Caller(const Optional<OwningNonNull<T> >& aSuccessCallback,
       const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
       mSuccessCallback(nullptr),
-      mErrorCallback(nullptr)
+      mErrorCallback(nullptr), mRv(rv)
   {
     // SDCARD_LOG("construct Caller");
 
@@ -50,6 +52,32 @@ public:
   void CallEntriesCallback(const InfallibleTArray<nsString>& paths);
   void CallMetadataCallback(int64_t modificationTime, uint64_t size);
   void CallVoidCallback();
+
+public:
+  Caller(PromiseResolver* aResovler, ErrorResult& aRv);
+
+  template<class T>
+  void Success(const T aResult)
+  {
+    nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(Window::GetWindow());
+    if (!globalObject) {
+      mRv.Throw(NS_ERROR_FAILURE);
+      return;
+    }
+
+    AutoSafeJSContext cx;
+    JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+
+    Optional<JS::Handle<JS::Value> > val = OBJECT_TO_JSVAL(aResult->WrapObject(cx, global));
+    mResolver->Resolve(cx, val);
+  }
+
+  void Fail(const nsAString& aError);
+
+private:
+  nsRefPtr<PromiseResolver> mResolver;
+  ErrorResult& mRv;
+  ErrorResult rv;
 
 private:
   nsAutoRefCnt mRefCnt;
