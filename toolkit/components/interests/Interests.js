@@ -36,6 +36,7 @@ const kPrefWhitelist = "interests.userDomainWhitelist";
 
 // constants
 const kDaysToResubmit = 31;
+const kResubmitChunkSize = 1000;
 
 const kInterests = ["Android", "Apple", "Arts", "Autos", "Baseball", "Basketball",
 "Boxing", "Business", "Cooking", "Design", "Do-It-Yourself", "Entrepreneur",
@@ -95,7 +96,7 @@ function Interests() {
 
       // Additionally populate the migrated database with recent interests
       if (connection.isMigrated) {
-        yield this._resubmitRecentHistory(kDaysToResubmit, false);
+        yield this._resubmitRecentHistory(kDaysToResubmit, kResubmitChunkSize, false);
       }
     }.bind(this));
 
@@ -143,7 +144,7 @@ Interests.prototype = {
    * @returns Promise when resubmission is complete
    */
   resubmitRecentHistoryVisits: function I_resubmitRecentHistoryVisits(daysBack) {
-    return this._resubmitRecentHistory(daysBack);
+    return this._resubmitRecentHistory(daysBack,kResubmitChunkSize);
   },
 
   /**
@@ -430,7 +431,10 @@ Interests.prototype = {
           // decerement url count and check if we have seen them all
           this._ResubmitRecentHistoryUrlCount--;
           if (this._ResubmitRecentHistoryUrlCount == 0) {
-            this._resolveResubmitHistoryPromise();
+            // one chunked resubmission is finished - start another
+            this._setupOneTimeTimer(() => {
+              this._resubmitRecentHistoryChunk();
+            });
           }
         }
       });
@@ -441,7 +445,6 @@ Interests.prototype = {
     if (this._ResubmitRecentHistoryDeferred != null) {
       this._ResubmitRecentHistoryDeferred.resolve();
       this._ResubmitRecentHistoryDeferred = null;
-      this._ResubmitRecentHistoryUrlCount = 0;
     }
   },
 
@@ -535,50 +538,75 @@ Interests.prototype = {
    *          A storage instance
    * @param   daysBack
    *          A number of days to go back into history
+   * @param   chunkSize
+   *          A number of raws to return in one query
    * @param   doClearDatabase
    *          A flag to clear database before submit (true by default)
    * @returns Promise when resubmission is complete
    */
-  _resubmitRecentHistory: function I__resubmitRecentHistory(daysBack, doClearDatabase = true) {
+  _resubmitRecentHistory: function I__resubmitRecentHistory(daysBack, chunkSize, doClearDatabase = true) {
     return this.InterestsStoragePromise.then(interestsStorage => {
       // check if history is in progress
       if (this._ResubmitRecentHistoryDeferred) {
         return this._ResubmitRecentHistoryDeferred.promise;
       }
       this._ResubmitRecentHistoryDeferred = Promise.defer();
-      this._ResubmitRecentHistoryUrlCount = 0;
+      this._ResubmitRecentHistoryLargestId = 0;
+      this._ResubmitRecentHistoryDaysBack = daysBack;
+      this._ResubmitRecentHistoryChunkSize = chunkSize;
       // spawn a Task to resubmit history
       Task.spawn(function() {
         // clear history if needed
         if (doClearDatabase) {
           yield interestsStorage.clearRecentVisits(daysBack);
         }
-        // read moz_places data and message it to the worker
-        yield PlacesInterestsUtils.getRecentHistory(daysBack, item => {
-          try {
-            let uri = NetUtil.newURI(item.url);
-            item["message"] = "getInterestsForDocument";
-            item["host"] = this._getPlacesHostForURI(uri);
-            item["path"] = uri["path"];
-            item["tld"] = this._getBaseDomain(item["host"]);
-            item["metaData"] = {};
-            item["language"] = "en";
-            item["messageId"] = "resubmit";
-            this._callMatchingWorker(item);
-            this._ResubmitRecentHistoryUrlCount++;
-          }
-          catch(ex) {}
-        }).then(() => {
-          // check if _ResubmitRecentHistoryDeferred exists and url count == 0
-          // then the history is empty and we should resolve the promise
-          if (this._ResubmitRecentHistoryDeferred && this._ResubmitRecentHistoryUrlCount == 0) {
-            this._resolveResubmitHistoryPromise();
-          }
-        }); // end of getRecentHistory
+        // run the first chunk of history resubmission
+        yield this._resubmitRecentHistoryChunk();
       }.bind(this));  // end of Task.spawn
       return this._ResubmitRecentHistoryDeferred.promise;
     });
   },
+
+  /**
+   * Runs a single instance of a chunked history resubmission
+   *
+   * @returns Promise when instance of chunked resubmission is complete
+   */
+  _resubmitRecentHistoryChunk: function I__ResubmitRecentHistoryChunk() {
+    // clear out url count
+    this._ResubmitRecentHistoryUrlCount = 0;
+    // read moz_places data and message it to the worker
+    return PlacesInterestsUtils.getRecentHistory(this._ResubmitRecentHistoryDaysBack, item => {
+      try {
+        let uri = NetUtil.newURI(item.url);
+        item["message"] = "getInterestsForDocument";
+        item["host"] = this._getPlacesHostForURI(uri);
+        item["path"] = uri["path"];
+        item["tld"] = this._getBaseDomain(item["host"]);
+        item["metaData"] = {};
+        item["language"] = "en";
+        item["messageId"] = "resubmit";
+        this._callMatchingWorker(item);
+        this._ResubmitRecentHistoryUrlCount++;
+        // keep track of the largest Id for this resubmission chunk
+        if (this._ResubmitRecentHistoryLargestId < item["id"]) {
+          this._ResubmitRecentHistoryLargestId = item["id"];
+        }
+      }
+      catch(ex) {}
+    },
+    {
+      chunkSize: this._ResubmitRecentHistoryChunkSize,
+      lastPlacesId: this._ResubmitRecentHistoryLargestId,
+    }).then(() => {
+       // check if _ResubmitRecentHistoryDeferred exists and url count == 0
+       // then if the history returns nothing for the this query, we can resolve
+       // the resubmit promise
+       if (this._ResubmitRecentHistoryDeferred && this._ResubmitRecentHistoryUrlCount == 0) {
+         this._resolveResubmitHistoryPromise();
+       }
+   }); // end of getRecentHistory
+ },
 
   //////////////////////////////////////////////////////////////////////////////
   //// nsIDOMEventListener

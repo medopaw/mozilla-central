@@ -32,6 +32,7 @@ add_task(function test_GetRecentHistory()
 
   yield PlacesInterestsUtils.getRecentHistory(3, function(oneRecord) {
     // make sure oneRecord looks kosher
+    do_check_eq(oneRecord.id, 1);
     do_check_eq(oneRecord.url, "http://www.cars.com/");
     do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");
     do_check_true(oneRecord.visitDate != null);
@@ -50,19 +51,51 @@ add_task(function test_GetRecentHistory()
   });
 
   yield PlacesInterestsUtils.getRecentHistory(1, function(oneRecord) {
-    //we should only see
-    dump(JSON.stringify(oneRecord) + " <<<==== \n");
+    //we should only see one record
+    do_check_eq(oneRecord.id, 1);
     do_check_eq(oneRecord.url, "http://www.cars.com/");
     do_check_eq(oneRecord.title, "test visit for http://www.cars.com/");
     do_check_eq(oneRecord.visitCount,3);
     do_check_eq(oneRecord.visitDate,today*MS_PER_DAY);
   });
 
-  let haveSeenRecords = false;
   yield PlacesInterestsUtils.getRecentHistory(0, function(oneRecord) {
-    haveSeenRecords = true;
+    // we should not ever be here
+    do_check_true(false);
   });
 
-  do_check_true(haveSeenRecords == false);
+});
+
+add_task(function test_GetRecentHistoryChunked()
+{
+  yield promiseClearHistory();
+  let now = Date.now();
+  let today = PlacesInterestsUtils._convertDateToDays(now);
+  let microNow = now * 1000;
+  let visits = [];
+  for (let i = 0; i<5; i++) {
+    visits.push({uri: NetUtil.newURI("http://www.cars.com/" + i), visitDate: microNow - MICROS_PER_DAY * i});
+  }
+  yield promiseAddVisits(visits);
+
+  yield PlacesInterestsUtils.getRecentHistory(20,null,{chunkSize: 10}).then(results => {
+    do_check_eq(results.length, 5);
+    do_check_eq(results[0].id,1);
+    do_check_eq(results[0].url,"http://www.cars.com/0");
+    do_check_eq(results[4].id,5);
+    do_check_eq(results[4].url,"http://www.cars.com/4");
+  });
+
+  yield PlacesInterestsUtils.getRecentHistory(20,null,{chunkSize: 2,lastPlacesId: 1}).then(results => {
+    do_check_eq(results.length, 2);
+    do_check_eq(results[0].id,2);
+    do_check_eq(results[0].url,"http://www.cars.com/1");
+    do_check_eq(results[1].id,3);
+    do_check_eq(results[1].url,"http://www.cars.com/2");
+  });
+
+  yield PlacesInterestsUtils.getRecentHistory(20,null,{chunkSize: 5,lastPlacesId: 5}).then(results => {
+    do_check_eq(results.length, 0);
+  });
 
 });

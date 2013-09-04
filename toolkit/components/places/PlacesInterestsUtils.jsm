@@ -16,13 +16,14 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
 
 const MS_PER_DAY = 86400000;
+const kChunkSize = 10000000;
 
 /**
  * Store the SQL statements used for this file together for easy reference
  */
 const SQL = {
   getRecentHistory:
-    "SELECT title, url, visitCount, visitDate " +
+    "SELECT id, title, url, visitCount, visitDate " +
     "FROM moz_places " +
     "JOIN (SELECT place_id, " +
                  "COUNT(1) visitCount, " +
@@ -31,8 +32,11 @@ const SQL = {
           "WHERE visit_date >= (:dayCutoff+1) * :MS_PER_DAY*1000 " +
           "GROUP BY place_id, visitDate) " +
     "ON place_id = id " +
-    "WHERE hidden = 0 AND " +
-          "visit_count > 0",
+    "WHERE id > :lastPlacesId AND " +
+          "hidden = 0 AND " +
+          "visit_count > 0 " +
+    "LIMIT :limit",
+
 };
 
 let PlacesInterestsUtils = {
@@ -46,15 +50,21 @@ let PlacesInterestsUtils = {
    *          Number of days of recent history to fetch
    * @param   handlePageForDay
    *          Callback handling a day's visits for a page
+   * @param   options
+   *          extra options are:
+   *          chunkSize - a number of raws to be processed by a query
+   *          lastPlacesId - an id of a places entry to start from
    * @returns Promise for when all the recent pages have been processed
    */
-  getRecentHistory: function PIS_getRecentHistory(daysAgo, handlePageForDay) {
+  getRecentHistory: function PIS_getRecentHistory(daysAgo, handlePageForDay, options={}) {
     return this._execute(SQL.getRecentHistory, {
-      columns: ["title", "url", "visitCount", "visitDate"],
+      columns: ["id", "title", "url", "visitCount", "visitDate"],
       onRow: handlePageForDay,
       params: {
         dayCutoff: this._convertDateToDays() - daysAgo,
         MS_PER_DAY: MS_PER_DAY,
+        limit: options.chunkSize || kChunkSize,
+        lastPlacesId: options.lastPlacesId || 0,
       },
     });
   },
