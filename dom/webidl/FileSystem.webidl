@@ -31,8 +31,12 @@ interface Directory : Entry {
 //    void            copy ((DOMString /*or File*/ or Directory) path, DOMString dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
 //    void            copy ((DOMString /*or File*/ or Directory) path, Directory dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
 //    void            copy ((DOMString /*or File*/ or Directory) path, DestinationDict dest, EntryCallback successCallback, optional ErrorCallback errorCallback);
-    void            remove ((DOMString or Directory) path, VoidCallback successCallback, optional ErrorCallback errorCallback);
-    void            removeDeep ((DOMString or Directory) path, VoidCallback successCallback, optional ErrorCallback errorCallback);
+    [Creator, Throws]
+    Promise         remove ((DOMString or Directory) path);
+//    void            remove ((DOMString or Directory) path, VoidCallback successCallback, optional ErrorCallback errorCallback);
+    [Creator, Throws]
+    Promise            removeDeep ((DOMString or Directory) path);
+//    void            removeDeep ((DOMString or Directory) path, VoidCallback successCallback, optional ErrorCallback errorCallback);
     void            enumerate (optional DOMString path, optional EntriesCallback successCallback, optional ErrorCallback errorCallback);
     void            enumerateDeep (optional DOMString path, optional EntriesCallback successCallback, optional ErrorCallback errorCallback);
     [Creator, Throws]

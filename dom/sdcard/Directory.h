@@ -72,12 +72,19 @@ public:
   void Move(const StringOrDirectory& path, const DestinationDict& dest,
       EntryCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
-
+/*
   void Remove(const StringOrDirectory& path, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
 
   void RemoveDeep(const StringOrDirectory& path, VoidCallback& successCallback,
       const Optional<OwningNonNull<ErrorCallback> >& errorCallback);
+*/
+
+  already_AddRefed<Promise> Remove(const StringOrDirectory& path,
+      ErrorResult& aRv);
+
+  already_AddRefed<Promise> RemoveDeep(const StringOrDirectory& path,
+      ErrorResult& aRv);
 
   /*
   void GetFile(const nsAString& path, const FileSystemFlags& options,
@@ -109,6 +116,10 @@ private:
 
   bool GetEntryRelpath(const StringOrDirectory& aPath, nsString& aEntryRelpath,
       Caller* aCaller);
+
+private:
+  already_AddRefed<Promise> RemoveCommon(const StringOrDirectory& path, ErrorResult& aRv,
+      bool aDeep);
 
 private:
   void CopyMoveInternal(const nsAString& aEntryRelpath,

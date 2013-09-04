@@ -30,7 +30,7 @@ public:
   Caller(const Optional<OwningNonNull<T> >& aSuccessCallback,
       const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
       mSuccessCallback(nullptr),
-      mErrorCallback(nullptr), mRv(rv)
+      mErrorCallback(nullptr), mRv(rv), mResolver(nullptr)
   {
     // SDCARD_LOG("construct Caller");
 
@@ -55,6 +55,8 @@ public:
 
 public:
   Caller(PromiseResolver* aResovler, ErrorResult& aRv);
+
+  void Success(bool aResult);
 
   template<class T>
   void Success(const T aResult)

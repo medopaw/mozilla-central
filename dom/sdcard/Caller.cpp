@@ -21,7 +21,7 @@ NS_IMPL_RELEASE(Caller)
 Caller::Caller(CallbackFunction* aSuccessCallback,
       ErrorCallback* aErrorCallback) :
       mSuccessCallback(aSuccessCallback),
-      mErrorCallback(aErrorCallback), mRv(rv)
+      mErrorCallback(aErrorCallback), mRv(rv), mResolver(nullptr)
 {
   SDCARD_LOG("construct Caller");
 }
@@ -29,7 +29,7 @@ Caller::Caller(CallbackFunction* aSuccessCallback,
 Caller::Caller(CallbackFunction& aSuccessCallback,
       const Optional<OwningNonNull<ErrorCallback> >& aErrorCallback) :
       mSuccessCallback(&aSuccessCallback),
-      mErrorCallback(nullptr), mRv(rv)
+      mErrorCallback(nullptr), mRv(rv), mResolver(nullptr)
 {
   SDCARD_LOG("construct Caller");
 
@@ -121,6 +121,15 @@ Caller::Caller(PromiseResolver* aResovler, ErrorResult& aRv) :
       mRv(aRv)
 {
   SDCARD_LOG("construct Caller");
+}
+
+void
+Caller::Success(bool aResult)
+{
+  AutoSafeJSContext cx;
+
+  Optional<JS::Handle<JS::Value> > val(cx, JS::BooleanValue(aResult));
+  mResolver->Resolve(cx, val);
 }
 
 void

@@ -304,7 +304,7 @@ Directory::EnumerateDeep(const Optional<nsAString>& path,
 
   EnumerateInternal(entryRelpath, true, callerPtr);
 }
-
+/*
 void
 Directory::Remove(const StringOrDirectory& path, VoidCallback& successCallback,
     const Optional<OwningNonNull<ErrorCallback> >& errorCallback)
@@ -332,6 +332,22 @@ Directory::RemoveDeep(const StringOrDirectory& path, VoidCallback& successCallba
   }
   RemoveInternal(entryRelpath, true, callerPtr);
 }
+*/
+already_AddRefed<Promise>
+Directory::Remove(const StringOrDirectory& path, ErrorResult& aRv)
+{
+  SDCARD_LOG("in Directory.Remove()");
+
+  return RemoveCommon(path, aRv, false);
+}
+
+already_AddRefed<Promise>
+Directory::RemoveDeep(const StringOrDirectory& path, ErrorResult& aRv)
+{
+  SDCARD_LOG("in Directory.Remove()");
+
+  return RemoveCommon(path, aRv, true);
+}
 
 already_AddRefed<Promise>
 Directory::GetFile(const nsAString& path, const FileSystemFlags& options, ErrorResult& aRv)
@@ -339,8 +355,9 @@ Directory::GetFile(const nsAString& path, const FileSystemFlags& options, ErrorR
   SDCARD_LOG("in Directory.GetFile()");
 
   nsRefPtr<mozilla::dom::Promise> promise = new Promise(Window::GetWindow());
+  nsRefPtr<Caller> callerPtr = new Caller(promise->Resolver(), aRv);
+  GetInternal(path, options.mCreate, options.mExclusive, false, callerPtr, true);
   return promise.forget();
-  //GetInternal(path, options, successCallback, errorCallback, true);
 }
 
 void
@@ -404,6 +421,23 @@ Directory::GetEntryRelpath(const StringOrDirectory& aPath, nsString& aEntryRelpa
   SDCARD_LOG("Type error!");
   aCaller->CallErrorCallback(Error::DOM_ERROR_TYPE_MISMATCH);
   return false;
+}
+
+already_AddRefed<Promise>
+Directory::RemoveCommon(const StringOrDirectory& path, ErrorResult& aRv, bool aDeep)
+{
+  SDCARD_LOG("in Directory.RemoveCommon()");
+
+  nsRefPtr<mozilla::dom::Promise> promise = new Promise(Window::GetWindow());
+  nsRefPtr<Caller> callerPtr = new Caller(promise->Resolver(), aRv);
+
+  nsString entryRelpath;
+  if (!GetEntryRelpath(path, entryRelpath, callerPtr)) {
+    aRv.Throw(NS_ERROR_FAILURE);
+  }
+  RemoveInternal(entryRelpath, aDeep, callerPtr);
+
+  return promise.forget();
 }
 
 void

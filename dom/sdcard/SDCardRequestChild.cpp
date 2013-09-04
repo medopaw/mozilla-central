@@ -48,7 +48,8 @@ SDCardRequestChild::Recv__delete__(const SDCardResponseValue& aValue)
   case SDCardResponseValue::TVoidResponse:
     {
       SDCARD_LOG("VoidResponse received");
-      mCaller->CallVoidCallback();
+      mCaller->Success(true);
+      // mCaller->CallVoidCallback();
       break;
     }
 

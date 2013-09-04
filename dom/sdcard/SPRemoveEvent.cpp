@@ -32,7 +32,8 @@ void
 SPRemoveEvent::OnSuccess()
 {
   SDCARD_LOG("in SPRemoveEvent.OnSuccess()!");
-  mCaller->CallVoidCallback();
+  mCaller->Success(true);
+  // mCaller->CallVoidCallback();
 }
 
 } // namespace sdcard
