@@ -57,9 +57,9 @@ public:
   Caller(PromiseResolver* aResovler, ErrorResult& aRv);
 
   void Success(bool aResult);
-
+/*
   template<class T>
-  void Success(const T aResult)
+  void Success(const T* aResult)
   {
     nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(Window::GetWindow());
     if (!globalObject) {
@@ -73,7 +73,7 @@ public:
     Optional<JS::Handle<JS::Value> > val = OBJECT_TO_JSVAL(aResult->WrapObject(cx, global));
     mResolver->Resolve(cx, val);
   }
-
+*/
   void Fail(const nsAString& aError);
 
 private:
