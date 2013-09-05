@@ -4,8 +4,8 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-/*
 interface Directory {
+/*
   readonly attribute DOMString name;
 
   [Creator, Throws]
@@ -34,8 +34,8 @@ interface Directory {
 
   EventStream enumerate(optional DOMString path);
   EventStream enumerateDeep(optional DOMString path);
-};
 */
+};
 
 enum StorageType { "temporary", "persistent", "sdcard" };
 dictionary FilesystemParameters {
