@@ -12,6 +12,7 @@
 #include "nsPluginArray.h"
 #include "nsMimeTypeArray.h"
 #include "mozilla/dom/Promise.h"
+#include "mozilla/dom/PromiseResolver.h"
 #include "mozilla/MemoryReporting.h"
 #include "mozilla/dom/DesktopNotification.h"
 #include "nsGeolocation.h"
@@ -50,6 +51,7 @@
 #include "TimeManager.h"
 #include "DeviceStorage.h"
 #include "mozilla/dom/FilesystemBinding.h"
+#include "mozilla/dom/filesystem/Directory.h"
 #include "nsIDOMNavigatorSystemMessages.h"
 
 #ifdef MOZ_MEDIA_NAVIGATOR
@@ -958,7 +960,20 @@ Navigator::GetDeviceStorages(const nsAString& aType,
 already_AddRefed<Promise>
 Navigator::GetFilesystem(const FilesystemParameters& parameters, ErrorResult& aRv)
 {
-  nsRefPtr<mozilla::dom::Promise> promise = new Promise(mWindow);
+  nsRefPtr<Promise> promise = new Promise(mWindow);
+  nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(mWindow);
+  if (!globalObject) {
+    aRv.Throw(NS_ERROR_FAILURE);
+    return nullptr;
+  }
+
+  AutoSafeJSContext cx;
+  JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+
+  nsRefPtr<filesystem::Directory> dir = new filesystem::Directory();
+  Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
+  promise->Resolver()->Resolve(cx, val);
+
   return promise.forget();
 }
 
