@@ -28,7 +28,9 @@ class nsDOMDeviceStorage;
 
 namespace mozilla {
 namespace dom {
+class FilesystemParameters;
 class Geolocation;
+class Promise;
 class systemMessageCallback;
 }
 }
@@ -210,6 +212,8 @@ public:
   void GetDeviceStorages(const nsAString& aType,
                          nsTArray<nsRefPtr<nsDOMDeviceStorage> >& aStores,
                          ErrorResult& aRv);
+  already_AddRefed<Promise> GetFilesystem(const FilesystemParameters& parameters,
+      ErrorResult& aRv);
   DesktopNotificationCenter* GetMozNotification(ErrorResult& aRv);
   bool MozIsLocallyAvailable(const nsAString& aURI, bool aWhenOffline,
                              ErrorResult& aRv);
