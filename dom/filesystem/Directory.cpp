@@ -6,6 +6,7 @@
 
 #include "Directory.h"
 #include "mozilla/dom/FilesystemBinding.h"
+#include "Window.h"
 
 namespace mozilla {
 namespace dom {
@@ -28,10 +29,10 @@ Directory::~Directory()
 {
 }
 
-Directory*
+nsPIDOMWindow*
 Directory::GetParentObject() const
 {
-  return nullptr;
+  return Window::GetWindow();
 }
 
 JSObject*

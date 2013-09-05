@@ -15,6 +15,8 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
+class nsPIDOMWindow;
+
 class Directory MOZ_FINAL : public nsISupports, public nsWrapperCache
 {
 public:
@@ -25,7 +27,7 @@ public:
   Directory();
   ~Directory();
 
-  Directory* GetParentObject() const;
+  nsPIDOMWindow* GetParentObject() const;
 
   virtual JSObject* WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
 };
