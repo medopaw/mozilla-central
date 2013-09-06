@@ -10,12 +10,10 @@ MODULE = 'dom'
 
 EXPORTS.mozilla.dom.filesystem += [
     'Directory.h',
-    'Window.h',
 ]
 
 CPP_SOURCES += [
     'Directory.cpp',
-    'Window.cpp',
 ]
 
 LIBXUL_LIBRARY = True
