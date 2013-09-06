@@ -104,7 +104,7 @@ function ruleClassify({host, language, tld, metaData, path, title, url}) {
 // classify a page using text
 function textClassify({url, title}) {
   if (gTokenizer == null || gClassifier == null) {
-    throw new InterestsWorkerError("interest classifier not loaded");
+    return [];
   }
 
   let tokens = gTokenizer.tokenize(url, title);
@@ -121,7 +121,7 @@ function getInterestsForDocument(aMessageData) {
   let interests = [];
   try {
     interests = ruleClassify(aMessageData);
-    if (interests.length == 0) {
+    if (interests.length == 0 && gClassifier && gTokenizer) {
       // fallback to text classification
       interests = textClassify(aMessageData);
     }
