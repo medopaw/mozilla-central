@@ -970,9 +970,24 @@ Navigator::GetFilesystem(const FilesystemParameters& parameters, ErrorResult& aR
   AutoSafeJSContext cx;
   JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
-  nsRefPtr<filesystem::Directory> dir = new filesystem::Directory();
-  Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
-  promise->Resolver()->Resolve(cx, val);
+  switch (parameters.mStorage) {
+  case StorageType::Temporary: {
+    break;
+  }
+  case StorageType::Persistent: {
+    break;
+  }
+  case StorageType::Sdcard: {
+    nsRefPtr<filesystem::Directory> dir = new filesystem::Directory();
+    Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
+    promise->Resolver()->Resolve(cx, val);
+    break;
+  }
+  default:
+    aRv.Throw(NS_ERROR_FAILURE);
+    return nullptr;
+    break;
+  }
 
   return promise.forget();
 }
