@@ -20,9 +20,14 @@ let gClassifier = null;
 let gInterestsData = null;
 const kSplitter = /[^-\w\xco-\u017f\u0380-\u03ff\u0400-\u04ff]+/;
 
-// bootstrap the worker with data and models
+/**
+ * Bootstrap the worker with data and models
+ *
+ * @param aMessageData
+ *        aMessageData is an object with keys as such: {interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}
+ * @notifies bootstrapComplete message upon completion
+ */
 function bootstrap(aMessageData) {
-  //expects : {interestsData, interestsDataType, interestsClassifierModel, interestsUrlStopwords}
   if (aMessageData.interestsUrlStopwords) {
     gTokenizer = new PlaceTokenizer(aMessageData.interestsUrlStopwords);
   }
@@ -37,24 +42,28 @@ function bootstrap(aMessageData) {
   });
 }
 
-// swap out rules
-function swapRules({interestsData, interestsDataType}, noPostMessage) {
+/**
+ * Change the worker's domain classification rules to those provided
+ *
+ * @param {interestsData, interestsDataType}
+ *        interestsData contains domain classification rules
+ *        interestsDataType describes the type of rules. Currently, only "dfr" is allowed.
+ */
+function swapRules({interestsData, interestsDataType}) {
   if (interestsDataType == "dfr") {
     gInterestsData = interestsData;
   }
-
-  if(!noPostMessage) {
-    // only post message if value is true, i.e. it was intentionally passed
-    self.postMessage({
-      message: "swapRulesComplete"
-    });
-  }
 }
 
-// classify a page using rules
+/**
+ * classify a page using heuristics. The heuristics are domain rules.
+ *
+ * @param {host, language, tld, metaData, path, title, url}
+ * @returns an array of interests classified
+ */
 function ruleClassify({host, language, tld, metaData, path, title, url}) {
   if (gInterestsData == null) {
-    throw new InterestsWorkerError("interestData not loaded");
+    return [];
   }
   let interests = [];
   let hostKeys = (gInterestsData[host]) ? Object.keys(gInterestsData[host]).length : 0;
@@ -101,7 +110,12 @@ function ruleClassify({host, language, tld, metaData, path, title, url}) {
   return interests;
 }
 
-// classify a page using text
+/**
+ * classify a page using text
+ *
+ * @param {url, title} for a page
+ * @returns an array of interests classified
+ */
 function textClassify({url, title}) {
   if (gTokenizer == null || gClassifier == null) {
     return [];
@@ -116,7 +130,12 @@ function textClassify({url, title}) {
   return [];
 }
 
-// Figure out which interests are associated to the document
+/**
+ * Infer interests given a document
+ *
+ * @param aMessageData is an object with keys: {host, language, tld, metaData, path, title, url}
+ * @notifies InterestsForDocument message with classification data
+ */
 function getInterestsForDocument(aMessageData) {
   let interests = [];
   try {
@@ -154,7 +173,12 @@ function getInterestsForDocument(aMessageData) {
   });
 }
 
-// Classify document via text only
+/**
+ * Classify document using a text model only
+ *
+ * @param aMessageData is an object with keys: {url, title}
+ * @notifies InterestsForDocumentText with classification data
+ */
 function getInterestsForDocumentText(aMessageData) {
   let interests = textClassify(aMessageData);
 
@@ -167,7 +191,12 @@ function getInterestsForDocumentText(aMessageData) {
   });
 }
 
-// Classify document via rules only
+/**
+ * Classify document using domain heuristics only
+ *
+ * @param aMessageData is an object with keys: {host, language, tld, metaData, path, title, url}
+ * @notifies InterestsForDocumentRules with classification data
+ */
 function getInterestsForDocumentRules(aMessageData) {
   let interests = ruleClassify(aMessageData);
 
@@ -180,7 +209,7 @@ function getInterestsForDocumentRules(aMessageData) {
   });
 }
 
-// Dispatch the message to the appropriate function
+// Dispatch a received message to the appropriate function
 self.onmessage = function({data}) {
   self[data.message](data);
 };
