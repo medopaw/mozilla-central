@@ -27,7 +27,6 @@ let iServiceObject = Cc["@mozilla.org/interests;1"].getService(Ci.nsISupports).w
 
 const kValidMessages = {
   "bootstrapComplete": true,
-  "swapRulesComplete": true,
   "InterestsForDocumentRules": true,
   "InterestsForDocumentText": true,
   "InterestsForDocument": true
