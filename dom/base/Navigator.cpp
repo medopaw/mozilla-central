@@ -52,6 +52,7 @@
 #include "DeviceStorage.h"
 #include "mozilla/dom/FilesystemBinding.h"
 #include "mozilla/dom/filesystem/Directory.h"
+#include "mozilla/dom/filesystem/Filesystem.h"
 #include "nsIDOMNavigatorSystemMessages.h"
 
 #ifdef MOZ_MEDIA_NAVIGATOR

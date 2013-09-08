@@ -10,6 +10,7 @@ MODULE = 'dom'
 
 EXPORTS.mozilla.dom.filesystem += [
     'Directory.h',
+    'Filesystem.h',
 ]
 
 CPP_SOURCES += [

@@ -15,6 +15,7 @@
 #include "nsWrapperCache.h"
 #include "nsString.h"
 #include "nsTArray.h"
+#include "Filesystem.h"
 
 class nsPluginArray;
 class nsMimeTypeArray;
@@ -339,6 +340,7 @@ private:
   nsRefPtr<nsDOMCameraManager> mCameraManager;
   nsCOMPtr<nsIDOMNavigatorSystemMessages> mMessagesManager;
   nsTArray<nsRefPtr<nsDOMDeviceStorage> > mDeviceStorageStores;
+  nsRefPtr<filesystem::Filesystem> mFilesystem;
   nsRefPtr<time::TimeManager> mTimeManager;
   nsCOMPtr<nsPIDOMWindow> mWindow;
 };
