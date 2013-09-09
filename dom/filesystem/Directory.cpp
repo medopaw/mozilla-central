@@ -6,6 +6,7 @@
 
 #include "Directory.h"
 #include "mozilla/dom/FilesystemBinding.h"
+#include "Filesystem.h"
 
 namespace mozilla {
 namespace dom {
@@ -19,7 +20,8 @@ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(Directory)
   NS_INTERFACE_MAP_ENTRY(nsISupports)
 NS_INTERFACE_MAP_END
 
-Directory::Directory()
+Directory::Directory(Filesystem* aFilesystem) :
+    mFilesystem(aFilesystem)
 {
   SetIsDOMBinding();
 }
@@ -38,6 +40,12 @@ JSObject*
 Directory::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope)
 {
   return DirectoryBinding::Wrap(aCx, aScope, this);
+}
+
+Filesystem*
+Directory::GetFilesystem()
+{
+  return mFilesystem;
 }
 
 } // namespace filesystem

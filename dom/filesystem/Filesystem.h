@@ -26,8 +26,8 @@ public:
   Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase);
   ~Filesystem();
 
-  nsPIDOMWindow* Window();
-  PathManager* Path();
+  nsPIDOMWindow* GetWindow();
+  PathManager* GetPathManager();
 
 private:
   nsCOMPtr<nsPIDOMWindow> mWindow;

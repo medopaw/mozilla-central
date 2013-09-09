@@ -11,9 +11,13 @@
 #include "nsCycleCollectionParticipant.h"
 #include "nsWrapperCache.h"
 
+#include "nsAutoPtr.h"
+
 namespace mozilla {
 namespace dom {
 namespace filesystem {
+
+class Filesystem;
 
 class Directory MOZ_FINAL : public nsISupports, public nsWrapperCache
 {
@@ -22,12 +26,17 @@ public:
   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(Directory)
 
 public:
-  Directory();
+  Directory(Filesystem* aFilesystem);
   ~Directory();
 
   Directory* GetParentObject() const;
-
   virtual JSObject* WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
+
+public:
+  Filesystem* GetFilesystem();
+
+private:
+  nsRefPtr<Filesystem> mFilesystem;
 };
 
 } // namespace filesystem
