@@ -991,7 +991,7 @@ Navigator::GetFilesystem(const FilesystemParameters& parameters, ErrorResult& aR
     AutoSafeJSContext cx;
     JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
-    nsRefPtr<filesystem::Directory> dir = new filesystem::Directory();
+    nsRefPtr<filesystem::Directory> dir = new filesystem::Directory(mFilesystem);
     Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
     promise->Resolver()->Resolve(cx, val);
     break;

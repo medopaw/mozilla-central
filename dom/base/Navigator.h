@@ -15,7 +15,6 @@
 #include "nsWrapperCache.h"
 #include "nsString.h"
 #include "nsTArray.h"
-#include "Filesystem.h"
 
 class nsPluginArray;
 class nsMimeTypeArray;
@@ -102,6 +101,10 @@ class PowerManager;
 
 namespace time {
 class TimeManager;
+} // namespace time
+
+namespace filesystem {
+class Filesystem;
 } // namespace time
 
 namespace system {
