@@ -10,11 +10,10 @@
 #include "mozilla/ErrorResult.h"
 #include "nsCOMPtr.h"
 
+class nsPIDOMWindow;
+
 namespace mozilla {
 namespace dom {
-
-// struct StorageType;
-
 namespace filesystem {
 
 class Filesystem MOZ_FINAL
@@ -23,12 +22,8 @@ public:
 NS_DECL_ISUPPORTS
 
 public:
-  Filesystem();
+  Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase);
   ~Filesystem();
-
-private:
-  // StorageType mStorage;
-  // nsAutoRefCnt mRefCnt;
 };
 
 } // namespace filesystem

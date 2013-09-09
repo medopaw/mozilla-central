@@ -50,9 +50,9 @@
 #include "nsIHttpChannel.h"
 #include "TimeManager.h"
 #include "DeviceStorage.h"
-#include "mozilla/dom/FilesystemBinding.h"
 #include "mozilla/dom/filesystem/Directory.h"
 #include "mozilla/dom/filesystem/Filesystem.h"
+#include "mozilla/dom/FilesystemBinding.h"
 #include "nsIDOMNavigatorSystemMessages.h"
 
 #ifdef MOZ_MEDIA_NAVIGATOR
@@ -264,6 +264,10 @@ Navigator::Invalidate()
     mDeviceStorageStores[i]->Shutdown();
   }
   mDeviceStorageStores.Clear();
+
+  if (mFilesystem) {
+    mFilesystem = nullptr;
+  }
 
   if (mTimeManager) {
     mTimeManager = nullptr;
@@ -961,15 +965,17 @@ Navigator::GetDeviceStorages(const nsAString& aType,
 already_AddRefed<Promise>
 Navigator::GetFilesystem(const FilesystemParameters& parameters, ErrorResult& aRv)
 {
+  if (!mWindow) {
+    aRv.Throw(NS_ERROR_UNEXPECTED);
+    return nullptr;
+  }
+
   nsRefPtr<Promise> promise = new Promise(mWindow);
   nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(mWindow);
   if (!globalObject) {
     aRv.Throw(NS_ERROR_FAILURE);
     return nullptr;
   }
-
-  AutoSafeJSContext cx;
-  JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
   switch (parameters.mStorage) {
   case StorageType::Temporary: {
@@ -979,16 +985,22 @@ Navigator::GetFilesystem(const FilesystemParameters& parameters, ErrorResult& aR
     break;
   }
   case StorageType::Sdcard: {
+    if (!mFilesystem) {
+      mFilesystem = new filesystem::Filesystem(mWindow, NS_LITERAL_STRING("/sdcard"));
+    }
+    AutoSafeJSContext cx;
+    JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+
     nsRefPtr<filesystem::Directory> dir = new filesystem::Directory();
     Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
     promise->Resolver()->Resolve(cx, val);
     break;
   }
-  default:
+  default: {
     aRv.Throw(NS_ERROR_FAILURE);
     return nullptr;
     break;
-  }
+  }}
 
   return promise.forget();
 }

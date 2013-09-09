@@ -13,7 +13,7 @@ namespace filesystem {
 NS_IMPL_ADDREF(Filesystem)
 NS_IMPL_RELEASE(Filesystem)
 
-Filesystem::Filesystem()
+Filesystem::Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase)
 {
 }
 
