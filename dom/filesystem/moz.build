@@ -16,6 +16,7 @@ EXPORTS.mozilla.dom.filesystem += [
 CPP_SOURCES += [
     'Directory.cpp',
     'Filesystem.cpp',
+    'PathManager.cpp',
 ]
 
 LIBXUL_LIBRARY = True
