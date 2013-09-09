@@ -23,6 +23,12 @@ Filesystem::~Filesystem()
 {
 }
 
+nsPIDOMWindow*
+Filesystem::Window()
+{
+  return mWindow;
+}
+
 } // namespace filesystem
 } // namespace dom
 } // namespace mozilla

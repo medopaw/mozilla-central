@@ -23,6 +23,8 @@ public:
   Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase);
   ~Filesystem();
 
+  nsPIDOMWindow* Window();
+
 private:
   nsCOMPtr<nsPIDOMWindow> mWindow;
 };
