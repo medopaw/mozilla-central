@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include "mozilla/Attributes.h"
-#include "mozilla/ErrorResult.h"
 #include "nsCOMPtr.h"
 
 class nsPIDOMWindow;
@@ -24,6 +22,9 @@ NS_DECL_ISUPPORTS
 public:
   Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase);
   ~Filesystem();
+
+private:
+  nsCOMPtr<nsPIDOMWindow> mWindow;
 };
 
 } // namespace filesystem

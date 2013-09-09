@@ -5,6 +5,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "Filesystem.h"
+#include "nsPIDOMWindow.h"
 
 namespace mozilla {
 namespace dom {
@@ -13,7 +14,8 @@ namespace filesystem {
 NS_IMPL_ADDREF(Filesystem)
 NS_IMPL_RELEASE(Filesystem)
 
-Filesystem::Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase)
+Filesystem::Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase) :
+    mWindow(aWindow)
 {
 }
 
