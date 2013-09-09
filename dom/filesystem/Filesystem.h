@@ -7,12 +7,15 @@
 #pragma once
 
 #include "nsCOMPtr.h"
+#include "nsAutoPtr.h"
 
 class nsPIDOMWindow;
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
+
+class PathManager;
 
 class Filesystem MOZ_FINAL
 {
@@ -24,9 +27,11 @@ public:
   ~Filesystem();
 
   nsPIDOMWindow* Window();
+  PathManager* Path();
 
 private:
   nsCOMPtr<nsPIDOMWindow> mWindow;
+  nsRefPtr<PathManager> mPathManager;
 };
 
 } // namespace filesystem

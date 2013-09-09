@@ -6,6 +6,7 @@
 
 #include "Filesystem.h"
 #include "nsPIDOMWindow.h"
+#include "PathManager.h"
 
 namespace mozilla {
 namespace dom {
@@ -17,16 +18,24 @@ NS_IMPL_RELEASE(Filesystem)
 Filesystem::Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase) :
     mWindow(aWindow)
 {
+  mPathManager = new class PathManager(aBase);
 }
 
 Filesystem::~Filesystem()
 {
+  mPathManager = nullptr;
 }
 
 nsPIDOMWindow*
 Filesystem::Window()
 {
   return mWindow;
+}
+
+PathManager*
+Filesystem::Path()
+{
+  return mPathManager;
 }
 
 } // namespace filesystem

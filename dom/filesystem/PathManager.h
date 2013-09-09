@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "nsCOMPtr.h"
 #include "nsString.h"
 
 namespace mozilla {
@@ -17,6 +18,9 @@ namespace filesystem {
  */
 class PathManager MOZ_FINAL
 {
+public:
+NS_DECL_ISUPPORTS
+
 public:
   PathManager(const nsAString& aBase);
   ~PathManager();

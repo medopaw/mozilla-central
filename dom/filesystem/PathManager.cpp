@@ -11,6 +11,9 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
+NS_IMPL_ADDREF(PathManager)
+NS_IMPL_RELEASE(PathManager)
+
 PathManager::PathManager(const nsAString& aBase) :
   mSeparatorChar('/'),
   mSeparator(NS_LITERAL_STRING("/")),
@@ -20,6 +23,10 @@ PathManager::PathManager(const nsAString& aBase) :
   mParentReference(NS_LITERAL_STRING("..")),
   mRoot(mSeparator),
   mBase(aBase)
+{
+}
+
+PathManager::~PathManager()
 {
 }
 
