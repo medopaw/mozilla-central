@@ -22,6 +22,7 @@ CPP_SOURCES += [
     'FilesystemRequestChild.cpp',
     'FilesystemRequestParent.cpp',
     'PathManager.cpp',
+    'Worker.cpp',
 ]
 
 IPDL_SOURCES += [
