@@ -19,12 +19,12 @@ namespace filesystem {
 class PathManager MOZ_FINAL
 {
 public:
-  NS_IMETHOD_(nsrefcnt) AddRef(void);                                         \
-  NS_IMETHOD_(nsrefcnt) Release(void);                                        \
+  NS_IMETHOD_(nsrefcnt) AddRef(void);
+  NS_IMETHOD_(nsrefcnt) Release(void);
 
 private:
-  nsAutoRefCnt mRefCnt;                                                       \
-  NS_DECL_OWNINGTHREAD                                                        \
+  nsAutoRefCnt mRefCnt;
+  NS_DECL_OWNINGTHREAD
 
 public:
   PathManager(const nsAString& aBase);
