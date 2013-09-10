@@ -33,6 +33,7 @@
 #include "mozilla/dom/DOMStorageIPC.h"
 #include "mozilla/dom/bluetooth/PBluetoothParent.h"
 #include "mozilla/dom/devicestorage/DeviceStorageRequestParent.h"
+#include "mozilla/dom/filesystem/FilesystemRequestParent.h"
 #include "SmsParent.h"
 #include "mozilla/Hal.h"
 #include "mozilla/hal_sandbox/PHalParent.h"
@@ -138,6 +139,7 @@ using base::ChildPrivileges;
 using base::KillProcess;
 using namespace mozilla::dom::bluetooth;
 using namespace mozilla::dom::devicestorage;
+using namespace mozilla::dom::filesystem;
 using namespace mozilla::dom::indexedDB;
 using namespace mozilla::dom::power;
 using namespace mozilla::dom::mobilemessage;
@@ -1861,6 +1863,22 @@ bool
 ContentParent::DeallocPDeviceStorageRequestParent(PDeviceStorageRequestParent* doomed)
 {
   DeviceStorageRequestParent *parent = static_cast<DeviceStorageRequestParent*>(doomed);
+  NS_RELEASE(parent);
+  return true;
+}
+
+PFilesystemRequestParent*
+ContentParent::AllocPFilesystemRequestParent(const FilesystemParams& aParams)
+{
+  nsRefPtr<FilesystemRequestParent> result = new FilesystemRequestParent(aParams);
+  result->Dispatch();
+  return result.forget().get();
+}
+
+bool
+ContentParent::DeallocPFilesystemRequestParent(PFilesystemRequestParent* doomed)
+{
+  FilesystemRequestParent *parent = static_cast<FilesystemRequestParent*>(doomed);
   NS_RELEASE(parent);
   return true;
 }

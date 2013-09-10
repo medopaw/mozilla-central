@@ -97,6 +97,7 @@
 #include "mozilla/dom/indexedDB/PIndexedDBChild.h"
 #include "mozilla/dom/mobilemessage/SmsChild.h"
 #include "mozilla/dom/devicestorage/DeviceStorageRequestChild.h"
+#include "mozilla/dom/filesystem/FilesystemRequestChild.h"
 #include "mozilla/dom/bluetooth/PBluetoothChild.h"
 #include "mozilla/ipc/InputStreamUtils.h"
 
@@ -122,6 +123,7 @@ using namespace mozilla;
 using namespace mozilla::docshell;
 using namespace mozilla::dom::bluetooth;
 using namespace mozilla::dom::devicestorage;
+using namespace mozilla::dom::filesystem;
 using namespace mozilla::dom::ipc;
 using namespace mozilla::dom::mobilemessage;
 using namespace mozilla::dom::indexedDB;
@@ -868,6 +870,19 @@ bool
 ContentChild::DeallocPDeviceStorageRequestChild(PDeviceStorageRequestChild* aDeviceStorage)
 {
     delete aDeviceStorage;
+    return true;
+}
+
+PFilesystemRequestChild*
+ContentChild::AllocPFilesystemRequestChild(const FilesystemParams& aParams)
+{
+    return new FilesystemRequestChild();
+}
+
+bool
+ContentChild::DeallocPFilesystemRequestChild(PFilesystemRequestChild* aFilesystem)
+{
+    delete aFilesystem;
     return true;
 }
 

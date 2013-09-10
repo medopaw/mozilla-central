@@ -11,6 +11,7 @@ include protocol PCompositor;
 include protocol PCrashReporter;
 include protocol PExternalHelperApp;
 include protocol PDeviceStorageRequest;
+include protocol PFilesystemRequest;
 include protocol PHal;
 include protocol PImageBridge;
 include protocol PIndexedDB;
@@ -126,6 +127,16 @@ union DeviceStorageParams
   DeviceStorageAvailableParams;
 };
 
+struct FilesystemEntranceParams
+{
+  nsString basePath;
+};
+
+union FilesystemParams
+{
+  FilesystemEntranceParams;
+};
+
 union PrefValue {
   nsCString;
   int32_t;
@@ -153,6 +164,7 @@ rpc protocol PContent
     manages PBrowser;
     manages PCrashReporter;
     manages PDeviceStorageRequest;
+    manages PFilesystemRequest;
     manages PExternalHelperApp;
     manages PHal;
     manages PIndexedDB;
@@ -299,6 +311,8 @@ parent:
         returns (bool isOffline);
 
     PDeviceStorageRequest(DeviceStorageParams params);
+
+    PFilesystemRequest(FilesystemParams params);
 
     sync PCrashReporter(NativeThreadId tid, uint32_t processType);
 

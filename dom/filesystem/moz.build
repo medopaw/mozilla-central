@@ -11,12 +11,20 @@ MODULE = 'dom'
 EXPORTS.mozilla.dom.filesystem += [
     'Directory.h',
     'Filesystem.h',
+    'FilesystemRequestChild.h',
+    'FilesystemRequestParent.h',
 ]
 
 CPP_SOURCES += [
     'Directory.cpp',
     'Filesystem.cpp',
+    'FilesystemRequestChild.cpp',
+    'FilesystemRequestParent.cpp',
     'PathManager.cpp',
+]
+
+IPDL_SOURCES += [
+    'PFilesystemRequest.ipdl',
 ]
 
 LIBXUL_LIBRARY = True
