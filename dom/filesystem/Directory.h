@@ -26,7 +26,7 @@ public:
   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(Directory)
 
 public:
-  Directory(Filesystem* aFilesystem);
+  Directory(Filesystem* aFilesystem, const nsAString& aPath, const nsAString& aName);
   ~Directory();
 
   Directory* GetParentObject() const;
@@ -37,6 +37,8 @@ public:
 
 private:
   nsRefPtr<Filesystem> mFilesystem;
+  const nsString mPath;
+  const nsString mName;
 };
 
 } // namespace filesystem
