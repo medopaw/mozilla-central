@@ -20,6 +20,7 @@ CPP_SOURCES += [
     'Error.cpp',
     'Finisher.cpp',
     'Filesystem.cpp',
+    'FilesystemEvent.cpp',
     'FilesystemRequestChild.cpp',
     'FilesystemRequestParent.cpp',
     'PathManager.cpp',
