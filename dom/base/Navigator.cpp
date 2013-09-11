@@ -978,29 +978,34 @@ Navigator::GetFilesystem(const FilesystemParameters& parameters, ErrorResult& aR
   }
 
   switch (parameters.mStorage) {
-  case StorageType::Temporary: {
-    break;
-  }
-  case StorageType::Persistent: {
-    break;
-  }
-  case StorageType::Sdcard: {
-    if (!mFilesystem) {
-      mFilesystem = new filesystem::Filesystem(mWindow, NS_LITERAL_STRING("/sdcard"));
+  case StorageType::Temporary:
+    {
+      break;
     }
-    AutoSafeJSContext cx;
-    JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+  case StorageType::Persistent:
+    {
+      break;
+    }
+  case StorageType::Sdcard:
+    {
+      if (!mFilesystem) {
+        mFilesystem = new filesystem::Filesystem(mWindow, NS_LITERAL_STRING("/sdcard"));
+      }
+      AutoSafeJSContext cx;
+      JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
-    nsRefPtr<filesystem::Directory> dir = new filesystem::Directory(mFilesystem, NS_LITERAL_STRING("/"), NS_LITERAL_STRING(""));
-    Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
-    promise->Resolver()->Resolve(cx, val);
-    break;
+      nsRefPtr<filesystem::Directory> dir = new filesystem::Directory(mFilesystem, NS_LITERAL_STRING("/"), NS_LITERAL_STRING(""));
+      Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
+      promise->Resolver()->Resolve(cx, val);
+      break;
+    }
+  default:
+    {
+      aRv.Throw(NS_ERROR_FAILURE);
+      return nullptr;
+      break;
+    }
   }
-  default: {
-    aRv.Throw(NS_ERROR_FAILURE);
-    return nullptr;
-    break;
-  }}
 
   return promise.forget();
 }
