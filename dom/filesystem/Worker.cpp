@@ -16,8 +16,8 @@ NS_IMPL_ADDREF(Worker)
 NS_IMPL_RELEASE(Worker)
 
 Worker::Worker(const nsAString& aRelpath, Result* aResult) :
-    mRelpath(aRelpath),
-    mResult(aResult)
+    mResult(aResult),
+    mRelpath(aRelpath)
 {
 }
 

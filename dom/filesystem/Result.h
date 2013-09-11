@@ -36,10 +36,25 @@ protected:
   NS_DECL_OWNINGTHREAD
 
 public:
-  FilesystemResultType GetType();
+  FilesystemResultType GetType()
+  {
+    return mResultType;
+  }
 
 protected:
   FilesystemResultType mResultType;
+};
+
+class BoolResult : public Result
+{
+public:
+  bool mValue;
+};
+
+class FileInfoResult : public Result
+{
+public:
+  FileInfo mValue;
 };
 
 } // namespace filesystem

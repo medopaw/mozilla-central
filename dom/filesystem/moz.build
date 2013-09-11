@@ -26,7 +26,6 @@ CPP_SOURCES += [
     'FileUtils.cpp',
     'GetEntryWorker.cpp',
     'PathManager.cpp',
-    'Result.cpp',
     'Worker.cpp',
 ]
 

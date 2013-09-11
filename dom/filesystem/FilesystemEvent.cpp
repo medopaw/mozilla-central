@@ -90,11 +90,6 @@ FilesystemEvent::Cancel()
 }
 
 void
-FilesystemEvent::OnSuccess()
-{
-}
-
-void
 FilesystemEvent::OnError()
 {
   MOZ_ASSERT(mWorker, "mWorker is null!");
