@@ -23,6 +23,8 @@ CPP_SOURCES += [
     'FilesystemEvent.cpp',
     'FilesystemRequestChild.cpp',
     'FilesystemRequestParent.cpp',
+    'FileUtils.cpp',
+    'GetEntryWorker.cpp',
     'PathManager.cpp',
     'Worker.cpp',
 ]

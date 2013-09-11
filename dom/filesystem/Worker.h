@@ -8,11 +8,11 @@
 
 #include "nsString.h"
 #include "nsCOMPtr.h"
+#include "FileUtils.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
-
 /*
  * This class is to perform actual file operations.
  */
@@ -41,6 +41,7 @@ protected:
   nsString mRelpath;
   // Not thread safe. Only access it form worker thread.
   nsCOMPtr<nsIFile> mFile;
+  FileInfo mInfo;
 };
 
 } // namespace filesystem

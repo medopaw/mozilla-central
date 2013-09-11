@@ -33,6 +33,13 @@ Worker::Init()
     SetError(rv);
     return false;
   }
+  
+  rv = FileUtils::GetFileInfo(mFile, mInfo);
+  if (NS_FAILED(rv) ) {
+    SetError(rv);
+    return false;
+  }
+
   return true;
 }
 
