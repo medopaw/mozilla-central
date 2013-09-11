@@ -25,6 +25,7 @@ CPP_SOURCES += [
     'FilesystemRequestParent.cpp',
     'FileUtils.cpp',
     'GetEntryWorker.cpp',
+    'IPCEvent.cpp',
     'PathManager.cpp',
     'Worker.cpp',
 ]
