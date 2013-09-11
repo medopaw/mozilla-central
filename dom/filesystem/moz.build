@@ -26,6 +26,7 @@ CPP_SOURCES += [
     'FileUtils.cpp',
     'GetEntryWorker.cpp',
     'IPCEvent.cpp',
+    'IPCGetEntryEvent.cpp',
     'PathManager.cpp',
     'Worker.cpp',
 ]
