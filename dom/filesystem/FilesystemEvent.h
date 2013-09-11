@@ -12,6 +12,7 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
+class Filesystem;
 class Worker;
 class Finisher;
 class FilesystemRequestParent;
@@ -19,8 +20,8 @@ class FilesystemRequestParent;
 class FilesystemEvent : public nsRunnable
 {
 public:
-  FilesystemEvent(Worker* aWorker, Finisher* aFinisher);
-  FilesystemEvent(Worker* aWorker, FilesystemRequestParent* aParent);
+  FilesystemEvent(Filesystem* aFilesystem, Worker* aWorker, Finisher* aFinisher);
+  FilesystemEvent(Filesystem* aFilesystem, Worker* aWorker, FilesystemRequestParent* aParent);
   virtual ~FilesystemEvent();
 
   /*
@@ -39,6 +40,8 @@ protected:
   virtual Worker* CreateWorker(const nsAString& aRelpath) = 0;
 
 private:
+  nsRefPtr<Filesystem> mFilesystem;
+
   bool mCanceled;
 
   nsRefPtr<Worker> mWorker;

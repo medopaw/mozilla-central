@@ -5,17 +5,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "FilesystemEvent.h"
+#include "Filesystem.h"
+#include "Worker.h"
 #include "FilesystemRequestParent.h"
 #include "mozilla/unused.h"
 #include "Finisher.h"
-#include "Worker.h"
 #include "Result.h"
+#include "Error.h"
+#include "Directory.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-FilesystemEvent::FilesystemEvent(Worker* aWorker, Finisher* aFinisher) :
+FilesystemEvent::FilesystemEvent(Filesystem* aFilesystem, Worker* aWorker, Finisher* aFinisher) :
+    mFilesystem(aFilesystem),
     mCanceled(false),
     mWorker(aWorker),
     mWorkerThread(nullptr),
@@ -25,7 +29,8 @@ FilesystemEvent::FilesystemEvent(Worker* aWorker, Finisher* aFinisher) :
 {
 }
 
-FilesystemEvent::FilesystemEvent(Worker* aWorker, FilesystemRequestParent* aParent) :
+FilesystemEvent::FilesystemEvent(Filesystem* aFilesystem, Worker* aWorker, FilesystemRequestParent* aParent) :
+    mFilesystem(aFilesystem),
     mCanceled(false),
     mWorker(aWorker),
     mWorkerThread(nullptr),
@@ -114,22 +119,25 @@ FilesystemEvent::HandleResult()
   if (!mWorker->HasError()) {
     OnError();
   }
+
+  Result* result = mWorker->GetResult();
   switch (mWorker->GetResult()->GetType()) {
   case FilesystemResultType::Bool:
     {
       break;
     }
   case FilesystemResultType::Directory:
-    {/*
-      if (mWorker->mInfo.isDirectory) {
-        result = mWorker.get()->mResult;
-        FileInfo& info = static_cast<FileInfoResult>(mResult);
-        if (!info.isDirectory)
-        GetEntryWorker* w = static_cast<GetEntryWorker*>(mWorker.get());
-      }*/
+    {
+      const FileInfo& info = (static_cast<FileInfoResult*>(result))->mValue;
+      if (!info.isDirectory) {
+        mWorker->SetError(Error::DOM_ERROR_TYPE_MISMATCH);
+        OnError();
+      }
       if (mIPC) {
+        DirectoryResponse response(info.relpath, info.name);
+        unused << mParent->Send__delete__(mParent, response);
       } else {
-
+        mFinisher->Success(new Directory(mFilesystem, info.relpath, info.name));
       }
       break;
     }

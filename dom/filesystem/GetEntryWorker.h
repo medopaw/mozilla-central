@@ -6,21 +6,25 @@
 
 #pragma once
 
-#include "FilesystemEvent.h"
+#include "Worker.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-class EntranceEvent : public FilesystemEvent
+class Result;
+
+class GetEntryWorker : public Worker
 {
 public:
-  EntranceEvent(Filesystem* aFilesystem, const nsAString& aRelpath, Finisher* aFinisher);
-  EntranceEvent(Filesystem* aFilesystem, const nsAString& aRelpath, FilesystemRequestParent* aParent);
-  ~EntranceEvent();
+  GetEntryWorker(const nsAString& aRelpath, Result* aResult);
+  ~GetEntryWorker();
+
+  bool mIsDirectory;
+  bool mIsFile;
 
 private:
-  Worker* CreateWorker(const nsAString& aRelpath) MOZ_OVERRIDE;
+  virtual void Work() MOZ_OVERRIDE;
 };
 
 } // namespace filesystem

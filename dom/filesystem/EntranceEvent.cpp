@@ -4,25 +4,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+// #include "EntranceEvent.h"
 #include "EntranceEvent.h"
-#include "GetEntryWorker.h"
 #include "FilesystemRequestParent.h"
 #include "mozilla/unused.h"
+#include "Filesystem.h"
 #include "Result.h"
+#include "GetEntryWorker.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-EntranceEvent::EntranceEvent(const nsAString& aRelpath,
+EntranceEvent::EntranceEvent(Filesystem* aFilesystem, const nsAString& aRelpath,
     Finisher* aFinisher) :
-    FilesystemEvent(CreateWorker(aRelpath), aFinisher)
+    FilesystemEvent(aFilesystem, CreateWorker(aRelpath), aFinisher)
 {
 }
 
-EntranceEvent::EntranceEvent(const nsAString& aRelpath,
+EntranceEvent::EntranceEvent(Filesystem* aFilesystem, const nsAString& aRelpath,
     FilesystemRequestParent* aParent) :
-    FilesystemEvent(CreateWorker(aRelpath), aParent)
+    FilesystemEvent(aFilesystem, CreateWorker(aRelpath), aParent)
 {
 }
 
