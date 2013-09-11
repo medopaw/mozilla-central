@@ -13,11 +13,14 @@ namespace dom {
 namespace filesystem {
 
 class Worker;
+class Finisher;
+class FilesystemRequestParent;
 
 class FilesystemEvent : public nsRunnable
 {
 public:
-  FilesystemEvent(Worker* aWorker);
+  FilesystemEvent(Worker* aWorker, Finisher* aFinisher);
+  FilesystemEvent(Worker* aWorker, FilesystemRequestParent* aParent);
   virtual ~FilesystemEvent();
 
   /*
@@ -36,14 +39,18 @@ protected:
   bool mCanceled;
 
   nsRefPtr<Worker> mWorker;
-  virtual void OnError() = 0;
   virtual void OnSuccess() = 0;
+  void OnError();
 
   virtual void HandleResult();
 
 private:
   // Only used on main thread. Don't need a lock.
   nsCOMPtr<nsIThread> mWorkerThread;
+
+  bool mIPC;
+  nsRefPtr<Finisher> mFinisher;
+  nsRefPtr<FilesystemRequestParent> mParent;
 };
 
 } // namespace filesystem

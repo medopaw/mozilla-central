@@ -5,16 +5,32 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "FilesystemEvent.h"
+#include "FilesystemRequestParent.h"
+#include "mozilla/unused.h"
+#include "Finisher.h"
 #include "Worker.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-FilesystemEvent::FilesystemEvent(Worker* aWorker) :
+FilesystemEvent::FilesystemEvent(Worker* aWorker, Finisher* aFinisher) :
     mCanceled(false),
     mWorker(aWorker),
-    mWorkerThread(nullptr)
+    mWorkerThread(nullptr),
+    mIPC(false),
+    mFinisher(aFinisher),
+    mParent(nullptr)
+{
+}
+
+FilesystemEvent::FilesystemEvent(Worker* aWorker, FilesystemRequestParent* aParent) :
+    mCanceled(false),
+    mWorker(aWorker),
+    mWorkerThread(nullptr),
+    mIPC(true),
+    mFinisher(nullptr),
+    mParent(aParent)
 {
 }
 
@@ -51,10 +67,10 @@ FilesystemEvent::Run()
         mWorker->Work();
       }
     }
-    // dispatch itself to main thread
+    // Dispatch itself to main thread
     NS_DispatchToMainThread(this);
   } else {
-    // shutdown mWorkerThread
+    // Shutdown mWorkerThread
     if (mWorkerThread) {
       mWorkerThread->Shutdown();
     }
@@ -67,6 +83,26 @@ FilesystemEvent::Run()
 }
 
 void
+FilesystemEvent::Cancel()
+{
+  mCanceled = true;
+}
+
+void
+FilesystemEvent::OnError()
+{
+  MOZ_ASSERT(mWorker, "mWorker is null!");
+  if (mIPC) {
+    MOZ_ASSERT(mParent, "mParent is null!");
+    ErrorResponse response(mWorker->mErrorName);
+    unused << mParent->Send__delete__(mParent, response);
+  } else {
+    MOZ_ASSERT(mFinisher, "mFinisher is null!");
+    mFinisher->Fail(mWorker->mErrorName);
+  }
+}
+
+void
 FilesystemEvent::HandleResult()
 {
   if (!mCanceled) {
@@ -74,11 +110,6 @@ FilesystemEvent::HandleResult()
   }
 }
 
-void
-FilesystemEvent::Cancel()
-{
-  mCanceled = true;
-}
 
 } // namespace filesystem
 } // namespace dom
