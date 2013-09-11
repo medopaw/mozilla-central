@@ -18,6 +18,7 @@ EXPORTS.mozilla.dom.filesystem += [
 CPP_SOURCES += [
     'Directory.cpp',
     'Error.cpp',
+    'Finisher.cpp',
     'Filesystem.cpp',
     'FilesystemRequestChild.cpp',
     'FilesystemRequestParent.cpp',
