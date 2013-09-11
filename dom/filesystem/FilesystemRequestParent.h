@@ -9,14 +9,13 @@
 #include "mozilla/dom/filesystem/PFilesystemRequestParent.h"
 #include "mozilla/dom/ContentChild.h"
 #include "mozilla/dom/ContentParent.h"
-
 #include "nsThreadUtils.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-// class FilesystemEvent;
+class FilesystemEvent;
 
 class FilesystemRequestParent : public PFilesystemRequestParent
 {
@@ -29,7 +28,7 @@ public:
   void Dispatch();
   void ActorDestroy(ActorDestroyReason) MOZ_OVERRIDE;
 
-  // bool SetRunnable(bool aAdd, FilesystemEvent* aRunnable = nullptr);
+  bool SetRunnable(bool aAdd, FilesystemEvent* aRunnable = nullptr);
 
 protected:
   ~FilesystemRequestParent();
@@ -41,7 +40,7 @@ private:
 
   Mutex mMutex;
   bool mActorDestoryed;
-  // nsRefPtr<FilesystemEvent> mRunnable;
+  nsRefPtr<FilesystemEvent> mRunnable;
 };
 
 } // namespace filesystem

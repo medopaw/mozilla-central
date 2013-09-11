@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "FilesystemRequestParent.h"
-// #include "FilesystemEvent.h"
+#include "FilesystemEvent.h"
 
 namespace mozilla {
 namespace dom {
@@ -17,8 +17,8 @@ NS_IMPL_RELEASE(FilesystemRequestParent)
 FilesystemRequestParent::FilesystemRequestParent(const FilesystemParams& aParams) :
     mParams(aParams),
     mMutex("FilesystemRequestParent::mMutex"),
-    mActorDestoryed(false)
-//    mRunnable(nullptr)
+    mActorDestoryed(false),
+    mRunnable(nullptr)
 {
   MOZ_COUNT_CTOR(FilesystemRequestParent);
 }
@@ -57,12 +57,11 @@ FilesystemRequestParent::ActorDestroy(ActorDestroyReason)
 
   MutexAutoLock lock(mMutex);
   mActorDestoryed = true;
-/*  if (mRunnable) {
+  if (mRunnable) {
     mRunnable->Cancel();
   }
-*/}
+}
 
-/*
 bool
 FilesystemRequestParent::SetRunnable(bool aAdd, FilesystemEvent* aRunnable)
 {
@@ -78,7 +77,7 @@ FilesystemRequestParent::SetRunnable(bool aAdd, FilesystemEvent* aRunnable)
     return true;
   }
 }
-*/
+
 } // namespace filesystem
 } // namespace dom
 } // namespace mozilla
