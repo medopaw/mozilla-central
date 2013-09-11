@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "Worker.h"
-// #include "mozilla/dom/DOMError.h"
 #include "Error.h"
+#include "Result.h"
 
 namespace mozilla {
 namespace dom {
@@ -15,8 +15,9 @@ namespace filesystem {
 NS_IMPL_ADDREF(Worker)
 NS_IMPL_RELEASE(Worker)
 
-Worker::Worker(const nsAString& aRelpath) :
-    mRelpath(aRelpath)
+Worker::Worker(const nsAString& aRelpath, Result* aResult) :
+    mRelpath(aRelpath),
+    mResult(aResult)
 {
 }
 
@@ -55,6 +56,24 @@ Worker::SetError(const nsresult& aErrorCode)
   if (aErrorCode != NS_OK) {
     Error::ErrorNameFromCode(mErrorName, aErrorCode);
   }
+}
+
+bool
+Worker::HasError()
+{
+  return !mErrorName.IsEmpty();
+}
+
+void
+Worker::GetError(nsString& aError)
+{
+  aError = mErrorName;
+}
+
+Result*
+Worker::GetResult()
+{
+  return mResult;
 }
 
 } // namespace filesystem

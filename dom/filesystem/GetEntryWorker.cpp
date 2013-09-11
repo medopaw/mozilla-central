@@ -7,13 +7,14 @@
 #include "GetEntryWorker.h"
 #include "FileUtils.h"
 #include "Error.h"
+#include "Result.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-GetEntryWorker::GetEntryWorker(const nsAString& aRelpath) :
-    Worker(aRelpath),
+GetEntryWorker::GetEntryWorker(const nsAString& aRelpath, Result* aResult) :
+    Worker(aRelpath, aResult),
     mIsDirectory(false),
     mIsFile(false)
 {

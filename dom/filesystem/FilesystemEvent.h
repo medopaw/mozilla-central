@@ -39,7 +39,7 @@ protected:
   bool mCanceled;
 
   nsRefPtr<Worker> mWorker;
-  virtual void OnSuccess() = 0;
+  void OnSuccess();
   void OnError();
 
   virtual void HandleResult();

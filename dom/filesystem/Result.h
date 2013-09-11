@@ -6,25 +6,27 @@
 
 #pragma once
 
-#include "nsString.h"
-#include "nsCOMPtr.h"
 #include "nsAutoPtr.h"
-#include "FileUtils.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-class Result;
+MOZ_BEGIN_ENUM_CLASS(FilesystemResultType, uint32_t)
+  Bool,
+  Directory,
+  DirectoryOrFile,
+  File
+MOZ_END_ENUM_CLASS(FilesystemResultType)
 
 /*
  * This class is to perform actual file operations.
  */
-class Worker
+class Result
 {
 public:
-  Worker(const nsAString& aRelpath, Result* aResult);
-  virtual ~Worker();
+  Result(FilesystemResultType aResultType);
+  virtual ~Result();
 
   NS_IMETHOD_(nsrefcnt) AddRef();
   NS_IMETHOD_(nsrefcnt) Release();
@@ -34,25 +36,10 @@ protected:
   NS_DECL_OWNINGTHREAD
 
 public:
-  bool Init();
-  virtual void Work() = 0;
-
-  void SetError(const nsAString& aErrorName);
-  void SetError(const nsresult& aErrorCode);
-
-  bool HasError();
-  void GetError(nsString& aError);
-
-  Result* GetResult();
+  FilesystemResultType GetType();
 
 protected:
-  nsString mErrorName;
-  nsRefPtr<Result> mResult;
-
-  nsString mRelpath;
-  // Not thread safe. Only access it form worker thread.
-  nsCOMPtr<nsIFile> mFile;
-  FileInfo mInfo;
+  FilesystemResultType mResultType;
 };
 
 } // namespace filesystem

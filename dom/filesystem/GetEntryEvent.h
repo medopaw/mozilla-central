@@ -6,28 +6,21 @@
 
 #pragma once
 
-#include "Worker.h"
+#include "IPCEvent.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-class Result;
-
-class GetEntryWorker : public Worker
+class IPCGetEntryEvent : public IPCEvent
 {
 public:
-  GetEntryWorker(const nsAString& aRelpath, Result* aResult);
-  ~GetEntryWorker();
-
-  nsString mResultPath;
-  nsString mResultName;
-
-  bool mIsDirectory;
-  bool mIsFile;
+  IPCGetEntryEvent(const nsAString& aRelpath,
+      FilesystemRequestParent* aParent);
+  ~IPCGetEntryEvent();
 
 private:
-  virtual void Work() MOZ_OVERRIDE;
+  virtual void OnSuccess() MOZ_OVERRIDE;
 };
 
 } // namespace filesystem

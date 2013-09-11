@@ -9,6 +9,7 @@
 #include "mozilla/unused.h"
 #include "Finisher.h"
 #include "Worker.h"
+#include "Result.h"
 
 namespace mozilla {
 namespace dom {
@@ -89,27 +90,70 @@ FilesystemEvent::Cancel()
 }
 
 void
+FilesystemEvent::OnSuccess()
+{
+}
+
+void
 FilesystemEvent::OnError()
 {
   MOZ_ASSERT(mWorker, "mWorker is null!");
+  nsString error;
+  mWorker->GetError(error);
   if (mIPC) {
     MOZ_ASSERT(mParent, "mParent is null!");
-    ErrorResponse response(mWorker->mErrorName);
+    ErrorResponse response(error);
     unused << mParent->Send__delete__(mParent, response);
   } else {
     MOZ_ASSERT(mFinisher, "mFinisher is null!");
-    mFinisher->Fail(mWorker->mErrorName);
+    mFinisher->Fail(error);
   }
 }
 
 void
 FilesystemEvent::HandleResult()
 {
-  if (!mCanceled) {
-    mWorker->mErrorName.IsEmpty() ? OnSuccess() : OnError();
+  if (mCanceled) {
+    return;
   }
-}
+  if (!mWorker->HasError()) {
+    OnError();
+  }
+  switch (mWorker->GetResult()->GetType()) {
+  case FilesystemResultType::Bool:
+    {
+      break;
+    }
+  case FilesystemResultType::Directory:
+    {/*
+      if (mWorker->mInfo.isDirectory) {
+        result = mWorker.get()->mResult;
+        FileInfo& info = static_cast<FileInfoResult>(mResult);
+        if (!info.isDirectory)
+        GetEntryWorker* w = static_cast<GetEntryWorker*>(mWorker.get());
+      }*/
+      if (mIPC) {
+      } else {
 
+      }
+      break;
+    }
+  case FilesystemResultType::DirectoryOrFile:
+    {
+      break;
+    }
+  case FilesystemResultType::File:
+    {
+      break;
+    }
+  default:
+    {
+      NS_RUNTIMEABORT("not reached");
+      break;
+    }
+  }
+
+}
 
 } // namespace filesystem
 } // namespace dom

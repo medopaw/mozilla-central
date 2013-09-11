@@ -4,31 +4,29 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#pragma once
-
-#include "Worker.h"
+#include "Result.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-class Result;
+NS_IMPL_ADDREF(Result)
+NS_IMPL_RELEASE(Result)
 
-class GetEntryWorker : public Worker
+Result::Result(FilesystemResultType aResultType) :
+    mResultType(aResultType)
 {
-public:
-  GetEntryWorker(const nsAString& aRelpath, Result* aResult);
-  ~GetEntryWorker();
+}
 
-  nsString mResultPath;
-  nsString mResultName;
+Result::~Result()
+{
+}
 
-  bool mIsDirectory;
-  bool mIsFile;
-
-private:
-  virtual void Work() MOZ_OVERRIDE;
-};
+FilesystemResultType
+Result::GetType()
+{
+  return mResultType;
+}
 
 } // namespace filesystem
 } // namespace dom
