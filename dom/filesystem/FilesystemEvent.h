@@ -36,15 +36,17 @@ public:
   void Cancel();
 
 protected:
+  virtual Worker* CreateWorker(const nsAString& aRelpath) = 0;
+
+private:
   bool mCanceled;
+
   nsRefPtr<Worker> mWorker;
+  // Only used on main thread. Don't need a lock.
+  nsCOMPtr<nsIThread> mWorkerThread;
 
   void OnError();
   virtual void HandleResult();
-
-private:
-  // Only used on main thread. Don't need a lock.
-  nsCOMPtr<nsIThread> mWorkerThread;
 
   bool mIPC;
   nsRefPtr<Finisher> mFinisher;

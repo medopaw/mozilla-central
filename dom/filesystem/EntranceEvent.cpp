@@ -4,31 +4,38 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "IPCGetEntryEvent.h"
+#include "EntranceEvent.h"
 #include "GetEntryWorker.h"
 #include "FilesystemRequestParent.h"
 #include "mozilla/unused.h"
+#include "Result.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-IPCGetEntryEvent::IPCGetEntryEvent(const nsAString& aRelpath,
+EntranceEvent::EntranceEvent(const nsAString& aRelpath,
+    Finisher* aFinisher) :
+    FilesystemEvent(CreateWorker(aRelpath), aFinisher)
+{
+}
+
+EntranceEvent::EntranceEvent(const nsAString& aRelpath,
     FilesystemRequestParent* aParent) :
-    IPCEvent(new GetEntryWorker(aRelpath), aParent)
+    FilesystemEvent(CreateWorker(aRelpath), aParent)
 {
 }
 
-IPCGetEntryEvent::~IPCGetEntryEvent()
+EntranceEvent::~EntranceEvent()
 {
 }
 
-void
-IPCGetEntryEvent::OnSuccess()
+Worker*
+EntranceEvent::CreateWorker(const nsAString& aRelpath)
 {
-  GetEntryWorker* w = static_cast<GetEntryWorker*>(mWorker.get());
-  DirectoryResponse response(w->mResultPath, w->mResultName);
-  unused << mParent->Send__delete__(mParent, response);
+  nsRefPtr<Worker> worker = new GetEntryWorker(
+      aRelpath, new FileInfoResult(FilesystemResultType::Directory));
+  return worker;
 }
 
 } // namespace filesystem

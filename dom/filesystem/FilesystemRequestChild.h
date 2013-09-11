@@ -7,7 +7,7 @@
 #pragma once
 
 #include "mozilla/dom/filesystem/PFilesystemRequestChild.h"
-// #include "Finisher.h"
+#include "Finisher.h"
 
 namespace mozilla {
 namespace dom {
@@ -24,7 +24,7 @@ public:
   virtual bool Recv__delete__(const FilesystemResponseValue& value);
 
 private:
-  // nsRefPtr<Finisher> mFinisher;
+  nsRefPtr<Finisher> mFinisher;
 };
 
 } // namespace filesystem

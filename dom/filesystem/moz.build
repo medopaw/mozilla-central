@@ -17,6 +17,7 @@ EXPORTS.mozilla.dom.filesystem += [
 
 CPP_SOURCES += [
     'Directory.cpp',
+    'EntranceEvent.cpp',
     'Error.cpp',
     'Finisher.cpp',
     'Filesystem.cpp',

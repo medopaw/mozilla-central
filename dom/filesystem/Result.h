@@ -48,12 +48,28 @@ protected:
 class BoolResult : public Result
 {
 public:
+  BoolResult() :
+    Result(FilesystemResultType::Bool)
+  {
+  }
+  ~BoolResult()
+  {
+  }
+
   bool mValue;
 };
 
 class FileInfoResult : public Result
 {
 public:
+  FileInfoResult(FilesystemResultType aResultType) :
+    Result(aResultType)
+  {
+  }
+  ~FileInfoResult()
+  {
+  }
+
   FileInfo mValue;
 };
 

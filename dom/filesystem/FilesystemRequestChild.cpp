@@ -5,6 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "FilesystemRequestChild.h"
+#include "Directory.h"
 
 namespace mozilla {
 namespace dom {
@@ -34,14 +35,14 @@ FilesystemRequestChild::Recv__delete__(const FilesystemResponseValue& aValue)
   case FilesystemResponseValue::TDirectoryResponse:
     {
       DirectoryResponse r = aValue;
-      // mFinisher->CallErrorCallback(r.error());
+      // mFinisher->Success(new Directory(r.path(), r.name());
       break;
     }
 
   case FilesystemResponseValue::TErrorResponse:
     {
       ErrorResponse r = aValue;
-      // mCaller->CallErrorCallback(r.error());
+      mFinisher->Fail(r.error());
       break;
     }
 
