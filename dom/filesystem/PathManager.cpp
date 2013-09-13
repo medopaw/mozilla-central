@@ -193,7 +193,7 @@ PathManager::Separate(const nsAString& aPath, nsString& aParent, nsString& aName
 }
 
 void
-TrimHead(nsString& aPath, const nsAString& aHead)
+PathManager::TrimHead(nsString& aPath, const nsAString& aHead)
 {
   MOZ_ASSERT(StringBeginsWith(aPath, aHead), "aPath must starts with aHead");
   aPath = Substring(aPath, aHead.Length(), aPath.Length() - aHead.Length());

@@ -5,7 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "FilesystemRequestChild.h"
+#include "Filesystem.h"
 #include "Directory.h"
+#include "Finisher.h"
 
 namespace mozilla {
 namespace dom {
@@ -15,13 +17,13 @@ FilesystemRequestChild::FilesystemRequestChild()
 {
   MOZ_COUNT_CTOR(FilesystemRequestChild);
 }
-/*
+
 FilesystemRequestChild::FilesystemRequestChild(Finisher* aFinisher) :
     mFinisher(aFinisher)
 {
   MOZ_COUNT_CTOR(FilesystemRequestChild);
 }
-*/
+
 FilesystemRequestChild::~FilesystemRequestChild()
 {
   MOZ_COUNT_DTOR(FilesystemRequestChild);
@@ -35,7 +37,7 @@ FilesystemRequestChild::Recv__delete__(const FilesystemResponseValue& aValue)
   case FilesystemResponseValue::TDirectoryResponse:
     {
       DirectoryResponse r = aValue;
-      // mFinisher->Success(new Directory(r.path(), r.name());
+      mFinisher->ReturnDirectory(r.relpath(), r.name());
       break;
     }
 

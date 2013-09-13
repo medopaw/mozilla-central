@@ -14,9 +14,7 @@ namespace dom {
 namespace filesystem {
 
 GetEntryWorker::GetEntryWorker(const nsAString& aRelpath, Result* aResult) :
-    Worker(aRelpath, aResult),
-    mIsDirectory(false),
-    mIsFile(false)
+    Worker(aRelpath, aResult)
 {
 }
 
@@ -39,9 +37,8 @@ GetEntryWorker::Work()
     return;
   }
 
-  FileInfo& info = (static_cast<FileInfoResult*>(mResult.get()))->mValue;
-  info.relpath = mInfo.relpath;
-  info.name = mInfo.name;
+  FileInfoResult* result = static_cast<FileInfoResult*>(mResult.get());
+  result->mValue = mInfo;
 }
 
 } // namespace filesystem

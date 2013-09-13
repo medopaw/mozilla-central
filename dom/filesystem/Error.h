@@ -24,8 +24,8 @@ class Error
 {
 public:
   static void ErrorNameFromCode(nsAString& aErrorName, const nsresult& aErrorCode);
-  static nsRefPtr<DOMError> GetDOMError(const nsAString& aErrorName);
-  static nsRefPtr<DOMError> GetDOMError(const nsresult& aErrorCode);
+  static DOMError* GetDOMError(const nsAString& aErrorName);
+  static DOMError* GetDOMError(const nsresult& aErrorCode);
 
 public:
   static const nsString DOM_ERROR_ENCODING;

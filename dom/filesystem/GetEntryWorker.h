@@ -20,9 +20,6 @@ public:
   GetEntryWorker(const nsAString& aRelpath, Result* aResult);
   ~GetEntryWorker();
 
-  bool mIsDirectory;
-  bool mIsFile;
-
 private:
   virtual void Work() MOZ_OVERRIDE;
 };

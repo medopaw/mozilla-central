@@ -37,25 +37,18 @@ protected:
   NS_DECL_OWNINGTHREAD
 
 public:
-  FilesystemResultType GetType()
-  {
-    return mResultType;
-  }
+  FilesystemResultType GetType();
 
 protected:
   FilesystemResultType mResultType;
 };
 
+
 class BoolResult : public Result
 {
 public:
-  BoolResult() :
-    Result(FilesystemResultType::Bool)
-  {
-  }
-  ~BoolResult()
-  {
-  }
+  BoolResult();
+  ~BoolResult();
 
   bool mValue;
 };
@@ -63,13 +56,8 @@ public:
 class FileInfoResult : public Result
 {
 public:
-  FileInfoResult(FilesystemResultType aResultType) :
-    Result(aResultType)
-  {
-  }
-  ~FileInfoResult()
-  {
-  }
+  FileInfoResult(FilesystemResultType aResultType);
+  ~FileInfoResult();
 
   FileInfo mValue;
 };

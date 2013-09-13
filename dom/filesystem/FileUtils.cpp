@@ -7,6 +7,10 @@
 #include "FileUtils.h"
 #include "nsIFile.h"
 #include "nsISimpleEnumerator.h"
+#include "Filesystem.h"
+#include "Directory.h"
+#include "nsAutoPtr.h"
+#include "PathManager.h"
 
 namespace mozilla {
 namespace dom {
@@ -72,6 +76,20 @@ FileUtils::GetFileInfo(nsIFile* aFile, FileInfo& aInfo)
   }
 
   return rv;
+}
+
+Directory*
+FileUtils::CreateDirectory(Filesystem* aFilesystem, const nsAString& aRelpath, const nsAString& aName)
+{
+  nsRefPtr<PathManager> p = aFilesystem->GetPathManager();
+
+  if (p->WithinBase(aRelpath)) {
+    nsString path;
+    p->RealPathToDOMPath(aRelpath, path);
+    return new Directory(aFilesystem, path, aName);
+  }
+
+  return nullptr;
 }
 
 } // namespace filesystem

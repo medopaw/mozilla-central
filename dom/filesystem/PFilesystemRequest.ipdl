@@ -12,7 +12,7 @@ namespace filesystem {
 
 struct DirectoryResponse
 {
-  nsString path;
+  nsString relpath;
   nsString name;
 };
 

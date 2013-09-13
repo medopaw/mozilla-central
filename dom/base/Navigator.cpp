@@ -52,7 +52,11 @@
 #include "DeviceStorage.h"
 #include "mozilla/dom/filesystem/Directory.h"
 #include "mozilla/dom/filesystem/Filesystem.h"
+#include "mozilla/dom/filesystem/EntranceEvent.h"
+#include "mozilla/dom/filesystem/FilesystemRequestChild.h"
+#include "mozilla/dom/filesystem/Finisher.h"
 #include "mozilla/dom/FilesystemBinding.h"
+#include "mozilla/dom/ContentChild.h"
 #include "nsIDOMNavigatorSystemMessages.h"
 
 #ifdef MOZ_MEDIA_NAVIGATOR
@@ -988,15 +992,27 @@ Navigator::GetFilesystem(const FilesystemParameters& parameters, ErrorResult& aR
     }
   case StorageType::Sdcard:
     {
+      nsString sdcardPath = NS_LITERAL_STRING("/sdcard");
+
       if (!mFilesystem) {
-        mFilesystem = new filesystem::Filesystem(mWindow, NS_LITERAL_STRING("/sdcard"));
+        mFilesystem = new filesystem::Filesystem(mWindow, sdcardPath);
       }
       AutoSafeJSContext cx;
       JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
-      nsRefPtr<filesystem::Directory> dir = new filesystem::Directory(mFilesystem, NS_LITERAL_STRING("/"), NS_LITERAL_STRING(""));
-      Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
-      promise->Resolver()->Resolve(cx, val);
+      nsRefPtr<filesystem::Finisher> finisher =
+          new filesystem::Finisher(mFilesystem, promise->Resolver(), aRv);
+      if (XRE_GetProcessType() == GeckoProcessType_Default) {
+        nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(
+            sdcardPath, finisher);
+        r->Start();
+      } else {
+        FilesystemEntranceParams params(sdcardPath);
+        filesystem::PFilesystemRequestChild* child =
+            new filesystem::FilesystemRequestChild(finisher);
+        ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(
+            child, params);
+      }
       break;
     }
   default:

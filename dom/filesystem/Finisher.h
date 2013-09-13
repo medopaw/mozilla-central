@@ -7,7 +7,7 @@
 #pragma once
 
 #include "nsString.h"
-// #include "Filesystem.h"
+#include "Filesystem.h"
 // #include "mozilla/dom/FilesystemBinding.h"
 #include "mozilla/dom/PromiseResolver.h"
 
@@ -15,6 +15,7 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
+class Filesystem;
 class Directory;
 
 /*
@@ -31,15 +32,35 @@ private:
   NS_DECL_OWNINGTHREAD
 
 public:
-  Finisher(nsPIDOMWindow* aWindow, PromiseResolver* aResovler, ErrorResult& aRv);
+  Finisher(Filesystem* aFilesystem, PromiseResolver* aResovler, ErrorResult& aRv);
   ~Finisher();
 
-  void Success(Directory* aResult);
+  void ReturnDirectory(const nsAString& aRelpath, const nsAString& aName);
 
   void Fail(const nsAString& aError);
 
 private:
-  nsCOMPtr<nsPIDOMWindow> mWindow;
+  // For objects whose class have WrapObject()
+  template<class T>
+  void Call(T* obj, bool aReject = false)
+  {
+    nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(
+        mFilesystem->GetWindow());
+    if (!globalObject) {
+      mRv.Throw(NS_ERROR_FAILURE);
+      return;
+    }
+
+    AutoSafeJSContext cx;
+    JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+
+    Optional<JS::Handle<JS::Value> > val(
+        cx, OBJECT_TO_JSVAL(obj->WrapObject(cx, global)));
+    aReject ? mResolver->Reject(cx, val) : mResolver->Resolve(cx, val);
+  }
+
+private:
+  nsRefPtr<Filesystem> mFilesystem;
   nsRefPtr<PromiseResolver> mResolver;
   ErrorResult& mRv;
 };

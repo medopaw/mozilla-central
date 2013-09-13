@@ -15,6 +15,9 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
+class Directory;
+class Filesystem;
+
 /*
  * nsIFile related utilities.
  * All methods in this class are static.
@@ -36,6 +39,7 @@ public:
   static nsresult IsDirectoryEmpty(nsIFile* aDir, bool* aEmpty);
   static nsresult GetFileInfo(const nsAString& aPath, FileInfo& aInfo);
   static nsresult GetFileInfo(nsIFile* aFile, FileInfo& aInfo);
+  static Directory* CreateDirectory(Filesystem* aFilesystem, const nsAString& aRelpath, const nsAString& aName);
 };
 
 } // namespace sdcard

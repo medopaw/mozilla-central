@@ -7,18 +7,20 @@
 #pragma once
 
 #include "mozilla/dom/filesystem/PFilesystemRequestChild.h"
-#include "Finisher.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
+
+class Filesystem;
+class Finisher;
 
 class FilesystemRequestChild:
   public PFilesystemRequestChild
 {
 public:
   FilesystemRequestChild();
-  // FilesystemRequestChild(Finisher* aFinisher);
+  FilesystemRequestChild(Finisher* aFinisher);
   ~FilesystemRequestChild();
 
   virtual bool Recv__delete__(const FilesystemResponseValue& value);

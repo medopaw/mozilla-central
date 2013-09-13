@@ -18,6 +18,7 @@ namespace dom {
 namespace filesystem {
 
 class Filesystem;
+struct FileInfo;
 
 class Directory MOZ_FINAL : public nsISupports, public nsWrapperCache
 {

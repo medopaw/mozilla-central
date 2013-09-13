@@ -5,9 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "Finisher.h"
-// #include "mozilla/dom/DOMError.h"
-#include "Error.h"
 #include "Directory.h"
+#include "FileUtils.h"
+#include "Error.h"
 
 namespace mozilla {
 namespace dom {
@@ -16,10 +16,11 @@ namespace filesystem {
 NS_IMPL_ADDREF(Finisher)
 NS_IMPL_RELEASE(Finisher)
 
-Finisher::Finisher(nsPIDOMWindow* aWindow, PromiseResolver* aResovler, ErrorResult& aRv) :
-      mWindow(aWindow),
-      mResolver(aResovler),
-      mRv(aRv)
+Finisher::Finisher(Filesystem* aFilesystem, PromiseResolver* aResovler,
+    ErrorResult& aRv) :
+    mFilesystem(aFilesystem),
+    mResolver(aResovler),
+    mRv(aRv)
 {
 }
 
@@ -28,34 +29,21 @@ Finisher::~Finisher()
 }
 
 void
-Finisher::Success(Directory* aResult)
+Finisher::ReturnDirectory(const nsAString& aRelpath, const nsAString& aName)
 {
-  nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(mWindow);
-  if (!globalObject) {
-    mRv.Throw(NS_ERROR_FAILURE);
+  nsRefPtr<Directory> dir = FileUtils::CreateDirectory(mFilesystem, aRelpath, aName);
+  if (!dir) {
+    Fail(Error::DOM_ERROR_SECURITY);
     return;
   }
-
-  AutoSafeJSContext cx;
-  JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
-
-  Optional<JS::Handle<JS::Value> > val(cx, OBJECT_TO_JSVAL(aResult->WrapObject(cx, global)));
-  mResolver->Resolve(cx, val);
+  Call(dir.get());
 }
 
 void
 Finisher::Fail(const nsAString& aError)
 {
-  AutoSafeJSContext cx;
-  JS::Value v;
-
-  if (!xpc::NonVoidStringToJsval(cx, aError, &v)) {
-    mRv.Throw(NS_ERROR_FAILURE);
-    return;
-  }
-
-  Optional<JS::Handle<JS::Value> > val(cx, v);
-  mResolver->Reject(cx, val);
+  nsRefPtr<DOMError> domError = Error::GetDOMError(aError);
+  Call(domError.get(), true);
 }
 
 } // namespace filesystem

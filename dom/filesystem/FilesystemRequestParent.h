@@ -15,12 +15,14 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
+class Filesystem;
 class FilesystemEvent;
 
 class FilesystemRequestParent : public PFilesystemRequestParent
 {
 public:
   FilesystemRequestParent(const FilesystemParams& aParams);
+  ~FilesystemRequestParent();
 
   NS_IMETHOD_(nsrefcnt) AddRef();
   NS_IMETHOD_(nsrefcnt) Release();
@@ -29,9 +31,6 @@ public:
   void ActorDestroy(ActorDestroyReason) MOZ_OVERRIDE;
 
   bool SetRunnable(bool aAdd, FilesystemEvent* aRunnable = nullptr);
-
-protected:
-  ~FilesystemRequestParent();
 
 private:
   ThreadSafeAutoRefCnt mRefCnt;

@@ -10,9 +10,11 @@ MODULE = 'dom'
 
 EXPORTS.mozilla.dom.filesystem += [
     'Directory.h',
+    'EntranceEvent.h',
     'Filesystem.h',
     'FilesystemRequestChild.h',
     'FilesystemRequestParent.h',
+    'Finisher.h',
 ]
 
 CPP_SOURCES += [
@@ -27,6 +29,7 @@ CPP_SOURCES += [
     'FileUtils.cpp',
     'GetEntryWorker.cpp',
     'PathManager.cpp',
+    'Result.cpp',
     'Worker.cpp',
 ]
 

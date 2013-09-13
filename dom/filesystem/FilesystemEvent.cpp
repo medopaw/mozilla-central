@@ -5,21 +5,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "FilesystemEvent.h"
-#include "Filesystem.h"
-#include "Worker.h"
 #include "FilesystemRequestParent.h"
 #include "mozilla/unused.h"
 #include "Finisher.h"
 #include "Result.h"
 #include "Error.h"
-#include "Directory.h"
+#include "Worker.h"
+#include "PathManager.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-FilesystemEvent::FilesystemEvent(Filesystem* aFilesystem, Worker* aWorker, Finisher* aFinisher) :
-    mFilesystem(aFilesystem),
+FilesystemEvent::FilesystemEvent(Worker* aWorker, Finisher* aFinisher) :
     mCanceled(false),
     mWorker(aWorker),
     mWorkerThread(nullptr),
@@ -29,8 +27,8 @@ FilesystemEvent::FilesystemEvent(Filesystem* aFilesystem, Worker* aWorker, Finis
 {
 }
 
-FilesystemEvent::FilesystemEvent(Filesystem* aFilesystem, Worker* aWorker, FilesystemRequestParent* aParent) :
-    mFilesystem(aFilesystem),
+FilesystemEvent::FilesystemEvent(Worker* aWorker,
+    FilesystemRequestParent* aParent) :
     mCanceled(false),
     mWorker(aWorker),
     mWorkerThread(nullptr),
@@ -116,7 +114,7 @@ FilesystemEvent::HandleResult()
   if (mCanceled) {
     return;
   }
-  if (!mWorker->HasError()) {
+  if (mWorker->HasError()) {
     OnError();
   }
 
@@ -133,11 +131,11 @@ FilesystemEvent::HandleResult()
         mWorker->SetError(Error::DOM_ERROR_TYPE_MISMATCH);
         OnError();
       }
-      if (mIPC) {
+     if (mIPC) {
         DirectoryResponse response(info.relpath, info.name);
         unused << mParent->Send__delete__(mParent, response);
       } else {
-        mFinisher->Success(new Directory(mFilesystem, info.relpath, info.name));
+        mFinisher->ReturnDirectory(info.relpath, info.name);
       }
       break;
     }

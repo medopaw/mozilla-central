@@ -65,14 +65,14 @@ Error::ErrorNameFromCode(nsAString& aErrorName, const nsresult& aErrorCode)
   }
 }
 
-nsRefPtr<DOMError>
+DOMError*
 Error::GetDOMError(const nsAString& aErrorName)
 {
   nsRefPtr<DOMError> domError = new DOMError(nullptr, aErrorName);
   return domError;
 }
 
-nsRefPtr<DOMError>
+DOMError*
 Error::GetDOMError(const nsresult& aErrorCode)
 {
   MOZ_ASSERT(aErrorCode != NS_OK, "NS_OK is not an error.");
