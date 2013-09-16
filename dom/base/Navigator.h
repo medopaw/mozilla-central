@@ -216,7 +216,7 @@ public:
   void GetDeviceStorages(const nsAString& aType,
                          nsTArray<nsRefPtr<nsDOMDeviceStorage> >& aStores,
                          ErrorResult& aRv);
-  already_AddRefed<Promise> GetFilesystem(const FilesystemParameters& parameters,
+  already_AddRefed<Promise> GetMozFilesystem(const FilesystemParameters& parameters,
       ErrorResult& aRv);
   DesktopNotificationCenter* GetMozNotification(ErrorResult& aRv);
   bool MozIsLocallyAvailable(const nsAString& aURI, bool aWhenOffline,

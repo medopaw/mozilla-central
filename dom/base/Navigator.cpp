@@ -967,7 +967,7 @@ Navigator::GetDeviceStorages(const nsAString& aType,
 }
 
 already_AddRefed<Promise>
-Navigator::GetFilesystem(const FilesystemParameters& parameters, ErrorResult& aRv)
+Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult& aRv)
 {
   if (!mWindow) {
     aRv.Throw(NS_ERROR_UNEXPECTED);
