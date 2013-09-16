@@ -45,7 +45,7 @@ FileUtils::GetFileInfo(const nsAString& aPath, FileInfo& aInfo)
 nsresult
 FileUtils::GetFileInfo(nsIFile* aFile, FileInfo& aInfo)
 {
-  // If file not exists, the rest is unnecessary
+  // If file doesn't exist, the rest is unnecessary
   nsresult rv = aFile->Exists(&(aInfo.exists));
   if (NS_FAILED(rv) || !aInfo.exists) {
     return rv;

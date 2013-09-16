@@ -20,8 +20,10 @@ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(Directory)
   NS_INTERFACE_MAP_ENTRY(nsISupports)
 NS_INTERFACE_MAP_END
 
-Directory::Directory(Filesystem* aFilesystem, const nsAString& aPath, const nsAString& aName) :
-    mFilesystem(aFilesystem),
+Directory::Directory(Filesystem* aFilesystem,
+                     const nsAString& aPath,
+                     const nsAString& aName)
+  : mFilesystem(aFilesystem),
     mPath(aPath),
     mName(aName)
 {

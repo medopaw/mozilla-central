@@ -13,8 +13,8 @@ namespace filesystem {
 NS_IMPL_ADDREF(Result)
 NS_IMPL_RELEASE(Result)
 
-Result::Result(FilesystemResultType aResultType) :
-    mResultType(aResultType)
+Result::Result(FilesystemResultType aResultType)
+  : mResultType(aResultType)
 {
 }
 
@@ -28,8 +28,8 @@ Result::GetType()
   return mResultType;
 }
 
-BoolResult::BoolResult() :
-  Result(FilesystemResultType::Bool)
+BoolResult::BoolResult()
+  : Result(FilesystemResultType::Bool)
 {
 }
 
@@ -37,8 +37,8 @@ BoolResult::~BoolResult()
 {
 }
 
-FileInfoResult::FileInfoResult(FilesystemResultType aResultType) :
-  Result(aResultType)
+FileInfoResult::FileInfoResult(FilesystemResultType aResultType)
+  : Result(aResultType)
 {
 }
 

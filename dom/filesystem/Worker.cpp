@@ -15,8 +15,9 @@ namespace filesystem {
 NS_IMPL_ADDREF(Worker)
 NS_IMPL_RELEASE(Worker)
 
-Worker::Worker(const nsAString& aRelpath, Result* aResult) :
-    mResult(aResult),
+Worker::Worker(const nsAString& aRelpath,
+               Result* aResult)
+  : mResult(aResult),
     mRelpath(aRelpath)
 {
 }

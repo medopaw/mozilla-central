@@ -17,8 +17,9 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-FilesystemEvent::FilesystemEvent(Worker* aWorker, Finisher* aFinisher) :
-    mCanceled(false),
+FilesystemEvent::FilesystemEvent(Worker* aWorker,
+                                 Finisher* aFinisher)
+  : mCanceled(false),
     mWorker(aWorker),
     mWorkerThread(nullptr),
     mIPC(false),
@@ -28,8 +29,8 @@ FilesystemEvent::FilesystemEvent(Worker* aWorker, Finisher* aFinisher) :
 }
 
 FilesystemEvent::FilesystemEvent(Worker* aWorker,
-    FilesystemRequestParent* aParent) :
-    mCanceled(false),
+                                 FilesystemRequestParent* aParent)
+  : mCanceled(false),
     mWorker(aWorker),
     mWorkerThread(nullptr),
     mIPC(true),
@@ -120,18 +121,20 @@ FilesystemEvent::HandleResult()
 
   Result* result = mWorker->GetResult();
   switch (mWorker->GetResult()->GetType()) {
-  case FilesystemResultType::Bool:
+
+    case FilesystemResultType::Bool:
     {
       break;
     }
-  case FilesystemResultType::Directory:
+
+    case FilesystemResultType::Directory:
     {
       const FileInfo& info = (static_cast<FileInfoResult*>(result))->mValue;
       if (!info.isDirectory) {
         mWorker->SetError(Error::DOM_ERROR_TYPE_MISMATCH);
         OnError();
       }
-     if (mIPC) {
+      if (mIPC) {
         DirectoryResponse response(info.relpath, info.name);
         unused << mParent->Send__delete__(mParent, response);
       } else {
@@ -139,19 +142,23 @@ FilesystemEvent::HandleResult()
       }
       break;
     }
-  case FilesystemResultType::DirectoryOrFile:
+
+    case FilesystemResultType::DirectoryOrFile:
     {
       break;
     }
-  case FilesystemResultType::File:
+
+    case FilesystemResultType::File:
     {
       break;
     }
-  default:
+
+    default:
     {
       NS_RUNTIMEABORT("not reached");
       break;
     }
+
   }
 
 }

@@ -20,7 +20,8 @@ namespace filesystem {
 class Filesystem;
 struct FileInfo;
 
-class Directory MOZ_FINAL : public nsISupports, public nsWrapperCache
+class Directory MOZ_FINAL : public nsISupports,
+                            public nsWrapperCache
 {
 public:
   NS_DECL_CYCLE_COLLECTING_ISUPPORTS
@@ -31,7 +32,8 @@ public:
   ~Directory();
 
   Directory* GetParentObject() const;
-  virtual JSObject* WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
+  virtual JSObject*
+  WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
 
 public:
   Filesystem* GetFilesystem();

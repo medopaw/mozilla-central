@@ -18,8 +18,8 @@ FilesystemRequestChild::FilesystemRequestChild()
   MOZ_COUNT_CTOR(FilesystemRequestChild);
 }
 
-FilesystemRequestChild::FilesystemRequestChild(Finisher* aFinisher) :
-    mFinisher(aFinisher)
+FilesystemRequestChild::FilesystemRequestChild(Finisher* aFinisher)
+  : mFinisher(aFinisher)
 {
   MOZ_COUNT_CTOR(FilesystemRequestChild);
 }
@@ -34,21 +34,21 @@ FilesystemRequestChild::Recv__delete__(const FilesystemResponseValue& aValue)
 {
   switch (aValue.type()) {
 
-  case FilesystemResponseValue::TDirectoryResponse:
+    case FilesystemResponseValue::TDirectoryResponse:
     {
       DirectoryResponse r = aValue;
       mFinisher->ReturnDirectory(r.relpath(), r.name());
       break;
     }
 
-  case FilesystemResponseValue::TErrorResponse:
+    case FilesystemResponseValue::TErrorResponse:
     {
       ErrorResponse r = aValue;
       mFinisher->Fail(r.error());
       break;
     }
 
-  default:
+    default:
     {
       NS_RUNTIMEABORT("not reached");
       break;

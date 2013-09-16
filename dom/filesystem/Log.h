@@ -10,7 +10,7 @@
 #ifdef DEBUGGING
 #if defined(MOZ_WIDGET_GONK)
 #include <android/log.h>
-#define FILESYSTEM_LOG(args...)  __android_log_print(ANDROID_LOG_INFO, "SDCard" , ## args)
+#define FILESYSTEM_LOG(args...)  __android_log_print(ANDROID_LOG_INFO, "Filesystem" , ## args)
 #else
 #define FILESYSTEM_LOG(fmt, ...) printf("\n"); printf(fmt, ##__VA_ARGS__); printf("\n")
 #endif

@@ -13,8 +13,9 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-GetEntryWorker::GetEntryWorker(const nsAString& aRelpath, Result* aResult) :
-    Worker(aRelpath, aResult)
+GetEntryWorker::GetEntryWorker(const nsAString& aRelpath,
+                               Result* aResult)
+  : Worker(aRelpath, aResult)
 {
 }
 

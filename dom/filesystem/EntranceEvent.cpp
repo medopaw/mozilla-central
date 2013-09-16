@@ -16,14 +16,15 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-EntranceEvent::EntranceEvent(const nsAString& aRelpath, Finisher* aFinisher) :
-    FilesystemEvent(CreateWorker(aRelpath), aFinisher)
+EntranceEvent::EntranceEvent(const nsAString& aRelpath,
+                             Finisher* aFinisher)
+  : FilesystemEvent(CreateWorker(aRelpath), aFinisher)
 {
 }
 
 EntranceEvent::EntranceEvent(const nsAString& aRelpath,
-    FilesystemRequestParent* aParent) :
-    FilesystemEvent(CreateWorker(aRelpath), aParent)
+                             FilesystemRequestParent* aParent)
+  : FilesystemEvent(CreateWorker(aRelpath), aParent)
 {
 }
 
@@ -35,7 +36,7 @@ Worker*
 EntranceEvent::CreateWorker(const nsAString& aRelpath)
 {
   return new GetEntryWorker(aRelpath,
-      new FileInfoResult(FilesystemResultType::Directory));
+                            new FileInfoResult(FilesystemResultType::Directory));
 }
 
 } // namespace filesystem

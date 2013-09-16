@@ -35,7 +35,7 @@ FilesystemRequestParent::Dispatch()
 {
   switch (mParams.type()) {
 
-  case FilesystemParams::TFilesystemEntranceParams:
+    case FilesystemParams::TFilesystemEntranceParams:
     {
       FilesystemEntranceParams p = mParams;
       nsRefPtr<EntranceEvent> r = new filesystem::EntranceEvent(
@@ -44,7 +44,7 @@ FilesystemRequestParent::Dispatch()
       break;
     }
 
-  default:
+    default:
     {
       NS_RUNTIMEABORT("not reached");
       break;

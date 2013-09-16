@@ -14,15 +14,15 @@ namespace filesystem {
 NS_IMPL_ADDREF(PathManager)
 NS_IMPL_RELEASE(PathManager)
 
-PathManager::PathManager(const nsAString& aBase) :
-  mSeparatorChar('/'),
-  mSeparator(NS_LITERAL_STRING("/")),
-  mNul(NS_LITERAL_STRING("\0")),
-  mBackslash(NS_LITERAL_STRING("\\")),
-  mSelfReference(NS_LITERAL_STRING(".")),
-  mParentReference(NS_LITERAL_STRING("..")),
-  mRoot(mSeparator),
-  mBase(aBase)
+PathManager::PathManager(const nsAString& aBase)
+  : mSeparatorChar('/'),
+    mSeparator(NS_LITERAL_STRING("/")),
+    mNul(NS_LITERAL_STRING("\0")),
+    mBackslash(NS_LITERAL_STRING("\\")),
+    mSelfReference(NS_LITERAL_STRING(".")),
+    mParentReference(NS_LITERAL_STRING("..")),
+    mRoot(mSeparator),
+    mBase(aBase)
 {
 }
 

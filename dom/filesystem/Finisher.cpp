@@ -16,9 +16,10 @@ namespace filesystem {
 NS_IMPL_ADDREF(Finisher)
 NS_IMPL_RELEASE(Finisher)
 
-Finisher::Finisher(Filesystem* aFilesystem, PromiseResolver* aResovler,
-    ErrorResult& aRv) :
-    mFilesystem(aFilesystem),
+Finisher::Finisher(Filesystem* aFilesystem,
+                   PromiseResolver* aResovler,
+                   ErrorResult& aRv)
+  : mFilesystem(aFilesystem),
     mResolver(aResovler),
     mRv(aRv)
 {
