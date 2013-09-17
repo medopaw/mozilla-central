@@ -7,7 +7,7 @@
 #include "FilesystemRequestChild.h"
 #include "Filesystem.h"
 #include "Directory.h"
-#include "Finisher.h"
+#include "CallbackHandler.h"
 
 namespace mozilla {
 namespace dom {
@@ -18,8 +18,8 @@ FilesystemRequestChild::FilesystemRequestChild()
   MOZ_COUNT_CTOR(FilesystemRequestChild);
 }
 
-FilesystemRequestChild::FilesystemRequestChild(Finisher* aFinisher)
-  : mFinisher(aFinisher)
+FilesystemRequestChild::FilesystemRequestChild(CallbackHandler* aCallbackHandler)
+  : mCallbackHandler(aCallbackHandler)
 {
   MOZ_COUNT_CTOR(FilesystemRequestChild);
 }
@@ -37,14 +37,14 @@ FilesystemRequestChild::Recv__delete__(const FilesystemResponseValue& aValue)
     case FilesystemResponseValue::TDirectoryResponse:
     {
       DirectoryResponse r = aValue;
-      mFinisher->ReturnDirectory(r.relpath(), r.name());
+      mCallbackHandler->ReturnDirectory(r.relpath(), r.name());
       break;
     }
 
     case FilesystemResponseValue::TErrorResponse:
     {
       ErrorResponse r = aValue;
-      mFinisher->Fail(r.error());
+      mCallbackHandler->Fail(r.error());
       break;
     }
 

@@ -17,8 +17,8 @@ namespace dom {
 namespace filesystem {
 
 EntranceEvent::EntranceEvent(const nsAString& aRelpath,
-                             Finisher* aFinisher)
-  : FilesystemEvent(CreateWorker(aRelpath), aFinisher)
+                             CallbackHandler* aCallbackHandler)
+  : FilesystemEvent(CreateWorker(aRelpath), aCallbackHandler)
 {
 }
 

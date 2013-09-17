@@ -15,7 +15,7 @@ namespace filesystem {
 class EntranceEvent : public FilesystemEvent
 {
 public:
-  EntranceEvent(const nsAString& aRelpath, Finisher* aFinisher);
+  EntranceEvent(const nsAString& aRelpath, CallbackHandler* aCallbackHandler);
   EntranceEvent(const nsAString& aRelpath, FilesystemRequestParent* aParent);
   ~EntranceEvent();
 

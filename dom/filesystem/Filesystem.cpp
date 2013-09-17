@@ -17,7 +17,7 @@ NS_IMPL_RELEASE(Filesystem)
 
 Filesystem::Filesystem(nsPIDOMWindow* aWindow,
                        const nsAString& aBase)
-  : mWindow(aWindow)
+  : mWindow(aWindow),
     mPathManager(new PathManager(aBase))
 {
 }

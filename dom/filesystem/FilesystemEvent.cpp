@@ -7,7 +7,7 @@
 #include "FilesystemEvent.h"
 #include "FilesystemRequestParent.h"
 #include "mozilla/unused.h"
-#include "Finisher.h"
+#include "CallbackHandler.h"
 #include "Result.h"
 #include "Error.h"
 #include "Worker.h"
@@ -18,12 +18,12 @@ namespace dom {
 namespace filesystem {
 
 FilesystemEvent::FilesystemEvent(Worker* aWorker,
-                                 Finisher* aFinisher)
+                                 CallbackHandler* aCallbackHandler)
   : mCanceled(false),
     mWorker(aWorker),
     mWorkerThread(nullptr),
     mIPC(false),
-    mFinisher(aFinisher),
+    mCallbackHandler(aCallbackHandler),
     mParent(nullptr)
 {
 }
@@ -34,7 +34,7 @@ FilesystemEvent::FilesystemEvent(Worker* aWorker,
     mWorker(aWorker),
     mWorkerThread(nullptr),
     mIPC(true),
-    mFinisher(nullptr),
+    mCallbackHandler(nullptr),
     mParent(aParent)
 {
 }
@@ -104,8 +104,8 @@ FilesystemEvent::OnError()
     ErrorResponse response(error);
     unused << mParent->Send__delete__(mParent, response);
   } else {
-    MOZ_ASSERT(mFinisher, "mFinisher is null!");
-    mFinisher->Fail(error);
+    MOZ_ASSERT(mCallbackHandler, "mCallbackHandler is null!");
+    mCallbackHandler->Fail(error);
   }
 }
 
@@ -138,7 +138,7 @@ FilesystemEvent::HandleResult()
         DirectoryResponse response(info.relpath, info.name);
         unused << mParent->Send__delete__(mParent, response);
       } else {
-        mFinisher->ReturnDirectory(info.relpath, info.name);
+        mCallbackHandler->ReturnDirectory(info.relpath, info.name);
       }
       break;
     }

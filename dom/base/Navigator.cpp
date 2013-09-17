@@ -54,7 +54,7 @@
 #include "mozilla/dom/filesystem/Filesystem.h"
 #include "mozilla/dom/filesystem/EntranceEvent.h"
 #include "mozilla/dom/filesystem/FilesystemRequestChild.h"
-#include "mozilla/dom/filesystem/Finisher.h"
+#include "mozilla/dom/filesystem/CallbackHandler.h"
 #include "mozilla/dom/FilesystemBinding.h"
 #include "mozilla/dom/ContentChild.h"
 #include "nsIDOMNavigatorSystemMessages.h"
@@ -1000,8 +1000,8 @@ Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult&
       AutoSafeJSContext cx;
       JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
-      nsRefPtr<filesystem::Finisher> finisher =
-          new filesystem::Finisher(mFilesystem, promise->Resolver(), aRv);
+      nsRefPtr<filesystem::CallbackHandler> finisher =
+          new filesystem::CallbackHandler(mFilesystem, promise->Resolver(), aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
         nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(
             sdcardPath, finisher);

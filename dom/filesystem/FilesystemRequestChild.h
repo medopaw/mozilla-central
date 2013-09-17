@@ -13,20 +13,20 @@ namespace dom {
 namespace filesystem {
 
 class Filesystem;
-class Finisher;
+class CallbackHandler;
 
 class FilesystemRequestChild:
   public PFilesystemRequestChild
 {
 public:
   FilesystemRequestChild();
-  FilesystemRequestChild(Finisher* aFinisher);
+  FilesystemRequestChild(CallbackHandler* aCallbackHandler);
   ~FilesystemRequestChild();
 
   virtual bool Recv__delete__(const FilesystemResponseValue& value);
 
 private:
-  nsRefPtr<Finisher> mFinisher;
+  nsRefPtr<CallbackHandler> mCallbackHandler;
 };
 
 } // namespace filesystem

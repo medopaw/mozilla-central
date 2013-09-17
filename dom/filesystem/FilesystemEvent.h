@@ -14,13 +14,13 @@ namespace filesystem {
 
 class Filesystem;
 class Worker;
-class Finisher;
+class CallbackHandler;
 class FilesystemRequestParent;
 
 class FilesystemEvent : public nsRunnable
 {
 public:
-  FilesystemEvent(Worker* aWorker, Finisher* aFinisher);
+  FilesystemEvent(Worker* aWorker, CallbackHandler* aCallbackHandler);
   FilesystemEvent(Worker* aWorker, FilesystemRequestParent* aParent);
   virtual ~FilesystemEvent();
 
@@ -50,7 +50,7 @@ private:
   virtual void HandleResult();
 
   bool mIPC;
-  nsRefPtr<Finisher> mFinisher;
+  nsRefPtr<CallbackHandler> mCallbackHandler;
   nsRefPtr<FilesystemRequestParent> mParent;
 };
 

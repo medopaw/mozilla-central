@@ -21,7 +21,7 @@ class Directory;
 /*
  * This class is for callback handling.
  */
-class Finisher MOZ_FINAL
+class CallbackHandler MOZ_FINAL
 {
 public:
   NS_IMETHOD_(nsrefcnt) AddRef();
@@ -32,8 +32,8 @@ private:
   NS_DECL_OWNINGTHREAD
 
 public:
-  Finisher(Filesystem* aFilesystem, PromiseResolver* aResovler, ErrorResult& aRv);
-  ~Finisher();
+  CallbackHandler(Filesystem* aFilesystem, PromiseResolver* aResovler, ErrorResult& aRv);
+  ~CallbackHandler();
 
   void ReturnDirectory(const nsAString& aRelpath, const nsAString& aName);
 
