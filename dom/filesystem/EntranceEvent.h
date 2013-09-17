@@ -15,12 +15,12 @@ namespace filesystem {
 class EntranceEvent : public FilesystemEvent
 {
 public:
-  EntranceEvent(const nsAString& aRelpath, CallbackHandler* aCallbackHandler);
-  EntranceEvent(const nsAString& aRelpath, FilesystemRequestParent* aParent);
+  EntranceEvent(const nsAString& aRealPath, CallbackHandler* aCallbackHandler);
+  EntranceEvent(const nsAString& aRealPath, FilesystemRequestParent* aParent);
   ~EntranceEvent();
 
 private:
-  Worker* CreateWorker(const nsAString& aRelpath) MOZ_OVERRIDE;
+  Worker* CreateWorker(const nsAString& aRealPath) MOZ_OVERRIDE;
 };
 
 } // namespace filesystem

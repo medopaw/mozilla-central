@@ -37,7 +37,7 @@ public:
   void Cancel();
 
 protected:
-  virtual Worker* CreateWorker(const nsAString& aRelpath) = 0;
+  virtual Worker* CreateWorker(const nsAString& aRealPath) = 0;
 
 private:
   bool mCanceled;

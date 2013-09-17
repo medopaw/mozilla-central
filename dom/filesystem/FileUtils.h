@@ -23,7 +23,7 @@ struct FileInfo
   bool exists;
   bool isDirectory;
   bool isFile;
-  nsString relpath;
+  nsString realPath;
   nsString name;
 };
 
@@ -39,7 +39,7 @@ public:
   static nsresult GetFileInfo(nsIFile* aFile,
                               FileInfo& aInfo);
   static Directory* CreateDirectory(Filesystem* aFilesystem,
-                                    const nsAString& aRelpath,
+                                    const nsAString& aRealPath,
                                     const nsAString& aName);
 };
 

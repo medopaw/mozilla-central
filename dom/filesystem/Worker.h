@@ -23,7 +23,7 @@ class Result;
 class Worker
 {
 public:
-  Worker(const nsAString& aRelpath, Result* aResult);
+  Worker(const nsAString& aRealPath, Result* aResult);
   virtual ~Worker();
 
   NS_IMETHOD_(nsrefcnt) AddRef();
@@ -49,7 +49,7 @@ protected:
   nsString mErrorName;
   nsRefPtr<Result> mResult;
 
-  nsString mRelpath;
+  nsString mRealPath;
   // Not thread safe. Only access it form worker thread.
   nsCOMPtr<nsIFile> mFile;
   FileInfo mInfo;

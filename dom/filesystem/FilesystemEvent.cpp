@@ -135,10 +135,10 @@ FilesystemEvent::HandleResult()
         OnError();
       }
       if (mIPC) {
-        DirectoryResponse response(info.relpath, info.name);
+        DirectoryResponse response(info.realPath, info.name);
         unused << mParent->Send__delete__(mParent, response);
       } else {
-        mCallbackHandler->ReturnDirectory(info.relpath, info.name);
+        mCallbackHandler->ReturnDirectory(info.realPath, info.name);
       }
       break;
     }

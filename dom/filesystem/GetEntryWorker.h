@@ -17,7 +17,7 @@ class Result;
 class GetEntryWorker : public Worker
 {
 public:
-  GetEntryWorker(const nsAString& aRelpath, Result* aResult);
+  GetEntryWorker(const nsAString& aRealPath, Result* aResult);
   ~GetEntryWorker();
 
 private:

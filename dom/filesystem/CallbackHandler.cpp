@@ -30,9 +30,9 @@ CallbackHandler::~CallbackHandler()
 }
 
 void
-CallbackHandler::ReturnDirectory(const nsAString& aRelpath, const nsAString& aName)
+CallbackHandler::ReturnDirectory(const nsAString& aRealPath, const nsAString& aName)
 {
-  nsRefPtr<Directory> dir = FileUtils::CreateDirectory(mFilesystem, aRelpath, aName);
+  nsRefPtr<Directory> dir = FileUtils::CreateDirectory(mFilesystem, aRealPath, aName);
   if (!dir) {
     Fail(Error::DOM_ERROR_SECURITY);
     return;

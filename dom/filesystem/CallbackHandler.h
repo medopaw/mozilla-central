@@ -35,7 +35,7 @@ public:
   CallbackHandler(Filesystem* aFilesystem, PromiseResolver* aResovler, ErrorResult& aRv);
   ~CallbackHandler();
 
-  void ReturnDirectory(const nsAString& aRelpath, const nsAString& aName);
+  void ReturnDirectory(const nsAString& aRealPath, const nsAString& aName);
 
   void Fail(const nsAString& aError);
 

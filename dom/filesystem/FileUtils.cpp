@@ -52,8 +52,8 @@ FileUtils::GetFileInfo(nsIFile* aFile, FileInfo& aInfo)
     return rv;
   }
 
-  // Get relpath
-  rv = aFile->GetPath(aInfo.relpath);
+  // Get realPath
+  rv = aFile->GetPath(aInfo.realPath);
   if (NS_FAILED(rv)) {
     return rv;
   }
@@ -69,13 +69,13 @@ FileUtils::GetFileInfo(nsIFile* aFile, FileInfo& aInfo)
 
 // static
 Directory*
-FileUtils::CreateDirectory(Filesystem* aFilesystem, const nsAString& aRelpath, const nsAString& aName)
+FileUtils::CreateDirectory(Filesystem* aFilesystem, const nsAString& aRealPath, const nsAString& aName)
 {
   nsRefPtr<PathManager> p = aFilesystem->GetPathManager();
 
-  if (p->WithinBase(aRelpath)) {
+  if (p->WithinBase(aRealPath)) {
     nsString path;
-    p->RealPathToDOMPath(aRelpath, path);
+    p->RealPathToDOMPath(aRealPath, path);
     return new Directory(aFilesystem, path, aName);
   }
 

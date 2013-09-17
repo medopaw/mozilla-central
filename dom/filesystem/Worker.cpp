@@ -15,10 +15,10 @@ namespace filesystem {
 NS_IMPL_ADDREF(Worker)
 NS_IMPL_RELEASE(Worker)
 
-Worker::Worker(const nsAString& aRelpath,
+Worker::Worker(const nsAString& aRealPath,
                Result* aResult)
   : mResult(aResult),
-    mRelpath(aRelpath)
+    mRealPath(aRealPath)
 {
 }
 
@@ -29,8 +29,8 @@ Worker::~Worker()
 bool
 Worker::Init()
 {
-  // Resolve mFile from mRelPath.
-  nsresult rv = NS_NewLocalFile(mRelpath, false, getter_AddRefs(mFile));
+  // Resolve mFile from mRealPath.
+  nsresult rv = NS_NewLocalFile(mRealPath, false, getter_AddRefs(mFile));
   if (NS_FAILED(rv) ) {
     SetError(rv);
     return false;

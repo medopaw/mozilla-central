@@ -37,7 +37,7 @@ FilesystemRequestChild::Recv__delete__(const FilesystemResponseValue& aValue)
     case FilesystemResponseValue::TDirectoryResponse:
     {
       DirectoryResponse r = aValue;
-      mCallbackHandler->ReturnDirectory(r.relpath(), r.name());
+      mCallbackHandler->ReturnDirectory(r.realPath(), r.name());
       break;
     }
 
