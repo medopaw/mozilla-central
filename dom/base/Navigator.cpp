@@ -1009,7 +1009,7 @@ Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult&
       } else {
         FilesystemEntranceParams params(sdcardPath);
         filesystem::PFilesystemRequestChild* child =
-            new filesystem::FilesystemRequestChild(finisher);
+          new filesystem::FilesystemRequestChild(finisher);
         ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(
             child, params);
       }

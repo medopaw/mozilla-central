@@ -20,9 +20,6 @@ MOZ_BEGIN_ENUM_CLASS(FilesystemResultType, uint32_t)
   File
 MOZ_END_ENUM_CLASS(FilesystemResultType)
 
-/*
- * This class is to perform actual file operations.
- */
 class Result
 {
 public:

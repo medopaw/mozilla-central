@@ -16,19 +16,7 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-nsresult
-FileUtils::IsDirectoryEmpty(nsIFile* aDir, bool* aEmpty)
-{
-  nsCOMPtr<nsISimpleEnumerator> childEnumerator;
-  nsresult rv = aDir->GetDirectoryEntries(getter_AddRefs(childEnumerator));
-  if (NS_SUCCEEDED(rv) ) {
-    bool hasElements;
-    rv = childEnumerator->HasMoreElements(&hasElements);
-    *aEmpty = !hasElements;
-  }
-  return rv;
-}
-
+// static
 nsresult
 FileUtils::GetFileInfo(const nsAString& aPath, FileInfo& aInfo)
 {
@@ -42,6 +30,7 @@ FileUtils::GetFileInfo(const nsAString& aPath, FileInfo& aInfo)
   return FileUtils::GetFileInfo(file, aInfo);
 }
 
+// static
 nsresult
 FileUtils::GetFileInfo(nsIFile* aFile, FileInfo& aInfo)
 {
@@ -78,6 +67,7 @@ FileUtils::GetFileInfo(nsIFile* aFile, FileInfo& aInfo)
   return rv;
 }
 
+// static
 Directory*
 FileUtils::CreateDirectory(Filesystem* aFilesystem, const nsAString& aRelpath, const nsAString& aName)
 {

@@ -54,8 +54,8 @@ private:
     AutoSafeJSContext cx;
     JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
-    Optional<JS::Handle<JS::Value> > val(
-        cx, OBJECT_TO_JSVAL(obj->WrapObject(cx, global)));
+    Optional<JS::Handle<JS::Value> > val(cx,
+      OBJECT_TO_JSVAL(obj->WrapObject(cx, global)));
     aReject ? mResolver->Reject(cx, val) : mResolver->Resolve(cx, val);
   }
 

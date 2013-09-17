@@ -38,8 +38,8 @@ FilesystemRequestParent::Dispatch()
     case FilesystemParams::TFilesystemEntranceParams:
     {
       FilesystemEntranceParams p = mParams;
-      nsRefPtr<EntranceEvent> r = new filesystem::EntranceEvent(
-          p.basePath(), this);
+      nsRefPtr<EntranceEvent> r = new filesystem::EntranceEvent(p.basePath(),
+                                                                this);
       r->Start();
       break;
     }

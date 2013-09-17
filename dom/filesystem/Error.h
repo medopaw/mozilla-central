@@ -27,7 +27,6 @@ public:
   static DOMError* GetDOMError(const nsAString& aErrorName);
   static DOMError* GetDOMError(const nsresult& aErrorCode);
 
-public:
   static const nsString DOM_ERROR_ENCODING;
   static const nsString DOM_ERROR_INVALID_MODIFICATION;
   static const nsString DOM_ERROR_INVALID_STATE;

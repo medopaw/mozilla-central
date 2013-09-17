@@ -18,13 +18,12 @@ NS_IMPL_RELEASE(Filesystem)
 Filesystem::Filesystem(nsPIDOMWindow* aWindow,
                        const nsAString& aBase)
   : mWindow(aWindow)
+    mPathManager(new PathManager(aBase))
 {
-  mPathManager = new PathManager(aBase);
 }
 
 Filesystem::~Filesystem()
 {
-  mPathManager = nullptr;
 }
 
 nsPIDOMWindow*

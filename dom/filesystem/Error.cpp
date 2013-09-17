@@ -11,28 +11,29 @@ namespace dom {
 namespace filesystem {
 
 const nsString Error::DOM_ERROR_ENCODING =
-    NS_LITERAL_STRING("EncodingError");
+  NS_LITERAL_STRING("EncodingError");
 const nsString Error::DOM_ERROR_INVALID_MODIFICATION =
-    NS_LITERAL_STRING("InvalidModificationError");
+  NS_LITERAL_STRING("InvalidModificationError");
 const nsString Error::DOM_ERROR_INVALID_STATE =
-    NS_LITERAL_STRING("InvalidStateError");
+  NS_LITERAL_STRING("InvalidStateError");
 const nsString Error::DOM_ERROR_NOT_FOUND =
-    NS_LITERAL_STRING("NotFoundError");
+  NS_LITERAL_STRING("NotFoundError");
 const nsString Error::DOM_ERROR_NOT_READABLE =
-    NS_LITERAL_STRING("NotReadableError");
+  NS_LITERAL_STRING("NotReadableError");
 const nsString Error::DOM_ERROR_NO_MODIFICATION_ALLOWED =
-    NS_LITERAL_STRING("NoModificationAllowedError");
+  NS_LITERAL_STRING("NoModificationAllowedError");
 const nsString Error::DOM_ERROR_PATH_EXISTS =
-    NS_LITERAL_STRING("PathExistsError");
+  NS_LITERAL_STRING("PathExistsError");
 const nsString Error::DOM_ERROR_QUOTA_EXCEEDED =
-    NS_LITERAL_STRING("QuotaExceededError");
+  NS_LITERAL_STRING("QuotaExceededError");
 const nsString Error::DOM_ERROR_SECURITY =
-    NS_LITERAL_STRING("SecurityError");
+  NS_LITERAL_STRING("SecurityError");
 const nsString Error::DOM_ERROR_TYPE_MISMATCH =
-    NS_LITERAL_STRING("TypeMismatchError");
+  NS_LITERAL_STRING("TypeMismatchError");
 const nsString Error::DOM_ERROR_UNKNOWN =
-    NS_LITERAL_STRING("Unknown");
+  NS_LITERAL_STRING("Unknown");
 
+// static
 void
 Error::ErrorNameFromCode(nsAString& aErrorName, const nsresult& aErrorCode)
 {
@@ -87,12 +88,14 @@ Error::ErrorNameFromCode(nsAString& aErrorName, const nsresult& aErrorCode)
   }
 }
 
+// static
 DOMError*
 Error::GetDOMError(const nsAString& aErrorName)
 {
   return new DOMError(nullptr, aErrorName);
 }
 
+// static
 DOMError*
 Error::GetDOMError(const nsresult& aErrorCode)
 {
