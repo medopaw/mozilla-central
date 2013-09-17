@@ -105,7 +105,7 @@ class TimeManager;
 
 namespace filesystem {
 class Filesystem;
-} // namespace time
+} // namespace filesystem
 
 namespace system {
 #ifdef MOZ_AUDIO_CHANNEL_MANAGER
@@ -217,7 +217,7 @@ public:
                          nsTArray<nsRefPtr<nsDOMDeviceStorage> >& aStores,
                          ErrorResult& aRv);
   already_AddRefed<Promise> GetMozFilesystem(const FilesystemParameters& parameters,
-      ErrorResult& aRv);
+                                             ErrorResult& aRv);
   DesktopNotificationCenter* GetMozNotification(ErrorResult& aRv);
   bool MozIsLocallyAvailable(const nsAString& aURI, bool aWhenOffline,
                              ErrorResult& aRv);
