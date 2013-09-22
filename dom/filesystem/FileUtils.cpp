@@ -74,9 +74,15 @@ FileUtils::CreateDirectory(Filesystem* aFilesystem, const nsAString& aRealPath, 
   nsRefPtr<PathManager> p = aFilesystem->GetPathManager();
 
   if (p->WithinBase(aRealPath)) {
+    nsString name;
+    if (!p->IsBase(aRealPath)) {
+      name = aName;
+    }
+
     nsString path;
     p->RealPathToDOMPath(aRealPath, path);
-    return new Directory(aFilesystem, path, aName);
+
+    return new Directory(aFilesystem, path, name);
   }
 
   return nullptr;
