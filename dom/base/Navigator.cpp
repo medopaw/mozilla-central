@@ -50,6 +50,7 @@
 #include "nsIHttpChannel.h"
 #include "TimeManager.h"
 #include "DeviceStorage.h"
+#include "mozilla/dom/DOMError.h"
 #include "mozilla/dom/filesystem/Directory.h"
 #include "mozilla/dom/filesystem/Filesystem.h"
 #include "mozilla/dom/filesystem/EntranceEvent.h"
@@ -980,14 +981,18 @@ Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult&
     aRv.Throw(NS_ERROR_FAILURE);
     return nullptr;
   }
+  AutoSafeJSContext cx;
+  JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
   switch (parameters.mStorage) {
 
-    case StorageType::Temporary: {
-      break;
-    }
-
+    case StorageType::Temporary:
     case StorageType::Persistent: {
+      nsRefPtr<DOMError> domError = new DOMError(nullptr,
+                                                 NS_LITERAL_STRING("Not implemented"));
+      Optional<JS::Handle<JS::Value> > val(cx,
+        OBJECT_TO_JSVAL(domError->WrapObject(cx, global)));
+      promise->Resolver()->Reject(cx, val);
       break;
     }
 
@@ -997,19 +1002,17 @@ Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult&
       if (!mFilesystem) {
         mFilesystem = new filesystem::Filesystem(mWindow, sdcardPath);
       }
-      AutoSafeJSContext cx;
-      JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
-      nsRefPtr<filesystem::CallbackHandler> finisher =
+      nsRefPtr<filesystem::CallbackHandler> callbackHandler =
           new filesystem::CallbackHandler(mFilesystem, promise->Resolver(), aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
         nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(sdcardPath,
-                                                                              finisher);
+                                                                              callbackHandler);
         r->Start();
       } else {
         FilesystemEntranceParams params(sdcardPath);
         filesystem::PFilesystemRequestChild* child =
-          new filesystem::FilesystemRequestChild(finisher);
+          new filesystem::FilesystemRequestChild(callbackHandler);
         ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
                                                                         params);
       }

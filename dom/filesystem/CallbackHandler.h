@@ -45,7 +45,7 @@ private:
   void Call(T* obj, bool aReject = false)
   {
     nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(
-        mFilesystem->GetWindow());
+      mFilesystem->GetWindow());
     if (!globalObject) {
       mRv.Throw(NS_ERROR_FAILURE);
       return;
