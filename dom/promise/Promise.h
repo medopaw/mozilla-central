@@ -42,6 +42,11 @@ public:
   static bool PrefEnabled();
   static bool EnabledForScope(JSContext* aCx, JSObject* /* unused */);
 
+  PromiseResolver* Resolver() const
+  {
+    return mResolver;
+  }
+
   // WebIDL
 
   nsPIDOMWindow* GetParentObject() const
