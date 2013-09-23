@@ -1003,15 +1003,15 @@ Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult&
       nsRefPtr<filesystem::CallbackHandler> finisher =
           new filesystem::CallbackHandler(mFilesystem, promise->Resolver(), aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
-        nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(
-            sdcardPath, finisher);
+        nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(sdcardPath,
+                                                                              finisher);
         r->Start();
       } else {
         FilesystemEntranceParams params(sdcardPath);
         filesystem::PFilesystemRequestChild* child =
           new filesystem::FilesystemRequestChild(finisher);
-        ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(
-            child, params);
+        ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
+                                                                        params);
       }
       break;
     }
