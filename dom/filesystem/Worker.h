@@ -7,9 +7,10 @@
 #pragma once
 
 #include "nsString.h"
-#include "nsCOMPtr.h"
+// #include "nsCOMPtr.h"
 #include "nsAutoPtr.h"
 #include "FileUtils.h"
+#include "nsIFile.h"
 
 namespace mozilla {
 namespace dom {

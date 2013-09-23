@@ -26,7 +26,7 @@ GetEntryWorker::~GetEntryWorker()
 void
 GetEntryWorker::Work()
 {
-  MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
+  // MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
 
   if (!mInfo.exists) {
     SetError(Error::DOM_ERROR_NOT_FOUND);

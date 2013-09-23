@@ -31,13 +31,13 @@ Worker::Init()
 {
   // Resolve mFile from mRealPath.
   nsresult rv = NS_NewLocalFile(mRealPath, false, getter_AddRefs(mFile));
-  if (NS_FAILED(rv) ) {
+  if (NS_FAILED(rv)) {
     SetError(rv);
     return false;
   }
   
   rv = FileUtils::GetFileInfo(mFile, mInfo);
-  if (NS_FAILED(rv) ) {
+  if (NS_FAILED(rv)) {
     SetError(rv);
     return false;
   }
