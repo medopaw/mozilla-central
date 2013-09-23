@@ -5,6 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "GetEntryWorker.h"
+#include "nsThreadUtils.h"
 #include "FileUtils.h"
 #include "Error.h"
 #include "Result.h"
@@ -26,7 +27,7 @@ GetEntryWorker::~GetEntryWorker()
 void
 GetEntryWorker::Work()
 {
-  // MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
+  MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
 
   if (!mInfo.exists) {
     SetError(Error::DOM_ERROR_NOT_FOUND);
