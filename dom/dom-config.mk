@@ -7,6 +7,7 @@ DOM_SRCDIRS = \
   dom/battery \
   dom/encoding \
   dom/file \
+  dom/filesystem \
   dom/power \
   dom/push \
   dom/quota \
