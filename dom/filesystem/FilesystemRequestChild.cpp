@@ -34,25 +34,23 @@ FilesystemRequestChild::Recv__delete__(const FilesystemResponseValue& aValue)
 {
   switch (aValue.type()) {
 
-    case FilesystemResponseValue::TDirectoryResponse:
-    {
+    case FilesystemResponseValue::TDirectoryResponse: {
       DirectoryResponse r = aValue;
       mCallbackHandler->ReturnDirectory(r.realPath(), r.name());
       break;
     }
 
-    case FilesystemResponseValue::TErrorResponse:
-    {
+    case FilesystemResponseValue::TErrorResponse: {
       ErrorResponse r = aValue;
       mCallbackHandler->Fail(r.error());
       break;
     }
 
-    default:
-    {
+    default: {
       NS_RUNTIMEABORT("not reached");
       break;
     }
+
   }
 
   return true;

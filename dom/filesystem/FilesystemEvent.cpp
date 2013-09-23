@@ -122,13 +122,11 @@ FilesystemEvent::HandleResult()
   Result* result = mWorker->GetResult();
   switch (mWorker->GetResult()->GetType()) {
 
-    case FilesystemResultType::Bool:
-    {
+    case FilesystemResultType::Bool: {
       break;
     }
 
-    case FilesystemResultType::Directory:
-    {
+    case FilesystemResultType::Directory: {
       const FileInfo& info = (static_cast<FileInfoResult*>(result))->mValue;
       if (!info.isDirectory) {
         mWorker->SetError(Error::DOM_ERROR_TYPE_MISMATCH);
@@ -143,18 +141,15 @@ FilesystemEvent::HandleResult()
       break;
     }
 
-    case FilesystemResultType::DirectoryOrFile:
-    {
+    case FilesystemResultType::DirectoryOrFile: {
       break;
     }
 
-    case FilesystemResultType::File:
-    {
+    case FilesystemResultType::File: {
       break;
     }
 
-    default:
-    {
+    default: {
       NS_RUNTIMEABORT("not reached");
       break;
     }

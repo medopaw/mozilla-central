@@ -40,47 +40,40 @@ Error::ErrorNameFromCode(nsAString& aErrorName, const nsresult& aErrorCode)
   switch (aErrorCode) {
 
     case NS_ERROR_FILE_INVALID_PATH:
-    case NS_ERROR_FILE_UNRECOGNIZED_PATH:
-    {
+    case NS_ERROR_FILE_UNRECOGNIZED_PATH: {
       aErrorName = DOM_ERROR_ENCODING;
       break;
     }
 
-    case NS_ERROR_FILE_DESTINATION_NOT_DIR:
-    {
+    case NS_ERROR_FILE_DESTINATION_NOT_DIR: {
       aErrorName = DOM_ERROR_INVALID_MODIFICATION;
       break;
     }
 
     case NS_ERROR_FILE_ACCESS_DENIED:
-    case NS_ERROR_FILE_DIR_NOT_EMPTY:
-    {
+    case NS_ERROR_FILE_DIR_NOT_EMPTY: {
       aErrorName = DOM_ERROR_NO_MODIFICATION_ALLOWED;
       break;
     }
 
     case NS_ERROR_FILE_TARGET_DOES_NOT_EXIST:
-    case NS_ERROR_NOT_AVAILABLE:
-    {
+    case NS_ERROR_NOT_AVAILABLE: {
       aErrorName = DOM_ERROR_NOT_FOUND;
       break;
     }
 
-    case NS_ERROR_FILE_ALREADY_EXISTS:
-    {
+    case NS_ERROR_FILE_ALREADY_EXISTS: {
       aErrorName = DOM_ERROR_PATH_EXISTS;
       break;
     }
 
-    case NS_ERROR_FILE_NOT_DIRECTORY:
-    {
+    case NS_ERROR_FILE_NOT_DIRECTORY: {
       aErrorName = DOM_ERROR_TYPE_MISMATCH;
       break;
     }
 
     case NS_ERROR_UNEXPECTED:
-    default:
-    {
+    default: {
       aErrorName = DOM_ERROR_UNKNOWN;
       break;
     }

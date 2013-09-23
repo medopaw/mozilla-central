@@ -982,16 +982,16 @@ Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult&
   }
 
   switch (parameters.mStorage) {
-    case StorageType::Temporary:
-    {
+
+    case StorageType::Temporary: {
       break;
     }
-    case StorageType::Persistent:
-    {
+
+    case StorageType::Persistent: {
       break;
     }
-    case StorageType::Sdcard:
-    {
+
+    case StorageType::Sdcard: {
       nsString sdcardPath = NS_LITERAL_STRING("/sdcard");
 
       if (!mFilesystem) {
@@ -1015,12 +1015,13 @@ Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult&
       }
       break;
     }
-    default:
-    {
+
+    default: {
       aRv.Throw(NS_ERROR_FAILURE);
       return nullptr;
       break;
     }
+
   }
 
   return promise.forget();
