@@ -28,7 +28,9 @@ class nsDOMDeviceStorage;
 
 namespace mozilla {
 namespace dom {
+class FilesystemParameters;
 class Geolocation;
+class Promise;
 class systemMessageCallback;
 }
 }
@@ -100,6 +102,10 @@ class PowerManager;
 namespace time {
 class TimeManager;
 } // namespace time
+
+namespace filesystem {
+class Filesystem;
+} // namespace filesystem
 
 namespace system {
 #ifdef MOZ_AUDIO_CHANNEL_MANAGER
@@ -210,6 +216,8 @@ public:
   void GetDeviceStorages(const nsAString& aType,
                          nsTArray<nsRefPtr<nsDOMDeviceStorage> >& aStores,
                          ErrorResult& aRv);
+  already_AddRefed<Promise> GetMozFilesystem(const FilesystemParameters& parameters,
+                                             ErrorResult& aRv);
   DesktopNotificationCenter* GetMozNotification(ErrorResult& aRv);
   bool MozIsLocallyAvailable(const nsAString& aURI, bool aWhenOffline,
                              ErrorResult& aRv);
@@ -335,6 +343,7 @@ private:
   nsRefPtr<nsDOMCameraManager> mCameraManager;
   nsCOMPtr<nsIDOMNavigatorSystemMessages> mMessagesManager;
   nsTArray<nsRefPtr<nsDOMDeviceStorage> > mDeviceStorageStores;
+  nsRefPtr<filesystem::Filesystem> mFilesystem;
   nsRefPtr<time::TimeManager> mTimeManager;
   nsCOMPtr<nsPIDOMWindow> mWindow;
 };

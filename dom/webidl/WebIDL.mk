@@ -91,6 +91,7 @@ webidl_files = \
   FileReader.webidl \
   FileReaderSync.webidl \
   FileRequest.webidl \
+  Filesystem.webidl \
   FocusEvent.webidl \
   FormData.webidl \
   Function.webidl \

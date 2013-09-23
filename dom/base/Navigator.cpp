@@ -11,6 +11,8 @@
 #include "nsIXULAppInfo.h"
 #include "nsPluginArray.h"
 #include "nsMimeTypeArray.h"
+#include "mozilla/dom/Promise.h"
+#include "mozilla/dom/PromiseResolver.h"
 #include "mozilla/MemoryReporting.h"
 #include "mozilla/dom/DesktopNotification.h"
 #include "nsGeolocation.h"
@@ -48,6 +50,13 @@
 #include "nsIHttpChannel.h"
 #include "TimeManager.h"
 #include "DeviceStorage.h"
+#include "mozilla/dom/filesystem/Directory.h"
+#include "mozilla/dom/filesystem/Filesystem.h"
+#include "mozilla/dom/filesystem/EntranceEvent.h"
+#include "mozilla/dom/filesystem/FilesystemRequestChild.h"
+#include "mozilla/dom/filesystem/CallbackHandler.h"
+#include "mozilla/dom/FilesystemBinding.h"
+#include "mozilla/dom/ContentChild.h"
 #include "nsIDOMNavigatorSystemMessages.h"
 
 #ifdef MOZ_MEDIA_NAVIGATOR
@@ -259,6 +268,10 @@ Navigator::Invalidate()
     mDeviceStorageStores[i]->Shutdown();
   }
   mDeviceStorageStores.Clear();
+
+  if (mFilesystem) {
+    mFilesystem = nullptr;
+  }
 
   if (mTimeManager) {
     mTimeManager = nullptr;
@@ -951,6 +964,66 @@ Navigator::GetDeviceStorages(const nsAString& aType,
   nsDOMDeviceStorage::CreateDeviceStoragesFor(mWindow, aType, aStores);
 
   mDeviceStorageStores.AppendElements(aStores);
+}
+
+already_AddRefed<Promise>
+Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult& aRv)
+{
+  if (!mWindow) {
+    aRv.Throw(NS_ERROR_UNEXPECTED);
+    return nullptr;
+  }
+
+  nsRefPtr<Promise> promise = new Promise(mWindow);
+  nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(mWindow);
+  if (!globalObject) {
+    aRv.Throw(NS_ERROR_FAILURE);
+    return nullptr;
+  }
+
+  switch (parameters.mStorage) {
+    case StorageType::Temporary:
+    {
+      break;
+    }
+    case StorageType::Persistent:
+    {
+      break;
+    }
+    case StorageType::Sdcard:
+    {
+      nsString sdcardPath = NS_LITERAL_STRING("/sdcard");
+
+      if (!mFilesystem) {
+        mFilesystem = new filesystem::Filesystem(mWindow, sdcardPath);
+      }
+      AutoSafeJSContext cx;
+      JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+
+      nsRefPtr<filesystem::CallbackHandler> finisher =
+          new filesystem::CallbackHandler(mFilesystem, promise->Resolver(), aRv);
+      if (XRE_GetProcessType() == GeckoProcessType_Default) {
+        nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(
+            sdcardPath, finisher);
+        r->Start();
+      } else {
+        FilesystemEntranceParams params(sdcardPath);
+        filesystem::PFilesystemRequestChild* child =
+          new filesystem::FilesystemRequestChild(finisher);
+        ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(
+            child, params);
+      }
+      break;
+    }
+    default:
+    {
+      aRv.Throw(NS_ERROR_FAILURE);
+      return nullptr;
+      break;
+    }
+  }
+
+  return promise.forget();
 }
 
 Geolocation*
