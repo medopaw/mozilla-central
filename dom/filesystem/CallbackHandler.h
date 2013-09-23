@@ -4,11 +4,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#pragma once
+#ifndef mozilla_dom_callbackhandler_h__
+#define mozilla_dom_callbackhandler_h__
 
 #include "nsString.h"
 #include "Filesystem.h"
-// #include "mozilla/dom/FilesystemBinding.h"
 #include "mozilla/dom/PromiseResolver.h"
 
 namespace mozilla {
@@ -68,3 +68,5 @@ private:
 } // namespace filesystem
 } // namespace dom
 } // namespace mozilla
+
+#endif // mozilla_dom_callbackhandler_h__
