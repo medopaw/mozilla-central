@@ -114,6 +114,7 @@ private:
   // report it to the error console.
   void MaybeReportRejected();
 
+public:
   void MaybeResolve(JSContext* aCx,
                     const Optional<JS::Handle<JS::Value> >& aValue,
                     PromiseTaskSync aSync = AsyncTask);
@@ -121,6 +122,7 @@ private:
                    const Optional<JS::Handle<JS::Value> >& aValue,
                    PromiseTaskSync aSync = AsyncTask);
 
+private:
   void ResolveInternal(JSContext* aCx,
                        const Optional<JS::Handle<JS::Value> >& aValue,
                        PromiseTaskSync aSync = AsyncTask);

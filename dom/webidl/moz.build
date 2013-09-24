@@ -90,6 +90,7 @@ WEBIDL_FILES = [
     'EventSource.webidl',
     'EventTarget.webidl',
     'File.webidl',
+    'Filesystem.webidl',
     'FileHandle.webidl',
     'FileList.webidl',
     'FileMode.webidl',

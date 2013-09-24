@@ -99,6 +99,11 @@ this.PermissionsTable =  { geolocation: {
                              certified: ALLOW_ACTION,
                              access: ["read", "write", "create"]
                            },
+                           filesystem: {
+                             app: ALLOW_ACTION,
+                             privileged: ALLOW_ACTION,
+                             certified: ALLOW_ACTION
+                           },
                            sms: {
                              app: DENY_ACTION,
                              privileged: DENY_ACTION,

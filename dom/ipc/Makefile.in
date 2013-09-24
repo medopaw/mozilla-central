@@ -26,6 +26,7 @@ LOCAL_INCLUDES += \
 	-I$(topsrcdir)/dom/mobilemessage/src/ipc \
 	-I$(topsrcdir)/dom/devicestorage \
 	-I$(topsrcdir)/dom/fmradio/ipc \
+	-I$(topsrcdir)/dom/filesystem \
 	-I$(topsrcdir)/widget/xpwidgets \
 	-I$(topsrcdir)/dom/bluetooth \
 	-I$(topsrcdir)/layout/base \

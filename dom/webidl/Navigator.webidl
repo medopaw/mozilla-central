@@ -208,6 +208,12 @@ partial interface Navigator {
   sequence<DeviceStorage> getDeviceStorages(DOMString type);
 };
 
+// FileSystem
+partial interface Navigator {
+  [Throws, Pref="file.system.enabled"]
+  Promise getMozFilesystem(optional FilesystemParameters parameters);
+};
+
 // nsIDOMNavigatorDesktopNotification
 partial interface Navigator {
   [Throws, Func="Navigator::HasDesktopNotificationSupport"]
