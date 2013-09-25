@@ -11,7 +11,6 @@ MODULE = 'dom'
 EXPORTS.mozilla.dom.filesystem += [
     'CallbackHandler.h',
     'Directory.h',
-    'EntranceEvent.h',
     'Filesystem.h',
     'FilesystemRequestChild.h',
     'FilesystemRequestParent.h',
@@ -20,7 +19,6 @@ EXPORTS.mozilla.dom.filesystem += [
 CPP_SOURCES += [
     'CallbackHandler.cpp',
     'Directory.cpp',
-    'EntranceEvent.cpp',
     'Error.cpp',
     'Filesystem.cpp',
     'FilesystemEvent.cpp',

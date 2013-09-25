@@ -11,7 +11,9 @@
 #include "mozilla/dom/DOMError.h"
 #include "mozilla/dom/ContentChild.h"
 #include "Directory.h"
-#include "EntranceEvent.h"
+#include "FilesystemEvent.h"
+#include "GetEntryWorker.h"
+#include "Result.h"
 #include "FilesystemRequestChild.h"
 #include "CallbackHandler.h"
 #include "nsXULAppAPI.h"
@@ -74,8 +76,10 @@ Filesystem::GetFilesystem(nsPIDOMWindow* aWindow, const FilesystemParameters& pa
       nsRefPtr<filesystem::CallbackHandler> callbackHandler =
         new filesystem::CallbackHandler(sFilesystem, promise, aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
-        nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(sdcardPath,
-                                                                              callbackHandler);
+        nsRefPtr<filesystem::FilesystemEvent> r = new filesystem::FilesystemEvent(
+          new GetEntryWorker(sdcardPath, new FileInfoResult(FilesystemResultType::Directory)),
+          callbackHandler
+        );
         r->Start();
       } else {
         FilesystemEntranceParams params(sdcardPath);
