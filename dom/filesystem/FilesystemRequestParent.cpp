@@ -3,11 +3,11 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 #include "FilesystemRequestParent.h"
 #include "Filesystem.h"
-// #include "FilesystemEvent.h"
-#include "EntranceEvent.h"
+#include "FilesystemEvent.h"
+#include "GetEntryWorker.h"
+#include "Result.h"
 
 namespace mozilla {
 namespace dom {
@@ -37,8 +37,8 @@ FilesystemRequestParent::Dispatch()
 
     case FilesystemParams::TFilesystemEntranceParams: {
       FilesystemEntranceParams p = mParams;
-      nsRefPtr<EntranceEvent> r = new filesystem::EntranceEvent(p.basePath(),
-                                                                this);
+      nsRefPtr<FilesystemEvent> r = new filesystem::FilesystemEvent(new GetEntryWorker(p.basePath(),
+          new FileInfoResult(FilesystemResultType::Directory)), this);
       r->Start();
       break;
     }

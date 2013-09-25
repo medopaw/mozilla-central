@@ -21,7 +21,7 @@ public:
   ~EntranceEvent();
 
 private:
-  Worker* CreateWorker(const nsAString& aRealPath) MOZ_OVERRIDE;
+  Worker* CreateWorker(const nsAString& aRealPath);
 };
 
 } // namespace filesystem
