@@ -8,7 +8,6 @@
 #define mozilla_dom_fileutils_h__
 
 #include "nsString.h"
-#include "nsCOMPtr.h"
 
 class nsIFile;
 
@@ -39,6 +38,7 @@ public:
                               FileInfo& aInfo);
   static nsresult GetFileInfo(nsIFile* aFile,
                               FileInfo& aInfo);
+  // TODO Remove the dependance of Filesystem
   static Directory* CreateDirectory(Filesystem* aFilesystem,
                                     const nsAString& aRealPath,
                                     const nsAString& aName);

@@ -13,7 +13,6 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-class Filesystem;
 class Worker;
 class CallbackHandler;
 class FilesystemRequestParent;

@@ -7,8 +7,8 @@
 #ifndef mozilla_dom_pathmanager_h__
 #define mozilla_dom_pathmanager_h__
 
-#include "nsCOMPtr.h"
 #include "nsString.h"
+#include "nsISupportsUtils.h"
 
 namespace mozilla {
 namespace dom {

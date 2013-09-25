@@ -7,7 +7,7 @@
 #ifndef mozilla_dom_filesystem_h__
 #define mozilla_dom_filesystem_h__
 
-#include "nsCOMPtr.h"
+#include "nsWeakReference.h"
 #include "nsAutoPtr.h"
 
 class nsPIDOMWindow;
@@ -25,17 +25,10 @@ namespace filesystem {
 
 class PathManager;
 
-class Filesystem MOZ_FINAL
+class Filesystem MOZ_FINAL : public nsSupportsWeakReference
 {
 public:
-  NS_IMETHOD_(nsrefcnt) AddRef(void);
-  NS_IMETHOD_(nsrefcnt) Release(void);
-
-private:
-  nsAutoRefCnt mRefCnt;
-  NS_DECL_OWNINGTHREAD
-
-public:
+  NS_DECL_ISUPPORTS
   static already_AddRefed<Promise>
   GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters,
                 ErrorResult& aRv);

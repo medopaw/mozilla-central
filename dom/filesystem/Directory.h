@@ -11,7 +11,7 @@
 #include "mozilla/ErrorResult.h"
 #include "nsCycleCollectionParticipant.h"
 #include "nsWrapperCache.h"
-
+#include "nsWeakReference.h"
 #include "nsAutoPtr.h"
 
 namespace mozilla {
@@ -36,11 +36,11 @@ public:
   virtual JSObject*
   WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope) MOZ_OVERRIDE;
 
-public:
-  Filesystem* GetFilesystem();
+  already_AddRefed<Filesystem> GetFilesystem();
 
 private:
-  nsRefPtr<Filesystem> mFilesystem;
+  // Weak reference to Filesystem
+  nsWeakPtr mFilesystem;
   const nsString mPath;
   const nsString mName;
 };

@@ -7,6 +7,7 @@
 #include "Directory.h"
 #include "mozilla/dom/FilesystemBinding.h"
 #include "Filesystem.h"
+#include "nsWeakReference.h"
 
 namespace mozilla {
 namespace dom {
@@ -23,7 +24,7 @@ NS_INTERFACE_MAP_END
 Directory::Directory(Filesystem* aFilesystem,
                      const nsAString& aPath,
                      const nsAString& aName)
-  : mFilesystem(aFilesystem),
+  : mFilesystem(do_GetWeakReference(aFilesystem)),
     mPath(aPath),
     mName(aName)
 {
@@ -46,10 +47,11 @@ Directory::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aScope)
   return DirectoryBinding::Wrap(aCx, aScope, this);
 }
 
-Filesystem*
+already_AddRefed<Filesystem>
 Directory::GetFilesystem()
 {
-  return mFilesystem;
+  nsCOMPtr<Filesystem> filesystem = do_QueryReferent(mFilesystem);
+  return filesystem.forget();
 }
 
 } // namespace filesystem

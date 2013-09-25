@@ -24,8 +24,7 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-NS_IMPL_ADDREF(Filesystem)
-NS_IMPL_RELEASE(Filesystem)
+NS_IMPL_ISUPPORTS1(Filesystem, nsISupportsWeakReference)
 
 nsRefPtr<Filesystem> Filesystem::sSdcardFilesystem = nullptr;
 

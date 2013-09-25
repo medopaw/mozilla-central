@@ -6,6 +6,7 @@
 
 #include "CallbackHandler.h"
 #include "mozilla/ErrorResult.h"
+#include "mozilla/dom/Promise.h"
 #include "Directory.h"
 #include "FileUtils.h"
 #include "Error.h"
@@ -20,7 +21,7 @@ NS_IMPL_RELEASE(CallbackHandler)
 CallbackHandler::CallbackHandler(Filesystem* aFilesystem,
                    Promise* aPromise,
                    ErrorResult& aRv)
-  : mFilesystem(aFilesystem),
+  : mFilesystem(do_GetWeakReference(aFilesystem)),
     mPromise(aPromise),
     mRv(aRv)
 {
@@ -33,7 +34,12 @@ CallbackHandler::~CallbackHandler()
 void
 CallbackHandler::ReturnDirectory(const nsAString& aRealPath, const nsAString& aName)
 {
-  nsRefPtr<Directory> dir = FileUtils::CreateDirectory(mFilesystem, aRealPath, aName);
+  nsCOMPtr<Filesystem> filesystem = GetFilesystem();
+  if (!filesystem) {
+    Fail(Error::DOM_ERROR_INVALID_STATE);
+    return;
+  }
+  nsRefPtr<Directory> dir = FileUtils::CreateDirectory(filesystem, aRealPath, aName);
   if (!dir) {
     Fail(Error::DOM_ERROR_SECURITY);
     return;
@@ -46,6 +52,36 @@ CallbackHandler::Fail(const nsAString& aError)
 {
   nsRefPtr<DOMError> domError = Error::GetDOMError(aError);
   Call(domError.get(), true);
+}
+
+already_AddRefed<Filesystem>
+CallbackHandler::GetFilesystem()
+{
+  nsCOMPtr<Filesystem> filesystem = do_QueryReferent(mFilesystem);
+  return filesystem.forget();
+}
+
+template<class T>
+void CallbackHandler::Call(T* obj, bool aReject /*= false*/)
+{
+  nsCOMPtr<Filesystem> filesystem = GetFilesystem();
+  if (!filesystem) {
+    mRv.Throw(NS_ERROR_FAILURE);
+    return;
+  }
+  nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(
+    filesystem->GetWindow());
+  if (!globalObject) {
+    mRv.Throw(NS_ERROR_FAILURE);
+    return;
+  }
+
+  AutoSafeJSContext cx;
+  JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+
+  Optional<JS::Handle<JS::Value> > val(cx,
+    OBJECT_TO_JSVAL(obj->WrapObject(cx, global)));
+  aReject ? mPromise->MaybeReject(cx, val) : mPromise->MaybeResolve(cx, val);
 }
 
 } // namespace filesystem

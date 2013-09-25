@@ -9,10 +9,12 @@
 
 #include "nsString.h"
 #include "Filesystem.h"
-#include "mozilla/dom/Promise.h"
 
 namespace mozilla {
 namespace dom {
+
+class Promise;
+
 namespace filesystem {
 
 class Filesystem;
@@ -41,26 +43,13 @@ public:
 
 private:
   // For objects whose class have WrapObject()
-  template<class T>
-  void Call(T* obj, bool aReject = false)
-  {
-    nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(
-      mFilesystem->GetWindow());
-    if (!globalObject) {
-      mRv.Throw(NS_ERROR_FAILURE);
-      return;
-    }
-
-    AutoSafeJSContext cx;
-    JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
-
-    Optional<JS::Handle<JS::Value> > val(cx,
-      OBJECT_TO_JSVAL(obj->WrapObject(cx, global)));
-    aReject ? mPromise->MaybeReject(cx, val) : mPromise->MaybeResolve(cx, val);
-  }
+  template<class T> void Call(T* obj, bool aReject = false);
 
 private:
-  nsRefPtr<Filesystem> mFilesystem;
+  already_AddRefed<Filesystem> GetFilesystem();
+
+  // Weak reference to Filesystem
+  nsWeakPtr mFilesystem;
   nsRefPtr<Promise> mPromise;
   ErrorResult& mRv;
 };

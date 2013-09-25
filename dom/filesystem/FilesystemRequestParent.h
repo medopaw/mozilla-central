@@ -16,7 +16,6 @@ namespace mozilla {
 namespace dom {
 namespace filesystem {
 
-class Filesystem;
 class FilesystemEvent;
 
 class FilesystemRequestParent : public PFilesystemRequestParent
