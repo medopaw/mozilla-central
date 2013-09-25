@@ -27,7 +27,7 @@ namespace filesystem {
 NS_IMPL_ADDREF(Filesystem)
 NS_IMPL_RELEASE(Filesystem)
 
-nsRefPtr<Filesystem> Filesystem::sFilesystem = nullptr;
+nsRefPtr<Filesystem> Filesystem::sSdcardFilesystem = nullptr;
 
 Filesystem::Filesystem(nsPIDOMWindow* aWindow,
                        const nsAString& aBase)
@@ -41,8 +41,8 @@ Filesystem::~Filesystem()
 }
 
 // static
-nsRefPtr<Promise>
-Filesystem::GetFilesystem(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters, ErrorResult& aRv)
+already_AddRefed<Promise>
+Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters, ErrorResult& aRv)
 {
 
   nsRefPtr<Promise> promise = new Promise(aWindow);
@@ -69,12 +69,12 @@ Filesystem::GetFilesystem(nsPIDOMWindow* aWindow, const FilesystemParameters& pa
     case StorageType::Sdcard: {
       nsString sdcardPath = NS_LITERAL_STRING("/sdcard");
 
-      if (!sFilesystem) {
-        sFilesystem = new filesystem::Filesystem(aWindow, sdcardPath);
+      if (!sSdcardFilesystem) {
+        sSdcardFilesystem = new filesystem::Filesystem(aWindow, sdcardPath);
       }
 
       nsRefPtr<filesystem::CallbackHandler> callbackHandler =
-        new filesystem::CallbackHandler(sFilesystem, promise, aRv);
+        new filesystem::CallbackHandler(sSdcardFilesystem, promise, aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
         nsRefPtr<filesystem::FilesystemEvent> r = new filesystem::FilesystemEvent(
           new GetEntryWorker(sdcardPath, new FileInfoResult(FilesystemResultType::Directory)),
@@ -99,7 +99,7 @@ Filesystem::GetFilesystem(nsPIDOMWindow* aWindow, const FilesystemParameters& pa
 
   }
 
-  return promise;
+  return promise.forget();
 
 }
 
@@ -107,11 +107,16 @@ Filesystem::GetFilesystem(nsPIDOMWindow* aWindow, const FilesystemParameters& pa
 void
 Filesystem::ShutdownAll()
 {
+  if (sSdcardFilesystem) {
+      sSdcardFilesystem->Shutdown();
+      sSdcardFilesystem = nullptr;
+  }
 }
 
 void
 Filesystem::Shutdown()
 {
+  // TODO Cancel all runnables
 }
 
 nsPIDOMWindow*

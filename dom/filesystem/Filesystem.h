@@ -36,20 +36,22 @@ private:
   NS_DECL_OWNINGTHREAD
 
 public:
-  Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase);
-  ~Filesystem();
-
-  static nsRefPtr<Promise>
-  GetFilesystem(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters, ErrorResult& aRv);
+  static already_AddRefed<Promise>
+  GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters,
+                ErrorResult& aRv);
 
   static void ShutdownAll();
-  void Shutdown();
 
   nsPIDOMWindow* GetWindow();
   PathManager* GetPathManager();
 
 private:
-  static nsRefPtr<Filesystem> sFilesystem;
+  Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase);
+  ~Filesystem();
+
+  void Shutdown();
+
+  static nsRefPtr<Filesystem> sSdcardFilesystem;
 
   nsCOMPtr<nsPIDOMWindow> mWindow;
   nsRefPtr<PathManager> mPathManager;
