@@ -5,6 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "CallbackHandler.h"
+#include "mozilla/ErrorResult.h"
 #include "Directory.h"
 #include "FileUtils.h"
 #include "Error.h"

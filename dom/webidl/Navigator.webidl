@@ -211,7 +211,7 @@ partial interface Navigator {
 // FileSystem
 partial interface Navigator {
   [Throws, Pref="file.system.enabled"]
-  Promise getMozFilesystem(optional FilesystemParameters parameters);
+  Promise getFilesystem(optional FilesystemParameters parameters);
 };
 
 // nsIDOMNavigatorDesktopNotification

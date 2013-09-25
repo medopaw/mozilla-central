@@ -13,7 +13,14 @@
 class nsPIDOMWindow;
 
 namespace mozilla {
+
+class ErrorResult;
+
 namespace dom {
+
+class Promise;
+class FilesystemParameters;
+
 namespace filesystem {
 
 class PathManager;
@@ -32,10 +39,18 @@ public:
   Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase);
   ~Filesystem();
 
+  static nsRefPtr<Promise>
+  GetFilesystem(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters, ErrorResult& aRv);
+
+  static void ShutdownAll();
+  void Shutdown();
+
   nsPIDOMWindow* GetWindow();
   PathManager* GetPathManager();
 
 private:
+  static nsRefPtr<Filesystem> sFilesystem;
+
   nsCOMPtr<nsPIDOMWindow> mWindow;
   nsRefPtr<PathManager> mPathManager;
 };

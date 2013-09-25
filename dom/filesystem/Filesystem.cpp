@@ -5,6 +5,16 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "Filesystem.h"
+#include "mozilla/ErrorResult.h"
+#include "mozilla/dom/Promise.h"
+#include "mozilla/dom/FilesystemBinding.h"
+#include "mozilla/dom/DOMError.h"
+#include "mozilla/dom/ContentChild.h"
+#include "Directory.h"
+#include "EntranceEvent.h"
+#include "FilesystemRequestChild.h"
+#include "CallbackHandler.h"
+#include "nsXULAppAPI.h"
 #include "nsPIDOMWindow.h"
 #include "PathManager.h"
 
@@ -15,6 +25,8 @@ namespace filesystem {
 NS_IMPL_ADDREF(Filesystem)
 NS_IMPL_RELEASE(Filesystem)
 
+nsRefPtr<Filesystem> Filesystem::sFilesystem = nullptr;
+
 Filesystem::Filesystem(nsPIDOMWindow* aWindow,
                        const nsAString& aBase)
   : mWindow(aWindow),
@@ -23,6 +35,78 @@ Filesystem::Filesystem(nsPIDOMWindow* aWindow,
 }
 
 Filesystem::~Filesystem()
+{
+}
+
+// static
+nsRefPtr<Promise>
+Filesystem::GetFilesystem(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters, ErrorResult& aRv)
+{
+
+  nsRefPtr<Promise> promise = new Promise(aWindow);
+  nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(aWindow);
+  if (!globalObject) {
+    aRv.Throw(NS_ERROR_FAILURE);
+    return nullptr;
+  }
+  AutoSafeJSContext cx;
+  JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
+
+  switch (parameters.mStorage) {
+
+    case StorageType::Temporary:
+    case StorageType::Persistent: {
+      nsRefPtr<DOMError> domError = new DOMError(nullptr,
+                                                 NS_LITERAL_STRING("Not implemented"));
+      Optional<JS::Handle<JS::Value> > val(cx,
+        OBJECT_TO_JSVAL(domError->WrapObject(cx, global)));
+      promise->MaybeReject(cx, val);
+      break;
+    }
+
+    case StorageType::Sdcard: {
+      nsString sdcardPath = NS_LITERAL_STRING("/sdcard");
+
+      if (!sFilesystem) {
+        sFilesystem = new filesystem::Filesystem(aWindow, sdcardPath);
+      }
+
+      nsRefPtr<filesystem::CallbackHandler> callbackHandler =
+        new filesystem::CallbackHandler(sFilesystem, promise, aRv);
+      if (XRE_GetProcessType() == GeckoProcessType_Default) {
+        nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(sdcardPath,
+                                                                              callbackHandler);
+        r->Start();
+      } else {
+        FilesystemEntranceParams params(sdcardPath);
+        filesystem::PFilesystemRequestChild* child =
+          new filesystem::FilesystemRequestChild(callbackHandler);
+        ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
+                                                                        params);
+      }
+      break;
+    }
+
+    default: {
+      aRv.Throw(NS_ERROR_FAILURE);
+      return nullptr;
+      break;
+    }
+
+  }
+
+  return promise;
+
+}
+
+// static
+void
+Filesystem::ShutdownAll()
+{
+}
+
+void
+Filesystem::Shutdown()
 {
 }
 
