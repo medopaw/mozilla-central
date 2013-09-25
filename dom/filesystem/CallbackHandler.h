@@ -56,12 +56,12 @@ private:
 
     Optional<JS::Handle<JS::Value> > val(cx,
       OBJECT_TO_JSVAL(obj->WrapObject(cx, global)));
-    aReject ? mResolver->MaybeReject(cx, val) : mResolver->MaybeResolve(cx, val);
+    aReject ? mPromise->MaybeReject(cx, val) : mPromise->MaybeResolve(cx, val);
   }
 
 private:
   nsRefPtr<Filesystem> mFilesystem;
-  nsRefPtr<Promise> mResolver;
+  nsRefPtr<Promise> mPromise;
   ErrorResult& mRv;
 };
 

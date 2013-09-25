@@ -1009,7 +1009,7 @@ Navigator::GetMozFilesystem(const FilesystemParameters& parameters, ErrorResult&
       }
 
       nsRefPtr<filesystem::CallbackHandler> callbackHandler =
-          new filesystem::CallbackHandler(mFilesystem, promise, aRv);
+        new filesystem::CallbackHandler(mFilesystem, promise, aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
         nsRefPtr<filesystem::EntranceEvent> r = new filesystem::EntranceEvent(sdcardPath,
                                                                               callbackHandler);

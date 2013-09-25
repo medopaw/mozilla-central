@@ -17,10 +17,10 @@ NS_IMPL_ADDREF(CallbackHandler)
 NS_IMPL_RELEASE(CallbackHandler)
 
 CallbackHandler::CallbackHandler(Filesystem* aFilesystem,
-                   Promise* aResovler,
+                   Promise* aPromise,
                    ErrorResult& aRv)
   : mFilesystem(aFilesystem),
-    mResolver(aResovler),
+    mPromise(aPromise),
     mRv(aRv)
 {
 }
