@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 #include "FilesystemRequestParent.h"
 #include "FilesystemEvent.h"
-#include "GetEntryWorker.h"
+#include "Worker.h"
 #include "Result.h"
 
 namespace mozilla {
@@ -36,8 +36,9 @@ FilesystemRequestParent::Dispatch()
 
     case FilesystemParams::TFilesystemEntranceParams: {
       FilesystemEntranceParams p = mParams;
-      nsRefPtr<FilesystemEvent> r = new filesystem::FilesystemEvent(new GetEntryWorker(p.basePath(),
-          new FileInfoResult(FilesystemResultType::Directory)), this);
+      nsRefPtr<FilesystemEvent> r = new filesystem::FilesystemEvent(new Worker(
+        FilesystemWorkType::GetEntry, p.basePath(),
+        new FileInfoResult(FilesystemResultType::Directory)), this);
       r->Start();
       break;
     }

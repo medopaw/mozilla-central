@@ -18,14 +18,19 @@ namespace filesystem {
 
 class Result;
 
+MOZ_BEGIN_ENUM_CLASS(FilesystemWorkType, uint32_t)
+  CreateDirectory,
+  GetEntry
+MOZ_END_ENUM_CLASS(FilesystemResultType)
+
 /*
  * This class is to perform actual file operations.
  */
 class Worker
 {
 public:
-  Worker(const nsAString& aRealPath, Result* aResult);
-  virtual ~Worker();
+  Worker(FilesystemWorkType aWorkType, const nsAString& aRealPath, Result* aResult);
+  ~Worker();
 
   NS_IMETHOD_(nsrefcnt) AddRef();
   NS_IMETHOD_(nsrefcnt) Release();
@@ -36,7 +41,7 @@ protected:
 
 public:
   bool Init();
-  virtual void Work() = 0;
+  void Work();
 
   void SetError(const nsAString& aErrorName);
   void SetError(const nsresult& aErrorCode);
@@ -46,7 +51,11 @@ public:
 
   Result* GetResult();
 
-protected:
+private:
+  void GetEntryWork();
+
+  FilesystemWorkType mWorkType;
+
   nsString mErrorName;
   nsRefPtr<Result> mResult;
 

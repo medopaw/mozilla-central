@@ -12,7 +12,7 @@
 #include "mozilla/dom/ContentChild.h"
 #include "Directory.h"
 #include "FilesystemEvent.h"
-#include "GetEntryWorker.h"
+#include "Worker.h"
 #include "Result.h"
 #include "FilesystemRequestChild.h"
 #include "CallbackHandler.h"
@@ -76,13 +76,14 @@ Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& para
         new CallbackHandler(sSdcardFilesystem, promise, aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
         nsRefPtr<filesystem::FilesystemEvent> r = new FilesystemEvent(
-          new GetEntryWorker(sdcardPath, new FileInfoResult(FilesystemResultType::Directory)),
+          new Worker(FilesystemWorkType::GetEntry, sdcardPath,
+          new FileInfoResult(FilesystemResultType::Directory)),
           callbackHandler);
         r->Start();
       } else {
         FilesystemEntranceParams params(sdcardPath);
         PFilesystemRequestChild* child =
-          new filesystem::FilesystemRequestChild(callbackHandler);
+          new FilesystemRequestChild(callbackHandler);
         ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
                                                                         params);
       }

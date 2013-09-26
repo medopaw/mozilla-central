@@ -5,6 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "Worker.h"
+#include "nsThreadUtils.h"
 #include "Error.h"
 #include "Result.h"
 
@@ -15,9 +16,10 @@ namespace filesystem {
 NS_IMPL_ADDREF(Worker)
 NS_IMPL_RELEASE(Worker)
 
-Worker::Worker(const nsAString& aRealPath,
+Worker::Worker(FilesystemWorkType aWorkType, const nsAString& aRealPath,
                Result* aResult)
-  : mResult(aResult),
+  : mWorkType(aWorkType),
+    mResult(aResult),
     mRealPath(aRealPath)
 {
 }
@@ -43,6 +45,46 @@ Worker::Init()
   }
 
   return true;
+}
+
+void
+Worker::Work()
+{
+  MOZ_ASSERT(!NS_IsMainThread(), "Never call on main thread!");
+
+  switch (mWorkType) {
+
+    case FilesystemWorkType::CreateDirectory: {
+      break;
+    }
+
+    case FilesystemWorkType::GetEntry: {
+      GetEntryWork();
+      break;
+    }
+
+    default: {
+      break;
+    }
+
+  }
+}
+
+void
+Worker::GetEntryWork()
+{
+  if (!mInfo.exists) {
+    SetError(Error::DOM_ERROR_NOT_FOUND);
+    return;
+  }
+
+  if (!mInfo.isDirectory && !mInfo.isFile) {
+    SetError(Error::DOM_ERROR_TYPE_MISMATCH);
+    return;
+  }
+
+  FileInfoResult* result = static_cast<FileInfoResult*>(mResult.get());
+  result->mValue = mInfo;
 }
 
 void
