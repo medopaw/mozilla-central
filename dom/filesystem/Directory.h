@@ -38,6 +38,8 @@ public:
 
   already_AddRefed<Filesystem> GetFilesystem();
 
+  void GetName(nsString& retval) const;
+
 private:
   // Weak reference to Filesystem
   nsWeakPtr mFilesystem;

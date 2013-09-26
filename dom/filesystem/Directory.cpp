@@ -54,6 +54,12 @@ Directory::GetFilesystem()
   return filesystem.forget();
 }
 
+void
+Directory::GetName(nsString& retval) const
+{
+  retval = mName;
+}
+
 } // namespace filesystem
 } // namespace dom
 } // namespace mozilla

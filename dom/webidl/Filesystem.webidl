@@ -5,9 +5,9 @@
  */
 
 interface Directory {
-/*
   readonly attribute DOMString name;
 
+/*
   [Creator, Throws]
   Promise createFile(DOMString path,
                            CreateFileOptions options);
