@@ -41,7 +41,6 @@ protected:
   FilesystemResultType mResultType;
 };
 
-
 class BoolResult : public Result
 {
 public:

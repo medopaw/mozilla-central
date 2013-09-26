@@ -9,6 +9,7 @@
 
 #include "mozilla/Attributes.h"
 #include "mozilla/ErrorResult.h"
+#include "mozilla/dom/Promise.h"
 #include "nsCycleCollectionParticipant.h"
 #include "nsWrapperCache.h"
 #include "nsWeakReference.h"
@@ -39,6 +40,8 @@ public:
   already_AddRefed<Filesystem> GetFilesystem();
 
   void GetName(nsString& retval) const;
+
+  already_AddRefed<Promise> CreateDirectory(const nsAString& path, ErrorResult& aRv);
 
 private:
   // Weak reference to Filesystem

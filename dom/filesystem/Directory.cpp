@@ -6,8 +6,10 @@
 
 #include "Directory.h"
 #include "mozilla/dom/FilesystemBinding.h"
-#include "Filesystem.h"
+#include "nsXULAppAPI.h"
 #include "nsWeakReference.h"
+#include "Filesystem.h"
+#include "CallbackHandler.h"
 
 namespace mozilla {
 namespace dom {
@@ -58,6 +60,22 @@ void
 Directory::GetName(nsString& retval) const
 {
   retval = mName;
+}
+
+already_AddRefed<Promise>
+Directory::CreateDirectory(const nsAString& path, ErrorResult& aRv)
+{
+  nsRefPtr<Promise> promise = new Promise(GetFilesystem().get()->GetWindow());
+  nsRefPtr<CallbackHandler> callbackHandler =
+    new CallbackHandler(GetFilesystem().get(), promise, aRv);
+  if (XRE_GetProcessType() == GeckoProcessType_Default) {
+  } else {
+    /*nsRefPtr<filesystem::FilesystemEvent> r = new filesystem::FilesystemEvent(
+      new CreateDirectoryWorker(path, new FileInfoResult(FilesystemResultType::Directory)),
+      callbackHandler);
+    r->start();*/
+  }
+  return promise.forget();
 }
 
 } // namespace filesystem

@@ -69,20 +69,19 @@ Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& para
       nsString sdcardPath = NS_LITERAL_STRING("/sdcard");
 
       if (!sSdcardFilesystem) {
-        sSdcardFilesystem = new filesystem::Filesystem(aWindow, sdcardPath);
+        sSdcardFilesystem = new Filesystem(aWindow, sdcardPath);
       }
 
       nsRefPtr<filesystem::CallbackHandler> callbackHandler =
-        new filesystem::CallbackHandler(sSdcardFilesystem, promise, aRv);
+        new CallbackHandler(sSdcardFilesystem, promise, aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
-        nsRefPtr<filesystem::FilesystemEvent> r = new filesystem::FilesystemEvent(
+        nsRefPtr<filesystem::FilesystemEvent> r = new FilesystemEvent(
           new GetEntryWorker(sdcardPath, new FileInfoResult(FilesystemResultType::Directory)),
-          callbackHandler
-        );
+          callbackHandler);
         r->Start();
       } else {
         FilesystemEntranceParams params(sdcardPath);
-        filesystem::PFilesystemRequestChild* child =
+        PFilesystemRequestChild* child =
           new filesystem::FilesystemRequestChild(callbackHandler);
         ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
                                                                         params);

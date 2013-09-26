@@ -11,9 +11,11 @@ interface Directory {
   [Creator, Throws]
   Promise createFile(DOMString path,
                            CreateFileOptions options);
+*/
   [Creator, Throws]
   Promise createDirectory(DOMString path);
 
+/*
   [Creator, Throws]
   Promise get(DOMString path);
 
