@@ -55,6 +55,7 @@ Worker::Work()
   switch (mWorkType) {
 
     case FilesystemWorkType::CreateDirectory: {
+      CreateDirectoryWork();
       break;
     }
 
@@ -68,6 +69,31 @@ Worker::Work()
     }
 
   }
+}
+
+void
+Worker::CreateDirectoryWork()
+{
+  if (mInfo.exists) {
+    SetError(Error::DOM_ERROR_PATH_EXISTS);
+    return;
+  }
+
+  uint32_t permission = 0700;
+  nsresult rv = mFile->Create(nsIFile::DIRECTORY_TYPE, permission);
+  if (NS_FAILED(rv)) {
+    SetError(rv);
+    return;
+  }
+
+  rv = FileUtils::GetFileInfo(mFile, mInfo);
+  if (NS_FAILED(rv)) {
+    SetError(rv);
+    return;
+  }
+
+  FileInfoResult* result = static_cast<FileInfoResult*>(mResult.get());
+  result->mValue = mInfo;
 }
 
 void

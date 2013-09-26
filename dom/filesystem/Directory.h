@@ -20,6 +20,7 @@ namespace dom {
 namespace filesystem {
 
 class Filesystem;
+class CallbackHandler;
 struct FileInfo;
 
 class Directory MOZ_FINAL : public nsISupports,
@@ -41,9 +42,12 @@ public:
 
   void GetName(nsString& retval) const;
 
-  already_AddRefed<Promise> CreateDirectory(const nsAString& path, ErrorResult& aRv);
+  already_AddRefed<Promise> CreateDirectory(const nsAString& aPath, ErrorResult& aRv);
 
 private:
+  bool GetRealPath(const nsAString& aPath, nsString& aRealPath,
+    CallbackHandler* aCallbackHandler);
+
   // Weak reference to Filesystem
   nsWeakPtr mFilesystem;
   const nsString mPath;

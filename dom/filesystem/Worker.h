@@ -35,7 +35,7 @@ public:
   NS_IMETHOD_(nsrefcnt) AddRef();
   NS_IMETHOD_(nsrefcnt) Release();
 
-protected:
+private:
   nsAutoRefCnt mRefCnt;
   NS_DECL_OWNINGTHREAD
 
@@ -52,6 +52,7 @@ public:
   Result* GetResult();
 
 private:
+  void CreateDirectoryWork();
   void GetEntryWork();
 
   FilesystemWorkType mWorkType;

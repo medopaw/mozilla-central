@@ -6,10 +6,17 @@
 
 #include "Directory.h"
 #include "mozilla/dom/FilesystemBinding.h"
+#include "mozilla/dom/ContentChild.h"
 #include "nsXULAppAPI.h"
 #include "nsWeakReference.h"
 #include "Filesystem.h"
+#include "FilesystemEvent.h"
+#include "FilesystemRequestChild.h"
 #include "CallbackHandler.h"
+#include "Error.h"
+#include "Worker.h"
+#include "Result.h"
+#include "PathManager.h"
 
 namespace mozilla {
 namespace dom {
@@ -63,19 +70,50 @@ Directory::GetName(nsString& retval) const
 }
 
 already_AddRefed<Promise>
-Directory::CreateDirectory(const nsAString& path, ErrorResult& aRv)
+Directory::CreateDirectory(const nsAString& aPath, ErrorResult& aRv)
 {
   nsRefPtr<Promise> promise = new Promise(GetFilesystem().get()->GetWindow());
   nsRefPtr<CallbackHandler> callbackHandler =
     new CallbackHandler(GetFilesystem().get(), promise, aRv);
-  if (XRE_GetProcessType() == GeckoProcessType_Default) {
-  } else {
-    /*nsRefPtr<filesystem::FilesystemEvent> r = new filesystem::FilesystemEvent(
-      new CreateDirectoryWorker(path, new FileInfoResult(FilesystemResultType::Directory)),
-      callbackHandler);
-    r->start();*/
+
+  nsString realPath;
+  if (GetRealPath(aPath, realPath, callbackHandler)) {
+    if (XRE_GetProcessType() == GeckoProcessType_Default) {
+      nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
+        new Worker(FilesystemWorkType::CreateDirectory, realPath,
+        new FileInfoResult(FilesystemResultType::Directory)),
+        callbackHandler);
+      r->Start();
+    } else {
+        FilesystemEntranceParams params(realPath);
+        PFilesystemRequestChild* child =
+          new FilesystemRequestChild(callbackHandler);
+        ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
+                                                                        params);
+    }
   }
+
   return promise.forget();
+}
+
+bool
+Directory::GetRealPath(const nsAString& aPath, nsString& aRealPath,
+  CallbackHandler* aCallbackHandler)
+{
+  nsRefPtr<PathManager> pathManager = GetFilesystem().get()->GetPathManager();
+
+  // Check if path is valid.
+  if (!pathManager->IsValidPath(aPath)) {
+    aCallbackHandler->Fail(Error::DOM_ERROR_ENCODING);
+    return false;
+  }
+
+  // Make sure real path is absolute.
+  nsString dirRealPath;
+  pathManager->DOMPathToRealPath(mPath, dirRealPath);
+  pathManager->Absolutize(aPath, dirRealPath, aRealPath);
+
+  return true;
 }
 
 } // namespace filesystem

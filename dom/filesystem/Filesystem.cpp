@@ -75,7 +75,7 @@ Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& para
       nsRefPtr<filesystem::CallbackHandler> callbackHandler =
         new CallbackHandler(sSdcardFilesystem, promise, aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
-        nsRefPtr<filesystem::FilesystemEvent> r = new FilesystemEvent(
+        nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
           new Worker(FilesystemWorkType::GetEntry, sdcardPath,
           new FileInfoResult(FilesystemResultType::Directory)),
           callbackHandler);
