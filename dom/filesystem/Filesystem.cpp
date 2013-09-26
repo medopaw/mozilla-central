@@ -43,6 +43,7 @@ Filesystem::~Filesystem()
 already_AddRefed<Promise>
 Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters, ErrorResult& aRv)
 {
+
   nsRefPtr<Promise> promise = new Promise(aWindow);
   nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(aWindow);
   if (!globalObject) {
@@ -72,7 +73,7 @@ Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& para
       }
 
       nsRefPtr<filesystem::CallbackHandler> callbackHandler =
-        new CallbackHandler(sSdcardFilesystem, promise, aRv);
+        new filesystem::CallbackHandler(sSdcardFilesystem, promise, aRv);
       if (XRE_GetProcessType() == GeckoProcessType_Default) {
         nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
           new Worker(FilesystemWorkType::GetEntry, sdcardPath,
