@@ -14,6 +14,7 @@ EXPORTS.mozilla.dom.filesystem += [
     'Filesystem.h',
     'FilesystemRequestChild.h',
     'FilesystemRequestParent.h',
+    'FilesystemService.h',
 ]
 
 CPP_SOURCES += [
@@ -24,6 +25,7 @@ CPP_SOURCES += [
     'FilesystemEvent.cpp',
     'FilesystemRequestChild.cpp',
     'FilesystemRequestParent.cpp',
+    'FilesystemService.cpp',
     'FileUtils.cpp',
     'PathManager.cpp',
     'Result.cpp',
