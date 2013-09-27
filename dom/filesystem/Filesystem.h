@@ -35,11 +35,11 @@ public:
 
   static void ShutdownAll();
 
-  nsPIDOMWindow* GetWindow();
-  PathManager* GetPathManager();
+  nsPIDOMWindow* GetWindow() const { return mWindow; }
+  PathManager* GetPathManager() const { return mPathManager; }
 
 private:
-  Filesystem(nsPIDOMWindow* aWindow, const nsAString& aBase);
+  Filesystem(nsPIDOMWindow* aWindow);
   ~Filesystem();
 
   void Shutdown();
