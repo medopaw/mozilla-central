@@ -164,6 +164,11 @@ union FMRadioRequestParams
   FMRadioRequestCancelSeekParams;
 };
 
+struct FilesystemCreateDirectoryParams
+{
+  nsString realPath;
+};
+
 struct FilesystemEntranceParams
 {
   nsString basePath;
@@ -171,6 +176,7 @@ struct FilesystemEntranceParams
 
 union FilesystemParams
 {
+  FilesystemCreateDirectoryParams;
   FilesystemEntranceParams;
 };
 

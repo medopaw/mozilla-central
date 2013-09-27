@@ -34,11 +34,24 @@ FilesystemRequestParent::Dispatch()
 {
   switch (mParams.type()) {
 
+    case FilesystemParams::TFilesystemCreateDirectoryParams: {
+      FilesystemCreateDirectoryParams p = mParams;
+      nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
+        new Worker(FilesystemWorkType::CreateDirectory,
+                   p.realPath(),
+                   new FileInfoResult(FilesystemResultType::Directory)),
+      this);
+      r->Start();
+      break;
+    }
+
     case FilesystemParams::TFilesystemEntranceParams: {
       FilesystemEntranceParams p = mParams;
-      nsRefPtr<FilesystemEvent> r = new filesystem::FilesystemEvent(new Worker(
-        FilesystemWorkType::GetEntry, p.basePath(),
-        new FileInfoResult(FilesystemResultType::Directory)), this);
+      nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
+        new Worker(FilesystemWorkType::GetEntry,
+                   p.basePath(),
+                   new FileInfoResult(FilesystemResultType::Directory)),
+        this);
       r->Start();
       break;
     }
