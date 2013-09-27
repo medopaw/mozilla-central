@@ -100,18 +100,18 @@ bool
 Directory::GetRealPath(const nsAString& aPath, nsString& aRealPath,
   CallbackHandler* aCallbackHandler)
 {
-  nsRefPtr<PathManager> pathManager = GetFilesystem().get()->GetPathManager();
+  nsRefPtr<PathManager> p = GetFilesystem().get()->GetPathManager();
 
   // Check if path is valid.
-  if (!pathManager->IsValidPath(aPath)) {
+  if (!p->IsValidPath(aPath)) {
     aCallbackHandler->Fail(Error::DOM_ERROR_ENCODING);
     return false;
   }
 
   // Make sure real path is absolute.
   nsString dirRealPath;
-  pathManager->DOMPathToRealPath(mPath, dirRealPath);
-  pathManager->Absolutize(aPath, dirRealPath, aRealPath);
+  p->DOMPathToRealPath(mPath, dirRealPath);
+  p->Absolutize(aPath, dirRealPath, aRealPath);
 
   return true;
 }

@@ -43,7 +43,6 @@ Filesystem::~Filesystem()
 already_AddRefed<Promise>
 Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters, ErrorResult& aRv)
 {
-
   nsRefPtr<Promise> promise = new Promise(aWindow);
   nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(aWindow);
   if (!globalObject) {

@@ -62,7 +62,7 @@ CallbackHandler::GetFilesystem()
 }
 
 template<class T>
-void CallbackHandler::Call(T* obj, bool aReject /*= false*/)
+void CallbackHandler::Call(T* obj, bool aReject)
 {
   nsCOMPtr<Filesystem> filesystem = GetFilesystem();
   if (!filesystem) {

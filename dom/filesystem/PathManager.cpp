@@ -33,7 +33,6 @@ PathManager::~PathManager()
 bool
 PathManager::IsRoot(const nsAString& aPath)
 {
-  MOZ_ASSERT(IsAbsolute(aPath), "Path must be absolute!");
   return aPath == mRoot;
 }
 
