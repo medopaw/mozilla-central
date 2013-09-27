@@ -6,17 +6,13 @@
 
 #include "Directory.h"
 #include "mozilla/dom/FilesystemBinding.h"
-#include "mozilla/dom/ContentChild.h"
 #include "nsXULAppAPI.h"
 #include "nsWeakReference.h"
 #include "Filesystem.h"
-#include "FilesystemEvent.h"
-#include "FilesystemRequestChild.h"
 #include "CallbackHandler.h"
 #include "Error.h"
-#include "Worker.h"
-#include "Result.h"
 #include "PathManager.h"
+#include "FilesystemService.h"
 
 namespace mozilla {
 namespace dom {
@@ -72,6 +68,8 @@ Directory::GetName(nsString& retval) const
 already_AddRefed<Promise>
 Directory::CreateDirectory(const nsAString& aPath, ErrorResult& aRv)
 {
+  return FilesystemService::GetSingleton()->CreateDirectory(this, aPath, aRv);
+/*
   nsRefPtr<Promise> promise = new Promise(GetFilesystem().get()->GetWindow());
   nsRefPtr<CallbackHandler> callbackHandler =
     new CallbackHandler(GetFilesystem().get(), promise, aRv);
@@ -94,6 +92,7 @@ Directory::CreateDirectory(const nsAString& aPath, ErrorResult& aRv)
   }
 
   return promise.forget();
+  */
 }
 
 bool

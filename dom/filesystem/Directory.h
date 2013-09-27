@@ -44,10 +44,10 @@ public:
 
   already_AddRefed<Promise> CreateDirectory(const nsAString& aPath, ErrorResult& aRv);
 
-private:
   bool GetRealPath(const nsAString& aPath, nsString& aRealPath,
     CallbackHandler* aCallbackHandler);
 
+private:
   // Weak reference to Filesystem
   nsWeakPtr mFilesystem;
   const nsString mPath;
