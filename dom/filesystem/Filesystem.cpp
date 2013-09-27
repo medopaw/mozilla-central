@@ -19,6 +19,7 @@
 #include "nsXULAppAPI.h"
 #include "nsPIDOMWindow.h"
 #include "PathManager.h"
+#include "FilesystemService.h"
 
 namespace mozilla {
 namespace dom {
@@ -28,11 +29,10 @@ NS_IMPL_ISUPPORTS1(Filesystem, nsISupportsWeakReference)
 
 nsRefPtr<Filesystem> Filesystem::sSdcardFilesystem = nullptr;
 
-Filesystem::Filesystem(nsPIDOMWindow* aWindow,
-                       const nsAString& aBase)
-  : mWindow(aWindow),
-    mPathManager(new PathManager(aBase))
+Filesystem::Filesystem(nsPIDOMWindow* aWindow)
+  : mWindow(aWindow)
 {
+  mPathManager = new PathManager(NS_LITERAL_STRING("/sdcard"));
 }
 
 Filesystem::~Filesystem()
@@ -50,15 +50,16 @@ Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& para
     aRv.Throw(NS_ERROR_FAILURE);
     return nullptr;
   }
-  AutoSafeJSContext cx;
-  JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
   switch (parameters.mStorage) {
 
-    case StorageType::Temporary:
+    case StorageType::Temporary: // Fall through.
     case StorageType::Persistent: {
-      nsRefPtr<DOMError> domError = new DOMError(nullptr,
-                                                 NS_LITERAL_STRING("Not implemented"));
+      // TODO Make utility function to handle promise callback.
+      nsRefPtr<DOMError> domError =
+        new DOMError(nullptr, NS_LITERAL_STRING("Not implemented"));
+      AutoSafeJSContext cx;
+      JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
       Optional<JS::Handle<JS::Value> > val(cx,
         OBJECT_TO_JSVAL(domError->WrapObject(cx, global)));
       promise->MaybeReject(cx, val);
@@ -66,27 +67,10 @@ Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& para
     }
 
     case StorageType::Sdcard: {
-      nsString sdcardPath = NS_LITERAL_STRING("/sdcard");
-
       if (!sSdcardFilesystem) {
-        sSdcardFilesystem = new Filesystem(aWindow, sdcardPath);
+        sSdcardFilesystem = new Filesystem(aWindow);
       }
-
-      nsRefPtr<filesystem::CallbackHandler> callbackHandler =
-        new filesystem::CallbackHandler(sSdcardFilesystem, promise, aRv);
-      if (XRE_GetProcessType() == GeckoProcessType_Default) {
-        nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
-          new Worker(FilesystemWorkType::GetEntry, sdcardPath,
-          new FileInfoResult(FilesystemResultType::Directory)),
-          callbackHandler);
-        r->Start();
-      } else {
-        FilesystemEntranceParams params(sdcardPath);
-        PFilesystemRequestChild* child =
-          new FilesystemRequestChild(callbackHandler);
-        ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
-                                                                        params);
-      }
+      FilesystemService::GetSingleton()->GetEntrance(sSdcardFilesystem, aRv);
       break;
     }
 
@@ -116,18 +100,6 @@ void
 Filesystem::Shutdown()
 {
   // TODO Cancel all runnables
-}
-
-nsPIDOMWindow*
-Filesystem::GetWindow()
-{
-  return mWindow;
-}
-
-PathManager*
-Filesystem::GetPathManager()
-{
-  return mPathManager;
 }
 
 } // namespace filesystem

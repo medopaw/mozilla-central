@@ -5,15 +5,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "FilesystemService.h"
-#include "nsXULAppAPI.h"
-#include "mozilla/dom/ContentChild.h"
-#include "FilesystemRequestChild.h"
-#include "Directory.h"
 #include "Filesystem.h"
+#include "Directory.h"
 #include "FilesystemEvent.h"
-#include "CallbackHandler.h"
 #include "Worker.h"
 #include "Result.h"
+#include "FilesystemRequestChild.h"
+#include "CallbackHandler.h"
+#include "FilesystemRequestParent.h"
+
+#include "nsXULAppAPI.h"
+#include "mozilla/dom/Promise.h"
+#include "mozilla/ErrorResult.h"
+#include "mozilla/dom/FilesystemBinding.h"
+#include "mozilla/dom/ContentChild.h"
 
 namespace mozilla {
 namespace dom {
@@ -63,6 +68,42 @@ FilesystemService::CreateDirectory(Directory* aDir, const nsAString& aPath,
   }
 
   return promise.forget();
+}
+
+already_AddRefed<Promise>
+FilesystemService::GetEntrance(Filesystem* aFs, ErrorResult& aRv)
+{
+  nsRefPtr<Promise> promise = new Promise(aFs->GetWindow());
+
+  nsString sdcardPath = NS_LITERAL_STRING("/sdcard");
+
+  nsRefPtr<filesystem::CallbackHandler> callbackHandler =
+      new filesystem::CallbackHandler(aFs, promise, aRv);
+  if (!mIsChild) {
+    nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
+        new Worker(FilesystemWorkType::GetEntry, sdcardPath,
+            new FileInfoResult(FilesystemResultType::Directory)),
+        callbackHandler);
+    r->Start();
+  } else {
+    FilesystemEntranceParams params(sdcardPath);
+    PFilesystemRequestChild* child =
+        new FilesystemRequestChild(callbackHandler);
+    ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
+        params);
+  }
+
+  return promise.forget();
+}
+
+void
+FilesystemService::GetEntrance(const FilesystemEntranceParams& aParam,
+                               FilesystemRequestParent* aParent)
+{
+  nsRefPtr<FilesystemEvent> r = new filesystem::FilesystemEvent(new Worker(
+    FilesystemWorkType::GetEntry, aParam.basePath(),
+    new FileInfoResult(FilesystemResultType::Directory)), aParent);
+  r->Start();
 }
 
 } // namespace filesystem

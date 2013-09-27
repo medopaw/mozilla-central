@@ -7,6 +7,7 @@
 #include "FilesystemEvent.h"
 #include "Worker.h"
 #include "Result.h"
+#include "FilesystemService.h"
 
 namespace mozilla {
 namespace dom {
@@ -46,13 +47,7 @@ FilesystemRequestParent::Dispatch()
     }
 
     case FilesystemParams::TFilesystemEntranceParams: {
-      FilesystemEntranceParams p = mParams;
-      nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
-        new Worker(FilesystemWorkType::GetEntry,
-                   p.basePath(),
-                   new FileInfoResult(FilesystemResultType::Directory)),
-        this);
-      r->Start();
+      FilesystemService::GetSingleton()->GetEntrance(static_cast<const FilesystemEntranceParams&>(mParams), this);
       break;
     }
 

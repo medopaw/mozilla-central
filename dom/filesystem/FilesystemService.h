@@ -11,12 +11,22 @@
 #include "mozilla/ErrorResult.h"
 #include "mozilla/dom/Promise.h"
 #include "nsString.h"
+#include "nsAutoPtr.h"
 
 namespace mozilla {
+
+class ErrorResult;
+
 namespace dom {
+
+class Promise;
+class FilesystemEntranceParams;
+
 namespace filesystem {
 
 class Directory;
+class Filesystem;
+class FilesystemRequestParent;
 
 class FilesystemService
 {
@@ -30,6 +40,9 @@ public:
 
   already_AddRefed<Promise> CreateDirectory(Directory* aDir, const nsAString& aPath, ErrorResult& aRv);
 
+  already_AddRefed<Promise> GetEntrance(Filesystem* aFs, ErrorResult& aRv);
+  void GetEntrance(const FilesystemEntranceParams& aParam,
+                   FilesystemRequestParent* aParent);
 private:
   FilesystemService();
 
