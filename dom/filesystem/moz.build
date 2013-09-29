@@ -14,7 +14,6 @@ EXPORTS.mozilla.dom.filesystem += [
     'Filesystem.h',
     'FilesystemRequestChild.h',
     'FilesystemRequestParent.h',
-    'FilesystemService.h',
 ]
 
 CPP_SOURCES += [
@@ -30,6 +29,7 @@ CPP_SOURCES += [
     'PathManager.cpp',
     'Result.cpp',
     'Worker.cpp',
+    'TaskBase.cpp',
 ]
 
 IPDL_SOURCES += [
