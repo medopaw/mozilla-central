@@ -20,7 +20,7 @@ class ErrorResult;
 namespace dom {
 
 class Promise;
-class FilesystemEntranceParams;
+class FilesystemParams;
 
 namespace filesystem {
 
@@ -38,10 +38,14 @@ public:
    */
   static FilesystemService* GetSingleton();
 
-  already_AddRefed<Promise> CreateDirectory(Directory* aDir, const nsAString& aPath, ErrorResult& aRv);
+  already_AddRefed<Promise> CreateDirectory(Directory* aDir,
+                                            const nsAString& aPath,
+                                            ErrorResult& aRv);
+  void CreateDirectory(const FilesystemParams& aParam,
+                       FilesystemRequestParent* aParent);
 
   already_AddRefed<Promise> GetEntrance(Filesystem* aFs, ErrorResult& aRv);
-  void GetEntrance(const FilesystemEntranceParams& aParam,
+  void GetEntrance(const FilesystemParams& aParam,
                    FilesystemRequestParent* aParent);
 private:
   FilesystemService();

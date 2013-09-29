@@ -70,6 +70,19 @@ FilesystemService::CreateDirectory(Directory* aDir, const nsAString& aPath,
   return promise.forget();
 }
 
+void
+CreateDirectory(const FilesystemParams& aParam,
+                FilesystemRequestParent* aParent)
+{
+  FilesystemCreateDirectoryParams p = aParam;
+  nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
+    new Worker(FilesystemWorkType::CreateDirectory,
+               p.realPath(),
+               new FileInfoResult(FilesystemResultType::Directory)),
+               aParent);
+  r->Start();
+}
+
 already_AddRefed<Promise>
 FilesystemService::GetEntrance(Filesystem* aFs, ErrorResult& aRv)
 {
@@ -97,11 +110,12 @@ FilesystemService::GetEntrance(Filesystem* aFs, ErrorResult& aRv)
 }
 
 void
-FilesystemService::GetEntrance(const FilesystemEntranceParams& aParam,
+FilesystemService::GetEntrance(const FilesystemParams& aParam,
                                FilesystemRequestParent* aParent)
 {
+  const FilesystemEntranceParams& p = aParam;
   nsRefPtr<FilesystemEvent> r = new filesystem::FilesystemEvent(new Worker(
-    FilesystemWorkType::GetEntry, aParam.basePath(),
+    FilesystemWorkType::GetEntry, p.basePath(),
     new FileInfoResult(FilesystemResultType::Directory)), aParent);
   r->Start();
 }

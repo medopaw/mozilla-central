@@ -36,18 +36,12 @@ FilesystemRequestParent::Dispatch()
   switch (mParams.type()) {
 
     case FilesystemParams::TFilesystemCreateDirectoryParams: {
-      FilesystemCreateDirectoryParams p = mParams;
-      nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
-        new Worker(FilesystemWorkType::CreateDirectory,
-                   p.realPath(),
-                   new FileInfoResult(FilesystemResultType::Directory)),
-      this);
-      r->Start();
+      FilesystemService::GetSingleton()->CreateDirectory(mParams, this);
       break;
     }
 
     case FilesystemParams::TFilesystemEntranceParams: {
-      FilesystemService::GetSingleton()->GetEntrance(static_cast<const FilesystemEntranceParams&>(mParams), this);
+      FilesystemService::GetSingleton()->GetEntrance(mParams, this);
       break;
     }
 
