@@ -12,26 +12,30 @@
 #include "mozilla/dom/FilesystemBinding.h"
 #include "mozilla/dom/ContentChild.h"
 #include "mozilla/unused.h"
+#include "mozilla/dom/Promise.h"
 
 namespace mozilla {
 namespace dom {
 namespace filesystem {
 
 TaskBase::TaskBase()
-  : mIsRequest(false)
 {
-
 }
 
 TaskBase::TaskBase(FilesystemRequestParent* aParent)
   : mRequestParent(aParent)
-  , mIsRequest(true)
 {
-
 }
+
 TaskBase::~TaskBase()
 {
   // TODO Auto-generated destructor stub
+}
+
+already_AddRefed<Promise>
+TaskBase::GetPromise(ErrorResult& aRv)
+{
+  return nsRefPtr<Promise>(mPromise).forget();
 }
 
 void
@@ -84,7 +88,7 @@ TaskBase::Run()
 void
 TaskBase::HandleResult()
 {
-  if (mIsRequest) {
+  if (mRequestParent) {
     MOZ_ASSERT(mParent, "mParent is null!");
     unused << mRequestParent->Send__delete__(mRequestParent, GetRequestResult());
   } else {

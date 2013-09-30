@@ -96,14 +96,12 @@ Directory::CreateDirectory(const nsAString& aPath, ErrorResult& aRv)
 }
 
 bool
-Directory::GetRealPath(const nsAString& aPath, nsString& aRealPath,
-  CallbackHandler* aCallbackHandler)
+Directory::GetRealPath(const nsAString& aPath, nsString& aRealPath)
 {
   nsRefPtr<PathManager> p = GetFilesystem().get()->GetPathManager();
 
   // Check if path is valid.
   if (!p->IsValidPath(aPath)) {
-    aCallbackHandler->Fail(Error::DOM_ERROR_ENCODING);
     return false;
   }
 

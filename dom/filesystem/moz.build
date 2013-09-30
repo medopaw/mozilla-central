@@ -30,6 +30,7 @@ CPP_SOURCES += [
     'Result.cpp',
     'Worker.cpp',
     'TaskBase.cpp',
+    'CreateDirectoryTask.cpp',
 ]
 
 IPDL_SOURCES += [

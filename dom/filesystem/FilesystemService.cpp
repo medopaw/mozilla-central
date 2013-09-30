@@ -13,6 +13,7 @@
 #include "FilesystemRequestChild.h"
 #include "CallbackHandler.h"
 #include "FilesystemRequestParent.h"
+#include "Error.h"
 
 #include "nsXULAppAPI.h"
 #include "mozilla/dom/Promise.h"
@@ -51,7 +52,7 @@ FilesystemService::CreateDirectory(Directory* aDir, const nsAString& aPath,
     new CallbackHandler(f, promise, aRv);
 
   nsString realPath;
-  if (aDir->GetRealPath(aPath, realPath, callbackHandler)) {
+  if (aDir->GetRealPath(aPath, realPath)) {
     if (mIsChild) {
       FilesystemEntranceParams params(realPath);
       PFilesystemRequestChild* child =
@@ -65,13 +66,15 @@ FilesystemService::CreateDirectory(Directory* aDir, const nsAString& aPath,
         callbackHandler);
       r->Start();
     }
+  } else {
+    callbackHandler->Fail(Error::DOM_ERROR_ENCODING);
   }
 
   return promise.forget();
 }
 
 void
-CreateDirectory(const FilesystemParams& aParam,
+FilesystemService::CreateDirectory(const FilesystemParams& aParam,
                 FilesystemRequestParent* aParent)
 {
   FilesystemCreateDirectoryParams p = aParam;

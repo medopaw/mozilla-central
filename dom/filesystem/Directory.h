@@ -44,8 +44,7 @@ public:
 
   already_AddRefed<Promise> CreateDirectory(const nsAString& aPath, ErrorResult& aRv);
 
-  bool GetRealPath(const nsAString& aPath, nsString& aRealPath,
-    CallbackHandler* aCallbackHandler);
+  bool GetRealPath(const nsAString& aPath, nsString& aRealPath);
 
 private:
   // Weak reference to Filesystem
