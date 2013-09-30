@@ -38,9 +38,6 @@ public:
    */
   static FilesystemService* GetSingleton();
 
-  already_AddRefed<Promise> CreateDirectory(Directory* aDir,
-                                            const nsAString& aPath,
-                                            ErrorResult& aRv);
   void CreateDirectory(const FilesystemParams& aParam,
                        FilesystemRequestParent* aParent);
 

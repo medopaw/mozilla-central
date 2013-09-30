@@ -8,6 +8,7 @@
 #include "Worker.h"
 #include "Result.h"
 #include "FilesystemService.h"
+#include "CreateDirectoryTask.h"
 
 namespace mozilla {
 namespace dom {
@@ -36,7 +37,7 @@ FilesystemRequestParent::Dispatch()
   switch (mParams.type()) {
 
     case FilesystemParams::TFilesystemCreateDirectoryParams: {
-      FilesystemService::GetSingleton()->CreateDirectory(mParams, this);
+      nsRefPtr<CreateDirectoryTask>(new CreateDirectoryTask(mParams, this));
       break;
     }
 

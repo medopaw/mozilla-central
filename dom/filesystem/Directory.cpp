@@ -13,6 +13,7 @@
 #include "Error.h"
 #include "PathManager.h"
 #include "FilesystemService.h"
+#include "CreateDirectoryTask.h"
 
 namespace mozilla {
 namespace dom {
@@ -68,31 +69,8 @@ Directory::GetName(nsString& retval) const
 already_AddRefed<Promise>
 Directory::CreateDirectory(const nsAString& aPath, ErrorResult& aRv)
 {
-  return FilesystemService::GetSingleton()->CreateDirectory(this, aPath, aRv);
-/*
-  nsRefPtr<Promise> promise = new Promise(GetFilesystem().get()->GetWindow());
-  nsRefPtr<CallbackHandler> callbackHandler =
-    new CallbackHandler(GetFilesystem().get(), promise, aRv);
-
-  nsString realPath;
-  if (GetRealPath(aPath, realPath, callbackHandler)) {
-    if (XRE_GetProcessType() == GeckoProcessType_Default) {
-      nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
-        new Worker(FilesystemWorkType::CreateDirectory, realPath,
-        new FileInfoResult(FilesystemResultType::Directory)),
-        callbackHandler);
-      r->Start();
-    } else {
-        FilesystemEntranceParams params(realPath);
-        PFilesystemRequestChild* child =
-          new FilesystemRequestChild(callbackHandler);
-        ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
-                                                                        params);
-    }
-  }
-
-  return promise.forget();
-  */
+  nsRefPtr<CreateDirectoryTask> task = new CreateDirectoryTask(this, aPath);
+  return task->GetPromise();
 }
 
 bool

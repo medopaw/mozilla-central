@@ -30,7 +30,7 @@ public:
 
   virtual ~TaskBase();
 
-  already_AddRefed<Promise> GetPromise(ErrorResult& aRv);
+  already_AddRefed<Promise> GetPromise();
 
   // Overrides nsIRunnable.
   NS_IMETHOD Run() MOZ_OVERRIDE;
@@ -43,16 +43,18 @@ protected:
   virtual FilesystemResponseValue GetRequestResult() = 0;
   virtual void SetRequestResult(const FilesystemResponseValue& aValue) = 0;
 
+  void Start();
+  void SetError(const nsString& aErrorName);
+  void SetError(const nsresult& aErrorCode);
+
   // Overrides PFilesystemRequestChild
   virtual bool Recv__delete__(const FilesystemResponseValue& value) MOZ_OVERRIDE;
+  virtual void ActorDestroy(ActorDestroyReason why);
 
   nsRefPtr<Promise> mPromise;
+  nsString mErrorName;
 private:
-  void Start();
   void HandleResult();
-
-  void SetError(const nsAString& aErrorName);
-  void SetError(const nsresult& aErrorCode);
 
   nsRefPtr<FilesystemRequestParent> mRequestParent;
   // Only used on main thread. Don't need a lock.

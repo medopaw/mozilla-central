@@ -7,6 +7,7 @@
 
 #include "TaskBase.h"
 #include "FilesystemRequestParent.h"
+#include "Error.h"
 
 #include "nsXULAppAPI.h"
 #include "mozilla/dom/FilesystemBinding.h"
@@ -33,7 +34,7 @@ TaskBase::~TaskBase()
 }
 
 already_AddRefed<Promise>
-TaskBase::GetPromise(ErrorResult& aRv)
+TaskBase::GetPromise()
 {
   return nsRefPtr<Promise>(mPromise).forget();
 }
@@ -59,6 +60,10 @@ TaskBase::Start()
     }
   } else {
     // Run in child process.
+
+    // Retain a reference so the task object isn't deleted without IPDL's
+    // knowledge.
+    AddRef();
     ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(this,
       GetRequestParams());
   }
@@ -105,13 +110,21 @@ TaskBase::Recv__delete__(const FilesystemResponseValue& aValue)
 }
 
 void
-TaskBase::SetError(const nsAString& aErrorName)
+TaskBase::ActorDestroy(ActorDestroyReason why)
 {
+  Release();
+}
+
+void
+TaskBase::SetError(const nsString& aErrorName)
+{
+  mErrorName = aErrorName;
 }
 
 void
 TaskBase::SetError(const nsresult& aErrorCode)
 {
+  Error::ErrorNameFromCode(mErrorName, aErrorCode);
 }
 
 }

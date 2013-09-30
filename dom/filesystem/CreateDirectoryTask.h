@@ -9,6 +9,9 @@
 #define CREATEDIRECTORYTASK_H_
 
 #include "TaskBase.h"
+#include "nsAutoPtr.h"
+#include "FileUtils.h"
+#include "nsWeakReference.h"
 
 class nsString;
 
@@ -38,6 +41,16 @@ protected:
 
   virtual void Work() MOZ_OVERRIDE;
   virtual void HandlerCallback() MOZ_OVERRIDE;
+
+private:
+  static const uint32_t CREATE_DIRECTORY_PERMISSION = 0700;
+  // Weak reference to Filesystem
+  nsWeakPtr mFilesystem;
+
+  already_AddRefed<Filesystem> GetFilesystem();
+
+  nsString mTargetRealPath;
+  FileInfo mTargetInfo;
 };
 
 }

@@ -42,37 +42,6 @@ FilesystemService::GetSingleton()
   return sInstance;
 }
 
-already_AddRefed<Promise>
-FilesystemService::CreateDirectory(Directory* aDir, const nsAString& aPath,
-                                   ErrorResult& aRv)
-{
-  nsRefPtr<Filesystem> f = aDir->GetFilesystem().get();
-  nsRefPtr<Promise> promise = new Promise(f->GetWindow());
-  nsRefPtr<CallbackHandler> callbackHandler =
-    new CallbackHandler(f, promise, aRv);
-
-  nsString realPath;
-  if (aDir->GetRealPath(aPath, realPath)) {
-    if (mIsChild) {
-      FilesystemEntranceParams params(realPath);
-      PFilesystemRequestChild* child =
-        new FilesystemRequestChild(callbackHandler);
-      ContentChild::GetSingleton()->SendPFilesystemRequestConstructor(child,
-                                                                      params);
-    } else {
-      nsRefPtr<FilesystemEvent> r = new FilesystemEvent(
-        new Worker(FilesystemWorkType::CreateDirectory, realPath,
-        new FileInfoResult(FilesystemResultType::Directory)),
-        callbackHandler);
-      r->Start();
-    }
-  } else {
-    callbackHandler->Fail(Error::DOM_ERROR_ENCODING);
-  }
-
-  return promise.forget();
-}
-
 void
 FilesystemService::CreateDirectory(const FilesystemParams& aParam,
                 FilesystemRequestParent* aParent)
