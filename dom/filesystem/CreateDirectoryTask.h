@@ -36,8 +36,8 @@ public:
 protected:
   virtual FilesystemParams GetRequestParams() MOZ_OVERRIDE;
 
-  virtual FilesystemResponseValue GetRequestResult() MOZ_OVERRIDE;
-  virtual void SetRequestResult(const FilesystemResponseValue& aValue) MOZ_OVERRIDE;
+  virtual FilesystemResponseValue GetSuccessRequestResult() MOZ_OVERRIDE;
+  virtual void SetSuccessRequestResult(const FilesystemResponseValue& aValue) MOZ_OVERRIDE;
 
   virtual void Work() MOZ_OVERRIDE;
   virtual void HandlerCallback() MOZ_OVERRIDE;

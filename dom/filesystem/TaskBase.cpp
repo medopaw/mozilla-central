@@ -14,6 +14,7 @@
 #include "mozilla/dom/ContentChild.h"
 #include "mozilla/unused.h"
 #include "mozilla/dom/Promise.h"
+#include "mozilla/dom/PContent.h"
 
 namespace mozilla {
 namespace dom {
@@ -98,6 +99,27 @@ TaskBase::HandleResult()
     unused << mRequestParent->Send__delete__(mRequestParent, GetRequestResult());
   } else {
     HandlerCallback();
+  }
+}
+
+FilesystemResponseValue
+TaskBase::GetRequestResult()
+{
+  if (HasError()) {
+    return ErrorResponse(mErrorName);
+  } else {
+    return GetSuccessRequestResult();
+  }
+}
+
+void
+TaskBase::SetRequestResult(const FilesystemResponseValue& aValue)
+{
+  if (aValue.type() == FilesystemResponseValue::TErrorResponse) {
+    ErrorResponse r = aValue;
+    mErrorName = r.error();
+  } else {
+    SetSuccessRequestResult(aValue);
   }
 }
 

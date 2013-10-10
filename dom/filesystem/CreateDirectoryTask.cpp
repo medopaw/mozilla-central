@@ -58,39 +58,17 @@ CreateDirectoryTask::GetRequestParams()
 }
 
 FilesystemResponseValue
-CreateDirectoryTask::GetRequestResult()
+CreateDirectoryTask::GetSuccessRequestResult()
 {
-  if (mErrorName.IsEmpty()) {
-    return DirectoryResponse(mTargetInfo.realPath, mTargetInfo.name);
-  } else {
-    return ErrorResponse(mErrorName);
-  }
+  return DirectoryResponse(mTargetInfo.realPath, mTargetInfo.name);
 }
 
 void
-CreateDirectoryTask::SetRequestResult(const FilesystemResponseValue& aValue)
+CreateDirectoryTask::SetSuccessRequestResult(const FilesystemResponseValue& aValue)
 {
-  switch (aValue.type()) {
-
-    case FilesystemResponseValue::TDirectoryResponse: {
-      DirectoryResponse r = aValue;
-      mTargetInfo.realPath = r.realPath();
-      mTargetInfo.name = r.name();
-      break;
-    }
-
-    case FilesystemResponseValue::TErrorResponse: {
-      ErrorResponse r = aValue;
-      mErrorName = r.error();
-      break;
-    }
-
-    default: {
-      NS_RUNTIMEABORT("not reached");
-      break;
-    }
-
-  }
+  DirectoryResponse r = aValue;
+  mTargetInfo.realPath = r.realPath();
+  mTargetInfo.name = r.name();
 }
 
 void
@@ -131,7 +109,7 @@ CreateDirectoryTask::Work()
 void
 CreateDirectoryTask::HandlerCallback()
 {
-    nsCOMPtr<Filesystem> filesystem = GetFilesystem();
+  nsCOMPtr<Filesystem> filesystem = GetFilesystem();
   if (!filesystem) {
     return;
   }
@@ -144,7 +122,7 @@ CreateDirectoryTask::HandlerCallback()
   AutoSafeJSContext cx;
   JS::Rooted<JSObject*> global(cx, globalObject->GetGlobalJSObject());
 
-  if (mErrorName.IsEmpty()) {
+  if (!HasError()) {
     nsRefPtr<Directory> dir = FileUtils::CreateDirectory(filesystem,
       mTargetInfo.realPath, mTargetInfo.name);
     if (dir) {
