@@ -7,8 +7,8 @@
 #include "FilesystemEvent.h"
 #include "Worker.h"
 #include "Result.h"
-#include "FilesystemService.h"
 #include "CreateDirectoryTask.h"
+#include "GetEntranceTask.h"
 
 namespace mozilla {
 namespace dom {
@@ -42,7 +42,7 @@ FilesystemRequestParent::Dispatch()
     }
 
     case FilesystemParams::TFilesystemEntranceParams: {
-      FilesystemService::GetSingleton()->GetEntrance(mParams, this);
+      nsRefPtr<GetEntranceTask>(new GetEntranceTask(mParams, this));
       break;
     }
 

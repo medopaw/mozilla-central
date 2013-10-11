@@ -31,6 +31,7 @@ CPP_SOURCES += [
     'Worker.cpp',
     'TaskBase.cpp',
     'CreateDirectoryTask.cpp',
+    'GetEntranceTask.cpp',
 ]
 
 IPDL_SOURCES += [

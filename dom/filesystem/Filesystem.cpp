@@ -19,7 +19,7 @@
 #include "nsXULAppAPI.h"
 #include "nsPIDOMWindow.h"
 #include "PathManager.h"
-#include "FilesystemService.h"
+#include "GetEntranceTask.h"
 
 namespace mozilla {
 namespace dom {
@@ -43,19 +43,17 @@ Filesystem::~Filesystem()
 already_AddRefed<Promise>
 Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& parameters, ErrorResult& aRv)
 {
-
-  nsRefPtr<Promise> promise = new Promise(aWindow);
-  nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(aWindow);
-  if (!globalObject) {
-    aRv.Throw(NS_ERROR_FAILURE);
-    return nullptr;
-  }
-
   switch (parameters.mStorage) {
 
     case StorageType::Temporary: // Fall through.
     case StorageType::Persistent: {
       // TODO Make utility function to handle promise callback.
+      nsRefPtr<Promise> promise = new Promise(aWindow);
+      nsCOMPtr<nsIGlobalObject> globalObject = do_QueryInterface(aWindow);
+      if (!globalObject) {
+        aRv.Throw(NS_ERROR_FAILURE);
+        return nullptr;
+      }
       nsRefPtr<DOMError> domError =
         new DOMError(nullptr, NS_LITERAL_STRING("Not implemented"));
       AutoSafeJSContext cx;
@@ -63,27 +61,20 @@ Filesystem::GetInstance(nsPIDOMWindow* aWindow, const FilesystemParameters& para
       Optional<JS::Handle<JS::Value> > val(cx,
         OBJECT_TO_JSVAL(domError->WrapObject(cx, global)));
       promise->MaybeReject(cx, val);
-      break;
+      return promise.forget();
     }
 
     case StorageType::Sdcard: {
       if (!sSdcardFilesystem) {
         sSdcardFilesystem = new Filesystem(aWindow);
       }
-      FilesystemService::GetSingleton()->GetEntrance(sSdcardFilesystem, aRv);
-      break;
+      nsRefPtr<GetEntranceTask> task = new GetEntranceTask(sSdcardFilesystem);
+      return task->GetPromise();
     }
-
-    default: {
-      aRv.Throw(NS_ERROR_FAILURE);
-      return nullptr;
-      break;
-    }
-
   }
 
-  return promise.forget();
-
+  aRv.Throw(NS_ERROR_FAILURE);
+  return nullptr;
 }
 
 // static

@@ -12,7 +12,6 @@
 #include "CallbackHandler.h"
 #include "Error.h"
 #include "PathManager.h"
-#include "FilesystemService.h"
 #include "CreateDirectoryTask.h"
 
 namespace mozilla {
