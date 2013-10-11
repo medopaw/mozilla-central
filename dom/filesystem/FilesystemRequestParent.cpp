@@ -4,9 +4,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 #include "FilesystemRequestParent.h"
-#include "FilesystemEvent.h"
-#include "Worker.h"
-#include "Result.h"
 #include "CreateDirectoryTask.h"
 #include "GetEntranceTask.h"
 
@@ -18,10 +15,7 @@ NS_IMPL_ADDREF(FilesystemRequestParent)
 NS_IMPL_RELEASE(FilesystemRequestParent)
 
 FilesystemRequestParent::FilesystemRequestParent(const FilesystemParams& aParams) :
-    mParams(aParams),
-    mMutex("FilesystemRequestParent::mMutex"),
-    mActorDestoryed(false),
-    mRunnable(nullptr)
+    mParams(aParams)
 {
   MOZ_COUNT_CTOR(FilesystemRequestParent);
 }
@@ -57,28 +51,6 @@ FilesystemRequestParent::Dispatch()
 void
 FilesystemRequestParent::ActorDestroy(ActorDestroyReason)
 {
-
-  MutexAutoLock lock(mMutex);
-  mActorDestoryed = true;
-  if (mRunnable) {
-    mRunnable->Cancel();
-  }
-}
-
-bool
-FilesystemRequestParent::SetRunnable(bool aAdd, FilesystemEvent* aRunnable)
-{
-  MutexAutoLock lock(mMutex);
-  if (aAdd) {
-    if (mActorDestoryed) {
-      return false;
-    }
-    mRunnable = aRunnable;
-    return true;
-  } else {
-    mRunnable = nullptr;
-    return true;
-  }
 }
 
 } // namespace filesystem

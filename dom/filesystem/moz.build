@@ -9,26 +9,18 @@ XPIDL_MODULE = 'dom_filesystem'
 MODULE = 'dom'
 
 EXPORTS.mozilla.dom.filesystem += [
-    'CallbackHandler.h',
     'Directory.h',
     'Filesystem.h',
-    'FilesystemRequestChild.h',
     'FilesystemRequestParent.h',
 ]
 
 CPP_SOURCES += [
-    'CallbackHandler.cpp',
     'Directory.cpp',
     'Error.cpp',
     'Filesystem.cpp',
-    'FilesystemEvent.cpp',
-    'FilesystemRequestChild.cpp',
     'FilesystemRequestParent.cpp',
-    'FilesystemService.cpp',
     'FileUtils.cpp',
     'PathManager.cpp',
-    'Result.cpp',
-    'Worker.cpp',
     'TaskBase.cpp',
     'CreateDirectoryTask.cpp',
     'GetEntranceTask.cpp',

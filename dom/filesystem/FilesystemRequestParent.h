@@ -29,17 +29,10 @@ public:
 
   void Dispatch();
   void ActorDestroy(ActorDestroyReason) MOZ_OVERRIDE;
-
-  bool SetRunnable(bool aAdd, FilesystemEvent* aRunnable = nullptr);
-
 private:
   ThreadSafeAutoRefCnt mRefCnt;
   NS_DECL_OWNINGTHREAD
   FilesystemParams mParams;
-
-  Mutex mMutex;
-  bool mActorDestoryed;
-  nsRefPtr<FilesystemEvent> mRunnable;
 };
 
 } // namespace filesystem

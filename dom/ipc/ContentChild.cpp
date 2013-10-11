@@ -93,7 +93,7 @@
 #include "mozilla/dom/indexedDB/PIndexedDBChild.h"
 #include "mozilla/dom/mobilemessage/SmsChild.h"
 #include "mozilla/dom/devicestorage/DeviceStorageRequestChild.h"
-#include "mozilla/dom/filesystem/FilesystemRequestChild.h"
+#include "mozilla/dom/filesystem/PFilesystemRequestChild.h"
 #include "mozilla/dom/bluetooth/PBluetoothChild.h"
 #include "mozilla/dom/PFMRadioChild.h"
 #include "mozilla/ipc/InputStreamUtils.h"
@@ -848,7 +848,8 @@ ContentChild::DeallocPDeviceStorageRequestChild(PDeviceStorageRequestChild* aDev
 PFilesystemRequestChild*
 ContentChild::AllocPFilesystemRequestChild(const FilesystemParams& aParams)
 {
-    return new FilesystemRequestChild();
+    NS_NOTREACHED("Should never get here!");
+    return nullptr;
 }
 
 bool

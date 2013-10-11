@@ -9,7 +9,6 @@
 #include "nsXULAppAPI.h"
 #include "nsWeakReference.h"
 #include "Filesystem.h"
-#include "CallbackHandler.h"
 #include "Error.h"
 #include "PathManager.h"
 #include "CreateDirectoryTask.h"

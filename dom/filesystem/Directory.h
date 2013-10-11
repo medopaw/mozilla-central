@@ -20,7 +20,6 @@ namespace dom {
 namespace filesystem {
 
 class Filesystem;
-class CallbackHandler;
 struct FileInfo;
 
 class Directory MOZ_FINAL : public nsISupports,
