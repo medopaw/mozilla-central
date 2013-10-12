@@ -112,13 +112,10 @@ GetEntranceTask::HandlerCallback()
   if (!HasError()) {
     nsRefPtr<Directory> dir = FileUtils::CreateDirectory(filesystem,
       mTargetInfo.realPath, mTargetInfo.name);
-    if (dir) {
-      Optional<JS::Handle<JS::Value> > val(cx,
-          OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
-      mPromise->MaybeResolve(cx, val);
-      return;
-    }
-    mErrorName = Error::DOM_ERROR_SECURITY;
+    Optional<JS::Handle<JS::Value> > val(cx,
+        OBJECT_TO_JSVAL(dir->WrapObject(cx, global)));
+    mPromise->MaybeResolve(cx, val);
+    return;
   }
   nsRefPtr<DOMError> domError = Error::GetDOMError(mErrorName);
   Optional<JS::Handle<JS::Value> > val(cx,

@@ -95,7 +95,6 @@ void
 TaskBase::HandleResult()
 {
   if (mRequestParent) {
-    MOZ_ASSERT(mParent, "mParent is null!");
     unused << mRequestParent->Send__delete__(mRequestParent, GetRequestResult());
   } else {
     HandlerCallback();

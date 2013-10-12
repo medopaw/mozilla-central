@@ -72,20 +72,17 @@ Directory*
 FileUtils::CreateDirectory(Filesystem* aFilesystem, const nsAString& aRealPath, const nsAString& aName)
 {
   nsRefPtr<PathManager> p = aFilesystem->GetPathManager();
+  MOZ_ASSERT(p->WithinBase(aRealPath), "Path is out of scope!");
 
-  if (p->WithinBase(aRealPath)) {
-    nsString name;
-    if (!p->IsBase(aRealPath)) {
-      name = aName;
-    }
-
-    nsString path;
-    p->RealPathToDOMPath(aRealPath, path);
-
-    return new Directory(aFilesystem, path, name);
+  nsString name;
+  if (!p->IsBase(aRealPath)) {
+    name = aName;
   }
 
-  return nullptr;
+  nsString path;
+  p->RealPathToDOMPath(aRealPath, path);
+
+  return new Directory(aFilesystem, path, name);
 }
 
 } // namespace filesystem
