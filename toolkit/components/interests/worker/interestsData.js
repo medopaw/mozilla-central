@@ -1,1995 +1,1979 @@
 var interestsData = {
-   "salon.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "tennisnews.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "muscleandfitness.com" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "roughguides.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "mysql.com" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "sidereel.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "cracked.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "tvgasm.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "sciencenews.org" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "boxingtalk.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "makershed.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "politico.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "androidpolice.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "tmz.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "rollingstone.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "menshealth.about.com" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "funnyordie.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "sourceforge.net" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "realclearpolitics.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "slashdot.org" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "todaysparent.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "foxnews.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "rapgenius.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "hardballtimes.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "dezeen.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "prevention.com" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "ilounge.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "glamour.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "gardengatemagazine.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "deadspin.com" : {
-      "__ANY" : [
-         "Sports"
-      ]
-   },
-   "nbadraft.net" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "dpmag.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "europeancarweb.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "lifehacker.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "golf.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "mmanews.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "1up.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "artcyclopedia.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "profootballweekly.com" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "fifa.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "mentalfloss.com" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "projectprospect.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "cameralabs.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "inc.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "footballguys.com" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "appcraver.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "scout.com" : {
-      "__ANY" : [
-         "Sports"
-      ]
-   },
-   "hockeydb.com" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "tennisserver.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "smashingmagazine.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "mymodernmet.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "break.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "ew.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "dcresource.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "nhl.com" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "sportingnews.com" : {
-      "__ANY" : [
-         "Sports"
-      ]
-   },
-   "design-milk.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "foodandwine.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "betterlivingthroughdesign.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "yankodesign.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "androinica.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "c-span.org" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "tvduck.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "architectmagazine.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "models.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "howstuffworks.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "baseballanalysts.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "baseballamerica.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "gq.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "tvguide.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "self.com" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "adorama.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "popphoto.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "thefutoncritic.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "ted.com" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "entrepreneurs.about.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "uxmatters.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "thefourthperiod.com" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "thefashionspot.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "macworld.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "womenshealthmag.com" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "allmovie.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "core77.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "yardbarker.com" : {
-      "__ANY" : [
-         "Sports"
-      ]
-   },
-   "thehill.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "gardening.about.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "rivals.com" : {
-      "__ANY" : [
-         "Sports"
-      ]
-   },
-   "99u.com" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "fodors.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "fandango.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "onthebaseline.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "slamonline.com" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "gourmet.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "appleinsider.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "weddingchannel.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "tennis-x.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "myownbusiness.org" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "tennisexpress.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "joystiq.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "autoblog.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "doghouseboxing.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "artnewsblog.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "style.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "arstechnica.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "mlbtraderumors.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "mlbdailydish.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "theartnewspaper.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "pga.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "secondsout.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "kotaku.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "pandodaily.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "usopen.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "apache.org" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "ironmagazine.com" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "collegehumor.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "shape.com" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "gizmodo.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "cosmopolitan.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "computerandvideogames.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "coolhunting.com" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "discovery.com" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "baseballprospectus.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "fightline.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "teamtalk.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "serverfault.com" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "coldhardfootballfacts.com" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "gardendesign.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "vogue.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "thoughtcatalog.com" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "artdaily.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "nature.com" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "idsa.org" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "eonline.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "hockeybuzz.com" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "popularmechanics.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "boxinginsider.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "mensflair.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "startupnation.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "artnews.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "nme.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "contemporist.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "mmaweekly.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "hockeysfuture.com" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "hoopsvibe.com" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "seekingalpha.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "vegetablegardener.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "topgear.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "ebaumsworld.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "theonion.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "weddingbee.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "tribalfootball.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "smittenkitchen.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "i-am-bored.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "babyzone.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "cbssports.com" : {
-      "__ANY" : [
-         "Sports"
-      ]
-   },
-   "fightnews.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "iphonelife.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "selectism.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "fastcoexist.com" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "ruffledblog.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "mynhldraft.com" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "sciencemag.org" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "mmafrenzy.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "rottentomatoes.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "metropolismag.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "good.is" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "siliconvalleywatcher.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "autonews.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "scientificamerican.com" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "boxingnews24.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "absolutearts.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "hulu.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "hackaday.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "muscleandfitnesshers.com" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "techcrunch.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "weddingchicks.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "theredzone.org" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "insidehoops.com" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "thechive.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "gigaom.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "sciencedaily.com" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "seriouseats.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "etonline.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "golfillustrated.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "allthingsd.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "moviefone.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "oncewed.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "televisionwithoutpity.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "allhiphop.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "men.webmd.com" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "epicurious.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "celebuzz.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "ironmanmagazine.com" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "tvweek.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "php.net" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "forbes.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "anandtech.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "ftoday.com" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "getkempt.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "droid-life.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "perezhilton.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "home-designing.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "golftipsmag.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "caughtoffside.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "atpworldtour.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "artsjournal.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "gardenista.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "diy.about.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "uxmag.com" : {
-      "__ANY" : [
-         "Design"
-      ]
-   },
-   "talkandroid.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "ufc.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "gamespot.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "foxsports.com" : {
-      "__ANY" : [
-         "Sports"
-      ]
-   },
-   "profootballtalk.nbcsports.com" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "valleywag.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "peoplestylewatch.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "golfreview.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "esquire.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "parents.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "autoweek.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "thehollywoodgossip.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "womens-health.com" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "pgatour.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "usmagazine.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "wikihow.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "onstartups.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "tennistalk.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "mocoloco.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "womenshealth.about.com" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "menshealthnetwork.org" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "lover.ly" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "motortrend.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "details.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "brainpickings.org" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "gardendesigner.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "eastsideboxing.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "15rounds.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "cnbc.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "cagepotato.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "bonappetit.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "somethingawful.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "nba.com" : {
-      "__ANY" : [
-         "Sports",
-         "Basketball"
-      ]
-   },
-   "automobilemag.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "movies.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "draftexpress.com" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "destructoid.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "makerfaire.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "lonelyplanet.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "interiordesign.net" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "instructables.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "soccernews.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "marketwatch.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "tv.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "gamerankings.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "hackedgadgets.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "brides.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "boxingscene.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "mensfashion.about.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "golfchannel.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "mckeenshockey.rivals.com" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "businessweek.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "organicgardening.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "freshome.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "theknot.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "valetmag.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "golfdigest.com" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "okmagazine.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "hollywood.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "allthingsapple.me" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "dcviews.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "tennis.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "thestreet.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "whattoexpect.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "wired.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "ehow.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "101cookbooks.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "perfectgame.org" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "macrumors.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "fitnessmagazine.com" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "tuaw.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "nationalfootballpost.com" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "realgm.com" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "shutterbug.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "travelandleisure.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "spin.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "cntraveler.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "stylesalvage.blogspot.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "landlopers.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "jquery.com" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "drudgereport.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "budgettravel.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "thehockeynews.com" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "dailykos.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "phandroid.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "pitchfork.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "billboard.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "polyvore.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "fool.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "mlb.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "pectorshockey.net" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "letsgo.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "codinghorror.com" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "allmusic.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "gametrailers.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "saveur.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "dailytennis.com" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "ign.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "spectorshockey.net" : {
-      "__ANY" : [
-         "Hockey"
-      ]
-   },
-   "entrepreneur.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "sqlite.org" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "bhphotovideo.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "babiesonline.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "gamesradar.com" : {
-      "__ANY" : [
-         "Video-Games"
-      ]
-   },
-   "hoopsworld.com" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "hoopshype.com" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "bloomberg.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "frommers.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "chocolateandzucchini.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "androidandme.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "gapminder.org" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "the-landscape-design-site.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "digitalcamerareview.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "finegardening.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "elle.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "usopen.org" : {
-      "__ANY" : [
-         "Tennis"
-      ]
-   },
-   "creativebloq.com" : {
-      "__ANY" : [
-         "Ideas"
-      ]
-   },
-   "dpreview.com" : {
-      "__ANY" : [
-         "Photography"
-      ]
-   },
-   "roadandtrack.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "huffingtonpost.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "usga.org" : {
-      "__ANY" : [
-         "Golf"
-      ]
-   },
-   "thedailybeast.com" : {
-      "__ANY" : [
-         "Politics"
-      ]
-   },
-   "parenting.org" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "dimemag.com" : {
-      "__ANY" : [
-         "Basketball"
-      ]
-   },
-   "movieweb.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "mixedmartialarts.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "footballoutsiders.com" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "github.com" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "football365.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "fark.com" : {
-      "__ANY" : [
-         "Humor"
-      ]
-   },
-   "livescore.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "venturebeat.com" : {
-      "__ANY" : [
-         "Entrepreneur"
-      ]
-   },
-   "instyle.com" : {
-      "__ANY" : [
-         "Fashion-Women"
-      ]
-   },
-   "androidcommunity.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "androidcentral.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "bleacherreport.com" : {
-      "__ANY" : [
-         "Sports"
-      ]
-   },
-   "blogs.artinfo.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "education.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "acontinuouslean.com" : {
-      "__ANY" : [
-         "Fashion-Men"
-      ]
-   },
-   "nationalgeographic.com" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "macnn.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "economist.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "androidauthority.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "architecture.about.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "flexonline.com" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "movietickets.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "blog.makezine.com" : {
-      "__ANY" : [
-         "Do-It-Yourself"
-      ]
-   },
-   "engadget.com" : {
-      "__ANY" : [
-         "Technology"
-      ]
-   },
-   "mmafighting.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "blouinartinfo.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "nasa.gov" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "zap2it.com" : {
-      "__ANY" : [
-         "Television"
-      ]
-   },
-   "pastemagazine.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "androidguys.com" : {
-      "__ANY" : [
-         "Android"
-      ]
-   },
-   "parenting.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "reuters.com" : {
-      "__ANY" : [
-         "Business"
-      ]
-   },
-   "aldaily.com" : {
-      "__ANY" : [
-         "Arts"
-      ]
-   },
-   "mywedding.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "strikeforce.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   },
-   "nfltraderumors.co" : {
-      "__ANY" : [
-         "Football"
-      ]
-   },
-   "fangraphs.com" : {
-      "__ANY" : [
-         "Baseball"
-      ]
-   },
-   "simplyrecipes.com" : {
-      "__ANY" : [
-         "Cooking"
-      ]
-   },
-   "hortmag.com" : {
-      "__ANY" : [
-         "Gardening"
-      ]
-   },
-   "nfl.com" : {
-      "__ANY" : [
-         "Sports",
-         "Football"
-      ]
-   },
-   "naturalmuscle.net" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "mensfitness.com" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "maxboxing.com" : {
-      "__ANY" : [
-         "Boxing"
-      ]
-   },
-   "menshealth.com" : {
-      "__ANY" : [
-         "Health-Men"
-      ]
-   },
-   "legalnomads.com" : {
-      "__ANY" : [
-         "Travel"
-      ]
-   },
-   "stylemepretty.com" : {
-      "__ANY" : [
-         "Weddings"
-      ]
-   },
-   "goal.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "espnfc.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "hiphopdx.com" : {
-      "__ANY" : [
-         "Music"
-      ]
-   },
-   "imdb.com" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "thebabycorner.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "womenfitness.net" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "popsci.com" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "worldsoccer.com" : {
-      "__ANY" : [
-         "Soccer"
-      ]
-   },
-   "bhg.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "newscientist.com" : {
-      "__ANY" : [
-         "Science"
-      ]
-   },
-   "babycenter.com" : {
-      "__ANY" : [
-         "Parenting"
-      ]
-   },
-   "stackoverflow.com" : {
-      "__ANY" : [
-         "Programming"
-      ]
-   },
-   "comingsoon.net" : {
-      "__ANY" : [
-         "Movies"
-      ]
-   },
-   "dwell.com" : {
-      "__ANY" : [
-         "Home-Design"
-      ]
-   },
-   "caranddriver.com" : {
-      "__ANY" : [
-         "Autos"
-      ]
-   },
-   "healthywomen.org" : {
-      "__ANY" : [
-         "Health-Women"
-      ]
-   },
-   "people.com" : {
-      "__ANY" : [
-         "Gossip"
-      ]
-   },
-   "cultofmac.com" : {
-      "__ANY" : [
-         "Apple"
-      ]
-   },
-   "sherdog.com" : {
-      "__ANY" : [
-         "Mixed-Martial-Arts"
-      ]
-   }
+{
+    "androidonline.net" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "android.tgbus.com" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "android.d.cn" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "mumayi.com" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "android.91.com" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "anzhuo.cn" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "anzhuo.paojiao.cn" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "apkol.com" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "android.155.cn" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "android.265g.com" : {
+        "__ANY" : [
+            "Android"
+        ]
+    },
+    "weiphone.com" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "app111.com" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "bbs.app111.com" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "7do.net" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "apple.766.com" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "os-ios.liqucn.com" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "macgood.com" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "applemi.net" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "iphone.265g.com" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "ppios.com" : {
+        "__ANY" : [
+            "Apple"
+        ]
+    },
+    "soomal.com" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "dgtle.com" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "digi.tech.qq.com" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "digi.163.com" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "digi.it.sohu.com" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "digital.msn.com.cn" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "cfan.com.cn" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "beareyes.com.cn" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "bbs.mydigit.cn" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "chinafix.com.cn" : {
+        "__ANY" : [
+            "Digital-Products"
+        ]
+    },
+    "autohome.com.cn" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "pcauto.com.cn" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "auto.163.com" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "xincheping.com" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "chaiche.chexun.com" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "saicgroup.com" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "chewen.com" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "chnsuv.com" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "faw.com.cn" : {
+        "__ANY" : [
+            "Autos"
+        ]
+    },
+    "99fang.com" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "01fy.cn" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "taofw.cn" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "century21cn.com" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "mayi.com" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "tomson-riviera.com" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "swotbbs.com" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "house.china.com.cn" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "realestate.cei.gov.cn" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "vanke.com" : {
+        "__ANY" : [
+            "House"
+        ]
+    },
+    "jdbbs.com" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "info.homea.hc360.com" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "joyoung.com.cn" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "tech.hexun.com/appliance" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "shop.philips.com.cn" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "shop.tcl.com" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "midea.com/cn" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "galanz.com.cn" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "hisense.com/product" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "skyworth.com/cn" : {
+        "__ANY" : [
+            "Domestic-Appliance"
+        ]
+    },
+    "weimeixi.com" : {
+        "__ANY" : [
+            "Decorating","Design"
+        ]
+    },
+    "szfa.com" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "qumei.com" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "bnq.com.cn" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "wanjuhe.com" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "deco.rayli.com.cn" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "xiuhome.com" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "72xuan.com" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "home.sohu.com" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "janehome.cn" : {
+        "__ANY" : [
+            "Decorating"
+        ]
+    },
+    "mogujie.com" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "meilishuo.com" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "dress.pclady.com.cn" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "fashion.rayli.com.cn" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "clothing.lady8844.com" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "girdear.cn" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "ochirly.com" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "lachapelle.cn" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "guangjiela.com" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "fz.mina.com.cn" : {
+        "__ANY" : [
+            "Fashion-Women"
+        ]
+    },
+    "nanshiw.com" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "nanzhuangg.com" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "man.pclady.com.cn" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "inleon.rayli.com.cn" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "markfairwhale.com" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "cabbeen.com" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "shows.gq.com.cn" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "nanpinjie.com" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "masamaso.com" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "zhaonz.com" : {
+        "__ANY" : [
+            "Fashion-Men"
+        ]
+    },
+    "faxingw.cn" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "beauty.rayli.com.cn" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "beauty.pclady.com.cn" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "cosme.pclady.com.cn" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "cctop100.com" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "51870.com" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "meirong.piaoliang.com" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "beauty.aili.com" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "i2ya.com" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "meiztuan.com" : {
+        "__ANY" : [
+            "Beauty"
+        ]
+    },
+    "5lux.com" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "shangpin.com" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "wbiao.cn" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "aolai.com" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "uemall.com" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "zhenpin.com" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "meici.com" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "luxury.msn.com.cn" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "lux.vipshop.com" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "clinique.com.cn" : {
+        "__ANY" : [
+            "Luxury"
+        ]
+    },
+    "item.lingshi.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "lingshishe.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "lingshikong.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "52yxs.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "didamall.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "hclsw.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "lingshi.99114.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "ju04.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "xiaohegu.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "010duoduo.com" : {
+        "__ANY" : [
+            "Snack"
+        ]
+    },
+    "health.pclady.com.cn" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "health.sina.com.cn" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "120ask.com" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "zhongyi.sohu.com" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "jianshen114.com" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "fx120.net" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "zhzyw.org" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "health.china.com" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "jkb.com.cn" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "ttys5.com" : {
+        "__ANY" : [
+            "Health"
+        ]
+    },
+    "sdxjpc.com" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "landraco.com" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "bookschina.com" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "book.kongfz.com" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "haotushu.com" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "bjbb.com" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "bookdown.com.cn" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "yilin.com" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "tup.tsinghua.edu.cn" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "sciencep.com" : {
+        "__ANY" : [
+            "Book"
+        ]
+    },
+    "ttmeishi.net" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "douguo.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "tfysw.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "koovoo.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "chinacaipu.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "xinshipu.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "caipucaipu.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "bjxdf.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "beitaichufang.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "yiqin92.com" : {
+        "__ANY" : [
+            "Cooking"
+        ]
+    },
+    "fantong.com" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "pinpin.com" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "ele.me" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "4008823823.com.cn" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "4008123123.com" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "xddcoffee.com" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "doodii.com" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "ajisen.com.cn" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "4006009900.com" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "sitcoffee.com" : {
+        "__ANY" : [
+            "Food"
+        ]
+    },
+    "goinlove.com" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "pinla.com" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "brides.com.cn" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "daxi.com" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "wed.7192.com" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "obride.com" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "bbs.wed114.cn" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "marry.ddmap.com" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "jhzwed.com" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "1314wed.com.cn" : {
+        "__ANY" : [
+            "Weddings"
+        ]
+    },
+    "babyschool.com.cn" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "i52088.com" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "babytree.com" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "qinzi.com.cn" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "edu.pcbaby.com.cn/game" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "7zzy.com" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "kidzchina.com" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "bbs.ibabyzone.cn" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "cn0-6.com" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "cn.babycenter.com" : {
+        "__ANY" : [
+            "Parenting"
+        ]
+    },
+    "exam8.com" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "dearedu.com" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "cqv.chinadegrees.cn/cn" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "eduzhai.net" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "eduol.cn" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "kaoshi110.net" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "xuexila.com" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "xuexibar.cn" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "jiandan100.cn" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "51edu.com" : {
+        "__ANY" : [
+            "Education"
+        ]
+    },
+    "photo.poco.cn" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "dp.pconline.com.cn" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "xiangshu.com" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "academy.fengniao.com" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "leica.org.cn" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "photofans.cn" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "pop-photo.com.cn" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "rxsy.net" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "peoplephoto.com" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "photoker.com" : {
+        "__ANY" : [
+            "Photography"
+        ]
+    },
+    "mafengwo.cn" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "lvyou.baidu.com" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "yododo.cn" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "chanyouji.com" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "daodao.com" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "51766.com" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "lvping.com" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "17u.cn" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "cnta.com" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "cct.cn" : {
+        "__ANY" : [
+            "Travel"
+        ]
+    },
+    "modernsky.com" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "chncpa.org" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "yanchupiao.com" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "piaobuy.com" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "chinapiao.com.cn" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "bjktv.cn" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "cashboxparty.com" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "bjsjsyly.com" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "zzzgg.com" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "chnmuseum.cn" : {
+        "__ANY" : [
+            "Shows"
+        ]
+    },
+    "art.china.cn" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "zggjysw.com" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "capitalmuseum.org.cn" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "namoc.org" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "chinaacademyofart.com" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "todayartmuseum.com" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "yishujia.findart.com.cn" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "798art.org" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "cnmeiw.com" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "artx.cn" : {
+        "__ANY" : [
+            "Arts"
+        ]
+    },
+    "xiankankan.com" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "tooopen.com" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "rouding.com" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "oritive.com" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "poboo.com" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "duidea.com" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "2dianban.com" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "ycy8.net" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "micro-life.cn" : {
+        "__ANY" : [
+            "Design"
+        ]
+    },
+    "techcn.com.cn" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "chinalabs.com" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "tech.sina.com.cn" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "it.sohu.com" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "tech.qq.com" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "cnbeta.com" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "36kr.com" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "tech2ipo.com" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "tmtpost.com" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "pingwest.com" : {
+        "__ANY" : [
+            "Technology"
+        ]
+    },
+    "cnblogs.com" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "qqview.com" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "bbs.bccn.net" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "kuqin.com" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "cxy.me" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "zzzj.com" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "webjx.com" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "bbs.cyuyan.com.cn" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "jb51.net" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "bcwhy.com" : {
+        "__ANY" : [
+            "Programming"
+        ]
+    },
+    "guokr.com" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "songshuhui.net" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "huanqiukexue.com" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "bjkp.gov.cn" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "astron.ac.cn" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "plantphoto.cn" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "math.org.cn" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "cosmoscape.com" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "cnphys.com" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "wulixueyuan.com" : {
+        "__ANY" : [
+            "Science"
+        ]
+    },
+    "qianyan001.com" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "leiting001.com" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "zgfzw.org" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "cppcc.people.com.cn" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "politics.people.com.cn" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "military.people.com.cn" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "mil.chinaiiss.com" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "51junshi.com" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "baxue.com" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "top81.com.cn" : {
+        "__ANY" : [
+            "Military"
+        ]
+    },
+    "finance.sina.com.cn" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "yicai.com" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "zgjrjw.com" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "financialnews.com.cn" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "finance.huagu.com" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "cnfinance.cn" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "nfinv.com" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "popfinancing.com.cn" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "amoney.com.cn" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "eeo.com.cn" : {
+        "__ANY" : [
+            "Finance"
+        ]
+    },
+    "qncye.com" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "cyzone.cn" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "iceo.com.cn" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "cyone.com.cn" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "cy.ncss.org.cn" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "cn08.net" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "78.cn" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "chinadxscy.com" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "zzcyy.net" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "cg01.cn" : {
+        "__ANY" : [
+            "Entrepreneur"
+        ]
+    },
+    "ent.sina.com.cn" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "ent.163.com" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "ent.huanqiu.com" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "msn.ent.ynet.com" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "shcaoan.com" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "eemedia.cn" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "huabian.com" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "bug.cn" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "kpoppark.com" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "news.mingxing.com" : {
+        "__ANY" : [
+            "Gossip"
+        ]
+    },
+    "qiushibaike.com" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "haha365.com" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "gaoxiao8.com" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "yikexun.cn" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "jijidi.com" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "x.heshuicun.com" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "gaoxiaovod.com" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "xiaohuayoumo.com" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "gxdxw.cn" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "youmogu.com" : {
+        "__ANY" : [
+            "Humor"
+        ]
+    },
+    "m1905.com" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "movie.douban.com" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "piaohua.com" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "dytt8.net" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "tom365.com" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "dygod.net" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "vmovier.com/channel" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "ffdy.cc" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "66ys.cc" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "whtbk.com" : {
+        "__ANY" : [
+            "Movies"
+        ]
+    },
+    "xiami.com" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "music.baidu.com" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "1ting.com" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "9ku.com" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "vvvdj.com" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "fm.baidu.com" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "douban.fm" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "bbs.musicool.cn" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "club.xialala.com" : {
+        "__ANY" : [
+            "Music"
+        ]
+    },
+    "tv.2345.com" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "dianshiju.cntv.cn" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "tv.hao123.com" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "yyets.com" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "a67.com/tv" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "77vcd.com" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "juqing.9duw.com" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "tv.sohu.com" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "888tv.guojj.cn" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "qwq.cc" : {
+        "__ANY" : [
+            "Television"
+        ]
+    },
+    "gamersky.com" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "4399.com" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "game.com.cn" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "abab.com" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "yx007.com" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "game.people.com.cn" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "moliyo.com" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "game.21cn.com" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "game.mop.com" : {
+        "__ANY" : [
+            "Video-Games"
+        ]
+    },
+    "espnstar.com.cn" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "zhibo8.cc" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "sports.163.com" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "lottery.gov.cn" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "cntaijiquan.com" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "shuaijiao.com" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "qjhm.net" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "gedoumi.com" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "vbol.cn" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "sports.39.net" : {
+        "__ANY" : [
+            "Sports"
+        ]
+    },
+    "9inba.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "basketball.titan24.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "ballive.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "nba98.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "ilanqiu.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "aoshentv.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "jsngl.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "shanghaisharks.cn" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "sbs-sport.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "jltigers.com" : {
+        "__ANY" : [
+            "Basketball"
+        ]
+    },
+    "1soccer.com" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "soccerbar.cn" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "fa.org.cn" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "soccer.goalchina.net" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "go01.com" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "wenqiu.com" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "zuqiu123.org" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "90oo.com" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "baxi.tv" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "shenhuafc.com.cn" : {
+        "__ANY" : [
+            "Soccer"
+        ]
+    },
+    "tennis.com.cn" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    },
+    "chinatennis.org.cn" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    },
+    "wta.cn" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    },
+    "tennis.org.cn" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    },
+    "6tennis.com" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    },
+    "atatour.com.cn" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    },
+    "tennispai.com.cn" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    },
+    "wangqiu.net" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    },
+    "shtennis123.com" : {
+        "__ANY" : [
+            "Tennis"
+        ]
+    }
 }
 ;

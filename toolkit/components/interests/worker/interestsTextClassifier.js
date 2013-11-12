@@ -10,11 +10,45 @@ const kNotWordPattern = /[^a-z0-9 ]+/g;
 const kMinimumMatchTokens = 3;
 const kSimilarityCutOff = Math.log(0.95);
 
-function PlaceTokenizer(aUrlStopwordSet) {
+function PlaceTokenizer(aUrlStopwordSet, aBasicWordSet) {
   this._urlStopwordSet = aUrlStopwordSet;
+
+  let wordHash = [];
+  aBasicWordSet.forEach(function(word) {
+    var n = word.length;
+    if (!wordHash[n]) {
+        wordHash[n] = {};
+    }
+    wordHash[n][word] = true;
+  });
+  this._wordHash = wordHash;
 }
 
 PlaceTokenizer.prototype = {
+  _identifyWords: function(aStr) {
+    let wordHash = this._wordHash;
+
+    let segment = function(aStr) {
+      let maxLen = Math.min(aStr.length, wordHash.length - 1);
+      for (let n = maxLen; n > 0; n--) {
+        if (!wordHash[n]) {
+          continue;
+        }
+        let section = aStr.slice(aStr.length - n);
+        if (wordHash[n][section]) {
+          return aStr.length >= n
+            ? segment(aStr.slice(0, aStr.length - n)).concat([section])
+            : [];
+        }
+      }
+      return aStr.length >= 1
+        ? segment(aStr.slice(0, aStr.length - 1))
+        : [];
+    }
+
+    return segment(aStr);
+  },
+
   tokenize: function(aUrl, aTitle) {
     aUrl = aUrl.toLowerCase().replace(kNotWordPattern, " ");
     aTitle = (aTitle) ? aTitle.toLowerCase().replace(kNotWordPattern, " ") : "";
@@ -28,7 +62,8 @@ PlaceTokenizer.prototype = {
       }
     }, this);
 
-    tokens = tokens.concat(aTitle.split(/\s+/));
+
+    tokens = tokens.concat(this._identifyWords(aTitle));
 
     return tokens;
   }

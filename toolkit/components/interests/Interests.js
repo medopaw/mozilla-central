@@ -38,13 +38,13 @@ const kPrefWhitelist = "interests.userDomainWhitelist";
 const kDaysToResubmit = 31;
 const kResubmitChunkSize = 1000;
 
-const kInterests = ["Android", "Apple", "Arts", "Autos", "Baseball", "Basketball",
-"Boxing", "Business", "Cooking", "Design", "Do-It-Yourself", "Entrepreneur",
-"Fashion-Men", "Fashion-Women", "Football", "Gardening", "Golf", "Gossip",
-"Health-Men", "Health-Women", "Hockey", "Home-Design", "Humor", "Ideas",
-"Mixed-Martial-Arts", "Movies", "Music", "Parenting", "Photography", "Politics",
-"Programming", "Science", "Soccer", "Sports", "Technology", "Tennis", "Travel",
-"Television", "Video-Games", "Weddings"];
+const kInterests = ["Tennis", "Apple", "Fashion-Men", "House", "Weddings",
+"Entrepreneur", "Domestic-appliance", "Design", "Gossip", "Education",
+"Technology", "Arts", "Snack", "Humor", "Fashion-women", "Digital-products",
+"Travel", "Cooking", "Sports", "Book", "Music", "Luxury", "Health",
+"Android", "Soccer", "Shows", "Video-games", "Finance", "Beauty", "Food",
+"Photography", "Parenting", "Basketball", "Decorating", "Television",
+"Autos", "Science", "Programming", "Movies", "Military"];
 
 let gClassifierEnabled = Services.prefs.getBoolPref(kPrefClassifierEnabled);
 let gAPIEnabled = Services.prefs.getBoolPref(kPrefWebAPIEnabled);

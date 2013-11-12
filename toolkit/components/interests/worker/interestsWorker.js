@@ -29,7 +29,7 @@ const kSplitter = /[^-\w\xco-\u017f\u0380-\u03ff\u0400-\u04ff]+/;
  */
 function bootstrap(aMessageData) {
   if (aMessageData.interestsUrlStopwords) {
-    gTokenizer = new PlaceTokenizer(aMessageData.interestsUrlStopwords);
+    gTokenizer = new PlaceTokenizer(aMessageData.interestsUrlStopwords, Object.keys(aMessageData.interestsClassifierModel.logLikelihoods));
   }
   if (aMessageData.interestsClassifierModel) {
     gClassifier = new NaiveBayesClassifier(aMessageData.interestsClassifierModel);
