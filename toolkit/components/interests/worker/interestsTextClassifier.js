@@ -62,7 +62,6 @@ PlaceTokenizer.prototype = {
       }
     }, this);
 
-
     tokens = tokens.concat(this._identifyWords(aTitle));
 
     return tokens;

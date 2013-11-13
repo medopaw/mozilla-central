@@ -39,10 +39,10 @@ const kDaysToResubmit = 31;
 const kResubmitChunkSize = 1000;
 
 const kInterests = ["Tennis", "Apple", "Fashion-Men", "House", "Weddings",
-"Entrepreneur", "Domestic-appliance", "Design", "Gossip", "Education",
-"Technology", "Arts", "Snack", "Humor", "Fashion-women", "Digital-products",
+"Entrepreneur", "Domestic-Appliance", "Design", "Gossip", "Education",
+"Technology", "Arts", "Snack", "Humor", "Fashion-Women", "Digital-Products",
 "Travel", "Cooking", "Sports", "Book", "Music", "Luxury", "Health",
-"Android", "Soccer", "Shows", "Video-games", "Finance", "Beauty", "Food",
+"Android", "Soccer", "Shows", "Video-Games", "Finance", "Beauty", "Food",
 "Photography", "Parenting", "Basketball", "Decorating", "Television",
 "Autos", "Science", "Programming", "Movies", "Military"];
 
