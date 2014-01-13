@@ -227,7 +227,7 @@ Bookmarks.prototype = {
 
       // Make sure that entry.path == entry.target to not follow .lnk folder
       // shortcuts which could lead to infinite cycles.
-      if (entry.isDirectory() && entry.path == entry.target) {
+      if (entry.path == entry.target && entry.isDirectory()) {
         let destFolderId;
         if (entry.leafName == this._toolbarFolderName &&
             entry.parent.equals(this._favoritesFolder)) {
